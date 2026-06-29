@@ -1,10 +1,12 @@
 # New Advanced RAG Implement
 
+Production-minded enterprise RAG backend with security and guardrails, hybrid retrieval, SQL routing, and advanced evaluation-oriented retrieval workflows.
+
 Enterprise-style Advanced RAG system built with FastAPI, Qdrant, PostgreSQL, Redis-style caching, and LangGraph-style routing, with support for Dense, Sparse, Hybrid, HyDE, CRAG, Self-Reflective RAG(SRAG), and reranking workflows.
 
 ## Overview
 
-This project is a production-minded Retrieval-Augmented Generation (RAG) backend that combines document retrieval, structured SQL access, security controls, caching, and orchestration.
+This project is a production-minded Retrieval-Augmented Generation (RAG) backend that combines document retrieval, structured SQL access, security and guardrails, caching, and orchestration.
 
 Core capabilities:
 
@@ -79,7 +81,7 @@ tests/
 ## Request Flow
 
 1. User sends a request to `/query`
-2. Auth, rate limit, and safety checks run
+2. Auth, rate limit, and guardrail checks run
 3. Router selects `rag`, `sql`, or `hybrid`
 4. Retrieval and/or SQL execution runs
 5. LLM generates the final response
