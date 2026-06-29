@@ -8,6 +8,19 @@ Enterprise-style Advanced RAG system built with FastAPI, Qdrant, PostgreSQL, Red
 
 This project is a production-minded Retrieval-Augmented Generation (RAG) backend that combines document retrieval, structured SQL access, security and guardrails, caching, and orchestration.
 
+## Why This Project Matters
+
+Most RAG demos stop at simple document retrieval and answer generation. This project is designed to go further by combining:
+
+- unstructured document retrieval
+- structured SQL access
+- hybrid routing between retrieval and database queries
+- security and guardrails
+- caching and operational controls
+- evaluation-oriented retrieval strategies such as HyDE, CRAG, and SRAG
+
+That makes it closer to a real enterprise AI backend than a basic chatbot demo.
+
 Core capabilities:
 
 - document upload and ingestion
@@ -64,6 +77,74 @@ Implemented and tested:
 - rate limiting and token budget controls
 - CI pipeline
 
+## Architecture
+
+High-level architecture:
+
+1. **API layer**: FastAPI routes for auth, query, admin, and document upload
+2. **Security and guardrails layer**: JWT auth, admin checks, rate limiting, input checks, moderation, output validation, and token budgets
+3. **Routing and orchestration layer**: intent routing and graph-based flow for `rag`, `sql`, and `hybrid`
+4. **Retrieval layer**: dense, sparse, hybrid, HyDE, CRAG, SRAG, and reranking logic
+5. **Data layer**:
+   - Qdrant for vector search
+   - PostgreSQL for structured data and user records
+   - Redis-style cache for query and embedding caching
+6. **Observability and operations layer**: cache stats, budget visibility, health checks, and CI
+
+### Architecture Diagram
+
+```text
+User / Client
+     |
+     v
+FastAPI API Layer
+  |-- /auth
+  |-- /documents/upload
+  |-- /query
+  |-- /admin
+     |
+     v
+Security and Guardrails
+  |-- JWT auth
+  |-- rate limiting
+  |-- input checks
+  |-- moderation
+  |-- output validation
+  |-- token budgets
+     |
+     v
+Router / Graph Orchestration
+  |-- RAG route
+  |-- SQL route
+  |-- Hybrid route
+     |
+     +------------------------+
+     |                        |
+     v                        v
+Retrieval Layer           SQL Layer
+  |-- dense                  |-- schema context
+  |-- sparse                 |-- SQL generation
+  |-- hybrid                 |-- safe execution
+  |-- HyDE
+  |-- CRAG
+  |-- SRAG
+  |-- reranking
+     |                        |
+     +-----------+------------+
+                 |
+                 v
+            LLM Response
+                 |
+                 v
+        Response + Metadata
+
+Supporting systems:
+- Qdrant for vector storage and retrieval
+- PostgreSQL for structured data and auth data
+- Redis-style cache for query/embedding cache
+- GitHub Actions for CI
+```
+
 ## Project Structure
 
 ```text
@@ -86,6 +167,13 @@ tests/
 4. Retrieval and/or SQL execution runs
 5. LLM generates the final response
 6. Metadata, cache state, and confidence are returned
+
+## Example Use Cases
+
+- enterprise document question answering
+- structured data lookup through SQL generation
+- hybrid enterprise assistants that combine documents and database records
+- domain-specific copilots for regulated industries such as life sciences
 
 ## Setup
 
@@ -162,6 +250,7 @@ GitHub Actions runs the test suite automatically on push and pull request to `ma
 
 ## Future Improvements
 
+- add architecture diagrams or screenshots for `/docs`, ingestion flow, and query flow
 - harden SQL validation with AST-based parsing using `sqlglot`
 - expand production deployment with container registry and Kubernetes manifests
 - add richer observability and cost tracking
