@@ -2,11 +2,23 @@ import shutil
 import uuid
 from pathlib import Path
 
+from app.services import ingestion_service as ingestion_module
 from app.services.ingestion_service import IngestionService
 
 
-def test_ingest_same_file_twice_skips_duplicate():
+def test_ingest_same_file_twice_skips_duplicate(monkeypatch):
     service = IngestionService()
+
+    monkeypatch.setattr(
+        ingestion_module,
+        "embed_texts",
+        lambda texts: [[0.1, 0.2, 0.3] for _ in texts],
+    )
+    monkeypatch.setattr(
+        ingestion_module,
+        "upsert_chunks",
+        lambda chunks, embeddings: None,
+    )
 
     temp_dir = Path(".cache") / "test_ingestion" / uuid.uuid4().hex
     temp_dir.mkdir(parents=True, exist_ok=True)

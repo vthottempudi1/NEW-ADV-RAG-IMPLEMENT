@@ -2,18 +2,14 @@ from fastapi.testclient import TestClient
 
 from app.api import query as query_api
 from app.main import app
+from app.middleware.auth import create_access_token
 
 
 client = TestClient(app)
 
 
 def _login() -> str:
-    response = client.post(
-        "/auth/login",
-        json={"username": "testuser@example.com", "password": "test123"},
-    )
-    assert response.status_code == 200
-    return response.json()["token"]
+    return create_access_token("testuser@example.com", is_admin=True)
 
 
 def test_query_blocked_without_token():
