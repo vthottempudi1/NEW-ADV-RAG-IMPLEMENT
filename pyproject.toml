@@ -1,7 +1,7 @@
 [project]
-name = "new-adv-rag-reimplement"
+name = "new-adv-rag-implement"
 version = "0.1.0"
-description = "Enterprise Advanced RAG reimplementation"
+description = "Enterprise Advanced RAG implementation"
 requires-python = ">=3.12"
 dependencies = [
     "fastapi>=0.115.0",
