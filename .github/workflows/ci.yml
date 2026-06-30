@@ -78,7 +78,7 @@ jobs:
 
       - name: Run eval smoke
         run: >
-          python Eval/run_ragas.py
+          python -m Eval.run_ragas
           --profile "${{ matrix.profile }}"
           --filter "${{ matrix.filter }}"
           --mode fixture
