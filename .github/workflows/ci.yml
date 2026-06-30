@@ -35,3 +35,58 @@ jobs:
 
       - name: Run tests
         run: pytest -q
+
+  eval-smoke:
+    runs-on: ubuntu-latest
+    needs: test
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - profile: naive
+            filter: baseline
+            output: Eval/results/ci_baseline.json
+          - profile: hybrid
+            filter: hybrid
+            output: Eval/results/ci_hybrid.json
+          - profile: hybrid
+            filter: hybrid_rag_sql
+            output: Eval/results/ci_hybrid_sql.json
+          - profile: hybrid+rerank+crag
+            filter: crag
+            output: Eval/results/ci_crag.json
+    env:
+      OPENAI_API_KEY: test-key
+      TAVILY_API_KEY: test-key
+      UPSTASH_REDIS_URL: ""
+      UPSTASH_REDIS_TOKEN: ""
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Upgrade pip
+        run: python -m pip install --upgrade pip
+
+      - name: Install project and test dependencies
+        run: pip install ".[dev]"
+
+      - name: Run eval smoke
+        run: >
+          python Eval/run_ragas.py
+          --profile "${{ matrix.profile }}"
+          --filter "${{ matrix.filter }}"
+          --mode fixture
+          --scorer heuristic
+          --output "${{ matrix.output }}"
+
+      - name: Upload eval artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: eval-${{ matrix.filter }}
+          path: ${{ matrix.output }}

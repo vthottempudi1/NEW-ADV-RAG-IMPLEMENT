@@ -113,11 +113,38 @@ class QueryCacheService:
         with self._lock:
             self._memory_store[key] = (time.time() + ttl_seconds, value)
 
+    def _delete(self, tier: str, key: str) -> dict[str, int | bool]:
+        redis_deleted = 0
+        memory_deleted = False
+
+        if self._redis_client is not None:
+            try:
+                deleted = self._redis_client.delete(key)
+                redis_deleted = int(deleted or 0)
+            except Exception as exc:
+                logger.exception("Redis delete failed for tier=%s", tier)
+                self._disable_redis("Redis delete failure", exc)
+
+        with self._lock:
+            if key in self._memory_store:
+                del self._memory_store[key]
+                memory_deleted = True
+
+        return {
+            "tier": tier,
+            "redis_deleted": redis_deleted,
+            "memory_deleted": memory_deleted,
+            "key": key,
+        }
+
     def get_intent(self, question: str) -> str | None:
         return self._get("intent", self.intent_key(question))
 
     def set_intent(self, question: str, intent: str) -> None:
         self._set("intent", self.intent_key(question), intent, 86400)
+
+    def clear_intent(self, question: str) -> dict[str, int | bool]:
+        return self._delete("intent", self.intent_key(question))
 
     def get_rag_answer(
         self,
@@ -146,11 +173,21 @@ class QueryCacheService:
             3600,
         )
 
+    def clear_rag_answer(
+        self,
+        question: str,
+        cache_context: dict[str, Any] | None = None,
+    ) -> dict[str, int | bool]:
+        return self._delete("rag_answer", self.rag_answer_key(question, cache_context))
+
     def get_sql_generation(self, question: str) -> str | None:
         return self._get("sql_gen", self.sql_gen_key(question))
 
     def set_sql_generation(self, question: str, sql: str) -> None:
         self._set("sql_gen", self.sql_gen_key(question), sql, 86400)
+
+    def clear_sql_generation(self, question: str) -> dict[str, int | bool]:
+        return self._delete("sql_gen", self.sql_gen_key(question))
 
     def get_sql_result(self, sql: str) -> list[dict[str, Any]] | None:
         value = self._get("sql_result", self.sql_result_key(sql))
@@ -171,6 +208,9 @@ class QueryCacheService:
             900,
         )
 
+    def clear_sql_result(self, sql: str) -> dict[str, int | bool]:
+        return self._delete("sql_result", self.sql_result_key(sql))
+
     def get_embedding(self, text: str) -> list[float] | None:
         value = self._get("embedding", self.embedding_key(text))
         if value is None:
@@ -190,6 +230,9 @@ class QueryCacheService:
             604800,
         )
 
+    def clear_embedding(self, text: str) -> dict[str, int | bool]:
+        return self._delete("embedding", self.embedding_key(text))
+
     def stats(self) -> dict[str, dict[str, float | int]]:
         snapshot: dict[str, dict[str, float | int]] = {}
         with self._lock:
@@ -207,14 +250,15 @@ class QueryCacheService:
                 }
         return snapshot
 
-    def clear(self) -> list[str]:
+    def clear(self, reset_stats: bool = True) -> list[str]:
         cleared: list[str] = []
 
         with self._lock:
             count = len(self._memory_store)
             self._memory_store.clear()
-            for tier in self._TIERS:
-                self._stats[tier] = defaultdict(int)
+            if reset_stats:
+                for tier in self._TIERS:
+                    self._stats[tier] = defaultdict(int)
             cleared.append(f"memory ({count} entries)")
 
         return cleared

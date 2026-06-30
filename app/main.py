@@ -8,7 +8,7 @@ from app.api.query import router as query_router
 
 app = FastAPI(
     title="New Enterprise Advanced RAG",
-    version="0.1.1",
+    version="0.1.3",
 )
 
 app.include_router(admin_router)

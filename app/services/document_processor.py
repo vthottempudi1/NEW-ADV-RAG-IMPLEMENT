@@ -8,6 +8,7 @@ from pypdf import PdfReader
 
 _PLAIN_TEXT_EXTENSIONS = {".txt", ".md", ".html", ".htm"}
 _PDF_EXTENSION = ".pdf"
+_DOCX_EXTENSION = ".docx"
 _CHUNK_SIZE = 1000
 _CHUNK_OVERLAP = 100
 
@@ -21,6 +22,9 @@ class DocumentProcessor:
 
         if suffix == _PDF_EXTENSION:
             return self._process_pdf_pypdf(file_path)
+
+        if suffix == _DOCX_EXTENSION:
+            return self._process_docx_python_docx(file_path)
 
         return self._process_docling(file_path)
 
@@ -87,6 +91,29 @@ class DocumentProcessor:
             pass
 
         return self._process_pdf_pypdf(file_path)
+
+    def _process_docx_python_docx(self, file_path: str) -> list[dict]:
+        path = Path(file_path)
+        source_name = path.name
+
+        try:
+            from docx import Document
+
+            document = Document(file_path)
+            text = self._normalize_whitespace(
+                " ".join(paragraph.text for paragraph in document.paragraphs)
+            )
+            if not text:
+                return []
+
+            return self._chunk_text(
+                text=text,
+                source_name=source_name,
+                source_path=str(path),
+                page_number=None,
+            )
+        except Exception:
+            return self._process_docling(file_path)
 
     def _process_pdf_pypdf(self, file_path: str) -> list[dict]:
         path = Path(file_path)

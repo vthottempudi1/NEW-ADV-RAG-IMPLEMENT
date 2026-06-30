@@ -216,13 +216,13 @@ This starts:
 ### 5. Run the API
 
 ```powershell
-python -m uvicorn app.main:app --reload --port 8002
+python -m uvicorn app.main:app --reload --port 8003
 ```
 
 Open:
 
-- `http://localhost:8002/docs`
-- `http://localhost:8002/health`
+- `http://localhost:8003/docs`
+- `http://localhost:8003/health`
 
 ## API Highlights
 

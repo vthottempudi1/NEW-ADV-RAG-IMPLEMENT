@@ -5,6 +5,8 @@ __pycache__/
 .env
 .cache/
 .pytest_cache/
+Eval/results/*.json
+seed/docs/
 
 .idea/
 .vscode/

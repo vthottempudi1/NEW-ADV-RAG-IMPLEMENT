@@ -27,6 +27,10 @@ class GraphState(TypedDict, total=False):
 
     rag_cache_hit: bool
     raw_answer: str
+    rag_answer: str
+    rag_sources: list[str]
+    rag_confidence: float
+    rag_metadata: dict
 
     reflection: ReflectionResult
     reflection_iterations: int

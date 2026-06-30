@@ -1,15 +1,32 @@
 import datetime
 import decimal
 import json
-import re
 import uuid
 from typing import Any
 
 import psycopg2
+from sqlglot import exp, parse
+from sqlglot.errors import ParseError
 
 from app.config import settings
 from app.services.llm_service import generate
 from app.services.query_cache_service import query_cache
+
+
+_FORBIDDEN_SQL_NODES = (
+    exp.Alter,
+    exp.Command,
+    exp.Copy,
+    exp.Create,
+    exp.Delete,
+    exp.Drop,
+    exp.Grant,
+    exp.Insert,
+    exp.Into,
+    exp.Merge,
+    exp.Revoke,
+    exp.Update,
+)
 
 
 def _serialize_value(value: Any) -> Any:
@@ -35,23 +52,24 @@ def _serialize_row(row: dict[str, Any]) -> dict[str, Any]:
 
 
 def is_select_only(sql: str) -> bool:
-    cleaned = sql.strip().lower()
-    if not cleaned.startswith("select"):
+    cleaned = sql.strip()
+    if not cleaned:
         return False
 
-    forbidden = [
-        "insert",
-        "update",
-        "delete",
-        "drop",
-        "alter",
-        "create",
-        "truncate",
-        "grant",
-        "revoke",
-    ]
-    for keyword in forbidden:
-        if re.search(rf"\b{keyword}\b", cleaned):
+    try:
+        statements = parse(cleaned, read="postgres")
+    except ParseError:
+        return False
+
+    if len(statements) != 1:
+        return False
+
+    statement = statements[0]
+    if not isinstance(statement, exp.Query):
+        return False
+
+    for forbidden in _FORBIDDEN_SQL_NODES:
+        if statement.find(forbidden):
             return False
 
     return True

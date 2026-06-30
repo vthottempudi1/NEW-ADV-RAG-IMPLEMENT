@@ -1,5 +1,4 @@
 from app.core import graph as graph_module
-from app.models import ChatResponse, ResponseMetadata, RetrievedChunkPreview
 from app.services.router_service import classify_intent
 
 
@@ -9,33 +8,6 @@ def test_classify_intent_returns_hybrid_for_sql_plus_document_question():
 
 
 def test_run_hybrid_combines_rag_and_sql_outputs(monkeypatch):
-    def fake_run_rag(*args, **kwargs):
-        return ChatResponse(
-            answer="The roadmap focuses on AI-for-chemistry roles.",
-            sources=["roadmap.pdf"],
-            confidence=0.72,
-            metadata=ResponseMetadata(
-                route="rag",
-                retrieved_chunks=[
-                    RetrievedChunkPreview(
-                        text="AI for chemistry roadmap with target roles and phases.",
-                        source="roadmap.pdf",
-                        score=0.91,
-                        retrieval_score=0.91,
-                    )
-                ],
-                reflection_iterations=1,
-                reflection_score=0.8,
-                refined_question="Summarize the roadmap and user count.",
-            ),
-        )
-
-    monkeypatch.setattr(graph_module, "run_rag", fake_run_rag)
-    monkeypatch.setattr(
-        graph_module.sql_service,
-        "generate_sql",
-        lambda question: {"sql": "select count(*) as total_users from users"},
-    )
     monkeypatch.setattr(
         graph_module.sql_service,
         "execute_sql",
@@ -52,13 +24,22 @@ def test_run_hybrid_combines_rag_and_sql_outputs(monkeypatch):
     result = graph_module.run_hybrid(
         {
             "question": "How many users are there and what does the roadmap document say about AI roles?",
-            "flags": {
-                "top_k": 5,
-                "search_mode": "hybrid",
-                "enable_rerank": True,
-                "enable_hyde": False,
-                "enable_crag": False,
-                "enable_self_reflective": True,
+            "sql_approved": True,
+            "generated_sql": "select count(*) as total_users from users",
+            "rag_sources": ["roadmap.pdf"],
+            "rag_metadata": {
+                "retrieved_chunks": [
+                    {
+                        "text": "AI for chemistry roadmap with target roles and phases.",
+                        "source": "roadmap.pdf",
+                        "score": 0.91,
+                        "retrieval_score": 0.91,
+                        "rerank_score": None,
+                    }
+                ],
+                "reflection_iterations": 1,
+                "reflection_score": 0.8,
+                "refined_question": "Summarize the roadmap and user count.",
             },
         }
     )

@@ -1,4 +1,19 @@
+name: new-adv-rag-implement
+
 services:
+  app:
+    build: .
+    depends_on:
+      - postgres
+      - qdrant
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/adv_rag
+      QDRANT_URL: http://qdrant:6333
+    ports:
+      - "8003:8000"
+
   postgres:
     image: postgres:16
     environment:
