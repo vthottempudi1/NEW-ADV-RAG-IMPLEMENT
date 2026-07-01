@@ -1,4 +1,5 @@
 import re
+from statistics import mean
 
 from app.config import settings
 from app.models import ChatResponse, ResponseMetadata, RetrievedChunkPreview
@@ -35,6 +36,66 @@ _TROUBLESHOOTING_ALIASES = {
     "oomkilled": ("oom", "out of memory", "eviction"),
     "crashloopbackoff": ("restart", "container restart", "backoff"),
 }
+
+
+def _normalize_confidence_signal(score: float | None) -> float:
+    if score is None:
+        return 0.0
+
+    value = float(score)
+    if value <= 0:
+        return 0.0
+    if value <= 0.25:
+        return min(value / 0.25, 1.0)
+    if value <= 1.0:
+        return 0.7 + (0.3 * ((value - 0.25) / 0.75))
+    return 1.0
+
+
+def _normalize_reflection_score(score: float | None) -> float:
+    if score is None:
+        return 0.0
+
+    value = float(score)
+    if value <= 0:
+        return 0.0
+    if value <= 1.0:
+        return value
+    return min(value / 5.0, 1.0)
+
+
+def _calculate_confidence(
+    *,
+    chunks: list,
+    top_k: int,
+    enable_crag: bool,
+    crag_score: float | None,
+    reflection_score: float | None,
+) -> float:
+    if not chunks:
+        return 0.0
+
+    effective_top_k = max(top_k, 1)
+    coverage = min(len(chunks) / effective_top_k, 1.0)
+
+    normalized_scores = [_normalize_confidence_signal(chunk.score) for chunk in chunks]
+    top_quality = normalized_scores[0]
+    avg_quality = mean(normalized_scores[: min(3, len(normalized_scores))])
+
+    confidence = (
+        0.15
+        + (0.35 * top_quality)
+        + (0.25 * avg_quality)
+        + (0.15 * coverage)
+    )
+
+    if enable_crag and crag_score is not None:
+        confidence = (0.8 * confidence) + (0.2 * max(0.0, min(float(crag_score), 1.0)))
+
+    if reflection_score is not None:
+        confidence = (0.9 * confidence) + (0.1 * _normalize_reflection_score(reflection_score))
+
+    return max(0.0, min(confidence, 1.0))
 
 
 def _cache_context(
@@ -237,16 +298,24 @@ def _run_rag_impl(
         enable_crag
         and not used_web_fallback
         and crag_evaluation.relevance_score < settings.crag_relevance_threshold
-    ):
+        ):
         uncertainty_prefix = (
             "I may not have enough reliable context to answer this fully. "
             "Based on the available information:\n\n"
         )
 
+    confidence = _calculate_confidence(
+        chunks=chunks,
+        top_k=top_k,
+        enable_crag=enable_crag,
+        crag_score=crag_evaluation.relevance_score if enable_crag else None,
+        reflection_score=reflection_score,
+    )
+
     response = ChatResponse(
         answer=uncertainty_prefix + answer,
         sources=list({chunk.source for chunk in chunks}),
-        confidence=0.7 if chunks else 0.0,
+        confidence=confidence,
         cache_hit=False,
         metadata=ResponseMetadata(
             route="rag",
