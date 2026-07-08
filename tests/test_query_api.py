@@ -1,3 +1,4 @@
+import pytest
 from fastapi.testclient import TestClient
 from langgraph.types import StateSnapshot
 
@@ -12,6 +13,32 @@ client = TestClient(app)
 
 def _login() -> str:
     return create_access_token("testuser@example.com", is_admin=True)
+
+
+@pytest.fixture(autouse=True)
+def _fake_pending_sql_store(monkeypatch):
+    entries: dict[str, dict] = {}
+
+    def _save_pending(**kwargs):
+        entry = dict(kwargs)
+        entry["status"] = "pending"
+        entries[kwargs["query_id"]] = entry
+
+    def _get_pending(query_id: str):
+        entry = entries.get(query_id)
+        if not entry or entry.get("status") != "pending":
+            return None
+        return dict(entry)
+
+    def _resolve(query_id: str, *, status: str):
+        entry = entries.get(query_id)
+        if entry:
+            entry["status"] = status
+
+    monkeypatch.setattr(query_api.pending_sql_store, "save_pending", _save_pending)
+    monkeypatch.setattr(query_api.pending_sql_store, "get_pending", _get_pending)
+    monkeypatch.setattr(query_api.pending_sql_store, "resolve", _resolve)
+    return entries
 
 
 def test_query_blocked_without_token():
