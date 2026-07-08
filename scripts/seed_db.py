@@ -130,13 +130,13 @@ def seed_docs(
     t0 = time.time()
 
     for idx, src in enumerate(true_files, start=1):
-        _ingest_one(service, src, idx, total, counters)
+        _ingest_one(service, src, idx, total, counters, force_reindex=wipe)
         if counters["chunks"] > 0 and idx == len(true_files):
             logger.info("All {} true (signal) files done", len(true_files))
 
     for jdx, src in enumerate(noisy_files, start=1):
         idx = len(true_files) + jdx
-        _ingest_one(service, src, idx, total, counters)
+        _ingest_one(service, src, idx, total, counters, force_reindex=wipe)
 
     elapsed = time.time() - t0
     logger.info("=" * 60)
@@ -150,11 +150,19 @@ def seed_docs(
     return counters
 
 
-def _ingest_one(service, src: Path, idx: int, total: int, counters: dict) -> None:
+def _ingest_one(
+    service,
+    src: Path,
+    idx: int,
+    total: int,
+    counters: dict,
+    *,
+    force_reindex: bool = False,
+) -> None:
     label = "true" if "true_data" in str(src) else "noisy"
     logger.info("[{}/{}] start {} {}", idx, total, label, src.name)
     try:
-        result = service.ingest_file(str(src))
+        result = service.ingest_file(str(src), force_reindex=force_reindex)
         status = result.get("status", "unknown")
 
         if status == "indexed":

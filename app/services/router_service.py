@@ -1,20 +1,47 @@
+import re
 from typing import Literal
 
 
 Intent = Literal["sql", "rag", "hybrid"]
 
 
-_SQL_HINTS = (
-    "how many",
-    "count",
-    "total",
-    "average",
-    "avg",
-    "list all",
-    "show all",
-    "show users",
-    "which user",
-    "which users",
+_SQL_HINT_PATTERNS = (
+    r"\bhow many\b",
+    r"\bcount\b",
+    r"\btotal\b",
+    r"\baverage\b",
+    r"\bavg\b",
+    r"\bmost\b",
+    r"\bhighest\b",
+    r"\bleast\b",
+    r"\blist all\b",
+    r"\bshow all\b",
+    r"\bshow users\b",
+    r"\bwhich\b",
+    r"\bshow me details\b",
+    r"\bdetails for\b",
+)
+
+_SQL_ENTITY_PATTERNS = (
+    r"\buser(?:s)?\b",
+    r"\bincident(?:s)?\b",
+    r"\balert(?:s)?\b",
+    r"\bon-?call\b",
+    r"\bengineer(?:s)?\b",
+    r"\bpaged?\b",
+    r"\bpages\b",
+    r"\bcluster(?:s)?\b",
+    r"\bsla\b",
+    r"\bbreached\b",
+    r"\bunresolved\b",
+    r"\bresolved\b",
+    r"\bopen\b",
+    r"\bclosed\b",
+    r"\bmonth\b",
+    r"\bquarter\b",
+    r"\bweek\b",
+    r"\btoday\b",
+    r"\byesterday\b",
 )
 
 _RAG_HINTS = (
@@ -42,6 +69,12 @@ _RAG_HINTS = (
     "what does our",
     "what is our",
     "say about",
+    "best practice",
+    "best practices",
+    "rbac",
+    "service account",
+    "service accounts",
+    "kubernetes",
 )
 
 _HYBRID_CONNECTORS = (
@@ -52,11 +85,16 @@ _HYBRID_CONNECTORS = (
     " based on our ",
 )
 
+_SQL_HINT_REGEXES = tuple(re.compile(pattern) for pattern in _SQL_HINT_PATTERNS)
+_SQL_ENTITY_REGEXES = tuple(re.compile(pattern) for pattern in _SQL_ENTITY_PATTERNS)
+
 
 def classify_intent(question: str) -> Intent:
     lowered = question.strip().lower()
 
-    has_sql = any(hint in lowered for hint in _SQL_HINTS)
+    has_sql_keyword = any(regex.search(lowered) for regex in _SQL_HINT_REGEXES)
+    has_sql_entity = any(regex.search(lowered) for regex in _SQL_ENTITY_REGEXES)
+    has_sql = has_sql_keyword and has_sql_entity
     has_rag = any(hint in lowered for hint in _RAG_HINTS)
     has_hybrid_connector = any(hint in lowered for hint in _HYBRID_CONNECTORS)
 

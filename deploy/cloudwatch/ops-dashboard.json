@@ -1,0 +1,256 @@
+{
+  "start": "-PT3H",
+  "periodOverride": "inherit",
+  "widgets": [
+    {
+      "type": "alarm",
+      "x": 0,
+      "y": 0,
+      "width": 24,
+      "height": 3,
+      "properties": {
+        "title": "Manual Alarm Status",
+        "alarms": [
+          "arn:aws:cloudwatch:us-east-2:785282204559:alarm:backend-alb-5xx",
+          "arn:aws:cloudwatch:us-east-2:785282204559:alarm:backend-alb-response-time-high",
+          "arn:aws:cloudwatch:us-east-2:785282204559:alarm:backend-ecs-cpu-high",
+          "arn:aws:cloudwatch:us-east-2:785282204559:alarm:backend-ecs-memory-high",
+          "arn:aws:cloudwatch:us-east-2:785282204559:alarm:rds-connections-high",
+          "arn:aws:cloudwatch:us-east-2:785282204559:alarm:rds-cpu-high",
+          "arn:aws:cloudwatch:us-east-2:785282204559:alarm:streamlit-ecs-cpu-high"
+        ],
+        "states": [
+          "ALARM",
+          "INSUFFICIENT_DATA",
+          "OK"
+        ],
+        "sortBy": "stateUpdatedTimestamp"
+      }
+    },
+    {
+      "type": "metric",
+      "x": 0,
+      "y": 3,
+      "width": 8,
+      "height": 4,
+      "properties": {
+        "title": "Backend ALB Target Response Time",
+        "view": "timeSeries",
+        "stacked": false,
+        "region": "us-east-2",
+        "stat": "Average",
+        "period": 60,
+        "liveData": true,
+        "metrics": [
+          [
+            "AWS/ApplicationELB",
+            "TargetResponseTime",
+            "LoadBalancer",
+            "app/backend-alb/da9cc007463dd513",
+            "TargetGroup",
+            "targetgroup/backend-tg/62f3f696a23a5aff",
+            {
+              "label": "Response Time (s)"
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "type": "metric",
+      "x": 8,
+      "y": 3,
+      "width": 8,
+      "height": 4,
+      "properties": {
+        "title": "Backend ECS CPU and Memory",
+        "view": "timeSeries",
+        "stacked": false,
+        "region": "us-east-2",
+        "stat": "Average",
+        "period": 60,
+        "liveData": true,
+        "metrics": [
+          [
+            "AWS/ECS",
+            "CPUUtilization",
+            "ClusterName",
+            "new-adv-rag-cluster",
+            "ServiceName",
+            "backend-service",
+            {
+              "label": "CPU %"
+            }
+          ],
+          [
+            ".",
+            "MemoryUtilization",
+            ".",
+            ".",
+            ".",
+            ".",
+            {
+              "label": "Memory %"
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "type": "metric",
+      "x": 16,
+      "y": 3,
+      "width": 8,
+      "height": 4,
+      "properties": {
+        "title": "RDS CPU and Connections",
+        "view": "timeSeries",
+        "stacked": false,
+        "region": "us-east-2",
+        "stat": "Average",
+        "period": 60,
+        "liveData": true,
+        "metrics": [
+          [
+            "AWS/RDS",
+            "CPUUtilization",
+            "DBInstanceIdentifier",
+            "new-adv-rag-postgres",
+            {
+              "label": "CPU %"
+            }
+          ],
+          [
+            ".",
+            "DatabaseConnections",
+            ".",
+            ".",
+            {
+              "label": "Connections",
+              "yAxis": "right"
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "type": "metric",
+      "x": 0,
+      "y": 7,
+      "width": 6,
+      "height": 4,
+      "properties": {
+        "title": "Backend ALB 5XX and Requests",
+        "view": "timeSeries",
+        "stacked": false,
+        "region": "us-east-2",
+        "stat": "Sum",
+        "period": 60,
+        "liveData": true,
+        "metrics": [
+          [
+            "AWS/ApplicationELB",
+            "HTTPCode_ELB_5XX_Count",
+            "LoadBalancer",
+            "app/backend-alb/da9cc007463dd513",
+            {
+              "label": "ALB 5XX"
+            }
+          ],
+          [
+            ".",
+            "RequestCount",
+            ".",
+            ".",
+            {
+              "label": "Requests",
+              "yAxis": "right"
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "type": "metric",
+      "x": 6,
+      "y": 7,
+      "width": 6,
+      "height": 4,
+      "properties": {
+        "title": "Backend Target Group Health",
+        "view": "timeSeries",
+        "stacked": false,
+        "region": "us-east-2",
+        "stat": "Average",
+        "period": 60,
+        "liveData": true,
+        "metrics": [
+          [
+            "AWS/ApplicationELB",
+            "HealthyHostCount",
+            "TargetGroup",
+            "targetgroup/backend-tg/62f3f696a23a5aff",
+            "LoadBalancer",
+            "app/backend-alb/da9cc007463dd513",
+            {
+              "label": "Healthy"
+            }
+          ],
+          [
+            ".",
+            "UnHealthyHostCount",
+            ".",
+            ".",
+            ".",
+            ".",
+            {
+              "label": "Unhealthy"
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "type": "metric",
+      "x": 12,
+      "y": 7,
+      "width": 6,
+      "height": 4,
+      "properties": {
+        "title": "Streamlit ECS CPU",
+        "view": "timeSeries",
+        "stacked": false,
+        "region": "us-east-2",
+        "stat": "Average",
+        "period": 60,
+        "liveData": true,
+        "metrics": [
+          [
+            "AWS/ECS",
+            "CPUUtilization",
+            "ClusterName",
+            "new-adv-rag-cluster",
+            "ServiceName",
+            "streamlit-service",
+            {
+              "label": "CPU %"
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "type": "log",
+      "x": 18,
+      "y": 7,
+      "width": 6,
+      "height": 4,
+      "properties": {
+        "title": "Backend Request Logs",
+        "region": "us-east-2",
+        "view": "table",
+        "query": "SOURCE '/ecs/new-adv-rag-backend' | fields @timestamp, @message | filter @message like /POST \\/auth\\/login/ or @message like /POST \\/query/ or @message like /POST \\/query\\/sql\\/execute/ or @message like /ERROR/ or @message like /Exception/ or @message like /Traceback/ or @message like /WARN/ | sort @timestamp desc | limit 20"
+      }
+    }
+  ]
+}

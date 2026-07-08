@@ -12,6 +12,7 @@ class GraphState(TypedDict, total=False):
     intent: str
     generated_sql: str
     sql_explanation: str
+    sql_generation_cost_usd: float
     sql_approved: bool
     sql_rows: list[dict]
     sql_cache_hit: bool

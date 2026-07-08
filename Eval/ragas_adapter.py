@@ -206,6 +206,7 @@ def run(rows: list[dict], scorer: str = "llm") -> list[dict]:
                 "context_precision": _heuristic_score_context_precision(q, ctxs),
                 "context_recall": _heuristic_score_context_recall(gt, ctxs),
             }
+            scoring_backend = "heuristic"
         else:
             metrics = {
                 "faithfulness": _score_faithfulness(ans, ctxs),
@@ -214,9 +215,33 @@ def run(rows: list[dict], scorer: str = "llm") -> list[dict]:
                 "context_recall": _score_context_recall(gt, ctxs),
             }
 
+            # If the LLM scorer silently collapses to all-zero metrics for a row
+            # with a non-empty answer and contexts, treat that as a scoring failure
+            # and fall back to the deterministic heuristic scorer.
+            if (
+                ans.strip()
+                and ctxs
+                and all(float(metrics.get(name, 0.0)) == 0.0 for name in (
+                    "faithfulness",
+                    "answer_relevancy",
+                    "context_precision",
+                    "context_recall",
+                ))
+            ):
+                metrics = {
+                    "faithfulness": _heuristic_score_faithfulness(ans, ctxs),
+                    "answer_relevancy": _heuristic_score_answer_relevancy(q, ans),
+                    "context_precision": _heuristic_score_context_precision(q, ctxs),
+                    "context_recall": _heuristic_score_context_recall(gt, ctxs),
+                }
+                scoring_backend = "heuristic_fallback"
+            else:
+                scoring_backend = "llm"
+
         results.append({
             **row,
             **metrics,
+            "scoring_backend": scoring_backend,
         })
     return results
 

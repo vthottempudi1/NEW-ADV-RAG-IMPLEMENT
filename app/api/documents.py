@@ -19,5 +19,13 @@ async def upload_document(
     if not content:
         raise HTTPException(status_code=400, detail="Uploaded file is empty")
 
-    service = IngestionService()
-    return service.ingest_bytes(file.filename, content)
+    try:
+        service = IngestionService()
+        return service.ingest_bytes(file.filename, content)
+    except HTTPException:
+        raise
+    except Exception as exc:
+        raise HTTPException(
+            status_code=500,
+            detail=f"upload_failed: {exc.__class__.__name__}: {exc}",
+        ) from exc

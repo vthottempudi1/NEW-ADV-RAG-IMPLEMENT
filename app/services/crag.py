@@ -5,7 +5,7 @@ from collections.abc import Callable
 
 from app.config import settings
 from app.models import CRAGEvaluation, RetrievedChunk
-from app.services.llm_service import generate
+from app.services.llm_service import generate_with_json
 from app.services.web_search import search_web
 
 
@@ -24,24 +24,27 @@ def grade_chunks(question: str, chunks: list[RetrievedChunk]) -> CRAGEvaluation:
     )
 
     system = (
-        "You are a retrieval grader. "
-        "Return only valid JSON with keys: relevance_score, relevance_label, confidence, reasoning. "
-        "relevance_score must be between 0.0 and 1.0. "
-        "Use labels: highly_relevant, somewhat_relevant, irrelevant."
+        "You are evaluating whether retrieved documents are relevant to answering a user question. "
+        "Be strict and grounded. Return only valid JSON with keys: relevance_score, relevance_label, "
+        "confidence, reasoning. relevance_score must be between 0.0 and 1.0. "
+        "Use only these labels: highly_relevant, somewhat_relevant, irrelevant."
     )
-    user = f"Question: {question}\n\nContext:\n{context}"
+    user = (
+        f"User Question: {question}\n\n"
+        f"Retrieved Context:\n{context}\n\n"
+        "Scoring guide:\n"
+        "- 0.0 to 0.3: irrelevant\n"
+        "- 0.3 to 0.7: somewhat_relevant\n"
+        "- 0.7 to 1.0: highly_relevant\n"
+    )
 
-    result = generate(
+    result = generate_with_json(
         system_prompt=system,
         user_message=user,
         model=settings.llm_model_grader,
         temperature=0.0,
     )
-    text = result["text"].strip()
-    if text.startswith("```"):
-        text = "\n".join(text.splitlines()[1:-1]).strip()
-
-    data = json.loads(text)
+    data = json.loads(result["text"])
     return CRAGEvaluation(
         relevance_score=float(data.get("relevance_score", 0.0)),
         relevance_label=str(data.get("relevance_label", "")),
@@ -55,6 +58,7 @@ def crag_pipeline(
     chunks: list[RetrievedChunk],
     enable_crag: bool = True,
     local_retry_fn: Callable[[], list[RetrievedChunk]] | None = None,
+    allow_web_fallback: bool = True,
 ) -> tuple[list[RetrievedChunk], CRAGEvaluation, bool]:
     if not enable_crag:
         return (
@@ -82,7 +86,7 @@ def crag_pipeline(
         if retry_eval.relevance_score > evaluation.relevance_score:
             return retried_chunks, retry_eval, False
 
-    if evaluation.relevance_score < settings.crag_ambiguous_threshold:
+    if allow_web_fallback and evaluation.relevance_score < settings.crag_ambiguous_threshold:
         try:
             web_chunks = search_web(question)
             if web_chunks:

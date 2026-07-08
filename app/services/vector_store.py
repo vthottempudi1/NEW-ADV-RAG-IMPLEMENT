@@ -100,7 +100,13 @@ def reset_sparse_index() -> None:
 
 
 def get_client() -> QdrantClient:
-    return QdrantClient(url=settings.qdrant_url, timeout=30)
+    kwargs = {
+        "url": settings.qdrant_url,
+        "timeout": 30,
+    }
+    if settings.qdrant_api_key:
+        kwargs["api_key"] = settings.qdrant_api_key
+    return QdrantClient(**kwargs)
 
 
 def ensure_collection() -> None:

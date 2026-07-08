@@ -14,7 +14,15 @@ logger = logging.getLogger(__name__)
 
 
 class QueryCacheService:
-    _TIERS = ("intent", "rag_answer", "sql_gen", "sql_result", "embedding")
+    _TIERS = ("intent", "rag_answer", "sql_gen", "sql_result", "approved_answer", "embedding")
+    _REDIS_PATTERNS = (
+        "intent:*",
+        "rag_answer:*",
+        "sql_gen:*",
+        "sql_result:v1:*",
+        "approved_answer:*",
+        "embedding:*",
+    )
 
     def __init__(self):
         self._redis_client: Any | None = self._build_redis_client()
@@ -60,6 +68,19 @@ class QueryCacheService:
 
     def embedding_key(self, text: str) -> str:
         return self._key("embedding", text)
+
+    def approved_answer_key(
+        self,
+        route: str,
+        question: str,
+        cache_context: dict[str, Any] | None = None,
+    ) -> str:
+        raw: dict[str, Any] = {
+            "route": route.strip().lower(),
+            "question": question.strip(),
+            "context": cache_context or {},
+        }
+        return self._key("approved_answer", json.dumps(raw, sort_keys=True))
 
     def _record(self, tier: str, field: str) -> None:
         with self._lock:
@@ -211,6 +232,50 @@ class QueryCacheService:
     def clear_sql_result(self, sql: str) -> dict[str, int | bool]:
         return self._delete("sql_result", self.sql_result_key(sql))
 
+    def get_approved_answer(
+        self,
+        route: str,
+        question: str,
+        cache_context: dict[str, Any] | None = None,
+    ) -> dict[str, Any] | None:
+        value = self._get(
+            "approved_answer",
+            self.approved_answer_key(route, question, cache_context),
+        )
+        if value is None:
+            return None
+        try:
+            return json.loads(value)
+        except json.JSONDecodeError:
+            logger.exception("Invalid approved_answer cache payload")
+            return None
+
+    def set_approved_answer(
+        self,
+        route: str,
+        question: str,
+        answer_payload: dict[str, Any],
+        cache_context: dict[str, Any] | None = None,
+        ttl_seconds: int = 900,
+    ) -> None:
+        self._set(
+            "approved_answer",
+            self.approved_answer_key(route, question, cache_context),
+            json.dumps(answer_payload),
+            ttl_seconds,
+        )
+
+    def clear_approved_answer(
+        self,
+        route: str,
+        question: str,
+        cache_context: dict[str, Any] | None = None,
+    ) -> dict[str, int | bool]:
+        return self._delete(
+            "approved_answer",
+            self.approved_answer_key(route, question, cache_context),
+        )
+
     def get_embedding(self, text: str) -> list[float] | None:
         value = self._get("embedding", self.embedding_key(text))
         if value is None:
@@ -252,6 +317,22 @@ class QueryCacheService:
 
     def clear(self, reset_stats: bool = True) -> list[str]:
         cleared: list[str] = []
+
+        if self._redis_client is not None:
+            try:
+                total_deleted = 0
+                for pattern in self._REDIS_PATTERNS:
+                    cursor = 0
+                    while True:
+                        cursor, keys = self._redis_client.scan(cursor, match=pattern, count=200)
+                        if keys:
+                            total_deleted += int(self._redis_client.delete(*keys) or 0)
+                        if cursor == 0:
+                            break
+                cleared.append(f"redis ({total_deleted} entries)")
+            except Exception as exc:
+                logger.exception("Redis clear-all failed")
+                self._disable_redis("Redis clear-all failure", exc)
 
         with self._lock:
             count = len(self._memory_store)

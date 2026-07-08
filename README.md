@@ -2,7 +2,7 @@
 
 # New Advanced RAG Implement
 
-Production-minded enterprise RAG backend with hybrid retrieval, SQL routing, human-in-the-loop SQL approval, `sqlglot`-based SQL safety, evaluation workflows, and GitHub Actions CI.
+Production-minded enterprise RAG backend with hybrid retrieval, SQL routing, human-in-the-loop SQL approval, `sqlglot`-based SQL safety, AWS deployment, evaluation workflows, and GitHub Actions CI.
 
 ![Python](https://img.shields.io/badge/python-3.12-blue)
 ![FastAPI](https://img.shields.io/badge/FastAPI-backend-009688)
@@ -15,7 +15,7 @@ Production-minded enterprise RAG backend with hybrid retrieval, SQL routing, hum
 
 </div>
 
-Built with FastAPI, PostgreSQL, Qdrant, Upstash Redis with in-memory fallback, LangGraph, OpenAI, Docker, and Pytest.
+Built with FastAPI, PostgreSQL, Qdrant, Upstash Redis with in-memory fallback, LangGraph, OpenAI, Docker, Pytest, ECS Fargate, Route 53, ACM, and CloudWatch.
 
 This repository is designed to demonstrate the kind of engineering depth hiring managers usually look for in strong GenAI backend projects:
 
@@ -45,12 +45,16 @@ That makes it much closer to a real enterprise AI backend than a basic chatbot d
 ## Core Highlights
 
 - Advanced retrieval stack: dense, sparse, hybrid, HyDE, reranking, CRAG, and Self-Reflective RAG (SRAG)
+- Dual retrieval experience: `Manual` mode for feature demos and `Auto` mode for backend-selected production retrieval
 - Human-in-the-loop SQL: LangGraph interrupt flow pauses SQL execution until approved
 - Safer Text-to-SQL: `sqlglot` AST validation allows only safe read-only query shapes
 - 9-layer security baseline: validation, auth, rate limits, token budgets, input restructuring, prompt-injection checks, moderation/redaction, hardened prompt/context isolation, and output validation
 - 5-tier query cache: intent, RAG answer, SQL generation, SQL result, and embeddings
 - Duplicate-safe ingestion: SHA-256 content hashing prevents re-indexing the same document
 - Admin observability: health, cache stats, cache clear, budget stats, runtime info, and rate-limit inspection
+- Production deployment: HTTPS custom domains, ECS Fargate services, ALBs, Route 53, ACM, S3, RDS, and Qdrant Cloud
+- Reliability controls: ECS autoscaling plus CloudWatch alarms for backend, Streamlit, ALB, and RDS
+- Saved-cost telemetry: estimated `cost_saved`, `llm_cost_saved`, and `infra_cost_saved` on cache hits
 - Evaluation-ready: fixture-safe eval pipeline plus real corpus testing workflows
 - CI passing: GitHub Actions runs `pytest` plus eval-smoke matrix jobs
 
@@ -66,6 +70,11 @@ That makes it much closer to a real enterprise AI backend than a basic chatbot d
   Example: "How many P1 incidents breached SLA last month and what is our escalation policy?"
 
 That third class is the important one. It shows the system can combine operational data with document-grounded guidance in one answer.
+
+The deployed application also supports two operator-facing modes:
+
+- `Manual`: useful for demos when you want to explicitly show `hybrid`, `dense`, `HyDE`, `CRAG`, or `SRAG`
+- `Auto`: useful for production-style behavior where the backend selects the retrieval strategy based on question shape
 
 ## Architecture
 

@@ -1,0 +1,50 @@
+{
+  "family": "new-adv-rag-qdrant",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "1024",
+  "memory": "4096",
+  "executionRoleArn": "arn:aws:iam::<account-id>:role/ecsTaskExecutionRole",
+  "taskRoleArn": "arn:aws:iam::<account-id>:role/new-adv-rag-qdrant-task-role",
+  "containerDefinitions": [
+    {
+      "name": "qdrant",
+      "image": "qdrant/qdrant:latest",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 6333,
+          "protocol": "tcp"
+        }
+      ],
+      "mountPoints": [
+        {
+          "sourceVolume": "qdrant-storage",
+          "containerPath": "/qdrant/storage",
+          "readOnly": false
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/new-adv-rag-qdrant",
+          "awslogs-region": "<region>",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+      "healthCheck": {
+        "command": ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://127.0.0.1:6333/collections').read()\""],
+        "interval": 30,
+        "timeout": 5,
+        "retries": 3,
+        "startPeriod": 30
+      }
+    }
+  ],
+  "volumes": [
+    {
+      "name": "qdrant-storage",
+      "configuredAtLaunch": true
+    }
+  ]
+}

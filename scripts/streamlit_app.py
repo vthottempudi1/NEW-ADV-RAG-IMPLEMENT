@@ -1,4 +1,6 @@
 import json
+import os
+from urllib.parse import urlparse
 from typing import Any
 
 import httpx
@@ -6,11 +8,11 @@ import jwt
 import streamlit as st
 
 
-DEFAULT_API_BASE = "http://localhost:8003"
+DEFAULT_API_BASE = os.getenv("API_BASE_URL", "http://localhost:8004")
 
 USE_CASES: dict[str, dict[str, Any]] = {
     "Hybrid Default": {
-        "question": "How many P1 incidents breached SLA last month and what is our escalation policy?",
+        "question": "How many P1 incidents were resolved last quarter and what does our escalation policy say for P1 incidents?",
         "search_mode": "hybrid",
         "enable_rerank": True,
         "enable_hyde": False,
@@ -60,27 +62,39 @@ USE_CASES: dict[str, dict[str, Any]] = {
         "label": "Semantic retrieval expansion",
     },
     "SRAG Reflection": {
-        "question": "how do i scale",
+        "question": "My Kubernetes app keeps restarting, and I am not sure whether the root cause is the liveness probe, OOMKilled, or a bad image. How should I troubleshoot it step by step?",
         "search_mode": "hybrid",
         "enable_rerank": True,
         "enable_hyde": False,
-        "enable_crag": False,
+        "enable_crag": True,
         "enable_self_reflective": True,
         "top_k": 5,
-        "label": "Reflection / regeneration",
+        "label": "Ambiguous troubleshooting with self-reflection",
     },
 }
 
 
 def _init_state() -> None:
     st.session_state.setdefault("api_base", DEFAULT_API_BASE)
+    current_api_base = str(st.session_state.get("api_base", "")).strip()
+    if DEFAULT_API_BASE and (
+        not current_api_base
+        or current_api_base.startswith("http://localhost:")
+        or current_api_base.startswith("https://localhost:")
+        or current_api_base.startswith("http://127.0.0.1:")
+        or current_api_base.startswith("https://127.0.0.1:")
+    ):
+        st.session_state["api_base"] = DEFAULT_API_BASE
     st.session_state.setdefault("token", "")
     st.session_state.setdefault("is_admin", False)
     st.session_state.setdefault("username", "")
     st.session_state.setdefault("last_query_response", None)
     st.session_state.setdefault("pending_sql", None)
     st.session_state.setdefault("query_history", [])
+    st.session_state.setdefault("conversation_context", [])
     st.session_state.setdefault("selected_use_case", "Hybrid Default")
+    st.session_state.setdefault("query_ui_mode", "Auto")
+    st.session_state.setdefault("backend_health", None)
 
 
 def _inject_styles() -> None:
@@ -163,7 +177,7 @@ def _inject_styles() -> None:
         }
         .metric-strip {
             display: grid;
-            grid-template-columns: repeat(5, minmax(0, 1fr));
+            grid-template-columns: repeat(7, minmax(0, 1fr));
             gap: 12px;
             margin-top: 0.75rem;
         }
@@ -292,18 +306,56 @@ def _request(
 ) -> tuple[int, Any]:
     url = st.session_state["api_base"].rstrip("/") + path
     headers = _auth_headers()
-    with httpx.Client(timeout=timeout) as client:
-        response = client.request(
-            method,
-            url,
-            json=json_body,
-            files=files,
-            headers=headers,
-        )
+    try:
+        with httpx.Client(timeout=timeout) as client:
+            response = client.request(
+                method,
+                url,
+                json=json_body,
+                files=files,
+                headers=headers,
+            )
+    except httpx.TimeoutException as exc:
+        return 0, {"detail": f"upstream_timeout: backend request timed out. {exc}"}
+    except httpx.HTTPError as exc:
+        return 0, {"detail": f"backend_connection_failed: {exc.__class__.__name__}: {exc}"}
     try:
         return response.status_code, response.json()
     except Exception:
         return response.status_code, response.text
+
+
+def _error_text(payload: Any) -> str:
+    if isinstance(payload, dict):
+        detail = payload.get("detail")
+        if isinstance(detail, str):
+            suffix_parts = []
+            if payload.get("status_code") is not None:
+                suffix_parts.append(f"status={payload['status_code']}")
+            if payload.get("path"):
+                suffix_parts.append(f"path={payload['path']}")
+            if payload.get("method"):
+                suffix_parts.append(f"method={payload['method']}")
+            if payload.get("request_id"):
+                suffix_parts.append(f"request_id={payload['request_id']}")
+            if suffix_parts:
+                return f"{detail} ({', '.join(suffix_parts)})"
+            return detail
+        return json.dumps(payload, indent=2, default=str)
+    if isinstance(payload, str):
+        lowered = payload.lower()
+        if "504 gateway time-out" in lowered:
+            return (
+                "gateway_timeout: the load balancer reached the backend, but the "
+                "backend did not finish in time. Check backend logs, database latency, "
+                "or external dependency calls."
+            )
+        if "503 service temporarily unavailable" in lowered:
+            return (
+                "service_unavailable: the load balancer does not currently have a "
+                "healthy backend target."
+            )
+    return str(payload)
 
 
 def _badge(label: str, kind: str = "blue") -> str:
@@ -343,6 +395,76 @@ def _render_health_card(payload: dict[str, Any]) -> None:
     st.sidebar.caption(f"collection: {active_collection}")
 
 
+def _load_backend_health(force: bool = False) -> dict[str, Any] | None:
+    cached = st.session_state.get("backend_health")
+    if cached is not None and not force:
+        return cached
+
+    status, data = _request("GET", "/health", timeout=8.0)
+    if status == 200 and isinstance(data, dict):
+        st.session_state["backend_health"] = data
+        return data
+
+    st.session_state["backend_health"] = {
+        "status": "unreachable",
+        "version": "n/a",
+        "active_collection": "n/a",
+    }
+    return st.session_state["backend_health"]
+
+
+def _environment_label(api_base: str) -> str:
+    lowered = api_base.lower()
+    if "aiscientificlabs.com" in lowered:
+        return "Production"
+    if "localhost" in lowered or "127.0.0.1" in lowered:
+        return "Local"
+    return "Custom"
+
+
+def _display_source_label(source: str) -> tuple[str, str]:
+    raw = str(source or "")
+    parsed = urlparse(raw)
+    if parsed.scheme and parsed.netloc:
+        domain = parsed.netloc.replace("www.", "")
+        path = parsed.path.rstrip("/").split("/")[-1] or parsed.netloc
+        return f"{domain} / {path}", "External"
+
+    compact = raw.replace("__", " / ").replace(".docx", "").replace(".html", "").replace(".txt", "")
+    compact = compact.replace(".pdf", "")
+    return compact, "Corpus"
+
+
+def _render_deployment_info() -> None:
+    health = _load_backend_health()
+    api_base = st.session_state.get("api_base", "")
+    info = {
+        "Environment": _environment_label(api_base),
+        "API Base": api_base,
+        "Backend Health": health.get("status", "unknown") if isinstance(health, dict) else "unknown",
+        "Backend Version": health.get("version", "n/a") if isinstance(health, dict) else "n/a",
+        "Collection": health.get("active_collection", "n/a") if isinstance(health, dict) else "n/a",
+    }
+    cards_html = "".join(
+        f"""
+        <div class="config-item">
+            <div class="config-key">{label}</div>
+            <div class="config-value">{value}</div>
+        </div>
+        """
+        for label, value in info.items()
+    )
+    st.markdown("### Deployment Info")
+    st.markdown(
+        f"""
+        <div class="config-grid">
+            {cards_html}
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
 def _render_sidebar() -> None:
     st.sidebar.markdown("## Control Panel")
     st.session_state["api_base"] = st.sidebar.text_input(
@@ -355,10 +477,11 @@ def _render_sidebar() -> None:
     if st.sidebar.button("Ping Backend", use_container_width=True):
         status, data = _request("GET", "/health")
         if status == 200 and isinstance(data, dict):
+            st.session_state["backend_health"] = data
             _render_health_card(data)
             st.sidebar.success("Backend reachable")
         else:
-            st.sidebar.error(f"Health failed: {data}")
+            st.sidebar.error(f"Health failed: {_error_text(data)}")
 
     st.sidebar.markdown("---")
     st.sidebar.markdown("### Session")
@@ -432,7 +555,7 @@ def _render_auth() -> None:
                 st.success("Login successful")
                 st.rerun()
             else:
-                st.error(f"Login failed: {data}")
+                st.error(f"Login failed: {_error_text(data)}")
 
     with right:
         st.markdown("#### Register")
@@ -451,7 +574,7 @@ def _render_auth() -> None:
                 st.success("Registration successful")
                 st.rerun()
             else:
-                st.error(f"Registration failed: {data}")
+                st.error(f"Registration failed: {_error_text(data)}")
 
 
 def _render_metrics_row(payload: dict[str, Any]) -> None:
@@ -461,6 +584,8 @@ def _render_metrics_row(payload: dict[str, Any]) -> None:
     cache_hit = payload.get("cache_hit", False)
     sources = payload.get("sources", [])
     cost_saved = payload.get("cost_saved", "$0.00")
+    llm_cost_saved = payload.get("llm_cost_saved", "$0.00")
+    infra_cost_saved = payload.get("infra_cost_saved", "$0.00")
     st.markdown(
         f"""
         <div class="metric-strip">
@@ -483,6 +608,14 @@ def _render_metrics_row(payload: dict[str, Any]) -> None:
             <div class="metric-card">
                 <div class="metric-label">Cost Saved</div>
                 <div class="metric-value">{cost_saved}</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">LLM Saved</div>
+                <div class="metric-value">{llm_cost_saved}</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Infra Saved</div>
+                <div class="metric-value">{infra_cost_saved}</div>
             </div>
         </div>
         """,
@@ -550,7 +683,12 @@ def _render_answer_card(payload: dict[str, Any]) -> None:
     with sources_tab:
         if sources:
             for idx, source in enumerate(sources, 1):
-                st.markdown(f"{idx}. `{source}`")
+                label, kind = _display_source_label(source)
+                with st.container(border=True):
+                    st.markdown(f"**{idx}. {label}**")
+                    st.caption(kind)
+                    with st.expander("Raw source", expanded=False):
+                        st.code(str(source))
         else:
             st.info("No sources returned.")
 
@@ -577,6 +715,8 @@ def _render_answer_card(payload: dict[str, Any]) -> None:
             "route": meta.get("route"),
             "cache_hit": payload.get("cache_hit"),
             "cost_saved": payload.get("cost_saved"),
+            "llm_cost_saved": payload.get("llm_cost_saved"),
+            "infra_cost_saved": payload.get("infra_cost_saved"),
             "reflection_iterations": meta.get("reflection_iterations"),
             "reflection_score": meta.get("reflection_score"),
             "refined_question": meta.get("refined_question"),
@@ -596,12 +736,24 @@ def _record_query_history(question: str, payload: dict[str, Any]) -> None:
     history.append(
         {
             "question": question,
+            "answer": payload.get("answer", ""),
+            "sources": payload.get("sources", []),
             "route": meta.get("route", "rag"),
             "cache_hit": payload.get("cache_hit", False),
             "confidence": payload.get("confidence", 0.0),
         }
     )
     st.session_state["query_history"] = history[-20:]
+    if payload.get("answer"):
+        context_turns = st.session_state.get("conversation_context", [])
+        context_turns.append(
+            {
+                "question": question,
+                "answer": payload.get("answer", ""),
+                "sources": payload.get("sources", []),
+            }
+        )
+        st.session_state["conversation_context"] = context_turns[-3:]
 
 
 def _submit_sql_approval(approved: bool) -> None:
@@ -621,7 +773,18 @@ def _submit_sql_approval(approved: bool) -> None:
         st.success("SQL approval submitted")
         st.rerun()
     else:
-        st.error(f"SQL approval failed ({status}): {data}")
+        detail_text = _error_text(data)
+        if status == 409 and (
+            "sql_approval_context_missing" in detail_text
+            or "sql_approval_not_pending" in detail_text
+        ):
+            st.session_state["pending_sql"] = None
+            st.warning(
+                "This SQL approval request is no longer valid, usually because the "
+                "backend restarted or a deployment replaced the in-memory workflow. "
+                "Re-run the query to generate a fresh approval request."
+            )
+        st.error(f"SQL approval failed ({status}): {_error_text(data)}")
 
 
 def _render_pending_sql_panel(response: dict[str, Any]) -> None:
@@ -668,6 +831,17 @@ def _render_query_tab() -> None:
     left, right = st.columns([1.25, 1.0], gap="large")
     with left:
         st.markdown("### Kubernetes IT-Operations Copilot")
+        ui_mode = st.radio(
+            "Experience Mode",
+            ["Auto", "Manual"],
+            horizontal=True,
+            key="query_ui_mode",
+            help="Auto hides retrieval controls and lets the backend choose. Manual exposes full retrieval tuning for side-by-side demo use.",
+        )
+        if ui_mode == "Auto":
+            st.caption(
+                "Auto mode uses backend-owned retrieval selection. Manual CRAG/HyDE/SRAG toggles are hidden in this mode."
+            )
         with st.form("query_form"):
             question = st.text_area(
                 "Question",
@@ -675,21 +849,28 @@ def _render_query_tab() -> None:
                 key="query_question",
             )
             top_k = st.slider("Top K", min_value=1, max_value=20, key="query_top_k")
-            search_mode = st.selectbox(
-                "Search Mode",
-                ["dense", "sparse", "hybrid"],
-                key="query_search_mode",
-            )
-            col1, col2 = st.columns(2)
-            with col1:
-                enable_rerank = st.checkbox("Enable Rerank", key="query_enable_rerank")
-                enable_hyde = st.checkbox("Enable HyDE", key="query_enable_hyde")
-            with col2:
-                enable_crag = st.checkbox("Enable CRAG", key="query_enable_crag")
-                enable_self_reflective = st.checkbox(
-                    "Enable SRAG",
-                    key="query_enable_self_reflective",
+            if ui_mode == "Auto":
+                search_mode = "auto"
+                enable_rerank = False
+                enable_hyde = False
+                enable_crag = False
+                enable_self_reflective = False
+            else:
+                search_mode = st.selectbox(
+                    "Search Mode",
+                    ["dense", "sparse", "hybrid"],
+                    key="query_search_mode",
                 )
+                col1, col2 = st.columns(2)
+                with col1:
+                    enable_rerank = st.checkbox("Enable Rerank", key="query_enable_rerank")
+                    enable_hyde = st.checkbox("Enable HyDE", key="query_enable_hyde")
+                with col2:
+                    enable_crag = st.checkbox("Enable CRAG", key="query_enable_crag")
+                    enable_self_reflective = st.checkbox(
+                        "Enable SRAG",
+                        key="query_enable_self_reflective",
+                    )
             submitted = st.form_submit_button("Run Query", use_container_width=True)
 
         if submitted:
@@ -701,6 +882,7 @@ def _render_query_tab() -> None:
                 "enable_hyde": enable_hyde,
                 "enable_crag": enable_crag,
                 "enable_self_reflective": enable_self_reflective,
+                "conversation_context": st.session_state.get("conversation_context", []),
             }
             status, data = _request("POST", "/query", json_body=payload)
             if status == 200 and isinstance(data, dict):
@@ -709,47 +891,90 @@ def _render_query_tab() -> None:
                 _record_query_history(question, data)
                 st.success("Query completed")
             else:
-                st.error(f"Query failed ({status}): {data}")
+                st.error(f"Query failed ({status}): {_error_text(data)}")
 
     with right:
         st.markdown("### Query Strategy")
         st.markdown(
             "\n".join(
                 [
-                    "- `hybrid + rerank` is the best default",
+                    "- `Auto` is the best production default",
+                    "- `Manual` is useful for retrieval strategy demos",
+                    "- `hybrid + rerank` is the best manual default",
                     "- Use `CRAG` for weak or uncertain retrieval",
                     "- Use `HyDE` for semantic / paraphrased queries",
                     "- Use `SRAG` sparingly because of extra latency",
                 ]
             )
         )
+        response = st.session_state.get("last_query_response") or {}
+        response_meta = response.get("metadata", {}) or {}
+        active_ui_mode = st.session_state.get("query_ui_mode", "Auto")
+        active_top_k = st.session_state.get("query_top_k", preset["top_k"])
+        if active_ui_mode == "Auto" and response_meta.get("auto_enabled"):
+            active_search_mode = response_meta.get("resolved_search_mode", "auto")
+            active_rerank = "On" if response_meta.get("resolved_enable_rerank") else "Off"
+            active_crag = "On" if response_meta.get("resolved_enable_crag") else "Off"
+            active_hyde = "On" if response_meta.get("resolved_enable_hyde") else "Off"
+            active_srag = "On" if response_meta.get("resolved_enable_self_reflective") else "Off"
+        else:
+            active_search_mode = (
+                "auto"
+                if active_ui_mode == "Auto"
+                else st.session_state.get("query_search_mode", preset["search_mode"])
+            )
+            active_rerank = (
+                "Backend-managed"
+                if active_ui_mode == "Auto"
+                else ("On" if st.session_state.get("query_enable_rerank", preset["enable_rerank"]) else "Off")
+            )
+            active_crag = (
+                "Backend-managed"
+                if active_ui_mode == "Auto"
+                else ("On" if st.session_state.get("query_enable_crag", preset["enable_crag"]) else "Off")
+            )
+            active_hyde = (
+                "Backend-managed"
+                if active_ui_mode == "Auto"
+                else ("On" if st.session_state.get("query_enable_hyde", preset["enable_hyde"]) else "Off")
+            )
+            active_srag = (
+                "Backend-managed"
+                if active_ui_mode == "Auto"
+                else ("On" if st.session_state.get("query_enable_self_reflective", preset["enable_self_reflective"]) else "Off")
+        )
+        _render_deployment_info()
         st.markdown("### Active Config")
         st.markdown(
             f"""
             <div class="config-grid">
                 <div class="config-item">
+                    <div class="config-key">Experience Mode</div>
+                    <div class="config-value">{active_ui_mode}</div>
+                </div>
+                <div class="config-item">
                     <div class="config-key">Search Mode</div>
-                    <div class="config-value">{st.session_state.get("query_search_mode", preset["search_mode"])}</div>
+                    <div class="config-value">{active_search_mode}</div>
                 </div>
                 <div class="config-item">
                     <div class="config-key">Top K</div>
-                    <div class="config-value">{st.session_state.get("query_top_k", preset["top_k"])}</div>
+                    <div class="config-value">{active_top_k}</div>
                 </div>
                 <div class="config-item">
                     <div class="config-key">Rerank</div>
-                    <div class="config-value">{'On' if st.session_state.get("query_enable_rerank", preset["enable_rerank"]) else 'Off'}</div>
+                    <div class="config-value">{active_rerank}</div>
                 </div>
                 <div class="config-item">
                     <div class="config-key">CRAG</div>
-                    <div class="config-value">{'On' if st.session_state.get("query_enable_crag", preset["enable_crag"]) else 'Off'}</div>
+                    <div class="config-value">{active_crag}</div>
                 </div>
                 <div class="config-item">
                     <div class="config-key">HyDE</div>
-                    <div class="config-value">{'On' if st.session_state.get("query_enable_hyde", preset["enable_hyde"]) else 'Off'}</div>
+                    <div class="config-value">{active_hyde}</div>
                 </div>
                 <div class="config-item">
                     <div class="config-key">SRAG</div>
-                    <div class="config-value">{'On' if st.session_state.get("query_enable_self_reflective", preset["enable_self_reflective"]) else 'Off'}</div>
+                    <div class="config-value">{active_srag}</div>
                 </div>
             </div>
             """,
@@ -784,7 +1009,7 @@ def _render_upload_tab() -> None:
             st.success("Upload processed")
             st.json(data)
         else:
-            st.error(f"Upload failed ({status}): {data}")
+            st.error(f"Upload failed ({status}): {_error_text(data)}")
 
 
 def _render_history_tab() -> None:
@@ -865,7 +1090,7 @@ def _render_admin_tab() -> None:
                 st.success("Admin action completed")
                 st.json(data)
             else:
-                st.error(f"Admin action failed ({status}): {data}")
+                st.error(f"Admin action failed ({status}): {_error_text(data)}")
         else:
             st.info("Choose an action and run it to inspect backend state.")
 

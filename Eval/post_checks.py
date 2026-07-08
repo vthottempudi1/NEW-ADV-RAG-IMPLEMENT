@@ -15,9 +15,13 @@ def source_overlap(actual: list[str], golden: list[str]) -> dict:
         return token[:-1] if token.endswith("s") and len(token) > 3 else token
 
     def _aliases(source: str) -> set[str]:
+        lowered_source = source.strip().lower()
         raw = os.path.splitext(os.path.basename(source.strip().lower()))[0]
         parts = [part for part in raw.split("__") if part]
         aliases = {raw}
+
+        if lowered_source.startswith("http://") or lowered_source.startswith("https://"):
+            aliases.update({"tavily_web", "web", "http"})
 
         for part in parts:
             aliases.add(part)

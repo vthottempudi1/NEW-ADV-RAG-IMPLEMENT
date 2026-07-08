@@ -1,4 +1,5 @@
 import psycopg2
+from psycopg2 import Error as PsycopgError
 from fastapi import APIRouter, HTTPException, status
 from pydantic import BaseModel
 
@@ -15,7 +16,13 @@ router = APIRouter(tags=["auth"])
 
 
 def _get_db_connection():
-    return psycopg2.connect(settings.database_url)
+    try:
+        return psycopg2.connect(settings.database_url)
+    except psycopg2.OperationalError as exc:
+        raise HTTPException(
+            status_code=503,
+            detail=f"database_connection_failed: {exc}",
+        ) from exc
 
 
 @router.post("/auth/register", status_code=status.HTTP_201_CREATED)
@@ -39,6 +46,12 @@ async def register(body: AuthRequest) -> dict:
     except psycopg2.errors.UniqueViolation:
         conn.rollback()
         raise HTTPException(status_code=400, detail="Username already exists")
+    except PsycopgError as exc:
+        conn.rollback()
+        raise HTTPException(
+            status_code=500,
+            detail=f"auth_register_failed: {exc}",
+        ) from exc
     finally:
         cur.close()
         conn.close()
@@ -51,13 +64,20 @@ async def register(body: AuthRequest) -> dict:
 async def login(body: AuthRequest) -> dict:
     conn = _get_db_connection()
     cur = conn.cursor()
-    cur.execute(
-        "SELECT password_hash, is_admin FROM users WHERE username = %s",
-        (body.username,),
-    )
-    row = cur.fetchone()
-    cur.close()
-    conn.close()
+    try:
+        cur.execute(
+            "SELECT password_hash, is_admin FROM users WHERE username = %s",
+            (body.username,),
+        )
+        row = cur.fetchone()
+    except PsycopgError as exc:
+        raise HTTPException(
+            status_code=500,
+            detail=f"auth_login_failed: {exc}",
+        ) from exc
+    finally:
+        cur.close()
+        conn.close()
 
     if row is None or not verify_password(body.password, row[0]):
         raise HTTPException(status_code=401, detail="Invalid credentials")

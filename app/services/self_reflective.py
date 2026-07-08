@@ -4,41 +4,34 @@ import json
 
 from app.config import settings
 from app.models import ReflectionResult
-from app.services.llm_service import generate
+from app.services.llm_service import generate_with_json
 
 
 def reflect_on_answer(question: str, answer: str, context: str) -> ReflectionResult:
     system = (
-    "You are an answer quality grader. "
-    "Evaluate whether the answer is supported by the context and whether it fully addresses the question. "
-    "Return only valid JSON with exactly these keys: "
-    "reflection_score, needs_regeneration, refined_question, reasoning. "
-    "reflection_score must be a float between 0.0 and 1.0 only. "
-    "Use lower scores for unsupported, incomplete, vague, or off-target answers. "
-    "Use higher scores only for grounded, complete, and relevant answers. "
-    "needs_regeneration must be true or false. "
-    "refined_question must be a short improved version of the question when regeneration is needed, otherwise an empty string."
+        "You are a strict reviewer evaluating an AI-generated answer. "
+        "Fail answers that hedge, refuse, miss major parts of the question, or invent facts. "
+        "Return only valid JSON with exactly these keys: reflection_score, needs_regeneration, "
+        "refined_question, reasoning. reflection_score must be a float between 0.0 and 1.0."
     )
 
     user = (
-    f"Question: {question}\n\n"
-    f"Context:\n{context}\n\n"
-    f"Answer:\n{answer}\n\n"
-    "Remember: reflection_score must be between 0.0 and 1.0."
+        f"User Question: {question}\n\n"
+        f"Generated Answer: {answer}\n\n"
+        f"Retrieved Context: {context}\n\n"
+        "Evaluate these criteria strictly: relevance, accuracy, completeness, clarity. "
+        "needs_regeneration should be true if the answer is vague, unsupported, incomplete, or if a sharper "
+        "reformulation of the question would improve retrieval. "
+        "When needs_regeneration is true, refined_question must be a single improved question."
     )
 
-    result = generate(
+    result = generate_with_json(
         system_prompt=system,
         user_message=user,
         model=settings.llm_model_grader,
         temperature=0.0,
     )
-    text = result["text"].strip()
-
-    if text.startswith("```"):
-        text = "\n".join(text.splitlines()[1:-1]).strip()
-
-    data = json.loads(text)
+    data = json.loads(result["text"])
 
     return ReflectionResult(
         reflection_score=float(data.get("reflection_score", 0.0)),

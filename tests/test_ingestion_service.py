@@ -8,6 +8,23 @@ from app.services.ingestion_service import IngestionService
 
 def test_ingest_same_file_twice_skips_duplicate(monkeypatch):
     service = IngestionService()
+    stored: dict[str, bytes] = {}
+
+    class _FakeStorage:
+        def exists(self, key: str) -> bool:
+            return key in stored
+
+        def save_bytes(self, key: str, data: bytes) -> None:
+            stored[key] = data
+
+        def read_bytes(self, key: str) -> bytes:
+            return stored[key]
+
+        def url_for(self, key: str) -> str:
+            return f"memory://{key}"
+
+    service.storage = _FakeStorage()
+    service.doc_cache.backend = service.storage
 
     monkeypatch.setattr(
         ingestion_module,

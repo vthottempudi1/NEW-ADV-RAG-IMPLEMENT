@@ -1,0 +1,15 @@
+{
+  "GroupId": "sg-099f88d2eeb5083eb",
+  "IpPermissions": [
+    {
+      "IpProtocol": "tcp",
+      "FromPort": 8000,
+      "ToPort": 8000,
+      "UserIdGroupPairs": [
+        {
+          "GroupId": "sg-099f88d2eeb5083eb"
+        }
+      ]
+    }
+  ]
+}

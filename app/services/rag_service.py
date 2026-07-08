@@ -1,3 +1,4 @@
+import json
 import re
 from statistics import mean
 
@@ -13,9 +14,11 @@ from app.services.reranking import Reranker
 from app.services.self_reflective import reflect_on_answer, should_regenerate
 from app.services.vector_store import hybrid_search, search, sparse_search
 from app.security.spotlighting import build_spotlighted_context
+from app.services.cost_service import answer_model_cost, format_usd, grader_model_cost, sql_model_cost
+from app.services.auto_retrieval import resolve_auto_retrieval
 
 
-RAG_CACHE_SCHEMA_VERSION = 11
+RAG_CACHE_SCHEMA_VERSION = 14
 _TROUBLESHOOTING_HINTS = {
     "error",
     "fix",
@@ -36,6 +39,89 @@ _TROUBLESHOOTING_ALIASES = {
     "oomkilled": ("oom", "out of memory", "eviction"),
     "crashloopbackoff": ("restart", "container restart", "backoff"),
 }
+_TEMP_SOURCE_PATTERN = re.compile(r"^tmp[a-z0-9_\\-]+\.[A-Za-z0-9]+$")
+_LOCAL_CORPUS_PRIORITY_HINTS = (
+    "our ",
+    "runbook",
+    "policy",
+    "playbook",
+    "incident",
+    "alert",
+    "alerts",
+    "p1",
+    "p2",
+)
+_VAGUE_QUERY_STOPWORDS = {
+    "what",
+    "is",
+    "wrong",
+    "why",
+    "how",
+    "help",
+    "issue",
+    "problem",
+    "the",
+    "this",
+    "that",
+}
+_OPERATIONAL_GUIDANCE_HINTS = ("runbook", "policy", "playbook", "procedure", "guidance")
+_OPERATIONAL_SOURCE_PATTERN = re.compile(r"(runbook|policy|playbook|procedure)", re.IGNORECASE)
+_DASHBOARD_SOURCE_PATTERN = re.compile(r"dashboard", re.IGNORECASE)
+_KUBERNETES_CORPUS_SOURCE_PATTERN = re.compile(r"^(concepts|tasks|tutorials|reference)__", re.IGNORECASE)
+_ANCHOR_STOPWORDS = {
+    "what",
+    "which",
+    "when",
+    "where",
+    "why",
+    "how",
+    "difference",
+    "between",
+    "compare",
+    "kubernetes",
+    "cluster",
+    "would",
+    "should",
+    "could",
+    "does",
+    "mean",
+    "that",
+    "same",
+    "object",
+    "into",
+    "only",
+    "other",
+    "container",
+    "automatically",
+    "read",
+    "too",
+    "use",
+    "using",
+    "still",
+    "resource",
+    "combine",
+    "something",
+    "else",
+    "confidential",
+    "sensitive",
+    "non",
+    "data",
+}
+_KNOWN_K8S_ENTITIES = (
+    "configmap",
+    "secret",
+    "pod",
+    "deployment",
+    "statefulset",
+    "daemonset",
+    "service",
+    "ingress",
+    "namespace",
+    "serviceaccount",
+    "rbac",
+    "readiness",
+    "liveness",
+)
 
 
 def _normalize_confidence_signal(score: float | None) -> float:
@@ -163,6 +249,193 @@ def _build_alias_guidance(question: str, chunks: list) -> str:
     return "Troubleshooting note:\n- " + "\n- ".join(notes)
 
 
+def _normalize_temp_sources(chunks: list) -> list:
+    if not chunks:
+        return chunks
+
+    temp_sources = {
+        chunk.source
+        for chunk in chunks
+        if isinstance(chunk.source, str) and _TEMP_SOURCE_PATTERN.match(chunk.source)
+    }
+    non_temp_sources = {
+        chunk.source
+        for chunk in chunks
+        if isinstance(chunk.source, str) and not _TEMP_SOURCE_PATTERN.match(chunk.source)
+    }
+
+    if not temp_sources or len(non_temp_sources) != 1:
+        return chunks
+
+    canonical_source = next(iter(non_temp_sources))
+    normalized = []
+    for chunk in chunks:
+        if chunk.source in temp_sources:
+            chunk = chunk.model_copy(update={"source": canonical_source})
+        normalized.append(chunk)
+    return normalized
+
+
+def _prefer_local_corpus(question: str) -> bool:
+    lowered = question.lower()
+    return any(hint in lowered for hint in _LOCAL_CORPUS_PRIORITY_HINTS)
+
+
+def _is_vague_query(question: str) -> bool:
+    tokens = re.findall(r"[a-z0-9]+", question.lower())
+    if len(tokens) <= 4:
+        return True
+    meaningful = [token for token in tokens if token not in _VAGUE_QUERY_STOPWORDS]
+    return len(meaningful) <= 2
+
+
+def _extract_answer_text(raw_text: str) -> str:
+    text = raw_text.strip()
+    if text.startswith("```"):
+        lines = text.splitlines()
+        if len(lines) >= 3:
+            text = "\n".join(lines[1:-1]).strip()
+
+    if text.startswith("{"):
+        try:
+            payload = json.loads(text)
+        except json.JSONDecodeError:
+            return text
+        answer = payload.get("answer")
+        if isinstance(answer, str) and answer.strip():
+            return answer.strip()
+    return text
+
+
+def _prefer_operational_sources(question: str, chunks: list) -> list:
+    lowered = question.lower()
+    if not any(hint in lowered for hint in _OPERATIONAL_GUIDANCE_HINTS):
+        return chunks
+
+    filtered = [
+        chunk for chunk in chunks
+        if isinstance(chunk.source, str) and _OPERATIONAL_SOURCE_PATTERN.search(chunk.source)
+    ]
+    return filtered or chunks
+
+
+def _extract_anchor_terms(question: str) -> list[str]:
+    tokens = re.findall(r"[a-z0-9]+", question.lower())
+    anchors: list[str] = []
+    for token in tokens:
+        if token in _ANCHOR_STOPWORDS:
+            continue
+        if len(token) >= 4 or token in {"pod", "rbac"}:
+            if token not in anchors:
+                anchors.append(token)
+    return anchors
+
+
+def _extract_question_entities(question: str) -> list[str]:
+    lowered = question.lower()
+    entities: list[str] = []
+    for entity in _KNOWN_K8S_ENTITIES:
+        if entity in lowered and entity not in entities:
+            entities.append(entity)
+    return entities
+
+
+def _prefer_entity_named_sources(question: str, chunks: list) -> list:
+    if not chunks:
+        return chunks
+
+    entities = _extract_question_entities(question)
+    if not entities:
+        return chunks
+
+    named_matches = [
+        chunk
+        for chunk in chunks
+        if isinstance(chunk.source, str)
+        and any(entity in chunk.source.lower() for entity in entities)
+    ]
+    return named_matches or chunks
+
+
+def _prefer_anchor_matched_sources(question: str, chunks: list) -> list:
+    if not chunks:
+        return chunks
+
+    anchors = _extract_anchor_terms(question)
+    if not anchors:
+        return chunks
+
+    scored: list[tuple[int, object]] = []
+    matched_count = 0
+    for chunk in chunks:
+        haystack = f"{chunk.source} {chunk.text[:1500]}".lower()
+        overlap = sum(1 for anchor in anchors if anchor in haystack)
+        if overlap > 0:
+            matched_count += 1
+        scored.append((overlap, chunk))
+
+    if matched_count == 0 or matched_count == len(chunks):
+        return chunks
+
+    filtered = [chunk for overlap, chunk in scored if overlap > 0]
+    return filtered or chunks
+
+
+def _drop_non_kubernetes_corpus_noise(question: str, chunks: list) -> list:
+    if not chunks:
+        return chunks
+
+    if "kubernetes" not in question.lower() and not _extract_question_entities(question):
+        return chunks
+
+    canonical = [
+        chunk
+        for chunk in chunks
+        if isinstance(chunk.source, str)
+        and _KUBERNETES_CORPUS_SOURCE_PATTERN.search(chunk.source)
+    ]
+    if canonical and len(canonical) < len(chunks):
+        return canonical
+    return chunks
+
+
+def _drop_dashboard_catalog_noise(chunks: list) -> list:
+    if not chunks:
+        return chunks
+
+    non_dashboard = [
+        chunk for chunk in chunks
+        if not (isinstance(chunk.source, str) and _DASHBOARD_SOURCE_PATTERN.search(chunk.source))
+    ]
+    if len(non_dashboard) >= 2 and len(non_dashboard) < len(chunks):
+        return non_dashboard
+    return chunks
+
+
+def _drop_negative_rerank_tail(chunks: list) -> list:
+    if not chunks:
+        return chunks
+
+    positive = [
+        chunk for chunk in chunks
+        if chunk.rerank_score is not None and float(chunk.rerank_score) >= 0.0
+    ]
+    if len(positive) >= 2:
+        return positive
+    return chunks
+
+
+def _ordered_sources(chunks: list) -> list[str]:
+    seen: set[str] = set()
+    ordered: list[str] = []
+    for chunk in chunks:
+        source = str(chunk.source)
+        if source not in seen:
+            seen.add(source)
+            ordered.append(source)
+    return ordered
+
+
 def run_rag(
     question: str,
     top_k: int = 5,
@@ -195,6 +468,19 @@ def _run_rag_impl(
     enable_self_reflective: bool = False,
     use_cache: bool = True,
 ) -> tuple[ChatResponse, list]:
+    auto_decision = resolve_auto_retrieval(
+        question=question,
+        search_mode=search_mode,
+        enable_rerank=enable_rerank,
+        enable_hyde=enable_hyde,
+        enable_crag=enable_crag,
+        enable_self_reflective=enable_self_reflective,
+    )
+    search_mode = auto_decision.resolved_search_mode
+    enable_rerank = auto_decision.enable_rerank
+    enable_hyde = auto_decision.enable_hyde
+    enable_crag = auto_decision.enable_crag
+    enable_self_reflective = auto_decision.enable_self_reflective
     cache_context = _cache_context(
         top_k,
         search_mode,
@@ -204,11 +490,12 @@ def _run_rag_impl(
         enable_self_reflective,
     )
     cached = query_cache.get_rag_answer(question, cache_context) if use_cache else None
-
+    
     if cached is not None:
         response = ChatResponse(**cached)
         response.cache_hit = True
         response.metadata.cache_hit = True
+        response.cost_saved = format_usd(float(cached.get("estimated_answer_cost_usd", 0.0)))
         return response, []
 
     retrieve_k = settings.reranker_initial_top_k if enable_rerank else top_k
@@ -245,18 +532,42 @@ def _run_rag_impl(
         chunks=chunks,
         enable_crag=enable_crag,
         local_retry_fn=_local_retry,
+        allow_web_fallback=not (
+            _prefer_local_corpus(question)
+            or (enable_self_reflective and _is_vague_query(question))
+        ),
     )
     chunks = _trim_troubleshooting_noise(chunks, question)
+    chunks = _normalize_temp_sources(chunks)
+    chunks = _prefer_operational_sources(question, chunks)
+    chunks = _drop_non_kubernetes_corpus_noise(question, chunks)
+    chunks = _prefer_entity_named_sources(question, chunks)
+    chunks = _prefer_anchor_matched_sources(question, chunks)
+    chunks = _drop_dashboard_catalog_noise(chunks)
+    chunks = _drop_negative_rerank_tail(chunks)
 
     context = build_spotlighted_context(chunks)
     alias_guidance = _build_alias_guidance(question, chunks)
 
     system = build_system_prompt()
+    total_answer_cost_usd = 0.0
+
 
     def _draft(current_question: str) -> str:
+        nonlocal total_answer_cost_usd
+
         guidance_block = f"{alias_guidance}\n\n" if alias_guidance else ""
-        user_message = f"{guidance_block}Context:\n{context}\n\nQuestion: {current_question}"
-        return generate(system, user_message)["text"]
+        user_message = f"Context:\n{context}\n\nQuestion: {current_question}"
+        result = generate(system, f"{guidance_block}{user_message}")
+
+        usage = result.get("usage", {})
+        total_answer_cost_usd += answer_model_cost(
+            prompt_tokens=usage.get("prompt_tokens", 0),
+            completion_tokens=usage.get("completion_tokens", 0),
+        )
+
+        return _extract_answer_text(result["text"])
+
 
     working_question = question
     answer = _draft(working_question)
@@ -314,13 +625,18 @@ def _run_rag_impl(
 
     response = ChatResponse(
         answer=uncertainty_prefix + answer,
-        sources=list({chunk.source for chunk in chunks}),
+        sources=_ordered_sources(chunks),
         confidence=confidence,
         cache_hit=False,
         metadata=ResponseMetadata(
             route="rag",
             retrieved_chunks=previews,
             cache_hit=False,
+            requested_search_mode=auto_decision.requested_search_mode,
+            resolved_search_mode=auto_decision.resolved_search_mode,
+            auto_enabled=auto_decision.auto_enabled,
+            auto_strategy_reason=auto_decision.auto_strategy_reason,
+            auto_applied_flags=auto_decision.auto_applied_flags,
             reflection_iterations=reflection_iterations,
             reflection_score=reflection_score,
             refined_question=refined_question,
@@ -331,7 +647,9 @@ def _run_rag_impl(
     )
 
     if use_cache:
-        query_cache.set_rag_answer(question, response.model_dump(), cache_context)
+        payload = response.model_dump()
+        payload["estimated_answer_cost_usd"] = round(total_answer_cost_usd, 6)
+        query_cache.set_rag_answer(question, payload, cache_context)
     return response, chunks
 
 

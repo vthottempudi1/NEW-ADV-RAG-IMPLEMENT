@@ -3,14 +3,21 @@ from typing import Literal
 from pydantic import BaseModel, Field, field_validator
 
 
+class ConversationTurn(BaseModel):
+    question: str = Field(..., min_length=1, max_length=2000)
+    answer: str = Field(..., min_length=1, max_length=8000)
+    sources: list[str] = Field(default_factory=list)
+
+
 class QueryRequest(BaseModel):
     question: str = Field(..., min_length=1, max_length=2000)
     top_k: int = Field(default=5, ge=1, le=50)
-    search_mode: Literal["dense", "sparse", "hybrid"] = "dense"
+    search_mode: Literal["dense", "sparse", "hybrid", "auto"] = "dense"
     enable_rerank: bool = False
     enable_hyde: bool = False
     enable_crag: bool = False
     enable_self_reflective: bool = False
+    conversation_context: list[ConversationTurn] = Field(default_factory=list, max_length=3)
 
     @field_validator("question")
     @classmethod
@@ -55,12 +62,26 @@ class ResponseMetadata(BaseModel):
     route: str = "rag"
     retrieved_chunks: list[RetrievedChunkPreview] = Field(default_factory=list)
     cache_hit: bool = False
+    requested_search_mode: str | None = None
+    resolved_search_mode: str | None = None
+    resolved_enable_rerank: bool | None = None
+    resolved_enable_hyde: bool | None = None
+    resolved_enable_crag: bool | None = None
+    resolved_enable_self_reflective: bool | None = None
+    auto_enabled: bool = False
+    auto_strategy_reason: str | None = None
+    auto_applied_flags: list[str] = Field(default_factory=list)
+    original_question: str | None = None
+    resolved_question: str | None = None
+    resolved_follow_up_subject: str | None = None
     reflection_iterations: int = 0
     reflection_score: float | None = None
     refined_question: str | None = None
     crag_score: float | None = None
     crag_label: str | None = None
     used_web_fallback: bool = False
+    sql_query: str | None = None
+    sql_rows: list[dict] = Field(default_factory=list)
 
 
 class PendingSQLBlock(BaseModel):
@@ -76,4 +97,6 @@ class ChatResponse(BaseModel):
     pending_sql: PendingSQLBlock | None = None
     cache_hit: bool = False
     cost_saved: str = "$0.00"
+    llm_cost_saved: str = "$0.00"
+    infra_cost_saved: str = "$0.00"
     metadata: ResponseMetadata = Field(default_factory=ResponseMetadata)

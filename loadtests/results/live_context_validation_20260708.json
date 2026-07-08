@@ -1,0 +1,749 @@
+{
+  "health": {
+    "api": {
+      "status": 200,
+      "body": "{\"status\":\"ok\",\"version\":\"0.1.6\"}"
+    },
+    "ui_health": {
+      "status": 200,
+      "body": "ok"
+    },
+    "ui_root": {
+      "status": 200,
+      "streamlit_shell_loaded": true,
+      "scripts_present": true
+    }
+  },
+  "manual_vs_auto": {
+    "manual_status": 200,
+    "manual_answer": "In Kubernetes, a ConfigMap is used to store non-confidential configuration data in key-value pairs, allowing you to decouple environment-specific configurations from your container images. ConfigMaps are not designed to hold sensitive information and do not provide secrecy or encryption. On the other hand, a Secret is specifically intended to store sensitive data such as passwords, tokens, or keys. While Secrets also store data in key-value pairs, they are meant to keep this data confidential. However, by default, Secrets are stored unencrypted in the API server's underlying data store (etcd), which means additional precautions may be necessary to secure them.",
+    "manual_sources": [
+      "concepts__configuration__configmap.html",
+      "concepts__configuration__secret.txt",
+      "tasks__configure-pod-container__configure-pod-configmap.html"
+    ],
+    "manual_meta": {
+      "route": "rag",
+      "retrieved_chunks": [
+        {
+          "text": "traffic). You write the code to look in an environment variable named DATABASE_HOST. Locally, you set that variable to localhost. In the cloud, you set it to refer to a Kubernetes Service that exposes the database component to your cluster. This lets you fetch a container image running in the cloud and debug the exact same code locally if needed.Note:A ConfigMap is not designed to hold large chunks of data. The data stored in a ConfigMap cannot exceed 1 MiB. If you need to store settings that are larger than this limit, you may want to consider mounting a volume or use a separate database or file service.ConfigMap objectA ConfigMap is an API object that lets you store configuration for other objects to use. Unlike most Kubernetes objects that have a spec, a ConfigMap has data and binaryData fields. These fields accept key-value pairs as their values. Both the data field and the binaryData are optional. The data field is designed to contain UTF-8 strings while the binaryData field is de",
+          "source": "concepts__configuration__configmap.html",
+          "score": 1.0089604010380706,
+          "retrieval_score": 0.06427650713907986,
+          "rerank_score": 2.4728567600250244
+        },
+        {
+          "text": "Concepts \u203a Configuration \u203a Configmap Concepts \u203a Configuration \u203a Configmap ConfigMaps | Kubernetes ConfigMapsA ConfigMap is an API object used to store non-confidential data in key-value pairs. Pods can consume ConfigMaps as environment variables, command-line arguments, or as configuration files in a volume.A ConfigMap allows you to decouple environment-specific configuration from your container images, so that your applications are easily portable.Caution:ConfigMap does not provide secrecy or encryption. If the data you want to store are confidential, use a Secret rather than a ConfigMap, or use additional (third party) tools to keep your data private.MotivationUse a ConfigMap for setting configuration data separately from application code.For example, imagine that you are developing an application that you can run on your own computer (for development) and in the cloud (to handle real traffic). You write the code to look in an environment variable named DATABASE_HOST. Locally, you se",
+          "source": "concepts__configuration__configmap.html",
+          "score": 0.8547668512587123,
+          "retrieval_score": 0.04616113053613054,
+          "rerank_score": 4.565373420715332
+        },
+        {
+          "text": "Secrets | Kubernetes SecretsA Secret is an object that contains a small amount of sensitive data such as a password, a token, or a key. Such information might otherwise be put in a Pod specification or in a container image. Using a Secret means that you don't need to include confidential data in your application code.Because Secrets can be created independently of the Pods that use them, there is less risk of the Secret (and its data) being exposed during the workflow of creating, viewing, and editing Pods. Kubernetes, and applications that run in your cluster, can also take additional precautions with Secrets, such as avoiding writing sensitive data to nonvolatile storage.Secrets are similar to ConfigMaps but are specifically intended to hold confidential data.Caution:Kubernetes Secrets are, by default, stored unencrypted in the API server's underlying data store (etcd). Anyone with API access can retrieve or modify a Secret, and so can anyone with access to etcd. Additionally, anyone",
+          "source": "concepts__configuration__secret.txt",
+          "score": 0.7251991096020197,
+          "retrieval_score": 0.02862400327131466,
+          "rerank_score": 5.548483371734619
+        },
+        {
+          "text": "urce stores configuration data as key-value pairs. The data can be consumed in pods or provide the configurations for system components such as controllers. ConfigMap is similar to Secrets, but provides a means of working with strings that don't contain sensitive information. Users and system components alike can store configuration data in ConfigMap.Note:ConfigMaps should reference properties files, not replace them. Think of the ConfigMap as representing something similar to the Linux /etc directory and its contents. For example, if you create a Kubernetes Volume from a ConfigMap, each data item in the ConfigMap is represented by an individual file in the volume.The ConfigMap's data field contains the configuration data. As shown in the example below, this can be simple (like individual properties defined using --from-literal) or complex (like configuration files or JSON blobs defined using --from-file).apiVersion: v1 kind: ConfigMap metadata: creationTimestamp: 2016-02-18T19:14:38Z",
+          "source": "tasks__configure-pod-container__configure-pod-configmap.html",
+          "score": 0.7227551086795057,
+          "retrieval_score": 0.03007688828584351,
+          "rerank_score": 3.23952579498291
+        }
+      ],
+      "cache_hit": false,
+      "requested_search_mode": "hybrid",
+      "resolved_search_mode": "hybrid",
+      "resolved_enable_rerank": true,
+      "resolved_enable_hyde": true,
+      "resolved_enable_crag": false,
+      "resolved_enable_self_reflective": false,
+      "auto_enabled": false,
+      "auto_strategy_reason": null,
+      "auto_applied_flags": [],
+      "original_question": "What is the difference between a ConfigMap and a Secret in Kubernetes?",
+      "resolved_question": "What is the difference between a ConfigMap and a Secret in Kubernetes?",
+      "resolved_follow_up_subject": null,
+      "reflection_iterations": 0,
+      "reflection_score": null,
+      "refined_question": null,
+      "crag_score": null,
+      "crag_label": null,
+      "used_web_fallback": false,
+      "sql_query": null,
+      "sql_rows": []
+    },
+    "auto_status": 200,
+    "auto_answer": "In Kubernetes, a ConfigMap is used to store non-confidential configuration data in key-value pairs, allowing you to decouple configuration from application code. It is not designed to hold sensitive data and does not provide secrecy or encryption. On the other hand, a Secret is specifically intended to store sensitive data such as passwords, tokens, or keys. While Secrets help keep confidential data out of application code, they are stored unencrypted by default in the API server's data store, which poses a security risk if not managed properly.",
+    "auto_sources": [
+      "concepts__configuration__secret.txt",
+      "concepts__configuration__configmap.html"
+    ],
+    "auto_meta": {
+      "route": "rag",
+      "retrieved_chunks": [
+        {
+          "text": "ivate keys do not establish trusted communication between an SSH client and host server on their own. A secondary means of establishing trust is needed to mitigate \"man in the middle\" attacks, such as a known_hosts file added to a ConfigMap.TLS SecretsThe kubernetes.io/tls Secret type is for storing a certificate and its associated key that are typically used for TLS.One common use for TLS Secrets is to configure encryption in transit for an Ingress, but you can also use it with other resources or directly in your workload. When using this type of Secret, the tls.key and the tls.crt key must be provided in the data (or stringData) field of the Secret configuration, although the API server doesn't actually validate the values for each key.As an alternative to using stringData, you can use the data field to provide the base64 encoded certificate and private key. For details, see Constraints on Secret names and data.The following YAML contains an example config for a TLS Secret:secret/tls",
+          "source": "concepts__configuration__secret.txt",
+          "score": 1.0194684260905351,
+          "retrieval_score": 1.2882013457556938,
+          "rerank_score": 1.8755309581756592
+        },
+        {
+          "text": "traffic). You write the code to look in an environment variable named DATABASE_HOST. Locally, you set that variable to localhost. In the cloud, you set it to refer to a Kubernetes Service that exposes the database component to your cluster. This lets you fetch a container image running in the cloud and debug the exact same code locally if needed.Note:A ConfigMap is not designed to hold large chunks of data. The data stored in a ConfigMap cannot exceed 1 MiB. If you need to store settings that are larger than this limit, you may want to consider mounting a volume or use a separate database or file service.ConfigMap objectA ConfigMap is an API object that lets you store configuration for other objects to use. Unlike most Kubernetes objects that have a spec, a ConfigMap has data and binaryData fields. These fields accept key-value pairs as their values. Both the data field and the binaryData are optional. The data field is designed to contain UTF-8 strings while the binaryData field is de",
+          "source": "concepts__configuration__configmap.html",
+          "score": 0.9631327403657103,
+          "retrieval_score": 1.1969606625258802,
+          "rerank_score": 2.4728567600250244
+        },
+        {
+          "text": "Concepts \u203a Configuration \u203a Configmap Concepts \u203a Configuration \u203a Configmap ConfigMaps | Kubernetes ConfigMapsA ConfigMap is an API object used to store non-confidential data in key-value pairs. Pods can consume ConfigMaps as environment variables, command-line arguments, or as configuration files in a volume.A ConfigMap allows you to decouple environment-specific configuration from your container images, so that your applications are easily portable.Caution:ConfigMap does not provide secrecy or encryption. If the data you want to store are confidential, use a Secret rather than a ConfigMap, or use additional (third party) tools to keep your data private.MotivationUse a ConfigMap for setting configuration data separately from application code.For example, imagine that you are developing an application that you can run on your own computer (for development) and in the cloud (to handle real traffic). You write the code to look in an environment variable named DATABASE_HOST. Locally, you se",
+          "source": "concepts__configuration__configmap.html",
+          "score": 0.8432115843873773,
+          "retrieval_score": 1.034584376430052,
+          "rerank_score": 4.565373420715332
+        },
+        {
+          "text": "Secrets | Kubernetes SecretsA Secret is an object that contains a small amount of sensitive data such as a password, a token, or a key. Such information might otherwise be put in a Pod specification or in a container image. Using a Secret means that you don't need to include confidential data in your application code.Because Secrets can be created independently of the Pods that use them, there is less risk of the Secret (and its data) being exposed during the workflow of creating, viewing, and editing Pods. Kubernetes, and applications that run in your cluster, can also take additional precautions with Secrets, such as avoiding writing sensitive data to nonvolatile storage.Secrets are similar to ConfigMaps but are specifically intended to hold confidential data.Caution:Kubernetes Secrets are, by default, stored unencrypted in the API server's underlying data store (etcd). Anyone with API access can retrieve or modify a Secret, and so can anyone with access to etcd. Additionally, anyone",
+          "source": "concepts__configuration__secret.txt",
+          "score": 0.8166110105251045,
+          "retrieval_score": 1.0199253034547153,
+          "rerank_score": 5.548483371734619
+        }
+      ],
+      "cache_hit": false,
+      "requested_search_mode": "auto",
+      "resolved_search_mode": "hybrid",
+      "resolved_enable_rerank": true,
+      "resolved_enable_hyde": false,
+      "resolved_enable_crag": false,
+      "resolved_enable_self_reflective": false,
+      "auto_enabled": true,
+      "auto_strategy_reason": "direct domain-object comparison favored hybrid retrieval with reranking and no query expansion",
+      "auto_applied_flags": [],
+      "original_question": "What is the difference between a ConfigMap and a Secret in Kubernetes?",
+      "resolved_question": "What is the difference between a ConfigMap and a Secret in Kubernetes?",
+      "resolved_follow_up_subject": null,
+      "reflection_iterations": 0,
+      "reflection_score": null,
+      "refined_question": null,
+      "crag_score": null,
+      "crag_label": null,
+      "used_web_fallback": false,
+      "sql_query": null,
+      "sql_rows": []
+    }
+  },
+  "pairs": {
+    "q1": {
+      "question": "What is the difference between a ConfigMap and a Secret in Kubernetes?",
+      "question_status": 200,
+      "question_answer": "In Kubernetes, a ConfigMap is used to store non-confidential configuration data in key-value pairs, allowing you to decouple configuration from application code. It is not designed to hold sensitive data and does not provide secrecy or encryption. On the other hand, a Secret is specifically intended to store sensitive data such as passwords, tokens, or keys. While Secrets help keep confidential data out of application code, they are stored unencrypted by default in the API server's data store, which poses a security risk if not managed properly.",
+      "question_sources": [
+        "concepts__configuration__secret.txt",
+        "concepts__configuration__configmap.html"
+      ],
+      "question_meta": {
+        "route": "rag",
+        "retrieved_chunks": [
+          {
+            "text": "ivate keys do not establish trusted communication between an SSH client and host server on their own. A secondary means of establishing trust is needed to mitigate \"man in the middle\" attacks, such as a known_hosts file added to a ConfigMap.TLS SecretsThe kubernetes.io/tls Secret type is for storing a certificate and its associated key that are typically used for TLS.One common use for TLS Secrets is to configure encryption in transit for an Ingress, but you can also use it with other resources or directly in your workload. When using this type of Secret, the tls.key and the tls.crt key must be provided in the data (or stringData) field of the Secret configuration, although the API server doesn't actually validate the values for each key.As an alternative to using stringData, you can use the data field to provide the base64 encoded certificate and private key. For details, see Constraints on Secret names and data.The following YAML contains an example config for a TLS Secret:secret/tls",
+            "source": "concepts__configuration__secret.txt",
+            "score": 1.0194684260905351,
+            "retrieval_score": 1.2882013457556938,
+            "rerank_score": 1.8755309581756592
+          },
+          {
+            "text": "traffic). You write the code to look in an environment variable named DATABASE_HOST. Locally, you set that variable to localhost. In the cloud, you set it to refer to a Kubernetes Service that exposes the database component to your cluster. This lets you fetch a container image running in the cloud and debug the exact same code locally if needed.Note:A ConfigMap is not designed to hold large chunks of data. The data stored in a ConfigMap cannot exceed 1 MiB. If you need to store settings that are larger than this limit, you may want to consider mounting a volume or use a separate database or file service.ConfigMap objectA ConfigMap is an API object that lets you store configuration for other objects to use. Unlike most Kubernetes objects that have a spec, a ConfigMap has data and binaryData fields. These fields accept key-value pairs as their values. Both the data field and the binaryData are optional. The data field is designed to contain UTF-8 strings while the binaryData field is de",
+            "source": "concepts__configuration__configmap.html",
+            "score": 0.9631327403657103,
+            "retrieval_score": 1.1969606625258802,
+            "rerank_score": 2.4728567600250244
+          },
+          {
+            "text": "Concepts \u203a Configuration \u203a Configmap Concepts \u203a Configuration \u203a Configmap ConfigMaps | Kubernetes ConfigMapsA ConfigMap is an API object used to store non-confidential data in key-value pairs. Pods can consume ConfigMaps as environment variables, command-line arguments, or as configuration files in a volume.A ConfigMap allows you to decouple environment-specific configuration from your container images, so that your applications are easily portable.Caution:ConfigMap does not provide secrecy or encryption. If the data you want to store are confidential, use a Secret rather than a ConfigMap, or use additional (third party) tools to keep your data private.MotivationUse a ConfigMap for setting configuration data separately from application code.For example, imagine that you are developing an application that you can run on your own computer (for development) and in the cloud (to handle real traffic). You write the code to look in an environment variable named DATABASE_HOST. Locally, you se",
+            "source": "concepts__configuration__configmap.html",
+            "score": 0.8432115843873773,
+            "retrieval_score": 1.034584376430052,
+            "rerank_score": 4.565373420715332
+          },
+          {
+            "text": "Secrets | Kubernetes SecretsA Secret is an object that contains a small amount of sensitive data such as a password, a token, or a key. Such information might otherwise be put in a Pod specification or in a container image. Using a Secret means that you don't need to include confidential data in your application code.Because Secrets can be created independently of the Pods that use them, there is less risk of the Secret (and its data) being exposed during the workflow of creating, viewing, and editing Pods. Kubernetes, and applications that run in your cluster, can also take additional precautions with Secrets, such as avoiding writing sensitive data to nonvolatile storage.Secrets are similar to ConfigMaps but are specifically intended to hold confidential data.Caution:Kubernetes Secrets are, by default, stored unencrypted in the API server's underlying data store (etcd). Anyone with API access can retrieve or modify a Secret, and so can anyone with access to etcd. Additionally, anyone",
+            "source": "concepts__configuration__secret.txt",
+            "score": 0.8166110105251045,
+            "retrieval_score": 1.0199253034547153,
+            "rerank_score": 5.548483371734619
+          }
+        ],
+        "cache_hit": true,
+        "requested_search_mode": "auto",
+        "resolved_search_mode": "hybrid",
+        "resolved_enable_rerank": true,
+        "resolved_enable_hyde": false,
+        "resolved_enable_crag": false,
+        "resolved_enable_self_reflective": false,
+        "auto_enabled": true,
+        "auto_strategy_reason": "direct domain-object comparison favored hybrid retrieval with reranking and no query expansion",
+        "auto_applied_flags": [],
+        "original_question": "What is the difference between a ConfigMap and a Secret in Kubernetes?",
+        "resolved_question": "What is the difference between a ConfigMap and a Secret in Kubernetes?",
+        "resolved_follow_up_subject": null,
+        "reflection_iterations": 0,
+        "reflection_score": null,
+        "refined_question": null,
+        "crag_score": null,
+        "crag_label": null,
+        "used_web_fallback": false,
+        "sql_query": null,
+        "sql_rows": []
+      },
+      "follow_up": "For the non-sensitive one, if I inject it as environment variables instead of a volume, will updates show up automatically, or do I need to restart the Pod?",
+      "follow_status": 200,
+      "follow_answer": "If you inject a ConfigMap as environment variables in a Pod, updates to the ConfigMap will not show up automatically. You will need to restart the Pod to see the changes.",
+      "follow_sources": [
+        "concepts__configuration__configmap.html",
+        "tasks__configure-pod-container__configure-pod-configmap.html"
+      ],
+      "follow_meta": {
+        "route": "rag",
+        "retrieved_chunks": [
+          {
+            "text": "n new keys are projected to the Pod can be as long as the kubelet sync period + cache propagation delay, where the cache propagation delay depends on the chosen cache type (it equals to watch propagation delay, ttl of cache, or zero correspondingly).ConfigMaps consumed as environment variables are not updated automatically and require a pod restart.Note:A container using a ConfigMap as a subPath volume mount will not receive ConfigMap updates.Using Configmaps as environment variablesTo use a Configmap in an environment variable in a Pod:For each container in your Pod specification, add an environment variable for each Configmap key that you want to use to the env[].valueFrom.configMapKeyRef field.Modify your image and/or command line so that the program looks for values in the specified environment variables.This is an example of defining a ConfigMap as a pod environment variable:The following ConfigMap (myconfigmap.yaml) stores two properties: username and access_level:apiVersion: v1",
+            "source": "concepts__configuration__configmap.html",
+            "score": 0.9303139397445436,
+            "retrieval_score": 1.2532515062351128,
+            "rerank_score": 5.07755184173584
+          },
+          {
+            "text": "e two key-value pairs from the ConfigMap have been set as environment variables:kubectl apply -f env-configmap.yaml kubectl logs pod/env-configmap The output is similar to this:... username: \"k8s-admin\" access_level: \"1\" ... Sometimes a Pod won't require access to all the values in a ConfigMap. For example, you could have another Pod which only uses the username value from the ConfigMap. For this use case, you can use the env.valueFrom syntax instead, which lets you select individual keys in a ConfigMap. The name of the environment variable can also be different from the key within the ConfigMap. For example:apiVersion: v1 kind: Pod metadata: name: env-configmap spec: containers: - name: envars-test-container image: nginx env: - name: CONFIGMAP_USERNAME valueFrom: configMapKeyRef: name: myconfigmap key: username In the Pod created from this manifest, you will see that the environment variable CONFIGMAP_USERNAME is set to the value of the username value from the ConfigMap. Other keys fr",
+            "source": "concepts__configuration__configmap.html",
+            "score": 0.8912822592619609,
+            "retrieval_score": 1.3719305210918114,
+            "rerank_score": 1.212690830230713
+          },
+          {
+            "text": "mark the ConfigMap reference as optional in the Pod spec (see Optional ConfigMaps). If you reference a ConfigMap that doesn't exist and you don't mark the reference as optional, the Pod won't start. Similarly, references to keys that don't exist in the ConfigMap will also prevent the Pod from starting, unless you mark the key references as optional.If you use envFrom to define environment variables from ConfigMaps, keys that are considered invalid will be skipped. The pod will be allowed to start, but the invalid names will be recorded in the event log (InvalidVariableNames). The log message lists each skipped key. For example:kubectl get events The output is similar to this:LASTSEEN FIRSTSEEN COUNT NAME KIND SUBOBJECT TYPE REASON SOURCE MESSAGE 0s 0s 1 dapi-test-pod Pod Warning InvalidEnvironmentVariableNames {kubelet, 127.0.0.1} Keys [1badkey, 2alsobad] from the EnvFrom configMap default/myconfig were skipped since they are considered invalid environment variable names. ConfigMaps r",
+            "source": "tasks__configure-pod-container__configure-pod-configmap.html",
+            "score": 0.8195617094437321,
+            "retrieval_score": 1.114199640189718,
+            "rerank_score": 0.8636424541473389
+          },
+          {
+            "text": "traffic). You write the code to look in an environment variable named DATABASE_HOST. Locally, you set that variable to localhost. In the cloud, you set it to refer to a Kubernetes Service that exposes the database component to your cluster. This lets you fetch a container image running in the cloud and debug the exact same code locally if needed.Note:A ConfigMap is not designed to hold large chunks of data. The data stored in a ConfigMap cannot exceed 1 MiB. If you need to store settings that are larger than this limit, you may want to consider mounting a volume or use a separate database or file service.ConfigMap objectA ConfigMap is an API object that lets you store configuration for other objects to use. Unlike most Kubernetes objects that have a spec, a ConfigMap has data and binaryData fields. These fields accept key-value pairs as their values. Both the data field and the binaryData are optional. The data field is designed to contain UTF-8 strings while the binaryData field is de",
+            "source": "concepts__configuration__configmap.html",
+            "score": 0.7683028360091958,
+            "retrieval_score": 1.1038952536824875,
+            "rerank_score": 0.3081105649471283
+          }
+        ],
+        "cache_hit": false,
+        "requested_search_mode": "auto",
+        "resolved_search_mode": "hybrid",
+        "resolved_enable_rerank": true,
+        "resolved_enable_hyde": false,
+        "resolved_enable_crag": true,
+        "resolved_enable_self_reflective": false,
+        "auto_enabled": true,
+        "auto_strategy_reason": "balanced default retrieval for mixed operational questions",
+        "auto_applied_flags": [
+          "enable_crag"
+        ],
+        "original_question": "For the non-sensitive one, if I inject it as environment variables instead of a volume, will updates show up automatically, or do I need to restart the Pod?",
+        "resolved_question": "For the ConfigMap, if I inject it as environment variables instead of a volume, will updates show up automatically, or do I need to restart the Pod?",
+        "resolved_follow_up_subject": "ConfigMap",
+        "reflection_iterations": 0,
+        "reflection_score": null,
+        "refined_question": null,
+        "crag_score": 1.0,
+        "crag_label": "highly_relevant",
+        "used_web_fallback": false,
+        "sql_query": null,
+        "sql_rows": []
+      }
+    },
+    "q2": {
+      "question": "How does a StatefulSet differ from a Deployment for stateful applications?",
+      "question_status": 200,
+      "question_answer": "A StatefulSet differs from a Deployment in several key ways that make it suitable for stateful applications. Firstly, a StatefulSet maintains a sticky identity for each of its Pods, which means each Pod has a persistent identifier that it retains across rescheduling. This is crucial for applications that require stable, unique network identities and persistent storage. Secondly, StatefulSets provide guarantees about the ordering and uniqueness of Pods, supporting ordered, graceful deployment and scaling, as well as ordered, automated rolling updates. In contrast, Deployments manage stateless applications where Pods are interchangeable and do not require stable identifiers or ordered operations.",
+      "question_sources": [
+        "concepts__workloads__controllers__statefulset.docx"
+      ],
+      "question_meta": {
+        "route": "rag",
+        "retrieved_chunks": [
+          {
+            "text": "Concepts \u203a Workloads \u203a Controllers \u203a Statefulset StatefulSets | Kubernetes StatefulSetsA StatefulSet runs a group of Pods, and maintains a sticky identity for each of those Pods. This is useful for managing applications that need persistent storage or a stable, unique network identity.StatefulSet is the workload API object used to manage stateful applications.Manages the deployment and scaling of a set of Pods, and provides guarantees about the ordering and uniqueness of these Pods.Like a Deployment, a StatefulSet manages Pods that are based on an identical container spec. Unlike a Deployment, a StatefulSet maintains a sticky identity for each of its Pods. These pods are created from the same spec, but are not interchangeable: each has a persistent identifier that it maintains across any rescheduling.If you want to use storage volumes to provide persistence for your workload, you can use a StatefulSet as part of the solution. Although individual Pods in a StatefulSet are susceptible to",
+            "source": "concepts__workloads__controllers__statefulset.docx",
+            "score": 1.0878816679140362,
+            "retrieval_score": 1.2644296083982898,
+            "rerank_score": 7.144473552703857
+          },
+          {
+            "text": "a StatefulSet as part of the solution. Although individual Pods in a StatefulSet are susceptible to failure, the persistent Pod identifiers make it easier to match existing volumes to the new Pods that replace any that have failed.Using StatefulSetsStatefulSets are valuable for applications that require one or more of the following:Stable, unique network identifiers.Stable, persistent storage.Ordered, graceful deployment and scaling.Ordered, automated rolling updates.In the above, stable is synonymous with persistence across Pod (re)scheduling. If an application doesn't require any stable identifiers or ordered deployment, deletion, or scaling, you should deploy your application using a workload object that provides a set of stateless replicas. Deployment or ReplicaSet may be better suited to your stateless needs.LimitationsThe storage for a given Pod must either be provisioned by a PersistentVolume Provisioner based on the requested storage class, or pre-provisioned by an admin.Delet",
+            "source": "concepts__workloads__controllers__statefulset.docx",
+            "score": 1.0103591729516448,
+            "retrieval_score": 1.2769368392518299,
+            "rerank_score": 5.592197418212891
+          },
+          {
+            "text": "Pods' PersistentVolume Claims are not deleted when the Pods, or StatefulSet are deleted. This must be done manually.Pod Name LabelWhen the StatefulSet controller creates a Pod, it adds a label, statefulset.kubernetes.io/pod-name, that is set to the name of the Pod. This label allows you to attach a Service to a specific Pod in the StatefulSet.Pod index labelFEATURE STATE: Kubernetes v1.32 [stable](enabled by default)When the StatefulSet controller creates a Pod, the new Pod is labelled with apps.kubernetes.io/pod-index. The value of this label is the ordinal index of the Pod. This label allows you to route traffic to a particular pod index, filter logs/metrics using the pod index label, and more. Note the feature gate PodIndexLabel is enabled and locked by default for this feature, in order to disable it, users will have to use server emulated version v1.31.Deployment and Scaling GuaranteesFor a StatefulSet with N replicas, when Pods are being deployed, they are created sequentially,",
+            "source": "concepts__workloads__controllers__statefulset.docx",
+            "score": 0.8471317668368119,
+            "retrieval_score": 1.1473809523809524,
+            "rerank_score": 1.0771048069000244
+          }
+        ],
+        "cache_hit": false,
+        "requested_search_mode": "auto",
+        "resolved_search_mode": "hybrid",
+        "resolved_enable_rerank": true,
+        "resolved_enable_hyde": false,
+        "resolved_enable_crag": true,
+        "resolved_enable_self_reflective": false,
+        "auto_enabled": true,
+        "auto_strategy_reason": "balanced default retrieval for mixed operational questions",
+        "auto_applied_flags": [
+          "enable_crag"
+        ],
+        "original_question": "How does a StatefulSet differ from a Deployment for stateful applications?",
+        "resolved_question": "How does a StatefulSet differ from a Deployment for stateful applications?",
+        "resolved_follow_up_subject": null,
+        "reflection_iterations": 0,
+        "reflection_score": null,
+        "refined_question": null,
+        "crag_score": 0.9,
+        "crag_label": "highly_relevant",
+        "used_web_fallback": false,
+        "sql_query": null,
+        "sql_rows": []
+      },
+      "follow_up": "Which one would you use for a database, and why?",
+      "follow_status": 200,
+      "follow_answer": "For a database, a StatefulSet is generally preferred over a Deployment. This is because StatefulSets provide guarantees about the ordering and uniqueness of Pods, which are crucial for databases that require stable network identities and persistent storage. StatefulSets ensure that Pods are created and deleted in a specific order, and they maintain a consistent identity across restarts, which is important for maintaining data consistency and integrity in databases. Additionally, StatefulSets do not automatically delete PersistentVolume Claims when Pods are deleted, allowing for data persistence even if the Pods are recreated [concepts__workloads__controllers__statefulset.docx].",
+      "follow_sources": [
+        "concepts__workloads__controllers__statefulset.docx"
+      ],
+      "follow_meta": {
+        "route": "rag",
+        "retrieved_chunks": [
+          {
+            "text": "nning and Ready. If web-0 should fail, after web-1 is Running and Ready, but before web-2 is launched, web-2 will not be launched until web-0 is successfully relaunched and becomes Running and Ready.If a user were to scale the deployed example by patching the StatefulSet such that replicas=1, web-2 would be terminated first. web-1 would not be terminated until web-2 is fully shutdown and deleted. If web-0 were to fail after web-2 has been terminated and is completely shutdown, but prior to web-1's termination, web-1 would not be terminated until web-0 is Running and Ready.Pod Management PoliciesStatefulSet allows you to relax its ordering guarantees while preserving its uniqueness and identity guarantees via its .spec.podManagementPolicy field.OrderedReady Pod ManagementOrderedReady pod management is the default for StatefulSets. It implements the behavior described in Deployment and Scaling Guarantees.Parallel Pod ManagementParallel pod management tells the StatefulSet controller to l",
+            "source": "concepts__workloads__controllers__statefulset.docx",
+            "score": 0.8357716819434169,
+            "retrieval_score": 1.1711711711711712,
+            "rerank_score": -2.3221707344055176
+          },
+          {
+            "text": "Pods' PersistentVolume Claims are not deleted when the Pods, or StatefulSet are deleted. This must be done manually.Pod Name LabelWhen the StatefulSet controller creates a Pod, it adds a label, statefulset.kubernetes.io/pod-name, that is set to the name of the Pod. This label allows you to attach a Service to a specific Pod in the StatefulSet.Pod index labelFEATURE STATE: Kubernetes v1.32 [stable](enabled by default)When the StatefulSet controller creates a Pod, the new Pod is labelled with apps.kubernetes.io/pod-index. The value of this label is the ordinal index of the Pod. This label allows you to route traffic to a particular pod index, filter logs/metrics using the pod index label, and more. Note the feature gate PodIndexLabel is enabled and locked by default for this feature, in order to disable it, users will have to use server emulated version v1.31.Deployment and Scaling GuaranteesFor a StatefulSet with N replicas, when Pods are being deployed, they are created sequentially,",
+            "source": "concepts__workloads__controllers__statefulset.docx",
+            "score": 0.6743741512393105,
+            "retrieval_score": 0.6677198211624442,
+            "rerank_score": -2.025785446166992
+          }
+        ],
+        "cache_hit": false,
+        "requested_search_mode": "auto",
+        "resolved_search_mode": "hybrid",
+        "resolved_enable_rerank": true,
+        "resolved_enable_hyde": false,
+        "resolved_enable_crag": true,
+        "resolved_enable_self_reflective": false,
+        "auto_enabled": true,
+        "auto_strategy_reason": "balanced default retrieval for mixed operational questions",
+        "auto_applied_flags": [
+          "enable_crag"
+        ],
+        "original_question": "Which one would you use for a database, and why?",
+        "resolved_question": "Which one, StatefulSet or Deployment, would you use for a database, and why?",
+        "resolved_follow_up_subject": "StatefulSet or Deployment",
+        "reflection_iterations": 0,
+        "reflection_score": null,
+        "refined_question": null,
+        "crag_score": 0.7,
+        "crag_label": "highly_relevant",
+        "used_web_fallback": false,
+        "sql_query": null,
+        "sql_rows": []
+      }
+    },
+    "q3": {
+      "question": "What is the best practice for managing application secrets securely in Kubernetes?",
+      "question_status": 200,
+      "question_answer": "To manage application secrets securely in Kubernetes, follow these best practices: 1) Enable Encryption at Rest for Secrets to protect them in the etcd data store. 2) Configure RBAC (Role-Based Access Control) rules to enforce least-privilege access to Secrets. 3) Restrict Secret access to specific containers to minimize exposure. 4) Consider using external Secret store providers for additional security. These steps help mitigate the risk of unauthorized access to sensitive data.",
+      "question_sources": [
+        "concepts__configuration__secret.txt"
+      ],
+      "question_meta": {
+        "route": "rag",
+        "retrieved_chunks": [
+          {
+            "text": "What's nextFor guidelines to manage and improve the security of your Secrets, refer to Good practices for Kubernetes Secrets.Learn how to manage Secrets using kubectlLearn how to manage Secrets using config fileLearn how to manage Secrets using kustomizeRead the API reference for SecretFeedbackWas this page helpful?Yes NoThanks for the feedback. If you have a specific, answerable question about how to use Kubernetes, ask it on Stack Overflow. Open an issue in the GitHub Repository if you want to report a problem or suggest an improvement.Last modified March 17, 2026 at 1:33 AM PST: Improve security clarification for Kubernetes Secrets (#54644) (8af7916eb8)",
+            "source": "concepts__configuration__secret.txt",
+            "score": 0.8285714285714285,
+            "retrieval_score": 0.03252247488101534,
+            "rerank_score": 6.098694324493408
+          },
+          {
+            "text": "Secrets | Kubernetes SecretsA Secret is an object that contains a small amount of sensitive data such as a password, a token, or a key. Such information might otherwise be put in a Pod specification or in a container image. Using a Secret means that you don't need to include confidential data in your application code.Because Secrets can be created independently of the Pods that use them, there is less risk of the Secret (and its data) being exposed during the workflow of creating, viewing, and editing Pods. Kubernetes, and applications that run in your cluster, can also take additional precautions with Secrets, such as avoiding writing sensitive data to nonvolatile storage.Secrets are similar to ConfigMaps but are specifically intended to hold confidential data.Caution:Kubernetes Secrets are, by default, stored unencrypted in the API server's underlying data store (etcd). Anyone with API access can retrieve or modify a Secret, and so can anyone with access to etcd. Additionally, anyone",
+            "source": "concepts__configuration__secret.txt",
+            "score": 0.7525162365167247,
+            "retrieval_score": 0.032266458495966696,
+            "rerank_score": 3.2664599418640137
+          },
+          {
+            "text": "access can retrieve or modify a Secret, and so can anyone with access to etcd. Additionally, anyone who is authorized to create a Pod in a namespace can use that access to read any Secret in that namespace; this includes indirect access such as the ability to create a Deployment.In order to safely use Secrets, take at least the following steps:Enable Encryption at Rest for Secrets.Enable or configure RBAC rules with least-privilege access to Secrets.Restrict Secret access to specific containers.Consider using external Secret store providers.For more guidelines to manage and improve the security of your Secrets, refer to Good practices for Kubernetes Secrets.See Information security for Secrets for more details.Uses for SecretsYou can use Secrets for purposes such as the following:Set environment variables for a container.Provide credentials such as SSH keys or passwords to Pods.Allow the kubelet to pull container images from private registries.The Kubernetes control plane also uses Se",
+            "source": "concepts__configuration__secret.txt",
+            "score": 0.7015064371175305,
+            "retrieval_score": 0.031754032258064516,
+            "rerank_score": 4.97186279296875
+          }
+        ],
+        "cache_hit": false,
+        "requested_search_mode": "auto",
+        "resolved_search_mode": "hybrid",
+        "resolved_enable_rerank": true,
+        "resolved_enable_hyde": false,
+        "resolved_enable_crag": true,
+        "resolved_enable_self_reflective": false,
+        "auto_enabled": true,
+        "auto_strategy_reason": "operational guidance/action query favored hybrid retrieval with grounding checks",
+        "auto_applied_flags": [
+          "enable_crag"
+        ],
+        "original_question": "What is the best practice for managing application secrets securely in Kubernetes?",
+        "resolved_question": "What is the best practice for managing application secrets securely in Kubernetes?",
+        "resolved_follow_up_subject": null,
+        "reflection_iterations": 0,
+        "reflection_score": null,
+        "refined_question": null,
+        "crag_score": 0.8,
+        "crag_label": "highly_relevant",
+        "used_web_fallback": false,
+        "sql_query": null,
+        "sql_rows": []
+      },
+      "follow_up": "Would you still use that same object for a database password, or would you combine it with something else?",
+      "follow_status": 200,
+      "follow_answer": "Using a Kubernetes Secret for a database password is a common practice because it helps keep sensitive data out of application code and Pod specifications. However, due to the default unencrypted storage of Secrets in etcd, it's advisable to combine Secrets with additional security measures. These measures include enabling Encryption at Rest for Secrets, configuring RBAC rules to enforce least-privilege access, and considering the use of external Secret store providers for enhanced security. This layered approach helps mitigate the risk of unauthorized access to sensitive data.",
+      "follow_sources": [
+        "concepts__configuration__secret.txt"
+      ],
+      "follow_meta": {
+        "route": "rag",
+        "retrieved_chunks": [
+          {
+            "text": "Secrets | Kubernetes SecretsA Secret is an object that contains a small amount of sensitive data such as a password, a token, or a key. Such information might otherwise be put in a Pod specification or in a container image. Using a Secret means that you don't need to include confidential data in your application code.Because Secrets can be created independently of the Pods that use them, there is less risk of the Secret (and its data) being exposed during the workflow of creating, viewing, and editing Pods. Kubernetes, and applications that run in your cluster, can also take additional precautions with Secrets, such as avoiding writing sensitive data to nonvolatile storage.Secrets are similar to ConfigMaps but are specifically intended to hold confidential data.Caution:Kubernetes Secrets are, by default, stored unencrypted in the API server's underlying data store (etcd). Anyone with API access can retrieve or modify a Secret, and so can anyone with access to etcd. Additionally, anyone",
+            "source": "concepts__configuration__secret.txt",
+            "score": 0.82,
+            "retrieval_score": 0.06505334374186834,
+            "rerank_score": -0.16540396213531494
+          },
+          {
+            "text": "sts from the frontend (for example, over localhost networking).With this partitioned approach, an attacker now has to trick the application server into doing something rather arbitrary, which may be harder than getting it to read a file.Alternatives to SecretsRather than using a Secret to protect confidential data, you can pick from alternatives.Here are some of your options:If your cloud-native component needs to authenticate to another application that you know is running within the same Kubernetes cluster, you can use a ServiceAccount and its tokens to identify your client.There are third-party tools that you can run, either within or outside your cluster, that manage sensitive data. For example, a service that Pods access over HTTPS, that reveals a Secret if the client correctly authenticates (for example, with a ServiceAccount token).For authentication, you can implement a custom signer for X.509 certificates, and use CertificateSigningRequests to let that custom signer issue cert",
+            "source": "concepts__configuration__secret.txt",
+            "score": 0.7025142373052417,
+            "retrieval_score": 0.06376447436898257,
+            "rerank_score": -2.2585010528564453
+          },
+          {
+            "text": "access can retrieve or modify a Secret, and so can anyone with access to etcd. Additionally, anyone who is authorized to create a Pod in a namespace can use that access to read any Secret in that namespace; this includes indirect access such as the ability to create a Deployment.In order to safely use Secrets, take at least the following steps:Enable Encryption at Rest for Secrets.Enable or configure RBAC rules with least-privilege access to Secrets.Restrict Secret access to specific containers.Consider using external Secret store providers.For more guidelines to manage and improve the security of your Secrets, refer to Good practices for Kubernetes Secrets.See Information security for Secrets for more details.Uses for SecretsYou can use Secrets for purposes such as the following:Set environment variables for a container.Provide credentials such as SSH keys or passwords to Pods.Allow the kubelet to pull container images from private registries.The Kubernetes control plane also uses Se",
+            "source": "concepts__configuration__secret.txt",
+            "score": 0.6523858359764763,
+            "retrieval_score": 0.06128897512598701,
+            "rerank_score": -2.279383420944214
+          },
+          {
+            "text": "ication. When using this Secret type, you will have to specify a ssh-privatekey key-value pair in the data (or stringData) field as the SSH credential to use.The following manifest is an example of a Secret used for SSH public/private key authentication:secret/ssh-auth-secret.yaml apiVersion: v1 kind: Secret metadata: name: secret-ssh-auth type: kubernetes.io/ssh-auth data: # the data is abbreviated in this example ssh-privatekey: | UG91cmluZzYlRW1vdGljb24lU2N1YmE=The SSH authentication Secret type is provided only for convenience. You can create an Opaque type for credentials used for SSH authentication. However, using the defined and public Secret type (kubernetes.io/ssh-auth) helps other people to understand the purpose of your Secret, and sets a convention for what key names to expect. The Kubernetes API verifies that the required keys are set for a Secret of this type.Caution:SSH private keys do not establish trusted communication between an SSH client and host server on their own",
+            "source": "concepts__configuration__secret.txt",
+            "score": 0.5946620872749987,
+            "retrieval_score": 0.0567518638400451,
+            "rerank_score": -3.6921517848968506
+          },
+          {
+            "text": "being directly exposed to the Pod. For example, Secrets can hold credentials that other parts of the system should use to interact with external systems on your behalf.Secret volume sources are validated to ensure that the specified object reference actually points to an object of type Secret. Therefore, a Secret needs to be created before any Pods that depend on it.If the Secret cannot be fetched (perhaps because it does not exist, or due to a temporary lack of connection to the API server) the kubelet periodically retries running that Pod. The kubelet also reports an Event for that Pod, including details of the problem fetching the Secret.Optional SecretsWhen you reference a Secret in a Pod, you can mark the Secret as optional, such as in the following example. If an optional Secret doesn't exist, Kubernetes ignores it.secret/optional-secret.yaml apiVersion: v1 kind: Pod metadata: name: mypod spec: containers: - name: mypod image: redis volumeMounts: - name: foo mountPath: \"/etc/foo",
+            "source": "concepts__configuration__secret.txt",
+            "score": 0.5800233383351115,
+            "retrieval_score": 0.054629984026086674,
+            "rerank_score": -3.639359474182129
+          }
+        ],
+        "cache_hit": false,
+        "requested_search_mode": "auto",
+        "resolved_search_mode": "dense",
+        "resolved_enable_rerank": true,
+        "resolved_enable_hyde": true,
+        "resolved_enable_crag": false,
+        "resolved_enable_self_reflective": false,
+        "auto_enabled": true,
+        "auto_strategy_reason": "semantic/conceptual question favored dense retrieval with HyDE and reranking",
+        "auto_applied_flags": [
+          "enable_hyde"
+        ],
+        "original_question": "Would you still use that same object for a database password, or would you combine it with something else?",
+        "resolved_question": "Would you still use a Secret for a database password, or would you combine it with something else?",
+        "resolved_follow_up_subject": "Secret",
+        "reflection_iterations": 0,
+        "reflection_score": null,
+        "refined_question": null,
+        "crag_score": null,
+        "crag_label": null,
+        "used_web_fallback": false,
+        "sql_query": null,
+        "sql_rows": []
+      }
+    },
+    "q4": {
+      "question": "How do I expose a Kubernetes Deployment to external traffic?",
+      "question_status": 200,
+      "question_answer": "To expose a Kubernetes Deployment to external traffic, you can use the `kubectl expose` command. For example, if you have a Deployment named 'kubernetes-bootcamp', you can expose it using a NodePort service with the following command: `kubectl expose deployment/kubernetes-bootcamp --type=\"NodePort\" --port 8080`. This will create a Service that routes external traffic to the Deployment. If you need to expose the Deployment using a LoadBalancer, you can use: `kubectl expose deployment/kubernetes-bootcamp --type=\"LoadBalancer\" --port 8080`.",
+      "question_sources": [
+        "tutorials__kubernetes-basics__expose__expose-intro.docx",
+        "concepts__services-networking__service.txt",
+        "tutorials__kubernetes-basics__scale__scale-intro.html"
+      ],
+      "question_meta": {
+        "route": "rag",
+        "retrieved_chunks": [
+          {
+            "text": "Pods:kubectl get pods If no Pods are running then it means the objects from the previous tutorials were cleaned up. In this case, go back and recreate the deployment from the Using kubectl to create a Deployment tutorial. Please wait a couple of seconds and list the Pods again. You can continue once you see the one Pod running.Next, let\u2019s list the current Services from our cluster:kubectl get services To expose the deployment to external traffic, we'll use the kubectl expose command with the --type=NodePort option:kubectl expose deployment/kubernetes-bootcamp --type=\"NodePort\" --port 8080 We have now a running Service called kubernetes-bootcamp. Here we see that the Service received a unique cluster-IP, an internal port and an external-IP (the IP of the Node).To find out what port was opened externally (for the type: NodePort Service) we\u2019ll run the describe service subcommand:kubectl describe services/kubernetes-bootcamp Create an environment variable called NODE_PORT that has the valu",
+            "source": "tutorials__kubernetes-basics__expose__expose-intro.docx",
+            "score": 0.8999999999999999,
+            "retrieval_score": 0.03125763125763126,
+            "rerank_score": 7.446165084838867
+          },
+          {
+            "text": "n in DNS for Services and Pods.Virtual IP addressing mechanismRead Virtual IPs and Service Proxies explains the mechanism Kubernetes provides to expose a Service with a virtual IP address.Traffic policiesYou can set the .spec.internalTrafficPolicy and .spec.externalTrafficPolicy fields to control how Kubernetes routes traffic to healthy (\u201cready\u201d) backends.See Traffic Policies for more details.Traffic distribution controlThe .spec.trafficDistribution field provides another way to influence traffic routing within a Kubernetes Service. While traffic policies focus on strict semantic guarantees, traffic distribution allows you to express preferences (such as routing to topologically closer endpoints). This can help optimize for performance, cost, or reliability. In Kubernetes 1.36, the following values are supported:PreferSameZoneIndicates a preference for routing traffic to endpoints that are in the same zone as the client.PreferSameNodeIndicates a preference for routing traffic to endpoi",
+            "source": "concepts__services-networking__service.txt",
+            "score": 0.8144349248769043,
+            "retrieval_score": 0.02964254577157803,
+            "rerank_score": 5.050990581512451
+          },
+          {
+            "text": "t publicly via a Service. The Deployment created only one Pod for running our application. When traffic increases, we will need to scale the application to keep up with user demand.If you haven't worked through the earlier sections, start from Using minikube to create a cluster.Scaling is accomplished by changing the number of replicas in a Deployment.Note:If you are trying this after the previous section, then you may have deleted the service you created, or have created a Service of type: NodePort. In this section, it is assumed that a service with type: LoadBalancer is created for the kubernetes-bootcamp Deployment.If you have not deleted the Service created in the previous section, first delete that Service and then run the following command to create a new Service with its type set to LoadBalancer:kubectl expose deployment/kubernetes-bootcamp --type=\"LoadBalancer\" --port 8080 Scaling overviewScaling is accomplished by changing the number of replicas in a Deployment.Scaling out a D",
+            "source": "tutorials__kubernetes-basics__scale__scale-intro.html",
+            "score": 0.7409040790805589,
+            "retrieval_score": 0.02946236559139785,
+            "rerank_score": 4.196288108825684
+          },
+          {
+            "text": "Tutorials \u203a Kubernetes-Basics \u203a Expose \u203a Expose-Intro Using a Service to Expose Your App | Kubernetes Using a Service to Expose Your AppObjectivesLearn about a Service in Kubernetes.Understand how labels and selectors relate to a Service.Expose an application outside a Kubernetes cluster.Before you beginThe shell commands in this tutorial use POSIX shell syntax, which is supported by the default shells on most Linux and macOS systems (for example, bash, zsh, or sh). Windows users must use a POSIX-compatible shell such as Windows Subsystem for Linux (WSL) or Git Bash to run the commands as written. Commands that use export, $(), and similar constructs are not compatible with PowerShell or the Windows Command Prompt.Overview of Kubernetes ServicesKubernetes Pods are mortal. Pods have a lifecycle. When a worker node dies, the Pods running on the Node are also lost. A Replicaset might then dynamically drive the cluster back to the desired state via the creation of new Pods to keep your app",
+            "source": "tutorials__kubernetes-basics__expose__expose-intro.docx",
+            "score": 0.7279441572373034,
+            "retrieval_score": 0.029418126757516764,
+            "rerank_score": 3.684710741043091
+          },
+          {
+            "text": "exposed on those externalIPs. When network traffic arrives into the cluster, with the external IP (as destination IP) and the port matching that Service, rules and routes that Kubernetes has configured ensure that the traffic is routed to one of the endpoints for that Service.When you define a Service, you can specify externalIPs for any service type. In the example below, the Service named \"my-service\" can be accessed by clients using TCP, on \"198.51.100.32:80\" (calculated from .spec.externalIPs[] and .spec.ports[].port).apiVersion: v1 kind: Service metadata: name: my-service spec: selector: app.kubernetes.io/name: MyApp ports: - name: http protocol: TCP port: 80 targetPort: 49152 externalIPs: - 198.51.100.32 Note:Kubernetes does not manage allocation of externalIPs; these are the responsibility of the cluster administrator.API ObjectService is a top-level resource in the Kubernetes REST API. You can find more details about the Service API object.What's nextLearn more about Services a",
+            "source": "concepts__services-networking__service.txt",
+            "score": 0.604002192578446,
+            "retrieval_score": 0.015873015873015872,
+            "rerank_score": 6.435635089874268
+          }
+        ],
+        "cache_hit": false,
+        "requested_search_mode": "auto",
+        "resolved_search_mode": "hybrid",
+        "resolved_enable_rerank": true,
+        "resolved_enable_hyde": false,
+        "resolved_enable_crag": true,
+        "resolved_enable_self_reflective": false,
+        "auto_enabled": true,
+        "auto_strategy_reason": "operational guidance/action query favored hybrid retrieval with grounding checks",
+        "auto_applied_flags": [
+          "enable_crag"
+        ],
+        "original_question": "How do I expose a Kubernetes Deployment to external traffic?",
+        "resolved_question": "How do I expose a Kubernetes Deployment to external traffic?",
+        "resolved_follow_up_subject": null,
+        "reflection_iterations": 0,
+        "reflection_score": null,
+        "refined_question": null,
+        "crag_score": 1.0,
+        "crag_label": "highly_relevant",
+        "used_web_fallback": false,
+        "sql_query": null,
+        "sql_rows": []
+      },
+      "follow_up": "If I only need internal cluster access, would I still use that same resource?",
+      "follow_status": 200,
+      "follow_answer": "Yes, you would still use a Service even if you only need internal cluster access. In Kubernetes, a Service is used to expose an application running on a set of Pods as a network service. For internal access, you can use a Service of type 'ClusterIP', which is the default type. This type of Service makes the application accessible only within the cluster, using a virtual IP address that never hits the wire, as described in the provided documents [concepts__services-networking__service.txt, tutorials__services__connect-applications-service.docx].",
+      "follow_sources": [
+        "concepts__services-networking__service.txt",
+        "tutorials__services__connect-applications-service.docx"
+      ],
+      "follow_meta": {
+        "route": "rag",
+        "retrieved_chunks": [
+          {
+            "text": "ur cluster, you can start its Pods, add appropriate selectors or endpoints, and change the Service's type.Caution:You may have trouble using ExternalName for some common protocols, including HTTP and HTTPS. If you use ExternalName then the hostname used by clients inside your cluster is different from the name that the ExternalName references.For protocols that use hostnames this difference may lead to errors or unexpected responses. HTTP requests will have a Host: header that the origin server does not recognize; TLS servers will not be able to provide a certificate matching the hostname that the client connected to.Headless ServicesSometimes you don't need load-balancing and a single Service IP. In this case, you can create what are termed headless Services, by explicitly specifying \"None\" for the cluster IP address (.spec.clusterIP).You can use a headless Service to interface with other service discovery mechanisms, without being tied to Kubernetes' implementation.For headless Servi",
+            "source": "concepts__services-networking__service.txt",
+            "score": 0.690879545477726,
+            "retrieval_score": 0.06402049075403121,
+            "rerank_score": 0.2798513174057007
+          },
+          {
+            "text": "in your cluster. Note that the Service IP is completely virtual, it never hits the wire. If you're curious about how this works you can read more about the service proxy.Accessing the ServiceKubernetes supports 2 primary modes of finding a Service - environment variables and DNS. The former works out of the box while the latter requires the CoreDNS cluster addon.Note:If the service environment variables are not desired (because possible clashing with expected program ones, too many variables to process, only using DNS, etc) you can disable this mode by setting the enableServiceLinks flag to false on the pod spec.Environment VariablesWhen a Pod runs on a Node, the kubelet adds a set of environment variables for each active Service. This introduces an ordering problem. To see why, inspect the environment of your running nginx Pods (your Pod name will be different):kubectl exec my-nginx-3800858182-jr4a2 -- printenv | grep SERVICE KUBERNETES_SERVICE_HOST=10.0.0.1 KUBERNETES_SERVICE_PORT=4",
+            "source": "tutorials__services__connect-applications-service.docx",
+            "score": 0.5400865447047418,
+            "retrieval_score": 0.059088456427846436,
+            "rerank_score": -2.5375452041625977
+          },
+          {
+            "text": "an Ingress or a Gateway.NodePortExposes the Service on each Node's IP at a static port (the NodePort). To make the node port available, Kubernetes sets up a cluster IP address, the same as if you had requested a Service of type: ClusterIP.LoadBalancerExposes the Service externally using an external load balancer. Kubernetes does not directly offer a load balancing component; you must provide one, or you can integrate your Kubernetes cluster with a cloud provider.ExternalNameMaps the Service to the contents of the externalName field (for example, to the hostname api.foo.bar.example). The mapping configures your cluster's DNS server to return a CNAME record with that external hostname value. No proxying of any kind is set up.The type field in the Service API is designed as nested functionality - each level adds to the previous. However there is an exception to this nested design. You can define a LoadBalancer Service by disabling the load balancer NodePort allocation.type: ClusterIPThis",
+            "source": "concepts__services-networking__service.txt",
+            "score": 0.5151878576215787,
+            "retrieval_score": 0.058619398407301,
+            "rerank_score": -2.3150200843811035
+          }
+        ],
+        "cache_hit": false,
+        "requested_search_mode": "auto",
+        "resolved_search_mode": "dense",
+        "resolved_enable_rerank": true,
+        "resolved_enable_hyde": true,
+        "resolved_enable_crag": false,
+        "resolved_enable_self_reflective": false,
+        "auto_enabled": true,
+        "auto_strategy_reason": "semantic/conceptual question favored dense retrieval with HyDE and reranking",
+        "auto_applied_flags": [
+          "enable_hyde"
+        ],
+        "original_question": "If I only need internal cluster access, would I still use that same resource?",
+        "resolved_question": "If I only need internal cluster access, would I still use a Service?",
+        "resolved_follow_up_subject": "Service",
+        "reflection_iterations": 0,
+        "reflection_score": null,
+        "refined_question": null,
+        "crag_score": null,
+        "crag_label": null,
+        "used_web_fallback": false,
+        "sql_query": null,
+        "sql_rows": []
+      }
+    },
+    "q5": {
+      "question": "When will my pod be ready to serve traffic?",
+      "question_status": 200,
+      "question_answer": "A pod will be ready to serve traffic when all its containers are ready and all conditions specified in the readiness gates have a status equal to 'True'. Additionally, if a readiness probe is configured, it must succeed for the pod to be marked as ready. If the readiness probe fails, the pod will be marked as unready and will not receive traffic from any services.",
+      "question_sources": [
+        "reference__kubernetes-api__workload-resources__pod-v1.docx",
+        "tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx"
+      ],
+      "question_meta": {
+        "route": "rag",
+        "retrieved_chunks": [
+          {
+            "text": "pod may be active on the node relative to StartTime before the system will actively try to mark it failed and kill associated containers. Value must be a positive integer.readinessGates ([]PodReadinessGate)Atomic: will be replaced during a mergeIf specified, all readiness gates will be evaluated for pod readiness. A pod is ready when all its containers are ready AND all conditions specified in the readiness gates have status equal to \"True\" More info: https://git.k8s.io/enhancements/keps/sig-network/580-pod-readiness-gatesPodReadinessGate contains the reference to a pod conditionreadinessGates.conditionType (string), requiredConditionType refers to a condition in the pod's condition list with matching type.restartPolicy (string)Restart policy for all containers within the pod. One of Always, OnFailure, Never. In some contexts, only a subset of those values may be permitted. Default to Always. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#restart-policyPo",
+            "source": "reference__kubernetes-api__workload-resources__pod-v1.docx",
+            "score": 0.803817583099947,
+            "retrieval_score": 0.030158730158730156,
+            "rerank_score": 1.1601320505142212
+          },
+          {
+            "text": "s, the Pod will be marked as ready and will receive traffic from services. If the readiness probe fails, the pod will be marked unready and will not receive traffic from any services.To try the TCP liveness check, create a Pod:kubectl apply -f https://k8s.io/examples/pods/probe/tcp-liveness-readiness.yaml After 15 seconds, view Pod events to verify that liveness probes:kubectl describe pod goproxy Define a gRPC liveness probeFEATURE STATE: Kubernetes v1.27 [stable]If your application implements the gRPC Health Checking Protocol, this example shows how to configure Kubernetes to use it for application liveness checks. Similarly you can configure readiness and startup probes.Here is an example manifest:pods/probe/grpc-liveness.yaml apiVersion: v1 kind: Pod metadata: name: etcd-with-grpc spec: containers: - name: etcd image: registry.k8s.io/etcd:3.5.1-0 command: [ \"/usr/local/bin/etcd\", \"--data-dir\", \"/var/lib/etcd\", \"--listen-client-urls\", \"http://0.0.0.0:2379\", \"--advertise-client-urls\"",
+            "source": "tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx",
+            "score": 0.8008613914294688,
+            "retrieval_score": 0.02637768817204301,
+            "rerank_score": 3.6469404697418213
+          }
+        ],
+        "cache_hit": false,
+        "requested_search_mode": "auto",
+        "resolved_search_mode": "hybrid",
+        "resolved_enable_rerank": true,
+        "resolved_enable_hyde": false,
+        "resolved_enable_crag": true,
+        "resolved_enable_self_reflective": false,
+        "auto_enabled": true,
+        "auto_strategy_reason": "balanced default retrieval for mixed operational questions",
+        "auto_applied_flags": [
+          "enable_crag"
+        ],
+        "original_question": "When will my pod be ready to serve traffic?",
+        "resolved_question": "When will my pod be ready to serve traffic?",
+        "resolved_follow_up_subject": null,
+        "reflection_iterations": 0,
+        "reflection_score": null,
+        "refined_question": null,
+        "crag_score": 0.9,
+        "crag_label": "highly_relevant",
+        "used_web_fallback": false,
+        "sql_query": null,
+        "sql_rows": []
+      },
+      "follow_up": "If that probe fails, will Services still send traffic to it?",
+      "follow_status": 200,
+      "follow_answer": "If a readiness probe fails, the Pod will be marked as unready and will not receive traffic from any Services. This ensures that only Pods that are ready to handle requests are included in the Service's endpoints.",
+      "follow_sources": [
+        "tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx",
+        "reference__kubernetes-api__workload-resources__pod-v1.docx"
+      ],
+      "follow_meta": {
+        "route": "rag",
+        "retrieved_chunks": [
+          {
+            "text": "s, the Pod will be marked as ready and will receive traffic from services. If the readiness probe fails, the pod will be marked unready and will not receive traffic from any services.To try the TCP liveness check, create a Pod:kubectl apply -f https://k8s.io/examples/pods/probe/tcp-liveness-readiness.yaml After 15 seconds, view Pod events to verify that liveness probes:kubectl describe pod goproxy Define a gRPC liveness probeFEATURE STATE: Kubernetes v1.27 [stable]If your application implements the gRPC Health Checking Protocol, this example shows how to configure Kubernetes to use it for application liveness checks. Similarly you can configure readiness and startup probes.Here is an example manifest:pods/probe/grpc-liveness.yaml apiVersion: v1 kind: Pod metadata: name: etcd-with-grpc spec: containers: - name: etcd image: registry.k8s.io/etcd:3.5.1-0 command: [ \"/usr/local/bin/etcd\", \"--data-dir\", \"/var/lib/etcd\", \"--listen-client-urls\", \"http://0.0.0.0:2379\", \"--advertise-client-urls\"",
+            "source": "tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx",
+            "score": 0.6333333333333333,
+            "retrieval_score": 0.014285714285714285,
+            "rerank_score": 6.029056549072266
+          },
+          {
+            "text": "the worst case startup time.So, the previous example would become:ports: - name: liveness-port containerPort: 8080 livenessProbe: httpGet: path: /healthz port: liveness-port failureThreshold: 1 periodSeconds: 10 startupProbe: httpGet: path: /healthz port: liveness-port failureThreshold: 30 periodSeconds: 10 Thanks to the startup probe, the application will have a maximum of 5 minutes (30 * 10 = 300s) to finish its startup. Once the startup probe has succeeded once, the liveness probe takes over to provide a fast response to container deadlocks. If the startup probe never succeeds, the container is killed after 300s and subject to the pod's restartPolicy.Define readiness probesSometimes, applications are temporarily unable to serve traffic. For example, an application might need to load large data or configuration files during startup, or depend on external services after startup. In such cases, you don't want to kill the application, but you don't want to send it requests either. Kuber",
+            "source": "tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx",
+            "score": 0.3997592913091334,
+            "retrieval_score": 0.015151515151515152,
+            "rerank_score": 2.6639323234558105
+          },
+          {
+            "text": "o/goproxy:0.1 ports: - containerPort: 8080 readinessProbe: tcpSocket: port: 8080 initialDelaySeconds: 15 periodSeconds: 10 livenessProbe: tcpSocket: port: 8080 initialDelaySeconds: 15 periodSeconds: 10 As you can see, configuration for a TCP check is quite similar to an HTTP check. This example uses both readiness and liveness probes. The kubelet will run the first liveness probe 15 seconds after the container starts. This will attempt to connect to the goproxy container on port 8080. If the liveness probe fails, the container will be restarted. The kubelet will continue to run this check every 10 seconds.In addition to the liveness probe, this configuration includes a readiness probe. The kubelet will run the first readiness probe 15 seconds after the container starts. Similar to the liveness probe, this will attempt to connect to the goproxy container on port 8080. If the probe succeeds, the Pod will be marked as ready and will receive traffic from services. If the readiness probe fa",
+            "source": "tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx",
+            "score": 0.36031141334778416,
+            "retrieval_score": 0.015873015873015872,
+            "rerank_score": 0.5641019344329834
+          },
+          {
+            "text": "es, whichever is smaller. Defaults to File. Cannot be updated.Possible enum values:\"FallbackToLogsOnError\" will read the most recent contents of the container logs for the container status message when the container exits with an error and the terminationMessagePath has no contents.\"File\" is the default behavior and will set the container status message to the contents of the container's terminationMessagePath when the container exits.livenessProbe (Probe)Periodic probe of container liveness. Container will be restarted if the probe fails. Cannot be updated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probesreadinessProbe (Probe)Periodic probe of container service readiness. Container will be removed from service endpoints if the probe fails. Cannot be updated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probesstartupProbe (Probe)StartupProbe indicates that the Pod has successfully initialized. If speci",
+            "source": "reference__kubernetes-api__workload-resources__pod-v1.docx",
+            "score": 0.33952432159130175,
+            "retrieval_score": 0.015384615384615385,
+            "rerank_score": 1.374013066291809
+          },
+          {
+            "text": "rs are considered as probe failures.If ExecProbeTimeout feature gate is set to false, grpc-health-probe does not respect the timeoutSeconds setting (which defaults to 1s), while built-in probe would fail on timeout.Use a named portYou can use a named port for HTTP and TCP probes. gRPC probes do not support named ports.For example:ports: - name: liveness-port containerPort: 8080 livenessProbe: httpGet: path: /healthz port: liveness-port Protect slow starting containers with startup probesSometimes, you have to deal with applications that require additional startup time on their first initialization. In such cases, it can be tricky to set up liveness probe parameters without compromising the fast response to deadlocks that motivated such a probe. The solution is to set up a startup probe with the same command, HTTP or TCP check, with a failureThreshold * periodSeconds long enough to cover the worst case startup time.So, the previous example would become:ports: - name: liveness-port conta",
+            "source": "tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx",
+            "score": 0.3387888058299836,
+            "retrieval_score": 0.014705882352941176,
+            "rerank_score": 0.27480414509773254
+          }
+        ],
+        "cache_hit": false,
+        "requested_search_mode": "auto",
+        "resolved_search_mode": "hybrid",
+        "resolved_enable_rerank": true,
+        "resolved_enable_hyde": false,
+        "resolved_enable_crag": true,
+        "resolved_enable_self_reflective": false,
+        "auto_enabled": true,
+        "auto_strategy_reason": "balanced default retrieval for mixed operational questions",
+        "auto_applied_flags": [
+          "enable_crag"
+        ],
+        "original_question": "If that probe fails, will Services still send traffic to it?",
+        "resolved_question": "If that probe fails, will Services still send traffic to it?",
+        "resolved_follow_up_subject": null,
+        "reflection_iterations": 0,
+        "reflection_score": null,
+        "refined_question": null,
+        "crag_score": 0.9,
+        "crag_label": "highly_relevant",
+        "used_web_fallback": false,
+        "sql_query": null,
+        "sql_rows": []
+      }
+    }
+  }
+}
