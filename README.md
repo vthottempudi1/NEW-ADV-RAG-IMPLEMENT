@@ -48,8 +48,8 @@ That makes it much closer to a real enterprise AI backend than a basic chatbot d
 - Dual retrieval experience: `Manual` mode for feature demos and `Auto` mode for backend-selected production retrieval
 - Human-in-the-loop SQL: LangGraph interrupt flow pauses SQL execution until approved
 - Safer Text-to-SQL: `sqlglot` AST validation allows only safe read-only query shapes
-- 9-layer security baseline: validation, auth, rate limits, token budgets, input restructuring, prompt-injection checks, moderation/redaction, hardened prompt/context isolation, and output validation
-- 5-tier query cache: intent, RAG answer, SQL generation, SQL result, and embeddings
+- 9-layer security pipeline: validation, auth, rate limits, token budgets, input restructuring, prompt-injection checks, moderation/redaction, hardened prompt/context isolation, and output validation
+- 5 active cache tiers: RAG answer, SQL generation, SQL result, approved SQL/hybrid answer, and embeddings
 - Duplicate-safe ingestion: SHA-256 content hashing prevents re-indexing the same document
 - Admin observability: health, cache stats, cache clear, budget stats, runtime info, and rate-limit inspection
 - Production deployment: HTTPS custom domains, ECS Fargate services, ALBs, Route 53, ACM, S3, RDS, and Qdrant Cloud
@@ -201,7 +201,7 @@ SQL execution does not have to happen immediately. The graph can pause and retur
 
 For questions that need both database facts and document-grounded policy/runbook context, the system combines both into one answer.
 
-## 9-Layer Security Baseline
+## 9-Layer Security Pipeline
 
 This repo intentionally highlights security and guardrails because hiring managers usually want to know whether a project is just "LLM glue" or something closer to a safe backend.
 
@@ -234,12 +234,11 @@ Implemented layers:
 9. Output validation
    Prevents unsafe response patterns such as leaking hidden prompt/instruction content
 
+These are nine implemented defensive checkpoints, not nine independent security products. Input injection checks, PII redaction, and output checks are intentionally lightweight and primarily pattern-based; they provide a practical baseline that should be augmented with stronger policy engines or model-based classifiers for higher-risk production environments.
+
 ## Caching Topology
 
-The query-time cache has 5 tiers:
-
-- `intent`
-  caches question routing intent
+The application actively uses 5 query-time cache tiers:
 
 - `rag_answer`
   caches full RAG answers with retrieval context included in the cache key
@@ -250,8 +249,13 @@ The query-time cache has 5 tiers:
 - `sql_result`
   caches SQL execution results
 
+- `approved_answer`
+  caches completed SQL and hybrid answers only after the human approval flow finishes
+
 - `embedding`
   caches embeddings for repeated text
+
+The cache service also reserves an `intent` namespace, but the current deterministic intent router does not read or write that tier. It is therefore not counted among the five active tiers.
 
 Important design note:
 
