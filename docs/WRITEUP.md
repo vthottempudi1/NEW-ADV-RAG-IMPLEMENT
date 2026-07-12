@@ -773,9 +773,13 @@ The final controls are as important as the scores:
 - strict gates operate per question and in aggregate;
 - consumed holdouts become regression suites;
 - sealed v4 was consumed once and its three actionable findings became a regression suite;
-- sealed v5 is checksummed as the next one-time unseen measurement;
+- sealed v5 was consumed once and its eight actionable findings became a regression suite;
 - raw reports are excluded from Git and replaced by a curated summary.
 
-Final validation passed all five CI fixture partitions, Ruff, whitespace checks, and 167 Pytest
-tests after the sealed-v4 regression safeguards. Detailed metrics and provenance are in
+Final validation passed all five CI fixture partitions, Ruff, whitespace checks, and 172 Pytest
+tests after the sealed-v5 regression safeguards. Detailed metrics and provenance are in
 `evals/reports/EVALUATION_SUMMARY_20260712.md`.
+
+The schema-48 v5 findings regression passed all strict gates with faithfulness 0.975, context
+precision 1.000, context recall 0.979, answer relevancy 1.000, and source precision/recall 1.000.
+Development is closed for this release rather than repeatedly tuning the consumed distribution.

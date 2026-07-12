@@ -373,6 +373,7 @@ def main() -> None:
                     "ground_truth": g.golden_answer or ", ".join(g.golden_answer_keywords),
                     "actual_sources": resp.sources,
                     "golden_sources": g.golden_sources,
+                    "acceptable_source_groups": g.acceptable_source_groups,
                     "forbidden_keywords": g.forbidden_keywords,
                     "forbidden_sources": g.forbidden_sources,
                     "expected_route": g.expected_route or (
@@ -397,10 +398,14 @@ def main() -> None:
                 row["actual_sources"], row["golden_sources"]
             )
             row["source_precision"] = source_precision(
-                row["actual_sources"], row["golden_sources"]
+                row["actual_sources"],
+                row["golden_sources"],
+                row.get("acceptable_source_groups"),
             )
             row["source_recall"] = source_recall(
-                row["actual_sources"], row["golden_sources"]
+                row["actual_sources"],
+                row["golden_sources"],
+                row.get("acceptable_source_groups"),
             )
             row["forbidden_source_check"] = forbidden_sources_check(
                 row["actual_sources"], row["forbidden_sources"]

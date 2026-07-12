@@ -322,7 +322,9 @@ Current evaluation governance:
 - versioned evidence is in [the curated July 12 evaluation summary](evals/reports/EVALUATION_SUMMARY_20260712.md).
 
 The latest complete local validation passed Ruff, all five deterministic CI evaluation
-partitions, and 167 automated tests after the sealed-v4 regression safeguards.
+partitions, and 172 automated tests. The consumed sealed-v5 findings regression passed strict gates
+with 0.975 faithfulness, 1.000 context precision, 0.979 context recall, 1.000 answer relevancy, and
+1.000 source precision/recall.
 
 ## Project Structure
 

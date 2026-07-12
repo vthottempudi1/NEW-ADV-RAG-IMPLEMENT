@@ -20,7 +20,7 @@ from app.security.spotlighting import build_spotlighted_context
 
 # Increment whenever retrieval, evidence planning, or answer synthesis changes so distributed
 # caches cannot return responses produced by an older policy implementation.
-RAG_CACHE_SCHEMA_VERSION = 47
+RAG_CACHE_SCHEMA_VERSION = 48
 _TROUBLESHOOTING_HINTS = {
     "error",
     "fix",
@@ -110,8 +110,33 @@ def _evidence_plan(question: str) -> list[tuple[re.Pattern[str], str]]:
                 "incident response review recent changes inspect alerts logs evidence mitigation",
             ),
         ]
-    if "serviceaccount" in lowered and "default" in lowered and any(
-        term in lowered for term in ("permission", "least privilege", "dedicated", "limit")
+    if (
+        "serviceaccount" in lowered
+        and "secret" not in lowered
+        and not any(
+            term in lowered
+            for term in (
+                "short-lived",
+                "short lived",
+                "long-lived",
+                "long lived",
+                "tokenrequest",
+                "projected",
+            )
+        )
+        and any(
+        term in lowered
+        for term in (
+            "permission",
+            "permissions",
+            "least privilege",
+            "dedicated",
+            "authorization",
+            "rights",
+            "excessive",
+            "limit",
+        )
+        )
     ):
         return [
             (
@@ -123,7 +148,10 @@ def _evidence_plan(question: str) -> list[tuple[re.Pattern[str], str]]:
                 "least privilege minimal RBAC rights users service accounts required roles",
             ),
         ]
-    if "no node" in lowered and "pod" in lowered and any(
+    if "pod" in lowered and any(
+        phrase in lowered
+        for phrase in ("no node", "no assigned node", "without a node", "unassigned")
+    ) and any(
         term in lowered for term in ("component", "placement", "assigned", "starts")
     ):
         return [
@@ -433,6 +461,31 @@ def _planned_answer_guidance(question: str) -> str:
             "StorageClass expansion setting when present. Explain that the requested size changes "
             "on the claim and why directly editing PersistentVolume capacity bypasses the intended "
             "controller workflow."
+        )
+    if "preemption" in lowered or (
+        "high-priority" in lowered and any(term in lowered for term in ("nominate", "nomination"))
+    ):
+        return (
+            "Synthesis constraint: Explain preemption and node nomination only with behavior stated "
+            "in the supplied scheduling evidence. Do not say that nomination reserves resources, "
+            "guarantees placement, or means the Pod is already bound or running unless the context "
+            "states that exact behavior."
+        )
+    if "readiness" in lowered and "liveness" in lowered:
+        return (
+            "Synthesis constraint: Distinguish the two probe effects narrowly: readiness controls "
+            "whether the Pod is used as a Service backend, while successful liveness means kubelet "
+            "does not restart it for liveness failure. Do not generalize this to every possible "
+            "traffic source."
+        )
+    if any(term in lowered for term in ("acknowledge", "acknowledged", "unacknowledged")) and any(
+        term in lowered for term in ("p1", "page", "incident bridge")
+    ):
+        return (
+            "Synthesis constraint: State the documented acknowledgement deadline and separately "
+            "state the documented bridge or coordination action. Do not invent why the paging "
+            "system needs acknowledgement, ownership semantics, escalation suppression, or other "
+            "causal explanations absent from the supplied policy."
         )
     return ""
 _ANCHOR_STOPWORDS = {

@@ -99,6 +99,16 @@ _AMBIGUOUS_ACTIONS: tuple[tuple[re.Pattern[str], str, str], ...] = (
         "what revision should it target, and do you want instructions or authorization to perform it?",
     ),
     (
+        re.compile(
+            r"\b(?:restore|recover)\s+(?:it|this|that|the\s+(?:previous|prior|old)\s+one)\b",
+            re.IGNORECASE,
+        ),
+        "restore",
+        "What workload, configuration, data object, credential, or release should be restored, "
+        "which environment and previous version do you mean, and do you want instructions or "
+        "authorization for an actual change?",
+    ),
+    (
         re.compile(r"^\s*what\s+changed\s*\??\s*$", re.IGNORECASE),
         "change_scope",
         "What system, resource, deployment, or time period do you want to compare?",

@@ -528,7 +528,11 @@ keeps LLM judging for nightly or release runs, moves sealed findings into named 
 retains raw JSON locally or as controlled CI artifacts. Sealed v4 was later consumed once and
 reached faithfulness 0.907, context precision/recall 1.000, answer relevancy 0.958, source precision
 1.000, and source recall 0.950. Its three strict per-question findings became a named development
-regression, and a new checksummed sealed v5 remains the next unseen, one-time release measurement.
+regression. Sealed v5 was subsequently consumed once; its findings became an eight-case development
+regression covering restoration ambiguity, RBAC evidence, claim discipline, and authoritative
+source alternatives.
 
 Final local verification passed all five deterministic CI partitions, Ruff, Git whitespace
-validation, and 167 automated tests after the sealed-v4 regression safeguards.
+validation, and 172 automated tests after the sealed-v5 regression safeguards. The schema-48 v5
+regression passed all strict gates with faithfulness 0.975, context precision 1.000, context recall
+0.979, answer relevancy 1.000, and source precision/recall 1.000.

@@ -49,3 +49,35 @@ def test_multi_part_domain_guidance_requires_complete_supported_answers():
     assert "each lifecycle part" in deployment
     assert "admission outcome" in limits
     assert "driver support" in storage
+
+
+# Learner Note: General permission and unassigned-Pod questions reserve complementary evidence.
+def test_v5_evidence_plans_cover_rbac_and_node_execution_responsibilities():
+    """Require RBAC for ServiceAccount rights and kubelet evidence after scheduling."""
+    identity = _evidence_plan(
+        "A dedicated ServiceAccount has excessive permissions. Which authorization controls its rights?"
+    )
+    placement = _evidence_plan(
+        "A Pod has no assigned node. Which component places it and which component runs it?"
+    )
+
+    assert any(pattern.search("concepts__security__rbac-good-practices.pdf") for pattern, _ in identity)
+    assert any(pattern.search("concepts__overview__components.pdf") for pattern, _ in placement)
+
+
+# Learner Note: V5 synthesis guidance prevents unsupported scheduling, probe, and paging explanations.
+def test_v5_answer_guidance_limits_explanatory_overclaims():
+    """Keep multi-part operational answers inside the exact retrieved evidence."""
+    preemption = _planned_answer_guidance(
+        "When can preemption help a high-priority Pod, and what does nomination mean?"
+    )
+    probes = _planned_answer_guidance(
+        "What happens when readiness fails but liveness succeeds?"
+    )
+    paging = _planned_answer_guidance(
+        "The P1 page is unacknowledged after joining the incident bridge. What remains?"
+    )
+
+    assert "Do not say that nomination reserves resources" in preemption
+    assert "every possible traffic source" in probes
+    assert "Do not invent why" in paging

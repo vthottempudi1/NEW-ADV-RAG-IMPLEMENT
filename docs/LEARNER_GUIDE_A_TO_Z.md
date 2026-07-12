@@ -1965,8 +1965,9 @@ measurement and must remain untouched during those fixes.
 
 CI now uses reproducible ID-based source gates at 1.000. LLM judging remains a release or nightly
 signal because repeated runs can vary. Raw reports are not committed; the curated summary records
-the stable evidence. Final local checks passed Ruff and all 167 automated tests after the v4
-regression safeguards were added.
+the stable evidence. Final local checks passed Ruff and all 172 automated tests after the v5
+regression safeguards were added. The consumed v5 findings regression passed every strict gate;
+the team stopped tuning that distribution and closed retrieval development for the release.
 
 ---
 

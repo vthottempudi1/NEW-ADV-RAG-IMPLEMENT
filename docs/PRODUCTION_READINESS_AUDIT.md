@@ -11,8 +11,8 @@ AWS still runs the previously validated release until a new image completes rele
 
 ## Verified Gates
 
-- 167 unit, integration, contract, and frontend-component tests passed after the evaluator,
-  clarification, sealed-v4 regression, sealed-v5 contract, and CI changes.
+- 172 unit, integration, contract, and frontend-component tests passed after the evaluator,
+  clarification, sealed-v4/v5 regressions, alternate-source contracts, and CI changes.
 - All five deterministic CI evaluation partitions passed with exact source precision and source
   recall gates set to 1.000.
 - Ruff and Git whitespace validation passed.
@@ -22,7 +22,10 @@ AWS still runs the previously validated release until a new image completes rele
   answer relevancy 0.983, source precision 0.958, and source recall 1.000.
 - Sealed v4 was consumed once with 0.907 faithfulness, perfect context precision/recall, 0.958
   answer relevancy, 1.000 source precision, and 0.950 source recall. Its three strict findings moved
-  into regression, and sealed v5 remains checksummed for the next one-time measurement.
+  into regression.
+- Sealed v5 was consumed once, and its eight findings passed the schema-48 regression with 0.975
+  faithfulness, 1.000 context precision, 0.979 context recall, 1.000 answer relevancy, and 1.000
+  source precision/recall. No route or forbidden-source violations remained.
 
 - At the earlier ambiguity-hardening checkpoint, 105 unit, integration, contract, and
   frontend-component tests passed.

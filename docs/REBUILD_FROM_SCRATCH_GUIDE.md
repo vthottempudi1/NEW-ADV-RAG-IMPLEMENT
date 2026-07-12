@@ -378,7 +378,7 @@ Run the complete local gate:
 git diff --check
 ```
 
-At the final July 12 checkpoint, Ruff passed and 167 tests passed. Test count is provenance, not a
+At the final July 12 checkpoint, Ruff passed and 172 tests passed. Test count is provenance, not a
 fixed target; future improvements should increase or reorganize it.
 
 ## 16. Phase 13: Evaluation That Cannot Hide Failures

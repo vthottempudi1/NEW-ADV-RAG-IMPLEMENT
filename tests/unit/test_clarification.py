@@ -53,6 +53,7 @@ def test_specific_kubernetes_action_does_not_require_clarification(question):
         "Can you make it private?",
         "Can you rotate it now?",
         "Can you revoke it?",
+        "Could you restore the previous one for me?",
         "What architecture should I use?",
         "What changed?",
         "Can you roll it back?",

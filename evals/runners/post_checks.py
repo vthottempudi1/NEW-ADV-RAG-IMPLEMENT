@@ -87,21 +87,36 @@ def source_overlap(actual: list[str], golden: list[str]) -> dict:
 
 
 # Learner Note: Source recall is part of the evaluation and quality-gate framework.
-def source_recall(actual: list[str], golden: list[str]) -> float | None:
-    """Return exact expected-source coverage, or ``None`` when no source is expected."""
+def source_recall(
+    actual: list[str],
+    golden: list[str],
+    acceptable_groups: list[list[str]] | None = None,
+) -> float | None:
+    """Return required source-group coverage, supporting authoritative alternatives."""
+    if acceptable_groups:
+        covered = sum(
+            source_overlap(actual, alternatives)["overlap_pct"] > 0.0
+            for alternatives in acceptable_groups
+        )
+        return round(covered / len(acceptable_groups), 3)
     if not golden:
         return None
     return float(source_overlap(actual, golden)["overlap_pct"])
 
 
 # Learner Note: Measure how much final evidence belongs to an expected source family.
-def source_precision(actual: list[str], golden: list[str]) -> float:
-    """Return the fraction of final sources matching at least one golden source."""
+def source_precision(
+    actual: list[str],
+    golden: list[str],
+    acceptable_groups: list[list[str]] | None = None,
+) -> float:
+    """Return the fraction of final sources matching a required or alternative source."""
+    expected = [source for group in (acceptable_groups or []) for source in group] or golden
     if not actual:
-        return 1.0 if not golden else 0.0
-    if not golden:
+        return 1.0 if not expected else 0.0
+    if not expected:
         return 0.0
     relevant = sum(
-        source_overlap([source], golden)["overlap_pct"] > 0.0 for source in actual
+        source_overlap([source], expected)["overlap_pct"] > 0.0 for source in actual
     )
     return round(relevant / len(actual), 3)

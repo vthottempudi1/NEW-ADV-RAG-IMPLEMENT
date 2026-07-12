@@ -8,7 +8,7 @@ from evals.datasets.schema import load_goldens
 from evals.runners import invokers as invoker_module
 from evals.runners import ragas_adapter as ragas_adapter_module
 from evals.runners.invokers import FixtureInvoker, HttpServiceInvoker
-from evals.runners.post_checks import source_overlap, source_precision
+from evals.runners.post_checks import source_overlap, source_precision, source_recall
 from evals.runners.ragas_adapter import _score_context_recall
 from evals.runners.ragas_adapter import run as run_ragas
 from evals.runners.run import (
@@ -468,6 +468,26 @@ def test_source_precision_still_matches_correct_entity():
     assert source_overlap(actual, golden)["missed"] == [
         "tasks__configure-pod-container__configure-service-account"
     ]
+
+
+# Learner Note: Alternative authoritative source groups avoid penalizing equivalent evidence.
+def test_source_metrics_support_required_groups_with_authoritative_alternatives():
+    """Score group coverage while still rejecting unrelated extra sources."""
+    groups = [
+        [
+            "concepts__overview__components.pdf",
+            "tutorials__kubernetes-basics__explore__explore-intro.pdf",
+        ],
+        ["concepts__scheduling-eviction__kube-scheduler.pdf"],
+    ]
+    actual = [
+        "tutorials__kubernetes-basics__explore__explore-intro.pdf",
+        "concepts__scheduling-eviction__kube-scheduler.pdf",
+    ]
+
+    assert source_precision(actual, [], groups) == 1.0
+    assert source_recall(actual, [], groups) == 1.0
+    assert source_recall([actual[1]], [], groups) == 0.5
 
 
 # Learner Note: Test context recall is zero for empty contexts is part of the automated regression suite.
@@ -957,3 +977,16 @@ def test_sealed_v5_holdout_contract_and_checksum_are_immutable():
         for golden in load_goldens(dataset)
     }
     assert not prior_questions.intersection(golden.question for golden in goldens)
+
+
+# Learner Note: Consumed sealed-v5 findings remain explicit development regressions.
+def test_sealed_v5_findings_are_an_explicit_development_regression():
+    """Keep v5 failures reproducible and preserve alternative-source semantics."""
+    goldens = load_goldens("evals/datasets/sealed_v5_findings_regression.yaml")
+
+    assert [golden.id for golden in goldens] == [
+        "q-601", "q-603", "q-605", "q-606", "q-607", "q-609", "q-610", "q-611"
+    ]
+    assert all("[consumed-sealed-v5]" in golden.notes for golden in goldens)
+    assert next(g for g in goldens if g.id == "q-603").acceptable_source_groups
+    assert len(next(g for g in goldens if g.id == "q-607").acceptable_source_groups) == 2

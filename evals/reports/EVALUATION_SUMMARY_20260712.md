@@ -133,6 +133,49 @@ retired `evals/reports/results/*.json` history, reclaims unused hosted-runner to
 container build, and limits Trivy to vulnerability scanning. Local verification passed the exact
 historical Gitleaks range, Ruff, 167 tests, and all five deterministic CI eval partitions.
 
+## Sealed v5 one-time result
+
+Valid report timestamp: `20260712T212502Z`. Provenance: commit `1367e4a`, environment
+`docker-v2-schema47-commit-1367e4a`, collection `new_adv_rag_documents_v2`, answer model `gpt-4o`,
+and grader `gpt-4o-mini`.
+
+| Metric | Score |
+|---|---:|
+| Faithfulness | 0.838 |
+| Context precision | 1.000 |
+| Context recall | 0.903 |
+| Answer relevancy | 0.925 |
+| Source precision | 0.792 |
+| Source recall | 0.750 |
+
+The one-time run exposed one clarification miss, one genuine RBAC evidence gap, several narrow
+unsupported explanations, and three contracts that did not recognize authoritative alternative or
+minimum-sufficient sources. V5 is consumed and must not be rerun as an unseen holdout.
+
+## Sealed-v5 findings regression after schema 48
+
+Valid report timestamp: `20260712T231712Z`. The eight actionable findings were moved to
+`evals/datasets/sealed_v5_findings_regression.yaml`. The implementation generalized restoration
+clarification, ServiceAccount/RBAC evidence planning, unassigned-Pod evidence planning, claim
+discipline, and required source groups with explicit authoritative alternatives.
+
+| Metric | Score |
+|---|---:|
+| Faithfulness | 0.975 |
+| Context precision | 1.000 |
+| Context recall | 0.979 |
+| Answer relevancy | 1.000 |
+| Source precision | 1.000 |
+| Source recall | 1.000 |
+
+All eight questions passed their strict per-question gates. There were no route, forbidden-answer,
+or forbidden-source violations. One claim remained unsupported in q-609, whose faithfulness score
+was exactly the accepted 0.800 threshold; further tuning against this consumed set is not justified.
+
+The final local checkpoint passed Ruff and 172 automated tests. Retrieval/evaluation development is
+closed for this release. A future release should create a new sealed set only after new product
+changes, rather than continuing to optimize the consumed v5 distribution.
+
 ## Report retention
 
 Raw result JSON is ignored by Git because it contains generated answers, retrieved contexts, and

@@ -37,6 +37,7 @@ class Golden(BaseModel):
     question: str = Field(..., min_length=1)
     intent: INTENT
     golden_sources: list[str] = Field(default_factory=list)
+    acceptable_source_groups: list[list[str]] = Field(default_factory=list)
     golden_answer: str | None = Field(default=None, min_length=1)
     golden_answer_keywords: list[str] = Field(..., min_length=1)
     demonstrates_feature: FEATURE | Literal["self-rag"]
