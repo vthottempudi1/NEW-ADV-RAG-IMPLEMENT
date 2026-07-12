@@ -1,0 +1,286 @@
+{
+  "profile": "all",
+  "flags": {
+    "search_mode": "hybrid",
+    "enable_hyde": true,
+    "enable_rerank": true,
+    "enable_crag": true,
+    "enable_self_reflective": true,
+    "top_k": 5
+  },
+  "timestamp_utc": "2026-07-06T17:49:40.127455Z",
+  "filter": "baseline",
+  "mode": "http",
+  "scorer": "llm",
+  "preflight": null,
+  "rows": [
+    {
+      "id": "q-001",
+      "demonstrates_feature": "baseline",
+      "intent": "rag",
+      "question": "What is a Pod in Kubernetes?",
+      "answer": "A Pod in Kubernetes is the smallest deployable unit that you can create and manage. It represents a group of one or more application containers (such as Docker containers) along with shared resources for those containers, including storage and network resources. Pods are designed to model an application-specific \"logical host\" and can contain tightly coupled application containers that share an IP address and port space. They are always co-located and co-scheduled, running in a shared context on the same node. Pods can also include init containers that run during startup and ephemeral containers for debugging purposes.",
+      "contexts": [
+        "Concepts \u203a Workloads \u203a Pods Concepts \u203a Workloads \u203a Pods Pods | Kubernetes PodsPods are the smallest deployable units of computing that you can create and manage in Kubernetes.A Pod (as in a pod of whales or pea pod) is a group of one or more containers, with shared storage and network resources, and a specification for how to run the containers. A Pod's contents are always co-located and co-scheduled, and run in a shared context. A Pod models an application-specific \"logical host\": it contains one or more application containers which are relatively tightly coupled. In non-cloud contexts, applications executed on the same physical or virtual machine are analogous to cloud applications executed on the same logical host.As well as application containers, a Pod can contain init containers that run during Pod startup. You can also inject ephemeral containers for debugging a running Pod.What is a Pod?Note:You need to install a container runtime into each node in the cluster so that Pods can",
+        "t your application instance. A Pod is a Kubernetes abstraction that represents a group of one or more application containers (such as Docker), and some shared resources for those containers. Those resources include:Shared storage, as VolumesNetworking, as a unique cluster IP addressInformation about how to run each container, such as the container image version or specific ports to useA Pod models an application-specific \"logical host\" and can contain different application containers which are relatively tightly coupled. For example, a Pod might include both the container with your Node.js app as well as a different container that feeds the data to be published by the Node.js webserver. The containers in a Pod share an IP Address and port space, are always co-located and co-scheduled, and run in a shared context on the same Node.Pods are the atomic unit on the Kubernetes platform. When we create a Deployment on Kubernetes, that Deployment creates Pods with containers inside them (as op",
+        "luster are used in two main ways:Pods that run a single container. The \"one-container-per-Pod\" model is the most common Kubernetes use case; in this case, you can think of a Pod as a wrapper around a single container; Kubernetes manages Pods rather than managing the containers directly.Pods that run multiple containers that need to work together. A Pod can encapsulate an application composed of multiple co-located containers that are tightly coupled and need to share resources. These co-located containers form a single cohesive unit of service\u2014for example, one container serving data stored in a shared volume to the public, while a separate sidecar container refreshes or updates those files. The Pod wraps these containers, storage resources, and an ephemeral network identity together as a single unit.For example, you might have a container that acts as a web server for files in a shared volume, and a separate sidecar container that updates those files from a remote source, as in the fol",
+        "Pods are named. Kubernetes Pods are created and destroyed to match the desired state of your cluster. Pods are ephemeral resources (you should not expect that an individual Pod is reliable and durable).Each Pod gets its own IP address (Kubernetes expects network plugins to ensure this). For a given Deployment in your cluster, the set of Pods running in one moment in time could be different from the set of Pods running that application a moment later.This leads to a problem: if some set of Pods (call them \"backends\") provides functionality to other Pods (call them \"frontends\") inside your cluster, how do the frontends find out and keep track of which IP address to connect to, so that the frontend can use the backend part of the workload?Enter Services.Services in KubernetesThe Service API, part of Kubernetes, is an abstraction to help you expose groups of Pods over a network. Each Service object defines a logical set of endpoints (usually these endpoints are Pods) along with a policy a",
+        "ol plane: in other words, using the kubelet to supervise the individual control plane components.The kubelet automatically tries to create a mirror Pod on the Kubernetes API server for each static Pod. This means that the Pods running on a node are visible on the API server, but cannot be controlled from there. See the guide Create static Pods for more information.Note:The spec of a static Pod cannot refer to other API objects (e.g., ServiceAccount, ConfigMap, Secret, etc).Pods with multiple containersPods are designed to support multiple cooperating processes (as containers) that form a cohesive unit of service. The containers in a Pod are automatically co-located and co-scheduled on the same physical or virtual machine in the cluster. The containers can share resources and dependencies, communicate with one another, and coordinate when and how they are terminated.Pods in a Kubernetes cluster are used in two main ways:Pods that run a single container. The \"one-container-per-Pod\" model"
+      ],
+      "ground_truth": "pod, container, namespace",
+      "actual_sources": [
+        "concepts__workloads__pods.html",
+        "tutorials__kubernetes-basics__explore__explore-intro.pdf",
+        "concepts__services-networking__service.txt"
+      ],
+      "golden_sources": [
+        "pods.html"
+      ],
+      "forbidden_keywords": [],
+      "ragas_metrics": {
+        "id": "q-001",
+        "demonstrates_feature": "baseline",
+        "intent": "rag",
+        "question": "What is a Pod in Kubernetes?",
+        "answer": "A Pod in Kubernetes is the smallest deployable unit that you can create and manage. It represents a group of one or more application containers (such as Docker containers) along with shared resources for those containers, including storage and network resources. Pods are designed to model an application-specific \"logical host\" and can contain tightly coupled application containers that share an IP address and port space. They are always co-located and co-scheduled, running in a shared context on the same node. Pods can also include init containers that run during startup and ephemeral containers for debugging purposes.",
+        "contexts": [
+          "Concepts \u203a Workloads \u203a Pods Concepts \u203a Workloads \u203a Pods Pods | Kubernetes PodsPods are the smallest deployable units of computing that you can create and manage in Kubernetes.A Pod (as in a pod of whales or pea pod) is a group of one or more containers, with shared storage and network resources, and a specification for how to run the containers. A Pod's contents are always co-located and co-scheduled, and run in a shared context. A Pod models an application-specific \"logical host\": it contains one or more application containers which are relatively tightly coupled. In non-cloud contexts, applications executed on the same physical or virtual machine are analogous to cloud applications executed on the same logical host.As well as application containers, a Pod can contain init containers that run during Pod startup. You can also inject ephemeral containers for debugging a running Pod.What is a Pod?Note:You need to install a container runtime into each node in the cluster so that Pods can",
+          "t your application instance. A Pod is a Kubernetes abstraction that represents a group of one or more application containers (such as Docker), and some shared resources for those containers. Those resources include:Shared storage, as VolumesNetworking, as a unique cluster IP addressInformation about how to run each container, such as the container image version or specific ports to useA Pod models an application-specific \"logical host\" and can contain different application containers which are relatively tightly coupled. For example, a Pod might include both the container with your Node.js app as well as a different container that feeds the data to be published by the Node.js webserver. The containers in a Pod share an IP Address and port space, are always co-located and co-scheduled, and run in a shared context on the same Node.Pods are the atomic unit on the Kubernetes platform. When we create a Deployment on Kubernetes, that Deployment creates Pods with containers inside them (as op",
+          "luster are used in two main ways:Pods that run a single container. The \"one-container-per-Pod\" model is the most common Kubernetes use case; in this case, you can think of a Pod as a wrapper around a single container; Kubernetes manages Pods rather than managing the containers directly.Pods that run multiple containers that need to work together. A Pod can encapsulate an application composed of multiple co-located containers that are tightly coupled and need to share resources. These co-located containers form a single cohesive unit of service\u2014for example, one container serving data stored in a shared volume to the public, while a separate sidecar container refreshes or updates those files. The Pod wraps these containers, storage resources, and an ephemeral network identity together as a single unit.For example, you might have a container that acts as a web server for files in a shared volume, and a separate sidecar container that updates those files from a remote source, as in the fol",
+          "Pods are named. Kubernetes Pods are created and destroyed to match the desired state of your cluster. Pods are ephemeral resources (you should not expect that an individual Pod is reliable and durable).Each Pod gets its own IP address (Kubernetes expects network plugins to ensure this). For a given Deployment in your cluster, the set of Pods running in one moment in time could be different from the set of Pods running that application a moment later.This leads to a problem: if some set of Pods (call them \"backends\") provides functionality to other Pods (call them \"frontends\") inside your cluster, how do the frontends find out and keep track of which IP address to connect to, so that the frontend can use the backend part of the workload?Enter Services.Services in KubernetesThe Service API, part of Kubernetes, is an abstraction to help you expose groups of Pods over a network. Each Service object defines a logical set of endpoints (usually these endpoints are Pods) along with a policy a",
+          "ol plane: in other words, using the kubelet to supervise the individual control plane components.The kubelet automatically tries to create a mirror Pod on the Kubernetes API server for each static Pod. This means that the Pods running on a node are visible on the API server, but cannot be controlled from there. See the guide Create static Pods for more information.Note:The spec of a static Pod cannot refer to other API objects (e.g., ServiceAccount, ConfigMap, Secret, etc).Pods with multiple containersPods are designed to support multiple cooperating processes (as containers) that form a cohesive unit of service. The containers in a Pod are automatically co-located and co-scheduled on the same physical or virtual machine in the cluster. The containers can share resources and dependencies, communicate with one another, and coordinate when and how they are terminated.Pods in a Kubernetes cluster are used in two main ways:Pods that run a single container. The \"one-container-per-Pod\" model"
+        ],
+        "ground_truth": "pod, container, namespace",
+        "actual_sources": [
+          "concepts__workloads__pods.html",
+          "tutorials__kubernetes-basics__explore__explore-intro.pdf",
+          "concepts__services-networking__service.txt"
+        ],
+        "golden_sources": [
+          "pods.html"
+        ],
+        "forbidden_keywords": [],
+        "faithfulness": 1,
+        "answer_relevancy": 1.0,
+        "context_precision": 1.0,
+        "context_recall": 1,
+        "scoring_backend": "llm"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "pod",
+          "pods"
+        ],
+        "missed": []
+      }
+    },
+    {
+      "id": "q-002",
+      "demonstrates_feature": "baseline",
+      "intent": "rag",
+      "question": "What is a Kubernetes Deployment and what does it manage?",
+      "answer": "A Kubernetes Deployment is a resource that manages a set of Pods to run an application workload, typically one that doesn't maintain state. It provides declarative updates for Pods and ReplicaSets, allowing you to describe a desired state, which the Deployment Controller then works to achieve at a controlled rate. Deployments can create new ReplicaSets or remove existing ones and adopt their resources. They are used to rollout ReplicaSets, manage updates, and ensure application availability and self-healing in case of machine failures.",
+      "contexts": [
+        "Deployments | Kubernetes DeploymentsA Deployment manages a set of Pods to run an application workload, usually one that doesn't maintain state.A Deployment provides declarative updates for Pods and ReplicaSets.You describe a desired state in a Deployment, and the Deployment Controller changes the actual state to the desired state at a controlled rate. You can define Deployments to create new ReplicaSets, or to remove existing Deployments and adopt all their resources with new Deployments.Note:Do not manage ReplicaSets owned by a Deployment. Consider opening an issue in the main Kubernetes repository if your use case is not covered below.Use CaseThe following are typical use cases for Deployments:Create a Deployment to rollout a ReplicaSet. The ReplicaSet creates Pods in the background. Check the status of the rollout to see if it succeeds or not.Declare the new state of the Pods by updating the PodTemplateSpec of the Deployment. A new ReplicaSet is created, and the Deployment gradually",
+        "ipts would often be used to start applications, but they did not allow recovery from machine failure. By both creating your application instances and keeping them running across Nodes, Kubernetes Deployments provide a fundamentally different approach to application management.Deploying your first app on KubernetesApplications need to be packaged into one of the supported container formats in order to be deployed on Kubernetes.You can create and manage a Deployment by using the Kubernetes command line interface, kubectl. kubectl uses the Kubernetes API to interact with the cluster. In this module, you'll learn the most common kubectl commands needed to create Deployments that run your applications on a Kubernetes cluster.When you create a Deployment, you'll need to specify the container image for your application and the number of replicas that you want to run. You can change that information later by updating your Deployment; Module 5 and Module 6 of the bootcamp discuss how you can sc",
+        "update allows a Deployment update to take place with zero downtime. It does this by incrementally replacing the current Pods with new ones. The new Pods are scheduled on Nodes with available resources, and Kubernetes waits for those new Pods to start before removing the old Pods.In the previous module we scaled our application to run multiple instances. This is a requirement for performing updates without affecting application availability. By default, the maximum number of Pods that can be unavailable during the update and the maximum number of new Pods that can be created, is one. Both options can be configured to either numbers or percentages (of Pods). In Kubernetes, updates are versioned and any Deployment update can be reverted to a previous (stable) version.Rolling updates overviewIf a Deployment is publicly exposed, the Service will send traffic only to Pods that can handle requests.This ensures users continue to access the application during an update.During a rolling update,",
+        "g overviewScaling is accomplished by changing the number of replicas in a Deployment.Scaling out a Deployment will ensure new Pods are created and scheduled to Nodes with available resources. Scaling will increase the number of Pods to the new desired state. Kubernetes also supports autoscaling of Pods, but it is outside of the scope of this tutorial. Scaling to zero is also possible, and it will terminate all Pods of the specified Deployment.Running multiple instances of an application will require a way to distribute the traffic to all of them. Services have an integrated load-balancer that will distribute network traffic to all Pods of an exposed Deployment. Services will monitor continuously the running Pods using endpoints, to ensure the traffic is sent only to available Pods.Once you have multiple instances of an application running, you would be able to do Rolling updates without downtime. We'll cover that in the next section of the tutorial. Now, let's go to the terminal and sc",
+        "with a driver that can emulate AMD64. For example, the Docker Desktop driver can do this.Once you have a running Kubernetes cluster, you can deploy your containerized applications on top of it. To do so, you create a Kubernetes Deployment. The Deployment instructs Kubernetes how to create and update instances of your application. Once you've created a Deployment, the Kubernetes control plane schedules the application instances included in that Deployment to run on individual Nodes in the cluster.Once the application instances are created, a Kubernetes Deployment controller continuously monitors those instances. If the Node hosting an instance goes down or is deleted, the Deployment controller replaces the instance with an instance on another Node in the cluster. This provides a self-healing mechanism to address machine failure or maintenance.In a pre-orchestration world, installation scripts would often be used to start applications, but they did not allow recovery from machine failure"
+      ],
+      "ground_truth": "deployment, replica, rolling update",
+      "actual_sources": [
+        "tutorials__kubernetes-basics__scale__scale-intro.html",
+        "concepts__workloads__controllers__deployment.txt",
+        "tutorials__kubernetes-basics__deploy-app__deploy-intro.txt",
+        "tutorials__kubernetes-basics__update__update-intro.txt"
+      ],
+      "golden_sources": [
+        "deployments.html"
+      ],
+      "forbidden_keywords": [],
+      "ragas_metrics": {
+        "id": "q-002",
+        "demonstrates_feature": "baseline",
+        "intent": "rag",
+        "question": "What is a Kubernetes Deployment and what does it manage?",
+        "answer": "A Kubernetes Deployment is a resource that manages a set of Pods to run an application workload, typically one that doesn't maintain state. It provides declarative updates for Pods and ReplicaSets, allowing you to describe a desired state, which the Deployment Controller then works to achieve at a controlled rate. Deployments can create new ReplicaSets or remove existing ones and adopt their resources. They are used to rollout ReplicaSets, manage updates, and ensure application availability and self-healing in case of machine failures.",
+        "contexts": [
+          "Deployments | Kubernetes DeploymentsA Deployment manages a set of Pods to run an application workload, usually one that doesn't maintain state.A Deployment provides declarative updates for Pods and ReplicaSets.You describe a desired state in a Deployment, and the Deployment Controller changes the actual state to the desired state at a controlled rate. You can define Deployments to create new ReplicaSets, or to remove existing Deployments and adopt all their resources with new Deployments.Note:Do not manage ReplicaSets owned by a Deployment. Consider opening an issue in the main Kubernetes repository if your use case is not covered below.Use CaseThe following are typical use cases for Deployments:Create a Deployment to rollout a ReplicaSet. The ReplicaSet creates Pods in the background. Check the status of the rollout to see if it succeeds or not.Declare the new state of the Pods by updating the PodTemplateSpec of the Deployment. A new ReplicaSet is created, and the Deployment gradually",
+          "ipts would often be used to start applications, but they did not allow recovery from machine failure. By both creating your application instances and keeping them running across Nodes, Kubernetes Deployments provide a fundamentally different approach to application management.Deploying your first app on KubernetesApplications need to be packaged into one of the supported container formats in order to be deployed on Kubernetes.You can create and manage a Deployment by using the Kubernetes command line interface, kubectl. kubectl uses the Kubernetes API to interact with the cluster. In this module, you'll learn the most common kubectl commands needed to create Deployments that run your applications on a Kubernetes cluster.When you create a Deployment, you'll need to specify the container image for your application and the number of replicas that you want to run. You can change that information later by updating your Deployment; Module 5 and Module 6 of the bootcamp discuss how you can sc",
+          "update allows a Deployment update to take place with zero downtime. It does this by incrementally replacing the current Pods with new ones. The new Pods are scheduled on Nodes with available resources, and Kubernetes waits for those new Pods to start before removing the old Pods.In the previous module we scaled our application to run multiple instances. This is a requirement for performing updates without affecting application availability. By default, the maximum number of Pods that can be unavailable during the update and the maximum number of new Pods that can be created, is one. Both options can be configured to either numbers or percentages (of Pods). In Kubernetes, updates are versioned and any Deployment update can be reverted to a previous (stable) version.Rolling updates overviewIf a Deployment is publicly exposed, the Service will send traffic only to Pods that can handle requests.This ensures users continue to access the application during an update.During a rolling update,",
+          "g overviewScaling is accomplished by changing the number of replicas in a Deployment.Scaling out a Deployment will ensure new Pods are created and scheduled to Nodes with available resources. Scaling will increase the number of Pods to the new desired state. Kubernetes also supports autoscaling of Pods, but it is outside of the scope of this tutorial. Scaling to zero is also possible, and it will terminate all Pods of the specified Deployment.Running multiple instances of an application will require a way to distribute the traffic to all of them. Services have an integrated load-balancer that will distribute network traffic to all Pods of an exposed Deployment. Services will monitor continuously the running Pods using endpoints, to ensure the traffic is sent only to available Pods.Once you have multiple instances of an application running, you would be able to do Rolling updates without downtime. We'll cover that in the next section of the tutorial. Now, let's go to the terminal and sc",
+          "with a driver that can emulate AMD64. For example, the Docker Desktop driver can do this.Once you have a running Kubernetes cluster, you can deploy your containerized applications on top of it. To do so, you create a Kubernetes Deployment. The Deployment instructs Kubernetes how to create and update instances of your application. Once you've created a Deployment, the Kubernetes control plane schedules the application instances included in that Deployment to run on individual Nodes in the cluster.Once the application instances are created, a Kubernetes Deployment controller continuously monitors those instances. If the Node hosting an instance goes down or is deleted, the Deployment controller replaces the instance with an instance on another Node in the cluster. This provides a self-healing mechanism to address machine failure or maintenance.In a pre-orchestration world, installation scripts would often be used to start applications, but they did not allow recovery from machine failure"
+        ],
+        "ground_truth": "deployment, replica, rolling update",
+        "actual_sources": [
+          "tutorials__kubernetes-basics__scale__scale-intro.html",
+          "concepts__workloads__controllers__deployment.txt",
+          "tutorials__kubernetes-basics__deploy-app__deploy-intro.txt",
+          "tutorials__kubernetes-basics__update__update-intro.txt"
+        ],
+        "golden_sources": [
+          "deployments.html"
+        ],
+        "forbidden_keywords": [],
+        "faithfulness": 1,
+        "answer_relevancy": 1.0,
+        "context_precision": 1.0,
+        "context_recall": 1,
+        "scoring_backend": "llm"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "deployment"
+        ],
+        "missed": []
+      }
+    },
+    {
+      "id": "q-003",
+      "demonstrates_feature": "baseline",
+      "intent": "rag",
+      "question": "My pod keeps restarting and crashing \u2014 how do I figure out what's wrong?",
+      "answer": "To diagnose why your pod keeps restarting and crashing, you can follow these steps:\n\n1. **Check Pod Status**: Use the command `kubectl get pods` to list all pods and check their status. Look for any error messages or unusual statuses.\n\n2. **Describe the Pod**: Run `kubectl describe pods <pod-name>` to get detailed information about the pod. Pay attention to the \"Events\" section for any errors or warnings that might indicate the cause of the restarts.\n\n3. **Check Container Logs**: Use `kubectl logs <pod-name> --previous` to view the logs of the previous instance of the container. This can provide insights into what happened before the pod crashed.\n\n4. **Probe Configurations**: Ensure that your liveness, readiness, and startup probes are correctly configured. Misconfigured probes can cause pods to restart if they fail. Refer to the Kubernetes documentation on container probes for more details.\n\nThese steps should help you identify the issue causing your pod to restart and crash. If the problem persists, consider checking for resource constraints or misconfigurations in your deployment.",
+      "contexts": [
+        "ut doesn't list the desired number of available Pods. Run the get pods subcommand to list all Pods:kubectl get pods Notice that some of the Pods have a status of ImagePullBackOff.To get more insight into the problem, run the describe pods subcommand:kubectl describe pods In the Events section of the output for the affected Pods, notice that the v10 image version did not exist in the repository.To roll back the deployment to your last working version, use the rollout undo subcommand:kubectl rollout undo deployments/kubernetes-bootcamp The rollout undo command reverts the deployment to the previous known state (v2 of the image). Updates are versioned and you can revert to any previously known state of a Deployment.Use the get pods subcommand to list the Pods again:kubectl get pods To check the image deployed on the running Pods, use the describe pods subcommand:kubectl describe pods The Deployment is once again using a stable version of the app (v2). The rollback was successful.Remember",
+        "mination and cleanupWhen a Job completes, no more Pods are created, but the Pods are usually not deleted either. Keeping them around allows you to still view the logs of completed pods to check for errors, warnings, or other diagnostic output. The job object also remains after it is completed so that you can view its status. It is up to the user to delete old jobs after noting their status. Delete the job with kubectl (e.g. kubectl delete jobs/pi or kubectl delete -f ./job.yaml). When you delete the job using kubectl, all the pods it created are deleted too.By default, a Job will run uninterrupted unless a Pod fails (restartPolicy=Never) or a Container exits in error (restartPolicy=OnFailure), at which point the Job defers to the .spec.backoffLimit described above. Once .spec.backoffLimit has been reached the Job will be marked as failed and any running Pods will be terminated.Another way to terminate a Job is by setting an active deadline. Do this by setting the .spec.activeDeadlineSe",
+        "likely to be counted as active_file. If enough of these kernel block buffers are on the active LRU list, the kubelet is liable to observe this as high resource use and taint the node as experiencing memory pressure - triggering pod eviction.For more details, see https://github.com/kubernetes/kubernetes/issues/43916You can work around that behavior by setting the memory limit and memory request the same for containers likely to perform intensive I/O activity. You will need to estimate or measure an optimal memory limit value for that container.What's nextLearn about API-initiated EvictionLearn about Pod Priority and PreemptionLearn about PodDisruptionBudgetsLearn about Quality of Service (QoS)Check out the Eviction APIFeedbackWas this page helpful?Yes NoThanks for the feedback. If you have a specific, answerable question about how to use Kubernetes, ask it on Stack Overflow. Open an issue in the GitHub Repository if you want to report a problem or suggest an improvement.Last modified A",
+        "s restartPolicy.Good practicesThe following sections describe good practice for eviction configuration.Schedulable resources and eviction policiesWhen you configure the kubelet with an eviction policy, you should make sure that the scheduler will not schedule pods if they will trigger eviction because they immediately induce memory pressure.Consider the following scenario:Node memory capacity: 10GiBOperator wants to reserve 10% of memory capacity for system daemons (kernel, kubelet, etc.)Operator wants to evict Pods at 95% memory utilization to reduce incidence of system OOM.For this to work, the kubelet is launched as follows:--eviction-hard=memory.available<500Mi --system-reserved=memory=1.5Gi In this configuration, the --system-reserved flag reserves 1.5GiB of memory for the system, which is 10% of the total memory + the eviction threshold amount.The node can reach the eviction threshold if a pod is using more than its request, or if the system is using more than 1GiB of memory, whi",
+        "es, whichever is smaller. Defaults to File. Cannot be updated.Possible enum values:\"FallbackToLogsOnError\" will read the most recent contents of the container logs for the container status message when the container exits with an error and the terminationMessagePath has no contents.\"File\" is the default behavior and will set the container status message to the contents of the container's terminationMessagePath when the container exits.livenessProbe (Probe)Periodic probe of container liveness. Container will be restarted if the probe fails. Cannot be updated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probesreadinessProbe (Probe)Periodic probe of container service readiness. Container will be removed from service endpoints if the probe fails. Cannot be updated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probesstartupProbe (Probe)StartupProbe indicates that the Pod has successfully initialized. If speci"
+      ],
+      "ground_truth": "CrashLoopBackOff, logs, kubectl",
+      "actual_sources": [
+        "concepts__workloads__controllers__job.pdf",
+        "concepts__scheduling-eviction__node-pressure-eviction.docx",
+        "reference__kubernetes-api__workload-resources__pod-v1.docx",
+        "tutorials__kubernetes-basics__update__update-intro.txt"
+      ],
+      "golden_sources": [
+        "troubleshooting-pods.html"
+      ],
+      "forbidden_keywords": [],
+      "ragas_metrics": {
+        "id": "q-003",
+        "demonstrates_feature": "baseline",
+        "intent": "rag",
+        "question": "My pod keeps restarting and crashing \u2014 how do I figure out what's wrong?",
+        "answer": "To diagnose why your pod keeps restarting and crashing, you can follow these steps:\n\n1. **Check Pod Status**: Use the command `kubectl get pods` to list all pods and check their status. Look for any error messages or unusual statuses.\n\n2. **Describe the Pod**: Run `kubectl describe pods <pod-name>` to get detailed information about the pod. Pay attention to the \"Events\" section for any errors or warnings that might indicate the cause of the restarts.\n\n3. **Check Container Logs**: Use `kubectl logs <pod-name> --previous` to view the logs of the previous instance of the container. This can provide insights into what happened before the pod crashed.\n\n4. **Probe Configurations**: Ensure that your liveness, readiness, and startup probes are correctly configured. Misconfigured probes can cause pods to restart if they fail. Refer to the Kubernetes documentation on container probes for more details.\n\nThese steps should help you identify the issue causing your pod to restart and crash. If the problem persists, consider checking for resource constraints or misconfigurations in your deployment.",
+        "contexts": [
+          "ut doesn't list the desired number of available Pods. Run the get pods subcommand to list all Pods:kubectl get pods Notice that some of the Pods have a status of ImagePullBackOff.To get more insight into the problem, run the describe pods subcommand:kubectl describe pods In the Events section of the output for the affected Pods, notice that the v10 image version did not exist in the repository.To roll back the deployment to your last working version, use the rollout undo subcommand:kubectl rollout undo deployments/kubernetes-bootcamp The rollout undo command reverts the deployment to the previous known state (v2 of the image). Updates are versioned and you can revert to any previously known state of a Deployment.Use the get pods subcommand to list the Pods again:kubectl get pods To check the image deployed on the running Pods, use the describe pods subcommand:kubectl describe pods The Deployment is once again using a stable version of the app (v2). The rollback was successful.Remember",
+          "mination and cleanupWhen a Job completes, no more Pods are created, but the Pods are usually not deleted either. Keeping them around allows you to still view the logs of completed pods to check for errors, warnings, or other diagnostic output. The job object also remains after it is completed so that you can view its status. It is up to the user to delete old jobs after noting their status. Delete the job with kubectl (e.g. kubectl delete jobs/pi or kubectl delete -f ./job.yaml). When you delete the job using kubectl, all the pods it created are deleted too.By default, a Job will run uninterrupted unless a Pod fails (restartPolicy=Never) or a Container exits in error (restartPolicy=OnFailure), at which point the Job defers to the .spec.backoffLimit described above. Once .spec.backoffLimit has been reached the Job will be marked as failed and any running Pods will be terminated.Another way to terminate a Job is by setting an active deadline. Do this by setting the .spec.activeDeadlineSe",
+          "likely to be counted as active_file. If enough of these kernel block buffers are on the active LRU list, the kubelet is liable to observe this as high resource use and taint the node as experiencing memory pressure - triggering pod eviction.For more details, see https://github.com/kubernetes/kubernetes/issues/43916You can work around that behavior by setting the memory limit and memory request the same for containers likely to perform intensive I/O activity. You will need to estimate or measure an optimal memory limit value for that container.What's nextLearn about API-initiated EvictionLearn about Pod Priority and PreemptionLearn about PodDisruptionBudgetsLearn about Quality of Service (QoS)Check out the Eviction APIFeedbackWas this page helpful?Yes NoThanks for the feedback. If you have a specific, answerable question about how to use Kubernetes, ask it on Stack Overflow. Open an issue in the GitHub Repository if you want to report a problem or suggest an improvement.Last modified A",
+          "s restartPolicy.Good practicesThe following sections describe good practice for eviction configuration.Schedulable resources and eviction policiesWhen you configure the kubelet with an eviction policy, you should make sure that the scheduler will not schedule pods if they will trigger eviction because they immediately induce memory pressure.Consider the following scenario:Node memory capacity: 10GiBOperator wants to reserve 10% of memory capacity for system daemons (kernel, kubelet, etc.)Operator wants to evict Pods at 95% memory utilization to reduce incidence of system OOM.For this to work, the kubelet is launched as follows:--eviction-hard=memory.available<500Mi --system-reserved=memory=1.5Gi In this configuration, the --system-reserved flag reserves 1.5GiB of memory for the system, which is 10% of the total memory + the eviction threshold amount.The node can reach the eviction threshold if a pod is using more than its request, or if the system is using more than 1GiB of memory, whi",
+          "es, whichever is smaller. Defaults to File. Cannot be updated.Possible enum values:\"FallbackToLogsOnError\" will read the most recent contents of the container logs for the container status message when the container exits with an error and the terminationMessagePath has no contents.\"File\" is the default behavior and will set the container status message to the contents of the container's terminationMessagePath when the container exits.livenessProbe (Probe)Periodic probe of container liveness. Container will be restarted if the probe fails. Cannot be updated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probesreadinessProbe (Probe)Periodic probe of container service readiness. Container will be removed from service endpoints if the probe fails. Cannot be updated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probesstartupProbe (Probe)StartupProbe indicates that the Pod has successfully initialized. If speci"
+        ],
+        "ground_truth": "CrashLoopBackOff, logs, kubectl",
+        "actual_sources": [
+          "concepts__workloads__controllers__job.pdf",
+          "concepts__scheduling-eviction__node-pressure-eviction.docx",
+          "reference__kubernetes-api__workload-resources__pod-v1.docx",
+          "tutorials__kubernetes-basics__update__update-intro.txt"
+        ],
+        "golden_sources": [
+          "troubleshooting-pods.html"
+        ],
+        "forbidden_keywords": [],
+        "faithfulness": 1,
+        "answer_relevancy": 1.0,
+        "context_precision": 0.8333333333333333,
+        "context_recall": 1,
+        "scoring_backend": "llm"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "pod"
+        ],
+        "missed": []
+      }
+    },
+    {
+      "id": "q-004",
+      "demonstrates_feature": "baseline",
+      "intent": "rag",
+      "question": "How do containers share resources within a Pod?",
+      "answer": "Containers within a Pod share resources such as storage and networking. They share an IP address and port space, allowing them to communicate with each other using localhost. Additionally, they can access shared storage volumes, which enables data sharing and persistence across container restarts. This shared context is facilitated by a set of Linux namespaces and cgroups.",
+      "contexts": [
+        "other using localhost. When containers in a Pod communicate with entities outside the Pod, they must coordinate how they use the shared network resources (such as ports). Within a Pod, containers share an IP address and port space, and can find each other via localhost. The containers in a Pod can also communicate with each other using standard inter-process communications like SystemV semaphores or POSIX shared memory. Containers in different Pods have distinct IP addresses and can not communicate by OS-level IPC without special configuration. Containers that want to interact with a container running in a different Pod can use IP networking to communicate.Containers within the Pod see the system hostname as being the same as the configured name for the Pod. There's more about this in the networking section.Pod security settingsTo set security constraints on Pods and containers, you use the securityContext field in the Pod specification. This field gives you granular control over what",
+        "t your application instance. A Pod is a Kubernetes abstraction that represents a group of one or more application containers (such as Docker), and some shared resources for those containers. Those resources include:Shared storage, as VolumesNetworking, as a unique cluster IP addressInformation about how to run each container, such as the container image version or specific ports to useA Pod models an application-specific \"logical host\" and can contain different application containers which are relatively tightly coupled. For example, a Pod might include both the container with your Node.js app as well as a different container that feeds the data to be published by the Node.js webserver. The containers in a Pod share an IP Address and port space, are always co-located and co-scheduled, and run in a shared context on the same Node.Pods are the atomic unit on the Kubernetes platform. When we create a Deployment on Kubernetes, that Deployment creates Pods with containers inside them (as op",
+        "conds deletionTimestamp: The effects of these fields on the Pod's status are a result of the previously observed specification.Resource sharing and communicationPods enable data sharing and communication among their constituent containers.Storage in PodsA Pod can specify a set of shared storage volumes. All containers in the Pod can access the shared volumes, allowing those containers to share data. Volumes also allow persistent data in a Pod to survive in case one of the containers within needs to be restarted. See Storage for more information on how Kubernetes implements shared storage and makes it available to Pods.Pod networkingEach Pod is assigned a unique IP address for each address family. Every container in a Pod shares the network namespace, including the IP address and network ports. Inside a Pod (and only then), the containers that belong to the Pod can communicate with one another using localhost. When containers in a Pod communicate with entities outside the Pod, they must",
+        "s a Pod?Note:You need to install a container runtime into each node in the cluster so that Pods can run there.The shared context of a Pod is a set of Linux namespaces, cgroups, and potentially other facets of isolation - the same things that isolate a container. Within a Pod's context, the individual applications may have further sub-isolations applied.A Pod is similar to a set of containers with shared namespaces and shared filesystem volumes.Pods in a Kubernetes cluster are used in two main ways:Pods that run a single container. The \"one-container-per-Pod\" model is the most common Kubernetes use case; in this case, you can think of a Pod as a wrapper around a single container; Kubernetes manages Pods rather than managing the containers directly.Pods that run multiple containers that need to work together. A Pod can encapsulate an application composed of multiple co-located containers that are tightly coupled and need to share resources. These co-located containers form a single cohes",
+        "hat are tightly coupled and need to share resources. These co-located containers form a single cohesive unit.Grouping multiple co-located and co-managed containers in a single Pod is a relatively advanced use case. You should use this pattern only in specific instances in which your containers are tightly coupled.You don't need to run multiple containers to provide replication (for resilience or capacity); if you need multiple replicas, see Workload management.Using PodsThe following is an example of a Pod which consists of a container running the image nginx:1.14.2.pods/simple-pod.yaml apiVersion: v1 kind: Pod metadata: name: nginx spec: containers: - name: nginx image: nginx:1.14.2 ports: - containerPort: 80 To create the Pod shown above, run the following command:kubectl apply -f https://k8s.io/examples/pods/simple-pod.yaml Pods are generally not created directly and are created using workload resources. See Working with Pods for more information on how Pods are used with workload r"
+      ],
+      "ground_truth": "network namespace, volumes, localhost",
+      "actual_sources": [
+        "concepts__workloads__pods.html",
+        "tutorials__kubernetes-basics__explore__explore-intro.pdf"
+      ],
+      "golden_sources": [
+        "pods.html"
+      ],
+      "forbidden_keywords": [],
+      "ragas_metrics": {
+        "id": "q-004",
+        "demonstrates_feature": "baseline",
+        "intent": "rag",
+        "question": "How do containers share resources within a Pod?",
+        "answer": "Containers within a Pod share resources such as storage and networking. They share an IP address and port space, allowing them to communicate with each other using localhost. Additionally, they can access shared storage volumes, which enables data sharing and persistence across container restarts. This shared context is facilitated by a set of Linux namespaces and cgroups.",
+        "contexts": [
+          "other using localhost. When containers in a Pod communicate with entities outside the Pod, they must coordinate how they use the shared network resources (such as ports). Within a Pod, containers share an IP address and port space, and can find each other via localhost. The containers in a Pod can also communicate with each other using standard inter-process communications like SystemV semaphores or POSIX shared memory. Containers in different Pods have distinct IP addresses and can not communicate by OS-level IPC without special configuration. Containers that want to interact with a container running in a different Pod can use IP networking to communicate.Containers within the Pod see the system hostname as being the same as the configured name for the Pod. There's more about this in the networking section.Pod security settingsTo set security constraints on Pods and containers, you use the securityContext field in the Pod specification. This field gives you granular control over what",
+          "t your application instance. A Pod is a Kubernetes abstraction that represents a group of one or more application containers (such as Docker), and some shared resources for those containers. Those resources include:Shared storage, as VolumesNetworking, as a unique cluster IP addressInformation about how to run each container, such as the container image version or specific ports to useA Pod models an application-specific \"logical host\" and can contain different application containers which are relatively tightly coupled. For example, a Pod might include both the container with your Node.js app as well as a different container that feeds the data to be published by the Node.js webserver. The containers in a Pod share an IP Address and port space, are always co-located and co-scheduled, and run in a shared context on the same Node.Pods are the atomic unit on the Kubernetes platform. When we create a Deployment on Kubernetes, that Deployment creates Pods with containers inside them (as op",
+          "conds deletionTimestamp: The effects of these fields on the Pod's status are a result of the previously observed specification.Resource sharing and communicationPods enable data sharing and communication among their constituent containers.Storage in PodsA Pod can specify a set of shared storage volumes. All containers in the Pod can access the shared volumes, allowing those containers to share data. Volumes also allow persistent data in a Pod to survive in case one of the containers within needs to be restarted. See Storage for more information on how Kubernetes implements shared storage and makes it available to Pods.Pod networkingEach Pod is assigned a unique IP address for each address family. Every container in a Pod shares the network namespace, including the IP address and network ports. Inside a Pod (and only then), the containers that belong to the Pod can communicate with one another using localhost. When containers in a Pod communicate with entities outside the Pod, they must",
+          "s a Pod?Note:You need to install a container runtime into each node in the cluster so that Pods can run there.The shared context of a Pod is a set of Linux namespaces, cgroups, and potentially other facets of isolation - the same things that isolate a container. Within a Pod's context, the individual applications may have further sub-isolations applied.A Pod is similar to a set of containers with shared namespaces and shared filesystem volumes.Pods in a Kubernetes cluster are used in two main ways:Pods that run a single container. The \"one-container-per-Pod\" model is the most common Kubernetes use case; in this case, you can think of a Pod as a wrapper around a single container; Kubernetes manages Pods rather than managing the containers directly.Pods that run multiple containers that need to work together. A Pod can encapsulate an application composed of multiple co-located containers that are tightly coupled and need to share resources. These co-located containers form a single cohes",
+          "hat are tightly coupled and need to share resources. These co-located containers form a single cohesive unit.Grouping multiple co-located and co-managed containers in a single Pod is a relatively advanced use case. You should use this pattern only in specific instances in which your containers are tightly coupled.You don't need to run multiple containers to provide replication (for resilience or capacity); if you need multiple replicas, see Workload management.Using PodsThe following is an example of a Pod which consists of a container running the image nginx:1.14.2.pods/simple-pod.yaml apiVersion: v1 kind: Pod metadata: name: nginx spec: containers: - name: nginx image: nginx:1.14.2 ports: - containerPort: 80 To create the Pod shown above, run the following command:kubectl apply -f https://k8s.io/examples/pods/simple-pod.yaml Pods are generally not created directly and are created using workload resources. See Working with Pods for more information on how Pods are used with workload r"
+        ],
+        "ground_truth": "network namespace, volumes, localhost",
+        "actual_sources": [
+          "concepts__workloads__pods.html",
+          "tutorials__kubernetes-basics__explore__explore-intro.pdf"
+        ],
+        "golden_sources": [
+          "pods.html"
+        ],
+        "forbidden_keywords": [],
+        "faithfulness": 1,
+        "answer_relevancy": 1.0,
+        "context_precision": 1.0,
+        "context_recall": 1,
+        "scoring_backend": "llm"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "pod",
+          "pods"
+        ],
+        "missed": []
+      }
+    }
+  ],
+  "skipped": [],
+  "aggregate": {
+    "faithfulness": 1,
+    "context_precision": 0.958,
+    "answer_relevancy": 1.0,
+    "context_recall": 1,
+    "forbidden_violations": 0
+  }
+}

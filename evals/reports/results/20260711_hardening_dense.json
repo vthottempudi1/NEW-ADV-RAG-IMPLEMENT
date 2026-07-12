@@ -1,0 +1,246 @@
+{
+  "profile": "naive",
+  "flags": {
+    "search_mode": "dense",
+    "enable_hyde": false,
+    "enable_rerank": false,
+    "enable_crag": false,
+    "enable_self_reflective": false,
+    "top_k": 5
+  },
+  "timestamp_utc": "2026-07-11T05:55:11.496482Z",
+  "filter": "dense",
+  "mode": "local",
+  "scorer": "heuristic",
+  "preflight": {
+    "status": "ok",
+    "collection": "new_adv_rag_documents",
+    "total_points": 1179,
+    "unique_sources": 49,
+    "golden_source_coverage": 1.0,
+    "warnings": []
+  },
+  "provenance": {
+    "git_commit": "fa69186a74a659f9b00454f7e13f545e5bcecba8",
+    "environment": "local-hardening",
+    "collection": "new_adv_rag_documents",
+    "true_documents": 50,
+    "noisy_documents": 324,
+    "total_points": 1179,
+    "unique_sources": 49,
+    "embedding_model": "text-embedding-3-small",
+    "answer_model": "gpt-4o",
+    "grader_model": "gpt-4o-mini",
+    "ci_run_id": null
+  },
+  "rows": [
+    {
+      "id": "q-041",
+      "demonstrates_feature": "dense",
+      "intent": "rag",
+      "question": "How do the Kubernetes control plane components work together?",
+      "answer": "The Kubernetes control plane components work together to manage the overall state of the cluster. The key components include:\n\n1. **kube-apiserver**: This is the core component that exposes the Kubernetes HTTP API, serving as the front end for the Kubernetes control plane.\n\n2. **etcd**: A consistent and highly-available key-value store that stores all the data for the Kubernetes API server, ensuring data consistency and availability.\n\n3. **kube-scheduler**: Responsible for assigning Pods that are not yet bound to a node, selecting the most suitable node for each Pod based on resource availability and other constraints.\n\n4. **kube-controller-manager**: Runs various controllers that regulate the state of the cluster, such as the node controller, replication controller, and others, ensuring that the desired state of the cluster is maintained.\n\n5. **cloud-controller-manager** (optional): Integrates with underlying cloud providers to manage cloud-specific resources.\n\nThese components work in concert to ensure that the cluster operates smoothly, maintaining the desired state as defined by the user.",
+      "contexts": [
+        "Concepts \u203a Overview \u203a Components Kubernetes Components | Kubernetes Kubernetes ComponentsAn overview of the key components that make up a Kubernetes cluster.This page provides a high-level overview of the essential components that make up a Kubernetes cluster.The components of a Kubernetes clusterCore ComponentsA Kubernetes cluster consists of a control plane and one or more worker nodes. Here's a brief overview of the main components:Control Plane ComponentsManage the overall state of the cluster:kube-apiserverThe core component server that exposes the Kubernetes HTTP API.etcdConsistent and highly-available key value store for all API server data.kube-schedulerLooks for Pods not yet bound to a node, and assigns each Pod to a suitable node.kube-controller-managerRuns controllers to implement Kubernetes API behavior.cloud-controller-manager (optional)Integrates with underlying cloud provider(s).Node ComponentsRun on every node, maintaining running pods and providing the Kubernetes runti",
+        "ol plane: in other words, using the kubelet to supervise the individual control plane components.The kubelet automatically tries to create a mirror Pod on the Kubernetes API server for each static Pod. This means that the Pods running on a node are visible on the API server, but cannot be controlled from there. See the guide Create static Pods for more information.Note:The spec of a static Pod cannot refer to other API objects (e.g., ServiceAccount, ConfigMap, Secret, etc).Pods with multiple containersPods are designed to support multiple cooperating processes (as containers) that form a cohesive unit of service. The containers in a Pod are automatically co-located and co-scheduled on the same physical or virtual machine in the cluster. The containers can share resources and dependencies, communicate with one another, and coordinate when and how they are terminated.Pods in a Kubernetes cluster are used in two main ways:Pods that run a single container. The \"one-container-per-Pod\" model",
+        "Security | Kubernetes SecurityConcepts for keeping your cloud-native workload secure.This section of the Kubernetes documentation aims to help you learn to run workloads more securely, and about the essential aspects of keeping a Kubernetes cluster secure.Kubernetes is based on a cloud-native architecture, and draws on advice from the CNCF about good practice for cloud native information security.Read Cloud Native Security and Kubernetes for the broader context about how to secure your cluster and the applications that you're running on it.Kubernetes security mechanismsKubernetes includes several APIs and security controls, as well as ways to define policies that can form part of how you manage information security.Control plane protectionA key security mechanism for any Kubernetes cluster is to control access to the Kubernetes API.Kubernetes expects you to configure and use TLS to provide data encryption in transit within the control plane, and between the control plane and its client",
+        "Concepts \u203a Overview \u203a What-Is-Kubernetes Overview | Kubernetes OverviewKubernetes is a portable, extensible, open source platform for managing containerized workloads and services that facilitate both declarative configuration and automation. It has a large, rapidly growing ecosystem. Kubernetes services, support, and tools are widely available.This page is an overview of Kubernetes.The name Kubernetes originates from Greek, meaning helmsman or pilot. K8s as an abbreviation results from counting the eight letters between the \"K\" and the \"s\". Google open sourced the Kubernetes project in 2014. Kubernetes combines over 15 years of Google's experience running production workloads at scale with best-of-breed ideas and practices from the community.Why you need Kubernetes and what it can doContainers are a good way to bundle and run your applications. In a production environment, you need to manage the containers that run the applications and ensure that there is no downtime. For example, if",
+        "agement, or self-healing systems.Additionally, Kubernetes is not a mere orchestration system. In fact, it eliminates the need for orchestration. The technical definition of orchestration is execution of a defined workflow: first do A, then B, then C. In contrast, Kubernetes comprises a set of independent, composable control processes that continuously drive the current state towards the provided desired state. It shouldn't matter how you get from A to C. Centralized control is also not required. This results in a system that is easier to use and more powerful, robust, resilient, and extensible.Historical context for KubernetesLet's take a look at why Kubernetes is so useful by going back in time.Traditional deployment era:Early on, organizations ran applications on physical servers. There was no way to define resource boundaries for applications in a physical server, and this caused resource allocation issues. For example, if multiple applications run on a physical server, there can be"
+      ],
+      "ground_truth": "control plane, scheduler, controller",
+      "actual_sources": [
+        "concepts__overview__components.pdf",
+        "concepts__workloads__pods.html",
+        "concepts__security__overview.txt",
+        "concepts__overview__what-is-kubernetes.docx"
+      ],
+      "golden_sources": [
+        "concepts__overview__components.pdf"
+      ],
+      "forbidden_keywords": [],
+      "ragas_metrics": {
+        "id": "q-041",
+        "demonstrates_feature": "dense",
+        "intent": "rag",
+        "question": "How do the Kubernetes control plane components work together?",
+        "answer": "The Kubernetes control plane components work together to manage the overall state of the cluster. The key components include:\n\n1. **kube-apiserver**: This is the core component that exposes the Kubernetes HTTP API, serving as the front end for the Kubernetes control plane.\n\n2. **etcd**: A consistent and highly-available key-value store that stores all the data for the Kubernetes API server, ensuring data consistency and availability.\n\n3. **kube-scheduler**: Responsible for assigning Pods that are not yet bound to a node, selecting the most suitable node for each Pod based on resource availability and other constraints.\n\n4. **kube-controller-manager**: Runs various controllers that regulate the state of the cluster, such as the node controller, replication controller, and others, ensuring that the desired state of the cluster is maintained.\n\n5. **cloud-controller-manager** (optional): Integrates with underlying cloud providers to manage cloud-specific resources.\n\nThese components work in concert to ensure that the cluster operates smoothly, maintaining the desired state as defined by the user.",
+        "contexts": [
+          "Concepts \u203a Overview \u203a Components Kubernetes Components | Kubernetes Kubernetes ComponentsAn overview of the key components that make up a Kubernetes cluster.This page provides a high-level overview of the essential components that make up a Kubernetes cluster.The components of a Kubernetes clusterCore ComponentsA Kubernetes cluster consists of a control plane and one or more worker nodes. Here's a brief overview of the main components:Control Plane ComponentsManage the overall state of the cluster:kube-apiserverThe core component server that exposes the Kubernetes HTTP API.etcdConsistent and highly-available key value store for all API server data.kube-schedulerLooks for Pods not yet bound to a node, and assigns each Pod to a suitable node.kube-controller-managerRuns controllers to implement Kubernetes API behavior.cloud-controller-manager (optional)Integrates with underlying cloud provider(s).Node ComponentsRun on every node, maintaining running pods and providing the Kubernetes runti",
+          "ol plane: in other words, using the kubelet to supervise the individual control plane components.The kubelet automatically tries to create a mirror Pod on the Kubernetes API server for each static Pod. This means that the Pods running on a node are visible on the API server, but cannot be controlled from there. See the guide Create static Pods for more information.Note:The spec of a static Pod cannot refer to other API objects (e.g., ServiceAccount, ConfigMap, Secret, etc).Pods with multiple containersPods are designed to support multiple cooperating processes (as containers) that form a cohesive unit of service. The containers in a Pod are automatically co-located and co-scheduled on the same physical or virtual machine in the cluster. The containers can share resources and dependencies, communicate with one another, and coordinate when and how they are terminated.Pods in a Kubernetes cluster are used in two main ways:Pods that run a single container. The \"one-container-per-Pod\" model",
+          "Security | Kubernetes SecurityConcepts for keeping your cloud-native workload secure.This section of the Kubernetes documentation aims to help you learn to run workloads more securely, and about the essential aspects of keeping a Kubernetes cluster secure.Kubernetes is based on a cloud-native architecture, and draws on advice from the CNCF about good practice for cloud native information security.Read Cloud Native Security and Kubernetes for the broader context about how to secure your cluster and the applications that you're running on it.Kubernetes security mechanismsKubernetes includes several APIs and security controls, as well as ways to define policies that can form part of how you manage information security.Control plane protectionA key security mechanism for any Kubernetes cluster is to control access to the Kubernetes API.Kubernetes expects you to configure and use TLS to provide data encryption in transit within the control plane, and between the control plane and its client",
+          "Concepts \u203a Overview \u203a What-Is-Kubernetes Overview | Kubernetes OverviewKubernetes is a portable, extensible, open source platform for managing containerized workloads and services that facilitate both declarative configuration and automation. It has a large, rapidly growing ecosystem. Kubernetes services, support, and tools are widely available.This page is an overview of Kubernetes.The name Kubernetes originates from Greek, meaning helmsman or pilot. K8s as an abbreviation results from counting the eight letters between the \"K\" and the \"s\". Google open sourced the Kubernetes project in 2014. Kubernetes combines over 15 years of Google's experience running production workloads at scale with best-of-breed ideas and practices from the community.Why you need Kubernetes and what it can doContainers are a good way to bundle and run your applications. In a production environment, you need to manage the containers that run the applications and ensure that there is no downtime. For example, if",
+          "agement, or self-healing systems.Additionally, Kubernetes is not a mere orchestration system. In fact, it eliminates the need for orchestration. The technical definition of orchestration is execution of a defined workflow: first do A, then B, then C. In contrast, Kubernetes comprises a set of independent, composable control processes that continuously drive the current state towards the provided desired state. It shouldn't matter how you get from A to C. Centralized control is also not required. This results in a system that is easier to use and more powerful, robust, resilient, and extensible.Historical context for KubernetesLet's take a look at why Kubernetes is so useful by going back in time.Traditional deployment era:Early on, organizations ran applications on physical servers. There was no way to define resource boundaries for applications in a physical server, and this caused resource allocation issues. For example, if multiple applications run on a physical server, there can be"
+        ],
+        "ground_truth": "control plane, scheduler, controller",
+        "actual_sources": [
+          "concepts__overview__components.pdf",
+          "concepts__workloads__pods.html",
+          "concepts__security__overview.txt",
+          "concepts__overview__what-is-kubernetes.docx"
+        ],
+        "golden_sources": [
+          "concepts__overview__components.pdf"
+        ],
+        "forbidden_keywords": [],
+        "faithfulness": 0.488,
+        "answer_relevancy": 0.857,
+        "context_precision": 0.429,
+        "context_recall": 0.75,
+        "scoring_backend": "heuristic"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "component",
+          "components",
+          "concept",
+          "concepts",
+          "concepts__overview__component",
+          "concepts__overview__components",
+          "overview"
+        ],
+        "missed": []
+      }
+    },
+    {
+      "id": "q-042",
+      "demonstrates_feature": "dense",
+      "intent": "rag",
+      "question": "Why can containers inside one Pod communicate over localhost and share storage?",
+      "answer": "Containers inside one Pod can communicate over localhost and share storage because they share the same network namespace and filesystem volumes. This means they have the same IP address and can use localhost to communicate with each other. Additionally, they can access shared storage volumes specified in the Pod, allowing them to share data and maintain persistent data across container restarts.",
+      "contexts": [
+        "other using localhost. When containers in a Pod communicate with entities outside the Pod, they must coordinate how they use the shared network resources (such as ports). Within a Pod, containers share an IP address and port space, and can find each other via localhost. The containers in a Pod can also communicate with each other using standard inter-process communications like SystemV semaphores or POSIX shared memory. Containers in different Pods have distinct IP addresses and can not communicate by OS-level IPC without special configuration. Containers that want to interact with a container running in a different Pod can use IP networking to communicate.Containers within the Pod see the system hostname as being the same as the configured name for the Pod. There's more about this in the networking section.Pod security settingsTo set security constraints on Pods and containers, you use the securityContext field in the Pod specification. This field gives you granular control over what",
+        "conds deletionTimestamp: The effects of these fields on the Pod's status are a result of the previously observed specification.Resource sharing and communicationPods enable data sharing and communication among their constituent containers.Storage in PodsA Pod can specify a set of shared storage volumes. All containers in the Pod can access the shared volumes, allowing those containers to share data. Volumes also allow persistent data in a Pod to survive in case one of the containers within needs to be restarted. See Storage for more information on how Kubernetes implements shared storage and makes it available to Pods.Pod networkingEach Pod is assigned a unique IP address for each address family. Every container in a Pod shares the network namespace, including the IP address and network ports. Inside a Pod (and only then), the containers that belong to the Pod can communicate with one another using localhost. When containers in a Pod communicate with entities outside the Pod, they must",
+        "s a Pod?Note:You need to install a container runtime into each node in the cluster so that Pods can run there.The shared context of a Pod is a set of Linux namespaces, cgroups, and potentially other facets of isolation - the same things that isolate a container. Within a Pod's context, the individual applications may have further sub-isolations applied.A Pod is similar to a set of containers with shared namespaces and shared filesystem volumes.Pods in a Kubernetes cluster are used in two main ways:Pods that run a single container. The \"one-container-per-Pod\" model is the most common Kubernetes use case; in this case, you can think of a Pod as a wrapper around a single container; Kubernetes manages Pods rather than managing the containers directly.Pods that run multiple containers that need to work together. A Pod can encapsulate an application composed of multiple co-located containers that are tightly coupled and need to share resources. These co-located containers form a single cohes",
+        "auto-healing.Pods natively provide two kinds of shared resources for their constituent containers: networking and storage.Working with PodsYou'll rarely create individual Pods directly in Kubernetes\u2014even singleton Pods. This is because Pods are designed as relatively ephemeral, disposable entities. When a Pod gets created (directly by you, or indirectly by a controller), the new Pod is scheduled to run on a Node in your cluster. The Pod remains on that node until the Pod finishes execution, the Pod object is deleted, the Pod is evicted for lack of resources, or the node fails.Note:Restarting a container in a Pod should not be confused with restarting a Pod. A Pod is not a process, but an environment for running container(s). A Pod persists until it is deleted.The name of a Pod must be a valid DNS subdomain value, but this can produce unexpected results for the Pod hostname. For best compatibility, the name should follow the more restrictive rules for a DNS label.Pod OSFEATURE STATE: Ku"
+      ],
+      "ground_truth": "network, volume, container",
+      "actual_sources": [
+        "concepts__workloads__pods.html"
+      ],
+      "golden_sources": [
+        "concepts__workloads__pods.html"
+      ],
+      "forbidden_keywords": [],
+      "ragas_metrics": {
+        "id": "q-042",
+        "demonstrates_feature": "dense",
+        "intent": "rag",
+        "question": "Why can containers inside one Pod communicate over localhost and share storage?",
+        "answer": "Containers inside one Pod can communicate over localhost and share storage because they share the same network namespace and filesystem volumes. This means they have the same IP address and can use localhost to communicate with each other. Additionally, they can access shared storage volumes specified in the Pod, allowing them to share data and maintain persistent data across container restarts.",
+        "contexts": [
+          "other using localhost. When containers in a Pod communicate with entities outside the Pod, they must coordinate how they use the shared network resources (such as ports). Within a Pod, containers share an IP address and port space, and can find each other via localhost. The containers in a Pod can also communicate with each other using standard inter-process communications like SystemV semaphores or POSIX shared memory. Containers in different Pods have distinct IP addresses and can not communicate by OS-level IPC without special configuration. Containers that want to interact with a container running in a different Pod can use IP networking to communicate.Containers within the Pod see the system hostname as being the same as the configured name for the Pod. There's more about this in the networking section.Pod security settingsTo set security constraints on Pods and containers, you use the securityContext field in the Pod specification. This field gives you granular control over what",
+          "conds deletionTimestamp: The effects of these fields on the Pod's status are a result of the previously observed specification.Resource sharing and communicationPods enable data sharing and communication among their constituent containers.Storage in PodsA Pod can specify a set of shared storage volumes. All containers in the Pod can access the shared volumes, allowing those containers to share data. Volumes also allow persistent data in a Pod to survive in case one of the containers within needs to be restarted. See Storage for more information on how Kubernetes implements shared storage and makes it available to Pods.Pod networkingEach Pod is assigned a unique IP address for each address family. Every container in a Pod shares the network namespace, including the IP address and network ports. Inside a Pod (and only then), the containers that belong to the Pod can communicate with one another using localhost. When containers in a Pod communicate with entities outside the Pod, they must",
+          "s a Pod?Note:You need to install a container runtime into each node in the cluster so that Pods can run there.The shared context of a Pod is a set of Linux namespaces, cgroups, and potentially other facets of isolation - the same things that isolate a container. Within a Pod's context, the individual applications may have further sub-isolations applied.A Pod is similar to a set of containers with shared namespaces and shared filesystem volumes.Pods in a Kubernetes cluster are used in two main ways:Pods that run a single container. The \"one-container-per-Pod\" model is the most common Kubernetes use case; in this case, you can think of a Pod as a wrapper around a single container; Kubernetes manages Pods rather than managing the containers directly.Pods that run multiple containers that need to work together. A Pod can encapsulate an application composed of multiple co-located containers that are tightly coupled and need to share resources. These co-located containers form a single cohes",
+          "auto-healing.Pods natively provide two kinds of shared resources for their constituent containers: networking and storage.Working with PodsYou'll rarely create individual Pods directly in Kubernetes\u2014even singleton Pods. This is because Pods are designed as relatively ephemeral, disposable entities. When a Pod gets created (directly by you, or indirectly by a controller), the new Pod is scheduled to run on a Node in your cluster. The Pod remains on that node until the Pod finishes execution, the Pod object is deleted, the Pod is evicted for lack of resources, or the node fails.Note:Restarting a container in a Pod should not be confused with restarting a Pod. A Pod is not a process, but an environment for running container(s). A Pod persists until it is deleted.The name of a Pod must be a valid DNS subdomain value, but this can produce unexpected results for the Pod hostname. For best compatibility, the name should follow the more restrictive rules for a DNS label.Pod OSFEATURE STATE: Ku"
+        ],
+        "ground_truth": "network, volume, container",
+        "actual_sources": [
+          "concepts__workloads__pods.html"
+        ],
+        "golden_sources": [
+          "concepts__workloads__pods.html"
+        ],
+        "forbidden_keywords": [],
+        "faithfulness": 0.605,
+        "answer_relevancy": 0.909,
+        "context_precision": 0.568,
+        "context_recall": 0.667,
+        "scoring_backend": "heuristic"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "concept",
+          "concepts",
+          "concepts__workloads__pod",
+          "concepts__workloads__pods",
+          "pod",
+          "pods",
+          "workload",
+          "workloads"
+        ],
+        "missed": []
+      }
+    },
+    {
+      "id": "q-043",
+      "demonstrates_feature": "dense",
+      "intent": "rag",
+      "question": "What does self-healing mean in Kubernetes?",
+      "answer": "In Kubernetes, self-healing refers to the system's ability to automatically manage and recover from failures. This includes restarting containers that fail, replacing containers, and killing containers that do not respond to health checks. Kubernetes ensures that containers are not advertised to clients until they are ready to serve. Additionally, if a node is under resource pressure, the kubelet attempts to reclaim resources and may evict pods, with the control plane creating new pods to replace evicted ones if they are managed by a workload management object like a Deployment or StatefulSet.",
+      "contexts": [
+        "auto-healing.Pods natively provide two kinds of shared resources for their constituent containers: networking and storage.Working with PodsYou'll rarely create individual Pods directly in Kubernetes\u2014even singleton Pods. This is because Pods are designed as relatively ephemeral, disposable entities. When a Pod gets created (directly by you, or indirectly by a controller), the new Pod is scheduled to run on a Node in your cluster. The Pod remains on that node until the Pod finishes execution, the Pod object is deleted, the Pod is evicted for lack of resources, or the node fails.Note:Restarting a container in a Pod should not be confused with restarting a Pod. A Pod is not a process, but an environment for running container(s). A Pod persists until it is deleted.The name of a Pod must be a valid DNS subdomain value, but this can produce unexpected results for the Pod hostname. For best compatibility, the name should follow the more restrictive rules for a DNS label.Pod OSFEATURE STATE: Ku",
+        "such as local storage, public cloud providers, and more.Automated rollouts and rollbacks You can describe the desired state for your deployed containers using Kubernetes, and it can change the actual state to the desired state at a controlled rate. For example, you can automate Kubernetes to create new containers for your deployment, remove existing containers and adopt all their resources to the new container.Automatic bin packing You provide Kubernetes with a cluster of nodes that it can use to run containerized tasks. You tell Kubernetes how much CPU and memory (RAM) each container needs. Kubernetes can fit containers onto your nodes to make the best use of your resources.Self-healing Kubernetes restarts containers that fail, replaces containers, kills containers that don't respond to your user-defined health check, and doesn't advertise them to clients until they are ready to serve.Secret and configuration management Kubernetes lets you store and manage sensitive information, such",
+        "agement, or self-healing systems.Additionally, Kubernetes is not a mere orchestration system. In fact, it eliminates the need for orchestration. The technical definition of orchestration is execution of a defined workflow: first do A, then B, then C. In contrast, Kubernetes comprises a set of independent, composable control processes that continuously drive the current state towards the provided desired state. It shouldn't matter how you get from A to C. Centralized control is also not required. This results in a system that is easier to use and more powerful, robust, resilient, and extensible.Historical context for KubernetesLet's take a look at why Kubernetes is so useful by going back in time.Traditional deployment era:Early on, organizations ran applications on physical servers. There was no way to define resource boundaries for applications in a physical server, and this caused resource allocation issues. For example, if multiple applications run on a physical server, there can be",
+        "iod. If you use hard eviction thresholds, the kubelet uses a 0s grace period (immediate shutdown) for termination.Self healing behaviorThe kubelet attempts to reclaim node-level resources before it terminates end-user pods. For example, it removes unused container images when disk resources are starved.If the pods are managed by a workload management object (such as StatefulSet or Deployment) that replaces failed pods, the control plane (kube-controller-manager) creates new pods in place of the evicted pods.Self healing for static podsIf you are running a static pod on a node that is under resource pressure, the kubelet may evict that static Pod. The kubelet then tries to create a replacement, because static Pods always represent an intent to run a Pod on that node.The kubelet takes the priority of the static pod into account when creating a replacement. If the static pod manifest specifies a low priority, and there are higher-priority Pods defined within the cluster's control plane, a"
+      ],
+      "ground_truth": "self-healing, restart, replace",
+      "actual_sources": [
+        "concepts__workloads__pods.html",
+        "concepts__overview__what-is-kubernetes.docx",
+        "concepts__scheduling-eviction__node-pressure-eviction.docx"
+      ],
+      "golden_sources": [
+        "concepts__overview__what-is-kubernetes.docx"
+      ],
+      "forbidden_keywords": [],
+      "ragas_metrics": {
+        "id": "q-043",
+        "demonstrates_feature": "dense",
+        "intent": "rag",
+        "question": "What does self-healing mean in Kubernetes?",
+        "answer": "In Kubernetes, self-healing refers to the system's ability to automatically manage and recover from failures. This includes restarting containers that fail, replacing containers, and killing containers that do not respond to health checks. Kubernetes ensures that containers are not advertised to clients until they are ready to serve. Additionally, if a node is under resource pressure, the kubelet attempts to reclaim resources and may evict pods, with the control plane creating new pods to replace evicted ones if they are managed by a workload management object like a Deployment or StatefulSet.",
+        "contexts": [
+          "auto-healing.Pods natively provide two kinds of shared resources for their constituent containers: networking and storage.Working with PodsYou'll rarely create individual Pods directly in Kubernetes\u2014even singleton Pods. This is because Pods are designed as relatively ephemeral, disposable entities. When a Pod gets created (directly by you, or indirectly by a controller), the new Pod is scheduled to run on a Node in your cluster. The Pod remains on that node until the Pod finishes execution, the Pod object is deleted, the Pod is evicted for lack of resources, or the node fails.Note:Restarting a container in a Pod should not be confused with restarting a Pod. A Pod is not a process, but an environment for running container(s). A Pod persists until it is deleted.The name of a Pod must be a valid DNS subdomain value, but this can produce unexpected results for the Pod hostname. For best compatibility, the name should follow the more restrictive rules for a DNS label.Pod OSFEATURE STATE: Ku",
+          "such as local storage, public cloud providers, and more.Automated rollouts and rollbacks You can describe the desired state for your deployed containers using Kubernetes, and it can change the actual state to the desired state at a controlled rate. For example, you can automate Kubernetes to create new containers for your deployment, remove existing containers and adopt all their resources to the new container.Automatic bin packing You provide Kubernetes with a cluster of nodes that it can use to run containerized tasks. You tell Kubernetes how much CPU and memory (RAM) each container needs. Kubernetes can fit containers onto your nodes to make the best use of your resources.Self-healing Kubernetes restarts containers that fail, replaces containers, kills containers that don't respond to your user-defined health check, and doesn't advertise them to clients until they are ready to serve.Secret and configuration management Kubernetes lets you store and manage sensitive information, such",
+          "agement, or self-healing systems.Additionally, Kubernetes is not a mere orchestration system. In fact, it eliminates the need for orchestration. The technical definition of orchestration is execution of a defined workflow: first do A, then B, then C. In contrast, Kubernetes comprises a set of independent, composable control processes that continuously drive the current state towards the provided desired state. It shouldn't matter how you get from A to C. Centralized control is also not required. This results in a system that is easier to use and more powerful, robust, resilient, and extensible.Historical context for KubernetesLet's take a look at why Kubernetes is so useful by going back in time.Traditional deployment era:Early on, organizations ran applications on physical servers. There was no way to define resource boundaries for applications in a physical server, and this caused resource allocation issues. For example, if multiple applications run on a physical server, there can be",
+          "iod. If you use hard eviction thresholds, the kubelet uses a 0s grace period (immediate shutdown) for termination.Self healing behaviorThe kubelet attempts to reclaim node-level resources before it terminates end-user pods. For example, it removes unused container images when disk resources are starved.If the pods are managed by a workload management object (such as StatefulSet or Deployment) that replaces failed pods, the control plane (kube-controller-manager) creates new pods in place of the evicted pods.Self healing for static podsIf you are running a static pod on a node that is under resource pressure, the kubelet may evict that static Pod. The kubelet then tries to create a replacement, because static Pods always represent an intent to run a Pod on that node.The kubelet takes the priority of the static pod into account when creating a replacement. If the static pod manifest specifies a low priority, and there are higher-priority Pods defined within the cluster's control plane, a"
+        ],
+        "ground_truth": "self-healing, restart, replace",
+        "actual_sources": [
+          "concepts__workloads__pods.html",
+          "concepts__overview__what-is-kubernetes.docx",
+          "concepts__scheduling-eviction__node-pressure-eviction.docx"
+        ],
+        "golden_sources": [
+          "concepts__overview__what-is-kubernetes.docx"
+        ],
+        "forbidden_keywords": [],
+        "faithfulness": 0.458,
+        "answer_relevancy": 0.6,
+        "context_precision": 0.5,
+        "context_recall": 0.5,
+        "scoring_backend": "heuristic"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "concept",
+          "concepts"
+        ],
+        "missed": []
+      }
+    }
+  ],
+  "skipped": [],
+  "aggregate": {
+    "answer_relevancy": 0.789,
+    "context_precision": 0.499,
+    "context_recall": 0.639,
+    "faithfulness": 0.517,
+    "forbidden_violations": 0
+  }
+}

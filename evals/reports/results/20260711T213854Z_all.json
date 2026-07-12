@@ -1,0 +1,294 @@
+{
+  "profile": "all",
+  "flags": {
+    "search_mode": "hybrid",
+    "enable_hyde": true,
+    "enable_rerank": true,
+    "enable_crag": true,
+    "enable_self_reflective": true,
+    "top_k": 5
+  },
+  "timestamp_utc": "2026-07-11T21:38:54.735674Z",
+  "filter": null,
+  "mode": "http",
+  "scorer": "heuristic",
+  "preflight": null,
+  "provenance": {
+    "git_commit": "fa69186a74a659f9b00454f7e13f545e5bcecba8",
+    "environment": "local-docker",
+    "collection": "new_adv_rag_documents",
+    "true_documents": 50,
+    "noisy_documents": 324,
+    "total_points": null,
+    "unique_sources": null,
+    "embedding_model": "text-embedding-3-small",
+    "answer_model": "gpt-4o",
+    "grader_model": "gpt-4o-mini",
+    "ci_run_id": null
+  },
+  "rows": [
+    {
+      "id": "q-050",
+      "demonstrates_feature": "rerank",
+      "intent": "rag",
+      "question": "How does kube-scheduler filter and score nodes before binding a Pod?",
+      "answer": "I may not have enough reliable context to answer this fully. Based on the available information:\n\nThe kube-scheduler uses a two-step process for scheduling pods: filtering and scoring. \n\n1. **Filtering**: This step identifies nodes that are feasible for scheduling a pod. It uses predicates to filter out nodes that do not meet the pod's requirements. Examples of predicates include:\n   - **PodFitsResources**: Checks if a node has enough available resources (CPU, memory) to meet the pod's requests.\n   - **PodFitsHostPorts**: Ensures that the node's ports required by the pod are available.\n   - **PodFitsNodeSelector**: Ensures that the node labels match the pod's node selector requirements.\n\n2. **Scoring**: After filtering, the scheduler scores the feasible nodes to determine the best fit for the pod. It uses priorities to assign scores to nodes. Examples of priorities include:\n   - **LeastRequestedPriority**: Prefers nodes with the least requested resources, promoting balanced resource usage.\n   - **BalancedResourceAllocation**: Prefers nodes with balanced resource usage across CPU and memory.\n   - **NodeAffinityPriority**: Scores nodes based on affinity and anti-affinity rules specified in the pod.\n\nThe node with the highest score is selected for scheduling the pod. If multiple nodes have the same score, one is chosen at random [concepts__scheduling-eviction__kube-scheduler.pdf].",
+      "contexts": [
+        "[Evidence source: concepts__scheduling-eviction__kube-scheduler.pdf]\nn a process called binding.Factors that need to be taken into account for scheduling decisions include individual and collective resource requirements, hardware / software / policy constraints, affinity and anti-affinity specifications, data locality, inter-workload interference, and so on.Node selection in kube-schedulerkube-scheduler selects a node for the pod in a 2-step operation:FilteringScoringThe filtering step finds the set of Nodes where it's feasible to schedule the Pod. For example, the PodFitsResources filter checks whether a candidate Node has enough available resources to meet a Pod's specific resource requests. After this step, the node list contains any suitable Nodes; often, there will be more than one. If the list is empty, that Pod isn't (yet) schedulable.In the scoring step, the scheduler ranks the remaining nodes to choose the most suitable Pod placement. The scheduler assigns a score to each Node that survived filtering, basing this score on the active scoring rul",
+        "[Evidence source: concepts__scheduling-eviction__kube-scheduler.pdf]\ner assigns a score to each Node that survived filtering, basing this score on the active scoring rules.Finally, kube-scheduler assigns the Pod to the Node with the highest ranking. If there is more than one node with equal scores, kube-scheduler selects one of these at random.There are two supported ways to configure the filtering and scoring behavior of the scheduler:Scheduling Policies allow you to configure Predicates for filtering and Priorities for scoring.Scheduling Profiles allow you to configure Plugins that implement different scheduling stages, including: QueueSort, Filter, Score, Bind, Reserve, Permit, and others. You can also configure the kube-scheduler to run different profiles.What's nextRead about scheduler performance tuningRead about Pod topology spread constraintsRead the reference documentation for kube-schedulerRead the kube-scheduler config (v1) referenceLearn about configuring multiple schedulersLearn about topology management policiesLearn about Pod OverheadLear",
+        "[Evidence source: concepts__scheduling-eviction__kube-scheduler.pdf]\nyour own scheduling component and use that instead.Kube-scheduler selects an optimal node to run newly created or not yet scheduled (unscheduled) pods. Since containers in pods - and pods themselves - can have different requirements, the scheduler filters out any nodes that don't meet a Pod's specific scheduling needs. Alternatively, the API lets you specify a node for a Pod when you create it, but this is unusual and is only done in special cases.In a cluster, Nodes that meet the scheduling requirements for a Pod are called feasible nodes. If none of the nodes are suitable, the pod remains unscheduled until the scheduler is able to place it.The scheduler finds feasible Nodes for a Pod and then runs a set of functions to score the feasible Nodes and picks a Node with the highest score among the feasible ones to run the Pod. The scheduler then notifies the API server about this decision in a process called binding.Factors that need to be taken into account for scheduling decisions inclu"
+      ],
+      "ground_truth": "filter, score, scheduler",
+      "actual_sources": [
+        "concepts__scheduling-eviction__kube-scheduler.pdf"
+      ],
+      "golden_sources": [
+        "concepts__scheduling-eviction__kube-scheduler.pdf"
+      ],
+      "forbidden_keywords": [],
+      "forbidden_sources": [],
+      "expected_route": "rag",
+      "actual_route": "rag",
+      "ragas_metrics": {
+        "id": "q-050",
+        "demonstrates_feature": "rerank",
+        "intent": "rag",
+        "question": "How does kube-scheduler filter and score nodes before binding a Pod?",
+        "answer": "I may not have enough reliable context to answer this fully. Based on the available information:\n\nThe kube-scheduler uses a two-step process for scheduling pods: filtering and scoring. \n\n1. **Filtering**: This step identifies nodes that are feasible for scheduling a pod. It uses predicates to filter out nodes that do not meet the pod's requirements. Examples of predicates include:\n   - **PodFitsResources**: Checks if a node has enough available resources (CPU, memory) to meet the pod's requests.\n   - **PodFitsHostPorts**: Ensures that the node's ports required by the pod are available.\n   - **PodFitsNodeSelector**: Ensures that the node labels match the pod's node selector requirements.\n\n2. **Scoring**: After filtering, the scheduler scores the feasible nodes to determine the best fit for the pod. It uses priorities to assign scores to nodes. Examples of priorities include:\n   - **LeastRequestedPriority**: Prefers nodes with the least requested resources, promoting balanced resource usage.\n   - **BalancedResourceAllocation**: Prefers nodes with balanced resource usage across CPU and memory.\n   - **NodeAffinityPriority**: Scores nodes based on affinity and anti-affinity rules specified in the pod.\n\nThe node with the highest score is selected for scheduling the pod. If multiple nodes have the same score, one is chosen at random [concepts__scheduling-eviction__kube-scheduler.pdf].",
+        "contexts": [
+          "[Evidence source: concepts__scheduling-eviction__kube-scheduler.pdf]\nn a process called binding.Factors that need to be taken into account for scheduling decisions include individual and collective resource requirements, hardware / software / policy constraints, affinity and anti-affinity specifications, data locality, inter-workload interference, and so on.Node selection in kube-schedulerkube-scheduler selects a node for the pod in a 2-step operation:FilteringScoringThe filtering step finds the set of Nodes where it's feasible to schedule the Pod. For example, the PodFitsResources filter checks whether a candidate Node has enough available resources to meet a Pod's specific resource requests. After this step, the node list contains any suitable Nodes; often, there will be more than one. If the list is empty, that Pod isn't (yet) schedulable.In the scoring step, the scheduler ranks the remaining nodes to choose the most suitable Pod placement. The scheduler assigns a score to each Node that survived filtering, basing this score on the active scoring rul",
+          "[Evidence source: concepts__scheduling-eviction__kube-scheduler.pdf]\ner assigns a score to each Node that survived filtering, basing this score on the active scoring rules.Finally, kube-scheduler assigns the Pod to the Node with the highest ranking. If there is more than one node with equal scores, kube-scheduler selects one of these at random.There are two supported ways to configure the filtering and scoring behavior of the scheduler:Scheduling Policies allow you to configure Predicates for filtering and Priorities for scoring.Scheduling Profiles allow you to configure Plugins that implement different scheduling stages, including: QueueSort, Filter, Score, Bind, Reserve, Permit, and others. You can also configure the kube-scheduler to run different profiles.What's nextRead about scheduler performance tuningRead about Pod topology spread constraintsRead the reference documentation for kube-schedulerRead the kube-scheduler config (v1) referenceLearn about configuring multiple schedulersLearn about topology management policiesLearn about Pod OverheadLear",
+          "[Evidence source: concepts__scheduling-eviction__kube-scheduler.pdf]\nyour own scheduling component and use that instead.Kube-scheduler selects an optimal node to run newly created or not yet scheduled (unscheduled) pods. Since containers in pods - and pods themselves - can have different requirements, the scheduler filters out any nodes that don't meet a Pod's specific scheduling needs. Alternatively, the API lets you specify a node for a Pod when you create it, but this is unusual and is only done in special cases.In a cluster, Nodes that meet the scheduling requirements for a Pod are called feasible nodes. If none of the nodes are suitable, the pod remains unscheduled until the scheduler is able to place it.The scheduler finds feasible Nodes for a Pod and then runs a set of functions to score the feasible Nodes and picks a Node with the highest score among the feasible ones to run the Pod. The scheduler then notifies the API server about this decision in a process called binding.Factors that need to be taken into account for scheduling decisions inclu"
+        ],
+        "ground_truth": "filter, score, scheduler",
+        "actual_sources": [
+          "concepts__scheduling-eviction__kube-scheduler.pdf"
+        ],
+        "golden_sources": [
+          "concepts__scheduling-eviction__kube-scheduler.pdf"
+        ],
+        "forbidden_keywords": [],
+        "forbidden_sources": [],
+        "expected_route": "rag",
+        "actual_route": "rag",
+        "faithfulness": 0.391,
+        "answer_relevancy": 0.667,
+        "context_precision": 0.667,
+        "context_recall": 1.0,
+        "scoring_backend": "heuristic"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "concept",
+          "concepts",
+          "concepts__scheduling-eviction__kube-scheduler",
+          "eviction",
+          "kube",
+          "kube-scheduler",
+          "scheduler",
+          "scheduling",
+          "scheduling-eviction"
+        ],
+        "missed": []
+      },
+      "source_precision": 1.0,
+      "forbidden_source_check": {
+        "passed": true,
+        "hits": []
+      },
+      "route_check": {
+        "passed": true,
+        "expected": "rag",
+        "actual": "rag"
+      }
+    },
+    {
+      "id": "q-051",
+      "demonstrates_feature": "rerank",
+      "intent": "rag",
+      "question": "When is a Pod ready to receive Service traffic?",
+      "answer": "A Pod is ready to receive Service traffic when all its containers are ready and any specified readiness gates have their conditions met. Specifically, the readiness probe must succeed for the Pod to be marked as ready. If the readiness probe fails, the Pod will be marked as unready and will not receive traffic from any services.",
+      "contexts": [
+        "[Evidence source: tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx]\ns, the Pod will be marked as ready and will receive traffic from services. If the readiness probe fails, the pod will be marked unready and will not receive traffic from any services.To try the TCP liveness check, create a Pod:kubectl apply -f https://k8s.io/examples/pods/probe/tcp-liveness-readiness.yaml After 15 seconds, view Pod events to verify that liveness probes:kubectl describe pod goproxy Define a gRPC liveness probeFEATURE STATE: Kubernetes v1.27 [stable]If your application implements the gRPC Health Checking Protocol, this example shows how to configure Kubernetes to use it for application liveness checks. Similarly you can configure readiness and startup probes.Here is an example manifest:pods/probe/grpc-liveness.yaml apiVersion: v1 kind: Pod metadata: name: etcd-with-grpc spec: containers: - name: etcd image: registry.k8s.io/etcd:3.5.1-0 command: [ \"/usr/local/bin/etcd\", \"--data-dir\", \"/var/lib/etcd\", \"--listen-client-urls\", \"http://0.0.0.0:2379\", \"--advertise-client-urls\"",
+        "[Evidence source: tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx]\ncases, you don't want to kill the application, but you don't want to send it requests either. Kubernetes provides readiness probes to detect and mitigate these situations. A pod with containers reporting that they are not ready does not receive traffic through Kubernetes Services.Note:Readiness probes run on the container during its whole lifecycle.Caution:The readiness and liveness probes do not depend on each other to succeed. If you want to wait before executing a readiness probe, you should use initialDelaySeconds or a startupProbe.Readiness probes are configured similarly to liveness probes. The only difference is that you use the readinessProbe field instead of the livenessProbe field.readinessProbe: exec: command: - cat - /tmp/healthy initialDelaySeconds: 5 periodSeconds: 5 Configuration for HTTP and TCP readiness probes also remains identical to liveness probes.Readiness and liveness probes can be used in parallel for the same container. Using both can ensure that traffic does",
+        "[Evidence source: reference__kubernetes-api__workload-resources__pod-v1.docx]\npod may be active on the node relative to StartTime before the system will actively try to mark it failed and kill associated containers. Value must be a positive integer.readinessGates ([]PodReadinessGate)Atomic: will be replaced during a mergeIf specified, all readiness gates will be evaluated for pod readiness. A pod is ready when all its containers are ready AND all conditions specified in the readiness gates have status equal to \"True\" More info: https://git.k8s.io/enhancements/keps/sig-network/580-pod-readiness-gatesPodReadinessGate contains the reference to a pod conditionreadinessGates.conditionType (string), requiredConditionType refers to a condition in the pod's condition list with matching type.restartPolicy (string)Restart policy for all containers within the pod. One of Always, OnFailure, Never. In some contexts, only a subset of those values may be permitted. Default to Always. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#restart-policyPo"
+      ],
+      "ground_truth": "readiness, traffic, probe",
+      "actual_sources": [
+        "tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx",
+        "reference__kubernetes-api__workload-resources__pod-v1.docx"
+      ],
+      "golden_sources": [
+        "tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx"
+      ],
+      "forbidden_keywords": [],
+      "forbidden_sources": [],
+      "expected_route": "rag",
+      "actual_route": "rag",
+      "ragas_metrics": {
+        "id": "q-051",
+        "demonstrates_feature": "rerank",
+        "intent": "rag",
+        "question": "When is a Pod ready to receive Service traffic?",
+        "answer": "A Pod is ready to receive Service traffic when all its containers are ready and any specified readiness gates have their conditions met. Specifically, the readiness probe must succeed for the Pod to be marked as ready. If the readiness probe fails, the Pod will be marked as unready and will not receive traffic from any services.",
+        "contexts": [
+          "[Evidence source: tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx]\ns, the Pod will be marked as ready and will receive traffic from services. If the readiness probe fails, the pod will be marked unready and will not receive traffic from any services.To try the TCP liveness check, create a Pod:kubectl apply -f https://k8s.io/examples/pods/probe/tcp-liveness-readiness.yaml After 15 seconds, view Pod events to verify that liveness probes:kubectl describe pod goproxy Define a gRPC liveness probeFEATURE STATE: Kubernetes v1.27 [stable]If your application implements the gRPC Health Checking Protocol, this example shows how to configure Kubernetes to use it for application liveness checks. Similarly you can configure readiness and startup probes.Here is an example manifest:pods/probe/grpc-liveness.yaml apiVersion: v1 kind: Pod metadata: name: etcd-with-grpc spec: containers: - name: etcd image: registry.k8s.io/etcd:3.5.1-0 command: [ \"/usr/local/bin/etcd\", \"--data-dir\", \"/var/lib/etcd\", \"--listen-client-urls\", \"http://0.0.0.0:2379\", \"--advertise-client-urls\"",
+          "[Evidence source: tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx]\ncases, you don't want to kill the application, but you don't want to send it requests either. Kubernetes provides readiness probes to detect and mitigate these situations. A pod with containers reporting that they are not ready does not receive traffic through Kubernetes Services.Note:Readiness probes run on the container during its whole lifecycle.Caution:The readiness and liveness probes do not depend on each other to succeed. If you want to wait before executing a readiness probe, you should use initialDelaySeconds or a startupProbe.Readiness probes are configured similarly to liveness probes. The only difference is that you use the readinessProbe field instead of the livenessProbe field.readinessProbe: exec: command: - cat - /tmp/healthy initialDelaySeconds: 5 periodSeconds: 5 Configuration for HTTP and TCP readiness probes also remains identical to liveness probes.Readiness and liveness probes can be used in parallel for the same container. Using both can ensure that traffic does",
+          "[Evidence source: reference__kubernetes-api__workload-resources__pod-v1.docx]\npod may be active on the node relative to StartTime before the system will actively try to mark it failed and kill associated containers. Value must be a positive integer.readinessGates ([]PodReadinessGate)Atomic: will be replaced during a mergeIf specified, all readiness gates will be evaluated for pod readiness. A pod is ready when all its containers are ready AND all conditions specified in the readiness gates have status equal to \"True\" More info: https://git.k8s.io/enhancements/keps/sig-network/580-pod-readiness-gatesPodReadinessGate contains the reference to a pod conditionreadinessGates.conditionType (string), requiredConditionType refers to a condition in the pod's condition list with matching type.restartPolicy (string)Restart policy for all containers within the pod. One of Always, OnFailure, Never. In some contexts, only a subset of those values may be permitted. Default to Always. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#restart-policyPo"
+        ],
+        "ground_truth": "readiness, traffic, probe",
+        "actual_sources": [
+          "tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx",
+          "reference__kubernetes-api__workload-resources__pod-v1.docx"
+        ],
+        "golden_sources": [
+          "tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx"
+        ],
+        "forbidden_keywords": [],
+        "forbidden_sources": [],
+        "expected_route": "rag",
+        "actual_route": "rag",
+        "faithfulness": 0.556,
+        "answer_relevancy": 1.0,
+        "context_precision": 0.667,
+        "context_recall": 1.0,
+        "scoring_backend": "heuristic"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "configure",
+          "configure-liveness-readiness-startup-probe",
+          "configure-liveness-readiness-startup-probes",
+          "configure-pod-container",
+          "container",
+          "livenes",
+          "liveness",
+          "pod",
+          "probe",
+          "probes",
+          "readines",
+          "readiness",
+          "startup",
+          "task",
+          "tasks",
+          "tasks__configure-pod-container__configure-liveness-readiness-startup-probe",
+          "tasks__configure-pod-container__configure-liveness-readiness-startup-probes"
+        ],
+        "missed": []
+      },
+      "source_precision": 1.0,
+      "forbidden_source_check": {
+        "passed": true,
+        "hits": []
+      },
+      "route_check": {
+        "passed": true,
+        "expected": "rag",
+        "actual": "rag"
+      }
+    },
+    {
+      "id": "q-052",
+      "demonstrates_feature": "rerank",
+      "intent": "rag",
+      "question": "Which rollout settings keep a Deployment available while replacing Pods?",
+      "answer": "To keep a Deployment available while replacing Pods, you should configure the rollout settings using the 'RollingUpdate' strategy. Key parameters include 'maxUnavailable' and 'maxSurge'. 'maxUnavailable' specifies the maximum number of Pods that can be unavailable during the update, and 'maxSurge' specifies the maximum number of Pods that can be created above the desired number of Pods. By default, Kubernetes sets 'maxUnavailable' to 25% and 'maxSurge' to 25%, which helps ensure that some Pods remain available during the update process.",
+      "contexts": [
+        "[Evidence source: concepts__workloads__controllers__deployment.txt]\nSet, and the old ReplicaSet is scaled down to 0.Note:Kubernetes doesn't count terminating Pods when calculating the number of availableReplicas, which must be between replicas - maxUnavailable and replicas + maxSurge. As a result, you might notice that there are more Pods than expected during a rollout, and that the total resources consumed by the Deployment is more than replicas + maxSurge until the terminationGracePeriodSeconds of the terminating Pods expires.Rollover (aka multiple updates in-flight)Each time a new Deployment is observed by the Deployment controller, a ReplicaSet is created to bring up the desired Pods. If the Deployment is updated, the existing ReplicaSet that controls Pods whose labels match .spec.selector but whose template does not match .spec.template is scaled down. Eventually, the new ReplicaSet is scaled to .spec.replicas and all old ReplicaSets is scaled to 0.If you update a Deployment while an existing rollout is in progress, the Deployment creates a new Re",
+        "[Evidence source: concepts__workloads__controllers__deployment.txt]\n/1 Running 0 25s nginx-deployment-3066724191-08mng 0/1 ImagePullBackOff 0 6s Note:The Deployment controller stops the bad rollout automatically, and stops scaling up the new ReplicaSet. This depends on the rollingUpdate parameters (maxUnavailable specifically) that you have specified. Kubernetes by default sets the value to 25%.Get the description of the Deployment:kubectl describe deployment The output is similar to this:Name: nginx-deployment Namespace: default CreationTimestamp: Tue, 15 Mar 2016 14:48:04 -0700 Labels: app=nginx Selector: app=nginx Replicas: 3 desired | 1 updated | 4 total | 3 available | 1 unavailable StrategyType: RollingUpdate MinReadySeconds: 0 RollingUpdateStrategy: 25% max unavailable, 25% max surge Pod Template: Labels: app=nginx Containers: nginx: Image: nginx:1.161 Port: 80/TCP Host Port: 0/TCP Environment: <none> Mounts: <none> Volumes: <none> Conditions: Type Status Reason ---- ------ ------ Available True MinimumReplicasAvailable Progressing True ReplicaS",
+        "[Evidence source: reference__kubernetes-api__workload-resources__deployment-v1.pdf]\new ones.\"RollingUpdate\" Replace the old ReplicaSets by new one using rolling update i.e gradually scale down the old ReplicaSets and scale up the new one.strategy.rollingUpdate (RollingUpdateDeployment)Rolling update config params. Present only if DeploymentStrategyType = RollingUpdate.Spec to control the desired behavior of rolling update.strategy.rollingUpdate.maxSurge (IntOrString)The maximum number of pods that can be scheduled above the desired number of pods. Value can be an absolute number (ex: 5) or a percentage of desired pods (ex: 10%). This can not be 0 if MaxUnavailable is 0. Absolute number is calculated from percentage by rounding up. Defaults to 25%. Example: when this is set to 30%, the new ReplicaSet can be scaled up immediately when the rolling update starts, such that the total number of old and new pods do not exceed 130% of desired pods. Once old pods have been killed, new ReplicaSet can be scaled up further, ensuring that total number of pods running at any time d"
+      ],
+      "ground_truth": "rolling update, maxSurge, maxUnavailable",
+      "actual_sources": [
+        "concepts__workloads__controllers__deployment.txt",
+        "reference__kubernetes-api__workload-resources__deployment-v1.pdf"
+      ],
+      "golden_sources": [
+        "concepts__workloads__controllers__deployment.txt"
+      ],
+      "forbidden_keywords": [],
+      "forbidden_sources": [],
+      "expected_route": "rag",
+      "actual_route": "rag",
+      "ragas_metrics": {
+        "id": "q-052",
+        "demonstrates_feature": "rerank",
+        "intent": "rag",
+        "question": "Which rollout settings keep a Deployment available while replacing Pods?",
+        "answer": "To keep a Deployment available while replacing Pods, you should configure the rollout settings using the 'RollingUpdate' strategy. Key parameters include 'maxUnavailable' and 'maxSurge'. 'maxUnavailable' specifies the maximum number of Pods that can be unavailable during the update, and 'maxSurge' specifies the maximum number of Pods that can be created above the desired number of Pods. By default, Kubernetes sets 'maxUnavailable' to 25% and 'maxSurge' to 25%, which helps ensure that some Pods remain available during the update process.",
+        "contexts": [
+          "[Evidence source: concepts__workloads__controllers__deployment.txt]\nSet, and the old ReplicaSet is scaled down to 0.Note:Kubernetes doesn't count terminating Pods when calculating the number of availableReplicas, which must be between replicas - maxUnavailable and replicas + maxSurge. As a result, you might notice that there are more Pods than expected during a rollout, and that the total resources consumed by the Deployment is more than replicas + maxSurge until the terminationGracePeriodSeconds of the terminating Pods expires.Rollover (aka multiple updates in-flight)Each time a new Deployment is observed by the Deployment controller, a ReplicaSet is created to bring up the desired Pods. If the Deployment is updated, the existing ReplicaSet that controls Pods whose labels match .spec.selector but whose template does not match .spec.template is scaled down. Eventually, the new ReplicaSet is scaled to .spec.replicas and all old ReplicaSets is scaled to 0.If you update a Deployment while an existing rollout is in progress, the Deployment creates a new Re",
+          "[Evidence source: concepts__workloads__controllers__deployment.txt]\n/1 Running 0 25s nginx-deployment-3066724191-08mng 0/1 ImagePullBackOff 0 6s Note:The Deployment controller stops the bad rollout automatically, and stops scaling up the new ReplicaSet. This depends on the rollingUpdate parameters (maxUnavailable specifically) that you have specified. Kubernetes by default sets the value to 25%.Get the description of the Deployment:kubectl describe deployment The output is similar to this:Name: nginx-deployment Namespace: default CreationTimestamp: Tue, 15 Mar 2016 14:48:04 -0700 Labels: app=nginx Selector: app=nginx Replicas: 3 desired | 1 updated | 4 total | 3 available | 1 unavailable StrategyType: RollingUpdate MinReadySeconds: 0 RollingUpdateStrategy: 25% max unavailable, 25% max surge Pod Template: Labels: app=nginx Containers: nginx: Image: nginx:1.161 Port: 80/TCP Host Port: 0/TCP Environment: <none> Mounts: <none> Volumes: <none> Conditions: Type Status Reason ---- ------ ------ Available True MinimumReplicasAvailable Progressing True ReplicaS",
+          "[Evidence source: reference__kubernetes-api__workload-resources__deployment-v1.pdf]\new ones.\"RollingUpdate\" Replace the old ReplicaSets by new one using rolling update i.e gradually scale down the old ReplicaSets and scale up the new one.strategy.rollingUpdate (RollingUpdateDeployment)Rolling update config params. Present only if DeploymentStrategyType = RollingUpdate.Spec to control the desired behavior of rolling update.strategy.rollingUpdate.maxSurge (IntOrString)The maximum number of pods that can be scheduled above the desired number of pods. Value can be an absolute number (ex: 5) or a percentage of desired pods (ex: 10%). This can not be 0 if MaxUnavailable is 0. Absolute number is calculated from percentage by rounding up. Defaults to 25%. Example: when this is set to 30%, the new ReplicaSet can be scaled up immediately when the rolling update starts, such that the total number of old and new pods do not exceed 130% of desired pods. Once old pods have been killed, new ReplicaSet can be scaled up further, ensuring that total number of pods running at any time d"
+        ],
+        "ground_truth": "rolling update, maxSurge, maxUnavailable",
+        "actual_sources": [
+          "concepts__workloads__controllers__deployment.txt",
+          "reference__kubernetes-api__workload-resources__deployment-v1.pdf"
+        ],
+        "golden_sources": [
+          "concepts__workloads__controllers__deployment.txt"
+        ],
+        "forbidden_keywords": [],
+        "forbidden_sources": [],
+        "expected_route": "rag",
+        "actual_route": "rag",
+        "faithfulness": 0.425,
+        "answer_relevancy": 1.0,
+        "context_precision": 0.375,
+        "context_recall": 1.0,
+        "scoring_backend": "heuristic"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "concept",
+          "concepts",
+          "concepts__workloads__controllers__deployment",
+          "controller",
+          "controllers",
+          "deployment",
+          "workload",
+          "workloads"
+        ],
+        "missed": []
+      },
+      "source_precision": 1.0,
+      "forbidden_source_check": {
+        "passed": true,
+        "hits": []
+      },
+      "route_check": {
+        "passed": true,
+        "expected": "rag",
+        "actual": "rag"
+      }
+    }
+  ],
+  "skipped": [],
+  "aggregate": {
+    "answer_relevancy": 0.889,
+    "context_recall": 1.0,
+    "context_precision": 0.57,
+    "faithfulness": 0.457,
+    "forbidden_violations": 0,
+    "source_precision": 1.0,
+    "forbidden_source_violations": 0,
+    "route_violations": 0
+  },
+  "threshold_failures": {}
+}

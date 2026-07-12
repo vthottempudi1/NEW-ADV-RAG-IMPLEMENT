@@ -1,0 +1,2213 @@
+{
+  "collection": "new_adv_rag_documents",
+  "total_points": 33113,
+  "unique_sources": 366,
+  "missing_source_points": 0,
+  "duplicate_chunks_within_source": 0,
+  "payload_fields": [
+    "source",
+    "text"
+  ],
+  "sources": [
+    {
+      "source": "100G Networking Technology Overview - Slides - Toronto (August 2016).pdf",
+      "point_count": 26,
+      "unique_chunk_count": 26,
+      "document_fingerprint": "8d4d3b00982ffecde7b24989fe5913417fafaff13abef61973a33166a103cbe1"
+    },
+    {
+      "source": "1980 - Minimal Perfect Hash Functions Made Simple (p17-cichelli).pdf",
+      "point_count": 16,
+      "unique_chunk_count": 16,
+      "document_fingerprint": "70d2e117ec35288da0af89778563a73ca1bdf493c6e89a4744a676a7089913d1"
+    },
+    {
+      "source": "1987 - A Versatile Graph Structure for Edge-Oriented Graph Algorithms (Ebert1987AVD).pdf",
+      "point_count": 33,
+      "unique_chunk_count": 33,
+      "document_fingerprint": "6b777e5e7e97e9fe0df0c5437ca15196f16ef217429dc8806c6b8e0790faeb4f"
+    },
+    {
+      "source": "1989 - An Informal Analysis of Perfect Hash Function Search.pdf",
+      "point_count": 25,
+      "unique_chunk_count": 25,
+      "document_fingerprint": "3be2b0e9dfd7377ecdaf47a206f9311439a5e6b507ae279b158175fd02310218"
+    },
+    {
+      "source": "1992 - An Optimal Algorithm for Generating Minimal Perfect Hash Functions (CHM92) (10.1.1.51.5566).pdf",
+      "point_count": 38,
+      "unique_chunk_count": 38,
+      "document_fingerprint": "83263145d135ddf5a2e504fa8eabf6a06c716393fa04c41f7593dc187dfd4361"
+    },
+    {
+      "source": "1994 - Graph Theoretic Obstacles to Perfect Hashing (TR0257).pdf",
+      "point_count": 43,
+      "unique_chunk_count": 43,
+      "document_fingerprint": "0f75be2d2c1fd5db023027ab4c0edbe1fd92a49d74d7861b699d148fdb9b3fb8"
+    },
+    {
+      "source": "1999 - Hash and Displace - Efficient Evaluation of Minimum Perfect Hash Functions (10.1.1.148.7694).pdf",
+      "point_count": 35,
+      "unique_chunk_count": 35,
+      "document_fingerprint": "ab862dfd20a6d02f8401303c6dcdb386a592fa66da4b86b14829387139ec8816"
+    },
+    {
+      "source": "2005 - A Practical Minimal Perfect Hashing Method.pdf",
+      "point_count": 44,
+      "unique_chunk_count": 44,
+      "document_fingerprint": "f2e9bd5c4122be0cc33ddc25f707ec8b80c5352105b199b23654912c20d42f93"
+    },
+    {
+      "source": "2006 - An Approach for Minimal Perfect Hash Functions for Very Large Databases (tr06).pdf",
+      "point_count": 50,
+      "unique_chunk_count": 50,
+      "document_fingerprint": "555dc23dcd01057e6a82ca541280cca31ca160b3d5a8ecc6e24a7028024b05ff"
+    },
+    {
+      "source": "2007 - Balanced Families of Perfect Hash Functions and Their Applications.pdf",
+      "point_count": 42,
+      "unique_chunk_count": 42,
+      "document_fingerprint": "35c5b0b4b52d1f081ae96eb1faced119969ede320160edf66fa65fee8227b95b"
+    },
+    {
+      "source": "2010 - Perfect Hash Families in Polynomial Time - Slides (552phf).pdf",
+      "point_count": 30,
+      "unique_chunk_count": 30,
+      "document_fingerprint": "409605c6896a6f0257b107b28bfd21eb0c801a1b321759f398d683450ef050d4"
+    },
+    {
+      "source": "2014 - Monotone Minimal Perfect Hashing - Searching a Sorted Table with O(1) Accesses.pdf",
+      "point_count": 58,
+      "unique_chunk_count": 58,
+      "document_fingerprint": "e4a4260171b2b4658b4668d55e5ade987b3412d5d7df337fbf1de7029a615a6e"
+    },
+    {
+      "source": "2019 - Constructing Minimal Perfect Hash Functions Using SAT Technology (1911.10099).pdf",
+      "point_count": 48,
+      "unique_chunk_count": 48,
+      "document_fingerprint": "48be246ff4bb6bab6a5b5027ef2a143bc0c239b4c95d426884087a22e6ae1721"
+    },
+    {
+      "source": "2024 - ShockHash - Near Optimal-Space Minimal Perfect Hashing Beyond Brute Force (2310.14959v2).pdf",
+      "point_count": 167,
+      "unique_chunk_count": 167,
+      "document_fingerprint": "4dc1f4222136347e7813b6a3fbf4d992482869041842c52f2d4b8f675339745d"
+    },
+    {
+      "source": "A Case Study in Optimizing HTM-Enabled Dynamic Data Structures - Patricia Tries (2015).pdf",
+      "point_count": 51,
+      "unique_chunk_count": 51,
+      "document_fingerprint": "098488d58017b6247ac0e87af901aa7f7ea997403610aac032f9e386761e6835"
+    },
+    {
+      "source": "A Comparison of Programming Languages in Economics (16-Jun-2014).pdf",
+      "point_count": 44,
+      "unique_chunk_count": 44,
+      "document_fingerprint": "17c731239042a4a9c32e9f24901e14075d8e2e4c38c72d04a2c6e402b9c64b80"
+    },
+    {
+      "source": "A Comprehensive Study of Main-Memory Partitioning and its Application to Large-Scale Comparison- and Radix-Sort (sigmod14I).pdf",
+      "point_count": 84,
+      "unique_chunk_count": 84,
+      "document_fingerprint": "658086eafac1a5dc6b62d49779d2d28a09a97a38972ffed865b86fd0fb72146f"
+    },
+    {
+      "source": "A Course in Machine Learning (ciml-v0_9-all).pdf",
+      "point_count": 570,
+      "unique_chunk_count": 570,
+      "document_fingerprint": "d2cbc9ec2e50177705da9ace58cf74ed1a47d7ace764fb119f2e21fc2b8f459d"
+    },
+    {
+      "source": "A Dive in to Hyper-V Architecture and Vulnerabilities - Slides (BlackHat 2018).pdf",
+      "point_count": 35,
+      "unique_chunk_count": 35,
+      "document_fingerprint": "ed824fe9cc8e4ff77e0f7552bb5c1efaea3b8f363dcf2f184db7c884cddf609c"
+    },
+    {
+      "source": "A Dive in to Hyper-V Architecture and Vulnerabilities.pdf",
+      "point_count": 35,
+      "unique_chunk_count": 35,
+      "document_fingerprint": "ed824fe9cc8e4ff77e0f7552bb5c1efaea3b8f363dcf2f184db7c884cddf609c"
+    },
+    {
+      "source": "A Dynamic Perfect Hash Function Defined by an Extended Hash Indicator Table - 1984 (P245).PDF",
+      "point_count": 38,
+      "unique_chunk_count": 38,
+      "document_fingerprint": "56ee36ba65fcbc29f11a042573ad0e077513c1d523ab7027c02b030932f7527d"
+    },
+    {
+      "source": "A Family of Perfect Hashing Methods - 1996 (TR0242).pdf",
+      "point_count": 48,
+      "unique_chunk_count": 48,
+      "document_fingerprint": "ffc2cfc88ad80cf0471a3a293aae46102b8b37d69ffd1f8bb282e08fea159c70"
+    },
+    {
+      "source": "A File is Not a File - Understanding IO Behavior of Apple Desktop Applications (2011).pdf",
+      "point_count": 91,
+      "unique_chunk_count": 91,
+      "document_fingerprint": "f91143bcbc76ad380d689f52830f71ce826fb698aa68853d679c1d154edbac11"
+    },
+    {
+      "source": "A First Encounter with Machine Learning - 2011 (IntroMLBook).pdf",
+      "point_count": 210,
+      "unique_chunk_count": 210,
+      "document_fingerprint": "6e7bcbc5a2d045e07c173f24d1a846f702b43a83c45289c12a6b5915fb770a40"
+    },
+    {
+      "source": "A Framework for Building Extensible C++ Class Libraries - 1993.pdf",
+      "point_count": 63,
+      "unique_chunk_count": 63,
+      "document_fingerprint": "e9c1f0913bf41d29e6092d29b81b566a3cb6a162b1e41a0a444085e1e50cfb2d"
+    },
+    {
+      "source": "A GPU-friendly Skiplist Algorith - 2014 (GPUSkiplist).pdf",
+      "point_count": 85,
+      "unique_chunk_count": 85,
+      "document_fingerprint": "2ad0a64d639a4b4591f188509672fb772a9837fd677fc4e94fd3f581cb3af2df"
+    },
+    {
+      "source": "A History of Modern 64-bit Computing - Feb 2007 (CSEP590A).pdf",
+      "point_count": 105,
+      "unique_chunk_count": 105,
+      "document_fingerprint": "be2dd925c39cd2641bc877e2781f264315cbdc617608b14650d91622725b9e42"
+    },
+    {
+      "source": "A Little Journey Inside Windows Memory.pdf",
+      "point_count": 50,
+      "unique_chunk_count": 50,
+      "document_fingerprint": "2d3b63296c8e0e8696f80bb37454c271934d49949a335929c55fead39ad5eb55"
+    },
+    {
+      "source": "A Lock-Free Wait-Free Hash Table - Slides (070221_LockFreeHash).pdf",
+      "point_count": 52,
+      "unique_chunk_count": 52,
+      "document_fingerprint": "bd7e014232be675bfed52b223ef45f248beb7c0496fd067d21b27351fb8ae12c"
+    },
+    {
+      "source": "A Mathematical Theory of Communication (1948).pdf",
+      "point_count": 206,
+      "unique_chunk_count": 206,
+      "document_fingerprint": "a6ab3b94fb9e21f1bd9b7d821b47d3951b666cde01d8d601f23ee34d60fb1341"
+    },
+    {
+      "source": "A Mathematician's Lament - Paul Lockhart.pdf",
+      "point_count": 97,
+      "unique_chunk_count": 97,
+      "document_fingerprint": "f5a87f02de793698c10102e5695b943eb2c25a3783e56acbae1f313d5431bf90"
+    },
+    {
+      "source": "A Method for the Construction of Minimum-Redundancy Codes - Huffman (1952).pdf",
+      "point_count": 2,
+      "unique_chunk_count": 2,
+      "document_fingerprint": "c9c21573f0469e058ad5eb5c551071aa0867e38ac4a6b298247db829de6c751e"
+    },
+    {
+      "source": "A NUMA API for Linux - Novell (2005).pdf",
+      "point_count": 55,
+      "unique_chunk_count": 55,
+      "document_fingerprint": "82db13df89c9c7bb244935691953ddd25f822f24972335325bee7f7122c859ee"
+    },
+    {
+      "source": "A Nanopass Framework for Compiler Education.pdf",
+      "point_count": 51,
+      "unique_chunk_count": 51,
+      "document_fingerprint": "34d13af80a2add9c48da8c85d4ed8b282b3802a050e7b07b8b6d957b0fc6b26c"
+    },
+    {
+      "source": "A New Basis for Shifters in General-Purpose Processors for Existing and Advanced Bit Manipulations - 2009 (IEEE_TC09_NewBasisForShifters).pdf",
+      "point_count": 78,
+      "unique_chunk_count": 78,
+      "document_fingerprint": "e43299527be2170d4a7798ca7dd83e502b4a774b051c782fb2c573138ff13e05"
+    },
+    {
+      "source": "A Novel Hybrid Quicksort Algorithm Vectorized using AVX-512 on Intel Skylake (1704.08579).pdf",
+      "point_count": 53,
+      "unique_chunk_count": 53,
+      "document_fingerprint": "bb1b7820d6ab00c30c622b411361b1413876194cbb1426c43ae2b93d4b13d6e5"
+    },
+    {
+      "source": "A Novel Hybrid Quicksort Algorithm Vectorized using AVX-512 on Intel Skylake - 2017 (Paper_44-A_Novel_Hybrid_Quicksort_Algorithm_Vectorized).pdf",
+      "point_count": 54,
+      "unique_chunk_count": 54,
+      "document_fingerprint": "97a96c56343c4806a4a24e1648dc9656c148c6654f8febb2a2943da075ee555a"
+    },
+    {
+      "source": "A PlusCal User's Manual - C-Syntax Version 1.8 (31 Aug 2018).pdf",
+      "point_count": 197,
+      "unique_chunk_count": 197,
+      "document_fingerprint": "b6defe847ce9a9070be83b3376ac679c8c37c4f1049604b3197845a423734f39"
+    },
+    {
+      "source": "A Proposal for Hardware Assisted Arithmetic Overflow Detection for Array and Bitfield Operations (LazyOverflowDetect_Final).pdf",
+      "point_count": 30,
+      "unique_chunk_count": 30,
+      "document_fingerprint": "25fd591e3d12e5c066753e16d1bfec39edefbb822261164cb19624db1d48872a"
+    },
+    {
+      "source": "A Reliable Randomized Algorithm for the Closest-Pair Problem - 1997 (CP-11.4.1997).pdf",
+      "point_count": 101,
+      "unique_chunk_count": 101,
+      "document_fingerprint": "072f492c252594278add340ac57b5a492b101f02437d2e51aa9f75d484fda34c"
+    },
+    {
+      "source": "A Scalable Concurrent malloc Implementation for FreeBSD (jemalloc).pdf",
+      "point_count": 45,
+      "unique_chunk_count": 45,
+      "document_fingerprint": "7ee839597af4f45a2f4a9ed73a167ecfb7f99a494fdedc81f280e5b4f1f37843"
+    },
+    {
+      "source": "A Seven-Dimensional Analysis of Hashing Methods and its Implications on Query Processing - 2015 (p249-richter).pdf",
+      "point_count": 93,
+      "unique_chunk_count": 93,
+      "document_fingerprint": "97240af828cdb5bf1581e3f1011f70872a662619116f9b234cf5b47af733128c"
+    },
+    {
+      "source": "A Study of Wheat and Chaff in Source Code (1502.01410v1).pdf",
+      "point_count": 75,
+      "unique_chunk_count": 75,
+      "document_fingerprint": "0b3af3de7753c4f54502695394320c03eb4b107887017483423e8ff9fe71d4cd"
+    },
+    {
+      "source": "A Survey of Rollback-Recovery Protocols in Message-Passing Systems (10.1.1.52.4299).pdf",
+      "point_count": 177,
+      "unique_chunk_count": 177,
+      "document_fingerprint": "1769d079b4006d723ea227e36d1e0d3dc5000032b60037c45f61531bd0143016"
+    },
+    {
+      "source": "A Way Forward in Parallelising Dynamic Languages (PyPy Position Paper).pdf",
+      "point_count": 30,
+      "unique_chunk_count": 30,
+      "document_fingerprint": "cae79dd58691ae0f9ed755d02df01440533f1b4b5ada68e6795915120be79866"
+    },
+    {
+      "source": "A note on the algebra of CuTe Layouts (2024-01).pdf",
+      "point_count": 44,
+      "unique_chunk_count": 44,
+      "document_fingerprint": "dcb90280cdaa9709de244e0524289d4e55deadd9b9e31584b66da0bfaf6235a5"
+    },
+    {
+      "source": "AMD - CPUID.pdf",
+      "point_count": 95,
+      "unique_chunk_count": 95,
+      "document_fingerprint": "a9e305c4b850f7c8c041da5c75a75e1a53d3be710bc8dd0f402a512cbf9859ee"
+    },
+    {
+      "source": "AMD - Open-Source Register Reference for AMD Family 17h Processors - Models 00h-2Fh - Rev 3.03 July 2018 (56255_3_03).PDF",
+      "point_count": 890,
+      "unique_chunk_count": 890,
+      "document_fingerprint": "ee0b9c5d0ef1d3128afafc7c5bf7a3c806e6f8c784753320bb43f3c101703c83"
+    },
+    {
+      "source": "AMD - Software Optimization Guide for AMD Family 15h Processors - Rev 3.08 - Jan 2014 (47414_15h_sw_opt_guide).pdf",
+      "point_count": 1005,
+      "unique_chunk_count": 1005,
+      "document_fingerprint": "58b60c062dd40d79bc8684a04f5675339d3375b8bc4bf4c40574bfc7915112a2"
+    },
+    {
+      "source": "ARIES - A Transaction Recovery Method Supporting Fine-Granularity Locking and Partial Rollbacks Using Write-Ahead Logging (1992).pdf",
+      "point_count": 268,
+      "unique_chunk_count": 268,
+      "document_fingerprint": "3ae3634a9d7b98af80a0afe91fe8780a65d09f4f5e8309b8f9076f43654f512e"
+    },
+    {
+      "source": "ARM - Instruction Set Quick Reference Card (QRC0001_UAL.)pdf.pdf",
+      "point_count": 34,
+      "unique_chunk_count": 34,
+      "document_fingerprint": "3055e1d979020c8be6b44eb63bafb2b6f550e8d0338e072866bc83d1bc8b16b8"
+    },
+    {
+      "source": "ATOM - A System for Building Customized Program Analysis Tools - 1994.pdf",
+      "point_count": 23,
+      "unique_chunk_count": 23,
+      "document_fingerprint": "53d09e5d9619b635e2a69b4cec7958fbf441f429ebf84eb28be9d80ff53a80da"
+    },
+    {
+      "source": "Abstract Rendering - Out-of-core Rendering for Information Visualization (2014).pdf",
+      "point_count": 55,
+      "unique_chunk_count": 55,
+      "document_fingerprint": "ec0a76e57bb09a43be6695d8cf703778e36e0be109602f876619b1ce4fd02cb9"
+    },
+    {
+      "source": "Accelerating Network Receive Processing - Intel IO Acceleration Technology (ols2005v1-pages-289-296).pdf",
+      "point_count": 27,
+      "unique_chunk_count": 27,
+      "document_fingerprint": "eccf0f39a7b985aa91493e8be562d4423932640d5e6b7ab4193f26c194036395"
+    },
+    {
+      "source": "Adam - A Method for Stochastic Optimization (1412.6980v9).pdf",
+      "point_count": 52,
+      "unique_chunk_count": 52,
+      "document_fingerprint": "8eca972e86c7d7b7d3da364e43957eddec5e189606b62f79f6f3d63e45a2a6cf"
+    },
+    {
+      "source": "Adding Lock Elision to Linux - Slides (2012).pdf",
+      "point_count": 25,
+      "unique_chunk_count": 25,
+      "document_fingerprint": "620eabe9f46e62379c7684cc6410e7154d1be91622a63a95a6fd01900a9244ef"
+    },
+    {
+      "source": "Advanced Bloom Filter Based Algorithms for Efficient Approximate Data De-Duplication in Streams - 17th Dec 2012 (1212.3964v1).pdf",
+      "point_count": 95,
+      "unique_chunk_count": 95,
+      "document_fingerprint": "49c6fc352628f27c52b8180f9073f1f6e436b373db604e5362004018a3603af6"
+    },
+    {
+      "source": "Advances in Cloud-Scale Machine Learning for Cyber-Defense - Russinovich 2017 (exp-t11-advances-in-cloud-scale-machine-learning-for-cyber-defense).pdf",
+      "point_count": 42,
+      "unique_chunk_count": 42,
+      "document_fingerprint": "f1272c59cec852dedaef565e2625fac1f0dcd801f3fd04f88acc3a4944c3aa5d"
+    },
+    {
+      "source": "Affinity Accept - Improving Network Connection Locality on Multicore Systems.pdf",
+      "point_count": 89,
+      "unique_chunk_count": 89,
+      "document_fingerprint": "79c8f14a61d16293cad39e5753c915dea148bbd0233aad574a915fb8bb7c0b94"
+    },
+    {
+      "source": "Agner Fog - C++ vector class library (2013).pdf",
+      "point_count": 189,
+      "unique_chunk_count": 189,
+      "document_fingerprint": "f553dca7ace30ee585ece3f6ee701bc03c199be2a1855ef545aa7e5f721568df"
+    },
+    {
+      "source": "Agner Fog - C++ vector class library v2 (2019).pdf",
+      "point_count": 233,
+      "unique_chunk_count": 233,
+      "document_fingerprint": "ca3c2df330b9074c5cf337aada7bd0c4e7b4a9db9895abc7b77466bbbb3a4980"
+    },
+    {
+      "source": "Agner Fog - Calling Conventions for different C++ compilers and operating systems (2017-05-01).pdf",
+      "point_count": 201,
+      "unique_chunk_count": 201,
+      "document_fingerprint": "108df10ecff51ee2e4d176f7781a4f333d372c32f6a4d2252528fb950a806ea7"
+    },
+    {
+      "source": "Agner Fog - Instruction Tables (2018-04-09).pdf",
+      "point_count": 701,
+      "unique_chunk_count": 701,
+      "document_fingerprint": "2aca974987c14d1b6d4f502813c8d6c90a128fbdd828797f98381f9417b3fa64"
+    },
+    {
+      "source": "Agner Fog - Optimizing Subroutines in Assembly Language - An optimization guide to x86 platforms (2017-05-01).pdf",
+      "point_count": 594,
+      "unique_chunk_count": 594,
+      "document_fingerprint": "822ecd413d76edff8ab7912df0c4d152d45cf28cb5781e154314847b212443c0"
+    },
+    {
+      "source": "Allocation Removal by Partial Evaluation in a Tracing JIT - 2010 (bolz-allocation-removal).pdf",
+      "point_count": 58,
+      "unique_chunk_count": 58,
+      "document_fingerprint": "3409d61047aeb0f014c0aa51591a115c0a2ab015bd5290ea6004d783d0e272fd"
+    },
+    {
+      "source": "Almost Random Graphs with Simple Hash Functions - Slides (2007).pdf",
+      "point_count": 55,
+      "unique_chunk_count": 55,
+      "document_fingerprint": "d5af2b90bc7c1f3fe8dc0a861e3592ba03266457599ba557230cdcc7faca6375"
+    },
+    {
+      "source": "An Adaptive Hash Join Algorithm for Multiuser Environments - 1990 (P186).pdf",
+      "point_count": 54,
+      "unique_chunk_count": 54,
+      "document_fingerprint": "d55b0e34de7dc0eeed86feacba23b89f952947b5bb77755e9b8374713d32cc21"
+    },
+    {
+      "source": "An In-Depth Analysis of Disassembly on Full-Scale x86-x64 Binaries - 2016 (sec16_paper_andriesse).pdf",
+      "point_count": 106,
+      "unique_chunk_count": 106,
+      "document_fingerprint": "d2459eb01afc3447932d1167ed2c5a05b3449979d95a62a1ad5faf2f447487a7"
+    },
+    {
+      "source": "An Introduction to Computational Networks and the Computational Network Toolkit - Microsoft (CNTKBook-20160121).pdf",
+      "point_count": 344,
+      "unique_chunk_count": 344,
+      "document_fingerprint": "12fc14bac82298913955352a4c59e19afffdf4ba07c098b8c3d9e3ed092c2747"
+    },
+    {
+      "source": "An Overview of Linux Kernel Locking Improvements (August 2014).pdf",
+      "point_count": 90,
+      "unique_chunk_count": 90,
+      "document_fingerprint": "521442e4f9854e909222944069aee15b497e5e3b68343e8dd8f00a948a476d87"
+    },
+    {
+      "source": "Analysis of B-tree Data Structure and its Usage in Computer Forensics (484192.B-tree).pdf",
+      "point_count": 19,
+      "unique_chunk_count": 19,
+      "document_fingerprint": "13cfb3c70d7e779be91cdfc38f76afa8b8becb81d039c968da3cbab69436ca78"
+    },
+    {
+      "source": "Analyzing GPGPU Pipeline Latency - Poster - 2014 (poster_andresch_acaces2014).pdf",
+      "point_count": 7,
+      "unique_chunk_count": 7,
+      "document_fingerprint": "7a9a052be2398b27bf3b9a23597c070504b4badc093d4ebdbe8c4ec5f8f4f726"
+    },
+    {
+      "source": "Analyzing Runtime and Size Complexity of Integer Programs - Microsoft Research (2016).pdf",
+      "point_count": 199,
+      "unique_chunk_count": 199,
+      "document_fingerprint": "e0a810d5d6c5961730a315df0b8c99a0f5be5f0fa41696f7b439054737a0cf3a"
+    },
+    {
+      "source": "Analyzing and Exploiting Branch Mispredictions in Microcode - 2025 (2501.12890v1).pdf",
+      "point_count": 125,
+      "unique_chunk_count": 125,
+      "document_fingerprint": "f1abf5ccd2a17b6a9d598da8b7229964112f969931d2b2b2d4b2b00536864b85"
+    },
+    {
+      "source": "Anatomy of High-Performance Matrix Multiplication - 2008 (gotoPaper).pdf",
+      "point_count": 72,
+      "unique_chunk_count": 72,
+      "document_fingerprint": "7127655eb825b2bb04e90f932466584e2cc6b72b528356d0e55f97bf074ea0db"
+    },
+    {
+      "source": "As If Summoned from the Void - The Life of Alexandre Grothendieck (fea-grothendieck-part2).pdf",
+      "point_count": 104,
+      "unique_chunk_count": 104,
+      "document_fingerprint": "f06788beda21038e3ec1ef73d7e8778d89bc4795b3ae61ff345625e5b2ecab62"
+    },
+    {
+      "source": "AsmDB - Understanding and Mitigating Front-End Stalls in Warehouse-Scale Computers (2019).pdf",
+      "point_count": 83,
+      "unique_chunk_count": 83,
+      "document_fingerprint": "ca22f6fe5dadef63a1368a03cac6425d862caf3572657c63b23024401d957908"
+    },
+    {
+      "source": "Aspects Related to Data Access and Transfer in CUDA - Slides - 2014 (TR-2014-09).pdf",
+      "point_count": 47,
+      "unique_chunk_count": 47,
+      "document_fingerprint": "eedc82c866a8144be2dfcc14f2bb9404b721e5321f2252195e5001d672e1e9bd"
+    },
+    {
+      "source": "Assessing the Relationship between Software Assertions and Code Quality - An Empirical Investigation (tr-2006-54).pdf",
+      "point_count": 39,
+      "unique_chunk_count": 39,
+      "document_fingerprint": "62be70bb618a54d97ed3a6e5e2dfc77f410adfb3228afd2a8fe3b93cfbde5b66"
+    },
+    {
+      "source": "Assessment of Windows Vista Kernel-Mode Security - Matthew Conover (Symantec).pdf",
+      "point_count": 76,
+      "unique_chunk_count": 76,
+      "document_fingerprint": "df04491d218ddb5856b11ecbfd64721bc68fa3cdd8333d256f123711a0243449"
+    },
+    {
+      "source": "AutoML - Chapter 01 - Hyperparameter Optimization (2018).pdf",
+      "point_count": 120,
+      "unique_chunk_count": 120,
+      "document_fingerprint": "6dfe79c5c1a05a4f0c6d50e2792653e23f0ff39a0a19a23c0ea1dac96d5fc1cb"
+    },
+    {
+      "source": "Avoiding AVX to SSE Transition Penalties.pdf",
+      "point_count": 40,
+      "unique_chunk_count": 40,
+      "document_fingerprint": "3c76ba9b22f781ad37ddf844ad3e2e90fea1a4d943c3980769ab3bbbf1e575af"
+    },
+    {
+      "source": "BERT - Pre-training of Deep Bidirectional Transformers for Language Understanding (2018).pdf",
+      "point_count": 81,
+      "unique_chunk_count": 81,
+      "document_fingerprint": "b40096a8a25dd2c18604a4bb4d1ba2d482379835d10e5936e7550624040a6508"
+    },
+    {
+      "source": "Backward Search FM-Index (Full-text Index in a Minute Space) - Slides.pdf",
+      "point_count": 37,
+      "unique_chunk_count": 37,
+      "document_fingerprint": "e83f9ec5d8973ebc1a01431c6c0aaa1816ca53a101203d75f718bc46e5cc236b"
+    },
+    {
+      "source": "Bash Redirections - Cheat Sheet.pdf",
+      "point_count": 5,
+      "unique_chunk_count": 5,
+      "document_fingerprint": "774be3980dbdcd1f953697d1353280da676006a720f09331d64654a744b198ef"
+    },
+    {
+      "source": "Basic Performance Measurements of the Intel Optane DC Persistent Memory Module - 2019 (1903.05714v3).pdf",
+      "point_count": 181,
+      "unique_chunk_count": 181,
+      "document_fingerprint": "957195b01334c94a96c482192495e49095c9fd37ad3de11f277d0c3bc28c5119"
+    },
+    {
+      "source": "Battle of SKM and IUM - How Windows 10 Rewrites OS Architecture - Alex Ionescu - 2015 (blackhat2015).pdf",
+      "point_count": 82,
+      "unique_chunk_count": 82,
+      "document_fingerprint": "3e856de39994fc7812f6b5058e89cf41426bb88c60265f9af45d954e8b3e0ecd"
+    },
+    {
+      "source": "Better Bitmap Performance with Roaring Bitmaps (2014).pdf",
+      "point_count": 41,
+      "unique_chunk_count": 41,
+      "document_fingerprint": "cf64637065d1ea6e9d4ea9bf43f64dd5da27ac3c4c0dcc13822722efa13a53ca"
+    },
+    {
+      "source": "Beyond Block IO - Rethinking Traditional Storage Primitives (ouyangx-hpca2011).pdf",
+      "point_count": 62,
+      "unique_chunk_count": 62,
+      "document_fingerprint": "e62d0df58b14cc2dfbc1e29976ec638115a1149f01dec2ba387483086a02f604"
+    },
+    {
+      "source": "Beyond Block IO - Rethinking Traditional Storage Primitives (ouyangx-hpca2011-slides).pdf",
+      "point_count": 29,
+      "unique_chunk_count": 29,
+      "document_fingerprint": "3ed82837fbe9d9c0f604ee8e4226964a69ebe17950d13083e892ec1254da4c49"
+    },
+    {
+      "source": "Biased Reference Counting - Minimizing Atomic Operations in Garbage Collection - 2018 (3243176.3243195).pdf",
+      "point_count": 85,
+      "unique_chunk_count": 85,
+      "document_fingerprint": "a33116a1d242f95908186ccd82398480153b4556fe881f828748d8a8c1f3ebdb"
+    },
+    {
+      "source": "Binary Search Tree with SIMD Bandwidth Optimizations Using SSE (Preso06-SIMDTree).pdf",
+      "point_count": 26,
+      "unique_chunk_count": 26,
+      "document_fingerprint": "923638eef941aefa3bc6d766ec34c96e576660e998fcb6c38b9088dc42be7821"
+    },
+    {
+      "source": "Bipartite ShockHash - Pruning ShockHash Search for Efficient Perfect Hashing - 2023 (2310.14959).pdf",
+      "point_count": 54,
+      "unique_chunk_count": 54,
+      "document_fingerprint": "a6feaa2d5a11bfa5bd84c4f8c6021a85f024aec6096bfce0c3f92071565ca754"
+    },
+    {
+      "source": "Bit Operations (Ray Seyfarth 2011).pdf",
+      "point_count": 21,
+      "unique_chunk_count": 21,
+      "document_fingerprint": "1359aa75b1dda4e8b35bf67e745b7e49b23be14cbc72218fc0a02dde2928345e"
+    },
+    {
+      "source": "Bitmap Index Design Choices and Their Performance Implications (LBNL-62756).pdf",
+      "point_count": 70,
+      "unique_chunk_count": 70,
+      "document_fingerprint": "eb4488fb5b79530639020397c49844957ca555a5c6fbd4865e95a82c33169ad9"
+    },
+    {
+      "source": "Bitmap Index Design and Evaluation - 1998 (P355).pdf",
+      "point_count": 68,
+      "unique_chunk_count": 68,
+      "document_fingerprint": "bd42551b849576b1ac1ce3d26dd7121329644649020f1b17184b8903db829a8b"
+    },
+    {
+      "source": "Bitmap Indices for Data Warehouses.pdf",
+      "point_count": 64,
+      "unique_chunk_count": 64,
+      "document_fingerprint": "bccf7ca8b92999963ae4eb1374dd8fd8d245bd6fdd50572bed42171421475d3f"
+    },
+    {
+      "source": "Bounds Checking on the GPU - Futhark (hlpp20).pdf",
+      "point_count": 55,
+      "unique_chunk_count": 55,
+      "document_fingerprint": "332ec64761fc29aa9d002f49e8fc9266a7f8e2b644aa17e4a4019f353050f7d0"
+    },
+    {
+      "source": "Branch and Data Herding - Reducing Control and Memory Divergence for Error-tolerant GPU Applications (tmm12_preprint).pdf",
+      "point_count": 88,
+      "unique_chunk_count": 88,
+      "document_fingerprint": "9a302d69017571b240d595cc6183f3da962c02e192afbab71f8fdf252cafcfb2"
+    },
+    {
+      "source": "Bringing SIMD-128 to JavaScript (TC-39).pdf",
+      "point_count": 51,
+      "unique_chunk_count": 51,
+      "document_fingerprint": "dc9b6ac03b415116934c8f8452c0b1c4515c18ce3a605baeb60b57adff55a010"
+    },
+    {
+      "source": "Broadword Implementation of Parenthesis Queries.pdf",
+      "point_count": 34,
+      "unique_chunk_count": 34,
+      "document_fingerprint": "6d1be2429bc662c98f8945d7c0fd2eb525277480c0898370d522e31b0796b516"
+    },
+    {
+      "source": "Brook for GPUs - Stream Computing on Graphics Hardware - Slides (2004).pdf",
+      "point_count": 37,
+      "unique_chunk_count": 37,
+      "document_fingerprint": "2304b8140d7a8aa4f5475547cabaad829e0b6676d02cf78956fdedb613eed277"
+    },
+    {
+      "source": "Bumper Sticker Computer Science.pdf",
+      "point_count": 27,
+      "unique_chunk_count": 27,
+      "document_fingerprint": "9b14e10a1101261d185fb5e0d1bcb327d8f0e3844ffc5d365f186ca9f7619804"
+    },
+    {
+      "source": "Bypass Control Flow Guard Comprehensively (us-15-Zhang).pdf",
+      "point_count": 28,
+      "unique_chunk_count": 28,
+      "document_fingerprint": "cee6c1654cacd78f688a57328b9a1a7fc70e0b31111b94bd314127d60183012d"
+    },
+    {
+      "source": "C Cheat Sheet (ashlyn-black_c-reference).pdf",
+      "point_count": 38,
+      "unique_chunk_count": 38,
+      "document_fingerprint": "60044b69166450c1b00176352f652f2fcbb911e574ce576e0fa886bbf29760ad"
+    },
+    {
+      "source": "C++20 Reference Card - 29th Jan 2020.pdf",
+      "point_count": 7,
+      "unique_chunk_count": 7,
+      "document_fingerprint": "ba4b39d76c098a65cb217319e6a61c642b8e7c7071876b82e19e0667a2b2dda6"
+    },
+    {
+      "source": "CASEVision - ClearCase Administration Guide (007-1774-020).pdf",
+      "point_count": 422,
+      "unique_chunk_count": 422,
+      "document_fingerprint": "3a3b9477f1d8d0762e40b8b6fb473a976c0f720d06f7b66b964a5a531c35557b"
+    },
+    {
+      "source": "COZ - Finding Code that Counts with Causal Profiling - 2015 (090-curtsinger).pdf",
+      "point_count": 88,
+      "unique_chunk_count": 88,
+      "document_fingerprint": "f9843225dc01f93fe2f4b7194cebf25be86d8570d81aadf0e1ba7d4fb8e2866a"
+    },
+    {
+      "source": "CS195V Brown - Week 10 - CUDA Part 1 - Slides.pdf",
+      "point_count": 46,
+      "unique_chunk_count": 46,
+      "document_fingerprint": "ca9de828381153d6a6be0522738252c84facfb00f63c878ada9dcc799243db30"
+    },
+    {
+      "source": "CS195V Brown - Week 11 - CUDA Part 2 - Slides.pdf",
+      "point_count": 21,
+      "unique_chunk_count": 21,
+      "document_fingerprint": "275840f4db48e861364cc10b30ca9fd8c5fcf37e6da7c2c43454e0476164e07e"
+    },
+    {
+      "source": "CS195V Brown - Week 4 - Noise Functions - Slides.pdf",
+      "point_count": 44,
+      "unique_chunk_count": 44,
+      "document_fingerprint": "a198d9507537931f72f03b682764c0f78ee76f48a16a77be348ea43c7ef3faad"
+    },
+    {
+      "source": "CS195V Brown - Week 6 - Image Samplers and Atomic Operations - Slides.pdf",
+      "point_count": 47,
+      "unique_chunk_count": 47,
+      "document_fingerprint": "33e3653e95ff533380f78f8208a8298e52ad34143c5067550e6c9b4c71ec9459"
+    },
+    {
+      "source": "CS195V Brown - Week 8 - Materials and BRDFs - Slides.pdf",
+      "point_count": 55,
+      "unique_chunk_count": 55,
+      "document_fingerprint": "3afb80becec79c8f293d854cbd47de707a5d1165ef4a535322fb737f7412a438"
+    },
+    {
+      "source": "CS195V Brown - Week 9 - GPU Architecture and Other Shading Languages - Slides.pdf",
+      "point_count": 34,
+      "unique_chunk_count": 34,
+      "document_fingerprint": "1239684e36ede58fd6f0eafeb2ed48919879a940da8f025d02a2c8fd27701eca"
+    },
+    {
+      "source": "CUDA - CSE 591 - GPU Programming - Using CUDA in Practice (Slides).pdf",
+      "point_count": 20,
+      "unique_chunk_count": 20,
+      "document_fingerprint": "c5ee0df11a8b0510cd71accf4d9ed3fb7272040cc4320553b15cd5cc2d4db9b9"
+    },
+    {
+      "source": "CUDA - Cooperative Groups - GTC 2017 (s7622-Kyrylo-perelygin-robust-and-scalable-cuda).pdf",
+      "point_count": 56,
+      "unique_chunk_count": 56,
+      "document_fingerprint": "f48d980c4c320cf71c2f640b36113dffb82c0aee70c36f2f63d387397633e782"
+    },
+    {
+      "source": "CUDA Best Practices (Slides).pdf",
+      "point_count": 21,
+      "unique_chunk_count": 21,
+      "document_fingerprint": "e24d826568bb216af72c610a1df709863809369b8b45fbd8d2b345b356e44785"
+    },
+    {
+      "source": "CUDA Debugging with Command Line Tools - 2014 (S4578).pdf",
+      "point_count": 55,
+      "unique_chunk_count": 55,
+      "document_fingerprint": "b882b13ce1a12963b1c2abbdf1b6e80bdfc1f0c8f8683da1a35b1273a9b00888"
+    },
+    {
+      "source": "CUDA Math API (January 2022).pdf",
+      "point_count": 961,
+      "unique_chunk_count": 961,
+      "document_fingerprint": "f300cc8062b26d2ee83299363b5ca25729c5cebb8e710ff27d4f3ffef15dca41"
+    },
+    {
+      "source": "CUDA Training Series - 11 - CUDA Multi-Process Service (2021).pdf",
+      "point_count": 34,
+      "unique_chunk_count": 34,
+      "document_fingerprint": "c5994ba81f3a34e90fecd50ea344cdd29139ecadb74a2bfe88a5a9f452670cf0"
+    },
+    {
+      "source": "CUDA Training Series - 12 - CUDA Debugging (2021).pdf",
+      "point_count": 30,
+      "unique_chunk_count": 30,
+      "document_fingerprint": "8765bbe6fe94489394d9acf94473d0ae172dd32230e4ccddf1e61acc143d29ac"
+    },
+    {
+      "source": "Cache-Aware Lock-Free Queues for Multiple Producers-Consumers and Weak Memory Consistency.pdf",
+      "point_count": 54,
+      "unique_chunk_count": 54,
+      "document_fingerprint": "47653e429317e928896ceb0fe4e932aaf1b5a1427d68aeb7c458b466b6eb8306"
+    },
+    {
+      "source": "Cache-Oblivious Peeling of Random Hypergraphs - 2nd Dec 2013 (1312.0526).pdf",
+      "point_count": 47,
+      "unique_chunk_count": 47,
+      "document_fingerprint": "030ddf9181c8d2a20f5d1d5cdf5d762a8d4d13d3a9cf85950698552fadf25949"
+    },
+    {
+      "source": "Calculus Made Easy.pdf",
+      "point_count": 434,
+      "unique_chunk_count": 434,
+      "document_fingerprint": "3eb4cfabad2372c69dca842e312833ee7d13df936c840914906a4db3b06eef8a"
+    },
+    {
+      "source": "Captain Hook - Pirating AVs to Bypass Exploit Mitigations - Slides (2016).pdf",
+      "point_count": 43,
+      "unique_chunk_count": 43,
+      "document_fingerprint": "d6ac66e48fc1bfb3c70d3264d25c723140a55b6864d43da328551705d04bab19"
+    },
+    {
+      "source": "CityHash - Fast Hash Functions for Strings - Slides (121017-slides).pdf",
+      "point_count": 61,
+      "unique_chunk_count": 61,
+      "document_fingerprint": "95984a5937c4f74132efc692e48fac81d7958fa2e027bf837920eea69d6b4fa3"
+    },
+    {
+      "source": "Cognitive Biases Potentially Affecting Judgment of Global Risks (2008).pdf",
+      "point_count": 118,
+      "unique_chunk_count": 118,
+      "document_fingerprint": "83a630c3ad88336ca5d65928fc722516000a50a1d9ae5ad6ad8a6ff7a82bdaa1"
+    },
+    {
+      "source": "Colfax Optimization Techniques for the Intel MIC Architecture - Part 3 of 3 - False Sharing and Padding (2015).pdf",
+      "point_count": 40,
+      "unique_chunk_count": 40,
+      "document_fingerprint": "79461cddfecb4e24e4435ccadc2b252e1a3adb5f593f091266434ff80d779e7b"
+    },
+    {
+      "source": "Communication Efficient Distributed Machine Learning with the Parameter Server.pdf",
+      "point_count": 62,
+      "unique_chunk_count": 62,
+      "document_fingerprint": "bc7d47b5731e3a1bb27dcc25365ee7dc50b8e28e4180c44fa0e28b7b38550e11"
+    },
+    {
+      "source": "Comparative Performance of Memory Reclamation Strategies for Lock-Free and Concurrently-Readable Data Structures.pdf",
+      "point_count": 209,
+      "unique_chunk_count": 209,
+      "document_fingerprint": "b4ab18fd20a071f84416b819cab3d894cfc2f52fa7a79462d08fe5419210ecfe"
+    },
+    {
+      "source": "Compiler Calling Conventions.pdf",
+      "point_count": 197,
+      "unique_chunk_count": 197,
+      "document_fingerprint": "214f6bfe849a0b68bc200f3a0119f0ee21d6d644e3323db9cdefe13a09eaa890"
+    },
+    {
+      "source": "Compiler Internals - Recon 2012 - Skochinsky.pdf",
+      "point_count": 55,
+      "unique_chunk_count": 55,
+      "document_fingerprint": "34ee359fa6cb3ca6dbec009d34f129adb649834ae56b461a4fe843241467f2cb"
+    },
+    {
+      "source": "Compiling Python Modules to Native Parallel Modules Using Pythran and OpenMP Annotations.pdf",
+      "point_count": 57,
+      "unique_chunk_count": 57,
+      "document_fingerprint": "ff1a64046e9052b2ac349043f4001f69f4bf0d9aea168e3dbaa6d0a1c1fa5801"
+    },
+    {
+      "source": "Component Object Model - An Overview and Practical Implementation (IJSARTV3I38438636248891114924768).pdf",
+      "point_count": 38,
+      "unique_chunk_count": 38,
+      "document_fingerprint": "6d945b2233b2e851325117812d3c72499fcce7c906eaf870658e3e06dfc50f5d"
+    },
+    {
+      "source": "Compressed Bloom Filters.pdf",
+      "point_count": 49,
+      "unique_chunk_count": 49,
+      "document_fingerprint": "ed9693a765d2a400d24f7d2bb581475cf285d4f8ce61bd2dff581b84271b2414"
+    },
+    {
+      "source": "Compressed Inverted Indexes - Slides (2010).pdf",
+      "point_count": 43,
+      "unique_chunk_count": 43,
+      "document_fingerprint": "d9f2388aad5784565685d691d78f1352c7f1afd5132a06d10827d054dc053627"
+    },
+    {
+      "source": "Compressed Perfect Embedded Skip Lists for Quick Inverted-Index Lookups.pdf",
+      "point_count": 47,
+      "unique_chunk_count": 47,
+      "document_fingerprint": "cddab2ef39b839cc164621767f0cd936ca40676971aa0223641ada67f96dd9be"
+    },
+    {
+      "source": "Computer Systems Research.pdf",
+      "point_count": 16,
+      "unique_chunk_count": 16,
+      "document_fingerprint": "05d8795f8afaae6dedfd1457ca427bd1f94cfeaff034a1688a60d56e5cb0b905"
+    },
+    {
+      "source": "Concurrent Hash Tables - Fast and General - 2016 (1601.04017v2).pdf",
+      "point_count": 132,
+      "unique_chunk_count": 132,
+      "document_fingerprint": "cc6e3b82f8a9204674439a6e1be52474be03c6e50e7e2e7a74cf22a76679b630"
+    },
+    {
+      "source": "Concurrent Hash Tables - Fast and General - ACM - 2019 (3309206).pdf",
+      "point_count": 144,
+      "unique_chunk_count": 144,
+      "document_fingerprint": "24d7c54ee58ea51ca950d1a8299cdc4f253f48943d2e8e5933599c62e5c124b0"
+    },
+    {
+      "source": "Concurrent Programming for Scalable Web Architectures - Benjamin Erb - Thesis (April 2012) (vts_8082_11772).pdf",
+      "point_count": 611,
+      "unique_chunk_count": 611,
+      "document_fingerprint": "65f6b9107f5d2c67d71d26c6bc7ecbe220164a87aa1fbcc22878729bdb10d9c8"
+    },
+    {
+      "source": "Concurrent Reference Counting and Resource Management in Constant Time - 29 Feb 2020 (2002.07053).pdf",
+      "point_count": 80,
+      "unique_chunk_count": 80,
+      "document_fingerprint": "5fe37199fc2b20c29e141cfa39adf3c52d6ce0534bdd7326d143229757a46463"
+    },
+    {
+      "source": "Conflict-Free Vectorization of Associative Irregular Applications with Recent SIMD Architectural Advances - Feb 2018 (cgo18).pdf",
+      "point_count": 75,
+      "unique_chunk_count": 75,
+      "document_fingerprint": "733558c469c836a35c2253ec15855617b852cf82d116d637c14aff3ce5f68f59"
+    },
+    {
+      "source": "Constraint Propagation Algorithms for Temporal Reasoning - A Revised Report (vilain-kautz-book).pdf",
+      "point_count": 55,
+      "unique_chunk_count": 55,
+      "document_fingerprint": "ea227ced0b2818b605ef56da0b90f0cc784eb744d80196e2ff2e6c089696e729"
+    },
+    {
+      "source": "Convex Optimization - Slides.pdf",
+      "point_count": 301,
+      "unique_chunk_count": 301,
+      "document_fingerprint": "8023949479cc111d87d4c23707bc1272834633132efea5d1f37f6e5e0f93f0d6"
+    },
+    {
+      "source": "Coq - The World's Best Macro Assembler.pdf",
+      "point_count": 82,
+      "unique_chunk_count": 82,
+      "document_fingerprint": "7c3865aabe4b64596aad2a1e3ef7f7ddc274ae711f58f97dbf79f887c6c9df76"
+    },
+    {
+      "source": "Cores That Don't Count - 2021 (hotos21-s01-hochschild).pdf",
+      "point_count": 49,
+      "unique_chunk_count": 49,
+      "document_fingerprint": "3006735f270163a54648f392c49bcd2caf3bdbc8285ce1e03a34941892af21a6"
+    },
+    {
+      "source": "Crash Dump Analysis Poster v3.0 (HTML version).html",
+      "point_count": 5,
+      "unique_chunk_count": 5,
+      "document_fingerprint": "580eaa14abb54aa8f51c7f8348d0db39669c56373e724fb6bc50b22682b5f6bf"
+    },
+    {
+      "source": "Critique of Microkernel Architectures (Slides).pdf",
+      "point_count": 32,
+      "unique_chunk_count": 32,
+      "document_fingerprint": "ce933742b33dddae44ef4099615a133b59cad54b9027c363a5045ce17c2c47d9"
+    },
+    {
+      "source": "Cuckoo Filter - Practically Better Than Bloom.pdf",
+      "point_count": 79,
+      "unique_chunk_count": 79,
+      "document_fingerprint": "494e2c5dc2a1f32b008918a8838846db6ff6098ba9506a6c9c75db5c525b2c17"
+    },
+    {
+      "source": "Cuckoo-GPU - Accelerating Cuckoo Filters on Modern GPUs (2603.15486v1).pdf",
+      "point_count": 66,
+      "unique_chunk_count": 66,
+      "document_fingerprint": "a80faec1c91e6dbeb354791c3fcff10d305b1cb4b7cbf93c9cb9447d154c6c89"
+    },
+    {
+      "source": "Current Best Practices for Training LLMs from Scratch - Final (6435aabdc0a041194b243eef).pdf",
+      "point_count": 79,
+      "unique_chunk_count": 79,
+      "document_fingerprint": "0d24604cdf2064c718a957473fcc32ba3b779a04eea4fab4dfb8cdb78638c1e6"
+    },
+    {
+      "source": "DI-MMAP - A High Performance Memory Map Runtime for Data-Intensive Applications (Nov 16 2012) - Deck.pdf",
+      "point_count": 24,
+      "unique_chunk_count": 24,
+      "document_fingerprint": "821bfd78b6e6ea06f8e62e21840ebff1072f04f7dc8e882f5db0b78ba7525e2e"
+    },
+    {
+      "source": "Dapper - A Large-Scale Distributed Systems Tracing Infrastructure (36356).pdf",
+      "point_count": 76,
+      "unique_chunk_count": 76,
+      "document_fingerprint": "429446b3a967cda6a298a20b187b653c9870a2a68abc7a35db418f7a5a2d6738"
+    },
+    {
+      "source": "Data Compression Techniques - Lecture 2 - Morse Code to Huffman Coding - University of Helsinky - Slides (2015).pdf",
+      "point_count": 37,
+      "unique_chunk_count": 37,
+      "document_fingerprint": "e0f3f5d6fc7df18308a4d510d178526323a8c4f972067373a6b7cf2a53066470"
+    },
+    {
+      "source": "Data Compression Techniques - Lecture 3 - Integer Codes 1 - University of Helsinky - Slides (DCT2015-Lecture3Web).pdf",
+      "point_count": 45,
+      "unique_chunk_count": 45,
+      "document_fingerprint": "f101c7c8b3a30df7464aaf4a8a183f3592f4d47a290fd7c002b34b56ca2d3a14"
+    },
+    {
+      "source": "Data Compression Techniques - Lecture 4 - Integer Codes 2 - University of Helsinky - Slides (DCT2015-Lecture4).pdf",
+      "point_count": 52,
+      "unique_chunk_count": 52,
+      "document_fingerprint": "0d8460418a79b4886944ce019c66101478b71f42643177484b478a78be5c3d8a"
+    },
+    {
+      "source": "Data Compression Techniques - Lecture 5 - Adaptive Prefix-Free Coding - University of Helsinky - Slides (2015).pdf",
+      "point_count": 23,
+      "unique_chunk_count": 23,
+      "document_fingerprint": "d02d918a95ffd429212f8e32c5a0ee09db9bd9a7c12a33b5afc85934accf4a5d"
+    },
+    {
+      "source": "Data Structures for Data-Intensive Applications - Tradeoffs and Design Guidelines (fnt23-athanassoulis).pdf",
+      "point_count": 467,
+      "unique_chunk_count": 467,
+      "document_fingerprint": "7f9e4f3dbb2e0335876b76d4c7a890fe51507e8362d811ff791ae319e62b5228"
+    },
+    {
+      "source": "Data Structures for Text Sequences.pdf",
+      "point_count": 91,
+      "unique_chunk_count": 91,
+      "document_fingerprint": "d023ce0efe9d1f74664b9427122e52c29a94594e1cf7ff03b07832b9870e5650"
+    },
+    {
+      "source": "Data Transfer Matters for GPU Computing - 2013 (icpads13).pdf",
+      "point_count": 52,
+      "unique_chunk_count": 52,
+      "document_fingerprint": "8d81aa485b8a0f617990306fcb40cb28addbe57c026173a630acb20bba4b0c17"
+    },
+    {
+      "source": "Data-Parallel Hashing Techniques for GPU Architectures - 11 Jul 2018 (1807.04345).pdf",
+      "point_count": 195,
+      "unique_chunk_count": 195,
+      "document_fingerprint": "624edf6a45cbea931875e3576436ac8071b3bfb2bf8c4f398c799547f71c021f"
+    },
+    {
+      "source": "Debugging Programs that use Atomic Blocks and Transactional Memory (2010).pdf",
+      "point_count": 71,
+      "unique_chunk_count": 71,
+      "document_fingerprint": "465ad3db9758f87266f4607969ad50fd01d1629920a8aff6fc468c7cff2e1f72"
+    },
+    {
+      "source": "Debunking the 100x GPU vs CPU Myth - An Evaluation of Throughput Computing on CPU and GPU.pdf",
+      "point_count": 87,
+      "unique_chunk_count": 87,
+      "document_fingerprint": "d34bcb5baf029363e1fc9c4d5ecb506b65ca5f5f6b1f5e34b57e90502ce0587f"
+    },
+    {
+      "source": "Deep Learning Approach to Real-Bogus Classification for LSST Alert Production (DMTN-216).pdf",
+      "point_count": 17,
+      "unique_chunk_count": 17,
+      "document_fingerprint": "bf507a49eab1772929325faf40d0e8c1c9732ea6f8caf162f2629b57643e12c9"
+    },
+    {
+      "source": "Deep Residual Learning for Image Recognition (1512.03385v1).pdf",
+      "point_count": 73,
+      "unique_chunk_count": 73,
+      "document_fingerprint": "4c0e2dcc397252a02933bb9bf434d007af559553a642b049d60a05e21ae94751"
+    },
+    {
+      "source": "DeepSeek V3 - Technical Report (2024).pdf",
+      "point_count": 193,
+      "unique_chunk_count": 193,
+      "document_fingerprint": "e374376b6d2c090c68a4c7f6697f53988bb0e6443cdff1fb1e93c04e78b44afb"
+    },
+    {
+      "source": "DeepState - Symbolic Unit Testing for C and C++ - 2018 (bar18).pdf",
+      "point_count": 44,
+      "unique_chunk_count": 44,
+      "document_fingerprint": "95e77cb3c6d88cee6b2f939b6005c91da658196667bab3f8351dc0117be648b4"
+    },
+    {
+      "source": "Delving Deep into Rectifiers - Surpassing Human-Level Performance on ImageNet Classification (1502.01852v1).pdf",
+      "point_count": 58,
+      "unique_chunk_count": 58,
+      "document_fingerprint": "75007d509be31eacdd64fd2931c2c17dd6483560684841b229d3afca38502aec"
+    },
+    {
+      "source": "Demystifying Tensor Cores to Optimize Half-Precision Matrix Multiply (2020).pdf",
+      "point_count": 56,
+      "unique_chunk_count": 56,
+      "document_fingerprint": "a5872633b274d340351dc960a79ddd5117cdfba9e7763c041a9b33f9658e10a6"
+    },
+    {
+      "source": "Designing COM Interfaces - 1995.pdf",
+      "point_count": 66,
+      "unique_chunk_count": 66,
+      "document_fingerprint": "2d7738eb6c0f137075bd4d1741f3ff01c7f4cb3b53e1b7738a9a082819b88f9e"
+    },
+    {
+      "source": "Digital FX32 - Running 32-bit x86 Applications on Alpha NT.pdf",
+      "point_count": 39,
+      "unique_chunk_count": 39,
+      "document_fingerprint": "216822c4cde553f7ead10fd5c946625fa2baf2460a4e8c752665866abcef0351"
+    },
+    {
+      "source": "Dissecting the NVIDIA Turing T4 GPU via Microbenchmarking - 18 Mar 2019 (1903.07486).pdf",
+      "point_count": 136,
+      "unique_chunk_count": 136,
+      "document_fingerprint": "faa76e6b75bc3f20928a63d00738470ee19de3a517ecd431b8345cf24eee1588"
+    },
+    {
+      "source": "Dissecting the NVIDIA Volta GPU Architecture via Microbenchmarking - 2018 (1804.06826).pdf",
+      "point_count": 127,
+      "unique_chunk_count": 127,
+      "document_fingerprint": "7dd1b9cfc87a09c90de4f7a734710cd9d07d4b142c5e7a1f2f323a51e7da31af"
+    },
+    {
+      "source": "Distilling the Knowledge in a Neural Network (1503.02531v1).pdf",
+      "point_count": 42,
+      "unique_chunk_count": 42,
+      "document_fingerprint": "5d86a7db66bbf2dd8adeebd64db65fdbac6b1b2f05fa68a40c7521d48880e631"
+    },
+    {
+      "source": "Distributed and Parallel Time Series Feature Extraction for Industrial Big Data Applications - 25th October 2016 (1610.07717v1).pdf",
+      "point_count": 61,
+      "unique_chunk_count": 61,
+      "document_fingerprint": "4dcf062d24774ea224cb8fd684a8d3cbddb12bf6f15f4367480578c7887a73a7"
+    },
+    {
+      "source": "Doxygen Quick Reference (2013).pdf",
+      "point_count": 15,
+      "unique_chunk_count": 15,
+      "document_fingerprint": "df49d15ed641a7924af7d0d3ecb310cba9629dfb27b9a9d99e373d7893b73682"
+    },
+    {
+      "source": "Doxygen Quick Reference.pdf",
+      "point_count": 15,
+      "unique_chunk_count": 15,
+      "document_fingerprint": "df49d15ed641a7924af7d0d3ecb310cba9629dfb27b9a9d99e373d7893b73682"
+    },
+    {
+      "source": "Driver Annotations in Depth - Part 2 - Slides - 2008 (dde-t676_ddc08).pdf",
+      "point_count": 50,
+      "unique_chunk_count": 50,
+      "document_fingerprint": "fb89e75fa499eebf96f0244dc187d6888fa88ee9527ceb058c253230cacac58a"
+    },
+    {
+      "source": "Dueling UNIXes and the UNIX Wars (login_apr15_17_salus.pdf).pdf",
+      "point_count": 12,
+      "unique_chunk_count": 12,
+      "document_fingerprint": "62b133aced9ba50a57b61e56504bfac9854abb6bf0c30222dcc5869ebba23c66"
+    },
+    {
+      "source": "Dynamic Storage Allocation - A Survey and Critical Review.pdf",
+      "point_count": 487,
+      "unique_chunk_count": 487,
+      "document_fingerprint": "7423ef2cb56e32d44de9358ffc8cf7f93fb93add12e1ea22015ef4e3ae7ba4e9"
+    },
+    {
+      "source": "Efficient Computation of Binomial Coefficients Using Splay Trees - 2016 (10.11648.j.ijdst.20160201.14).pdf",
+      "point_count": 24,
+      "unique_chunk_count": 24,
+      "document_fingerprint": "a548400499cda633574e7aa12c0e415aaab74778db2348eb12eacc2a6640e8a5"
+    },
+    {
+      "source": "Efficient Estimation of Mutual Information for Strongly Dependent Variables (gao15).pdf",
+      "point_count": 47,
+      "unique_chunk_count": 47,
+      "document_fingerprint": "1d2ff7bb625500a2fb0a658d0b69266b3aee4ff18e46d71a045545140c4d74fc"
+    },
+    {
+      "source": "Efficient Exploitation of Parallelism on Pentium III and Pentium 4 Processor-Based Systems - 2001 (art_6).pdf",
+      "point_count": 47,
+      "unique_chunk_count": 47,
+      "document_fingerprint": "35ed8c0a11601077e713f863d159bbf60caf57145d49cbdd896aeb7a12c8564f"
+    },
+    {
+      "source": "Efficient Hashing using the AES Instruction Set (69170507).pdf",
+      "point_count": 67,
+      "unique_chunk_count": 67,
+      "document_fingerprint": "e0f075ebb5a56bfcdb57b6635536bfb8171449cf303b38e94676a4d2d685b27d"
+    },
+    {
+      "source": "Efficient IO with io_uring.pdf",
+      "point_count": 66,
+      "unique_chunk_count": 66,
+      "document_fingerprint": "1ae1b3c9e7030fb9191496d7e9ca222c563c138f326ec6dd4217ee065f43d025"
+    },
+    {
+      "source": "Efficient Implementation of Lazy Suffix Trees (gie-kur-sto-2003).pdf",
+      "point_count": 59,
+      "unique_chunk_count": 59,
+      "document_fingerprint": "3162bd64fd7efedbb56b084960641142ff02110bbe357817e0b0cb97b3f07b5d"
+    },
+    {
+      "source": "Efficient Implementation of Reductions on GPU Architectures (2017).pdf",
+      "point_count": 55,
+      "unique_chunk_count": 55,
+      "document_fingerprint": "2a531c2734cac5de48a5ac47cd46e4f19849ebef808c544a078aa2778ed37d5d"
+    },
+    {
+      "source": "Efficient Implementation of Sorting on Multicore SIMD CPU Architecture - Slides - VLDB 2008 (9-29-15).pdf",
+      "point_count": 21,
+      "unique_chunk_count": 21,
+      "document_fingerprint": "eddff6aab3d4883e0719270ac566e0e4a62595be9f8a2915d9b9c630459d20d6"
+    },
+    {
+      "source": "Efficient Implementation of Sorting on Multicore SIMD CPU Architecture - VLDB 2008 (1454171).pdf",
+      "point_count": 80,
+      "unique_chunk_count": 80,
+      "document_fingerprint": "cfa59de32df65bda9d84aee1c76896c4f34c71e6711430802f61ec0907ea54ee"
+    },
+    {
+      "source": "Efficient Lightweight Compression Algorithm Alongside Fast Scans (damon15).pdf",
+      "point_count": 44,
+      "unique_chunk_count": 44,
+      "document_fingerprint": "4a002f26c59806b9d14578ad278150609ec21481e77b58ec978265386bcfc8cb"
+    },
+    {
+      "source": "Efficient Lossless Compression of Trees and Graphs.pdf",
+      "point_count": 45,
+      "unique_chunk_count": 45,
+      "document_fingerprint": "724fa856c727aa434889ec5d097626e48a04126afde07e959161235fe9a904a9"
+    },
+    {
+      "source": "Efficient Parallel Graph Exploration on Multi-Core CPU and GPU - 2011 (pact11-hong).pdf",
+      "point_count": 62,
+      "unique_chunk_count": 62,
+      "document_fingerprint": "a0f8cc96e98bf92ee914a396d8659d4c9c4c6ad2168ad03e9902b166c75321bf"
+    },
+    {
+      "source": "Efficient String Matching - An Aid to Bibliographic Search - Aho-Corasick (1975).pdf",
+      "point_count": 47,
+      "unique_chunk_count": 47,
+      "document_fingerprint": "43ac1236e23e515ff23e660ba44dcc817ab8ed305a3eb71fbafb49371502784a"
+    },
+    {
+      "source": "Efficiently Compiling Efficient Query Plans for Modern Hardware - 2011 (p539-neumann).pdf",
+      "point_count": 86,
+      "unique_chunk_count": 86,
+      "document_fingerprint": "f2ebefc9f0a04c98e8f229e860625264089d0b176d25840a92e74107d9c2c2e2"
+    },
+    {
+      "source": "Eliminating Global Interpreter Locks in Ruby through Hardware Transactional Memory (PPoPP2014_RubyGILHTM).pdf",
+      "point_count": 73,
+      "unique_chunk_count": 73,
+      "document_fingerprint": "8ff49d49e7f7401a3bbf74eeb7a28943a651ff7efa404a87c071c940bd081713"
+    },
+    {
+      "source": "Encyclopedia of Controller Fundamentals and Features - Firmware Version 3.2 to 8.0 (8_0_775041-01C).pdf",
+      "point_count": 586,
+      "unique_chunk_count": 586,
+      "document_fingerprint": "ab4a421aa7d9c5abf897e23f94895067e3380a49a7aa97d46bb721af41097bb2"
+    },
+    {
+      "source": "Enhancing Comprehension and Navigation in Jupyter Notebooks with Static Analysis - 2023 (2301.04419).pdf",
+      "point_count": 72,
+      "unique_chunk_count": 72,
+      "document_fingerprint": "a13f071ee5c387a18a1cee27f86e53dfdcf74297158883fe02ed48eceebcc6e2"
+    },
+    {
+      "source": "Enhancing Server Availability and Security Through Failure-Oblivious Computing - 2004 (rinard).pdf",
+      "point_count": 88,
+      "unique_chunk_count": 88,
+      "document_fingerprint": "b309159361b051ca9379127df4cd203480ddefe19161fba350992f60fa9b81b2"
+    },
+    {
+      "source": "Estimating Flight Characteristics of Anomalous Unidentified Aerial Vehicles (entropy-21-00939-v2).pdf",
+      "point_count": 78,
+      "unique_chunk_count": 78,
+      "document_fingerprint": "2a3b18efb33e5eb02b7228016d38fa379d4cf96f99e8ca93640764f5de805c6b"
+    },
+    {
+      "source": "Evaluation of Contemporary Graph Databases for Efficient Persistence of Large-Scale Models.pdf",
+      "point_count": 90,
+      "unique_chunk_count": 90,
+      "document_fingerprint": "ecd962fae3bdd3b747cadd14bc818520368becf2fdbf46fa76d71c19856226f8"
+    },
+    {
+      "source": "Evaluation of Parallel Design Patterns for Message Processing Systems on Embedded Multicore Systems.pdf",
+      "point_count": 9,
+      "unique_chunk_count": 9,
+      "document_fingerprint": "db43394c96f5a48290ab44f7b8d10c3b39c4d19d4d13f9e947544f51facfb97e"
+    },
+    {
+      "source": "Evaluation of Rolling Sphere Method Using Leader Potential Concept - A Case Study - 2006 (IT P501-124).pdf",
+      "point_count": 38,
+      "unique_chunk_count": 38,
+      "document_fingerprint": "9cefddf530cd37e0ed08a0fcaa6b374a7b5de5cf0268d5ec719969a6aa327dea"
+    },
+    {
+      "source": "Event Source User Guide.docx",
+      "point_count": 43,
+      "unique_chunk_count": 43,
+      "document_fingerprint": "5c6f0b76559ce0305d540dff943ebc1e701b0e9993d1408efbbddcaaef055c33"
+    },
+    {
+      "source": "Exploration by Random Network Distillation (1810.12894v1).pdf",
+      "point_count": 67,
+      "unique_chunk_count": 67,
+      "document_fingerprint": "aac9fda841a0151f3326c18eed3fd8c00f0569b3c55683a7e76ad890e0611c5d"
+    },
+    {
+      "source": "Exploring Control Flow Guard in Windows 10 - Trend Micro.pdf",
+      "point_count": 42,
+      "unique_chunk_count": 42,
+      "document_fingerprint": "87b511536348f7bdc6b0fc3980bcf37944c2d079e1841ebe866aeeed9d47655d"
+    },
+    {
+      "source": "Exploring PLSQL New Features Best Practices - OOW 2013 Aharonovich.pdf",
+      "point_count": 18,
+      "unique_chunk_count": 18,
+      "document_fingerprint": "1b73ae25aa3688f74dfb32ffc2bdd2012f5c3db30d8ac3e3b322b509338c9f84"
+    },
+    {
+      "source": "Extending Oracle E-Business Suite Release 12.1 and above using Oracle Application Express (345780).pdf",
+      "point_count": 124,
+      "unique_chunk_count": 124,
+      "document_fingerprint": "affd014bb785c84c13dbaca631896ef87cf833d1f0a5668a89d5529ee84be8e5"
+    },
+    {
+      "source": "FAST - Fast Architecture Sensitive Tree Search on Modern CPUs and GPUs - Slides.pdf",
+      "point_count": 26,
+      "unique_chunk_count": 26,
+      "document_fingerprint": "83edfdc57c8acba348ab8c27c689b76493c71b9d07b052d5120d7b8d9eab8824"
+    },
+    {
+      "source": "FAST - Fast Architecture Sensitive Tree Search on Modern CPUs and GPUs.pdf",
+      "point_count": 100,
+      "unique_chunk_count": 100,
+      "document_fingerprint": "05c0cf9cb03ea546138c89efef67b0e62c6959db3b2da81b7305d5c466540ef9"
+    },
+    {
+      "source": "FERRARI - Flexible and Efficient Reachability Range Assignment for Graph Indexing.pdf",
+      "point_count": 79,
+      "unique_chunk_count": 79,
+      "document_fingerprint": "7e10d59ddf19cdc4e6cade340c1c01a38180fc1f0ce71267904f88d7f242e54a"
+    },
+    {
+      "source": "FLASHRELATE - Extracting Relational Data from Semi-Structured Spreadsheets Using Examples (Microsoft Research - April 2014).pdf",
+      "point_count": 81,
+      "unique_chunk_count": 81,
+      "document_fingerprint": "1b1b52deba40e65dfac2bc9df84bca50b6e27ebfea3b708bf4ba95e79ef85929"
+    },
+    {
+      "source": "Faliure-Atomic msync() - A Simple and Efficient Mechanism for Preserving the Integrity of Durable Data.pdf",
+      "point_count": 85,
+      "unique_chunk_count": 85,
+      "document_fingerprint": "8e0c691cfc6d2e5e273a171d4d1e6529ab0db30d7b739a592914fadab0e333ef"
+    },
+    {
+      "source": "Fallout - Reading Kernel Writes From User Space - 29th May 2019 (1905.12701).pdf",
+      "point_count": 82,
+      "unique_chunk_count": 82,
+      "document_fingerprint": "1c82c4c585e0e0b208850dee3631577b8c8f468e889d108784bf71bc45af94e0"
+    },
+    {
+      "source": "Fast Bit Compression and Expansion with Parallel Extract and Parallel Deposit Instructions - 2006 (hilewitz06).pdf",
+      "point_count": 41,
+      "unique_chunk_count": 41,
+      "document_fingerprint": "b51101751f96230c675bfed84b15aa7060ce8b767caa5b5efc9e080e3f4383a8"
+    },
+    {
+      "source": "Fast Deterministic Selection - Andrei Alexandrescu - June 2016 (1606.00484v1).pdf",
+      "point_count": 73,
+      "unique_chunk_count": 73,
+      "document_fingerprint": "7c75f68b15d6d6d910e59ca9ccc70c68ce6c154944e2581e37d53d53d8a71dc6"
+    },
+    {
+      "source": "Fast Exact Multiplication by the Hessian - 1993 (nc-hessian).pdf",
+      "point_count": 41,
+      "unique_chunk_count": 41,
+      "document_fingerprint": "5723aacc8eb18f8bf39c154dad2967446135bb86daf266398bcbb431de030fa6"
+    },
+    {
+      "source": "Fast Keyed Hash and Pseudo-Random Function using SIMD Multiply and Permute - 20 Nov 2016 (1612.06257v2).pdf",
+      "point_count": 43,
+      "unique_chunk_count": 43,
+      "document_fingerprint": "252ede3f97728edba686326e94144d62b40a9467ea99dd6d820103a641b9e871"
+    },
+    {
+      "source": "Fast Packed String Matching for Short Patterns - 2012 (1209.6449).pdf",
+      "point_count": 52,
+      "unique_chunk_count": 52,
+      "document_fingerprint": "406e609661eb67167faf5a495f5bf0d9e76275414379e4cbda181bca04024e81"
+    },
+    {
+      "source": "Fast Search in Hamming Space with Multi-Index Hashing.pdf",
+      "point_count": 48,
+      "unique_chunk_count": 48,
+      "document_fingerprint": "fb5ceea3d2d7ca508a0ee674ce196ba2c898db2300ec378f3349b755b61730ff"
+    },
+    {
+      "source": "Fast Sorting Algorithms using AVX-512 on Intel Knight's Landing (1704.08579).pdf",
+      "point_count": 70,
+      "unique_chunk_count": 70,
+      "document_fingerprint": "2688c6d90d859aca1aca8c0d0a951c39cc91b864d95c60f0f34cdff9f03060d9"
+    },
+    {
+      "source": "Fast Splittable Pseudorandom Number Generators (oopsla14).pdf",
+      "point_count": 126,
+      "unique_chunk_count": 126,
+      "document_fingerprint": "a0a3b8f98da807944bd28f10cb8e50e534d086d1a11d12aac73c40040948062e"
+    },
+    {
+      "source": "Fast and Furious - Outrunning Windeows Kernel Notification Routines from User-Mode (2020).pdf",
+      "point_count": 81,
+      "unique_chunk_count": 81,
+      "document_fingerprint": "4e189bdd41ac09e322b65a302fe4c2285831df1c4168f821b968fafe07301897"
+    },
+    {
+      "source": "Faster Catalog Matching on Graphics Processing Units (2018).pdf",
+      "point_count": 28,
+      "unique_chunk_count": 28,
+      "document_fingerprint": "948247f0d3583f668ce971b09399c0150966f1bb808a916832b399783c68a3b2"
+    },
+    {
+      "source": "Fibre Channel Fundamentals.pdf",
+      "point_count": 181,
+      "unique_chunk_count": 181,
+      "document_fingerprint": "7f93d16654d05f6fa31e7c6795876931d11cc391ff097a34303db4288eef56d7"
+    },
+    {
+      "source": "Finding Minimal Perfect Hash Functions - 1986 (10.1.1.144.9650).pdf",
+      "point_count": 14,
+      "unique_chunk_count": 14,
+      "document_fingerprint": "e122bea806522dcb08e3b356a7de7c35ac60c3ae65e32221b366b92e1be3e590"
+    },
+    {
+      "source": "Finding Similar Items.pdf",
+      "point_count": 181,
+      "unique_chunk_count": 181,
+      "document_fingerprint": "5d61fb183dfa08c8c3d9b2a1b244c7b059b2f5b2671ee890ef092776ec5744f3"
+    },
+    {
+      "source": "Finding Small Balanced Separators (2006).pdf",
+      "point_count": 80,
+      "unique_chunk_count": 80,
+      "document_fingerprint": "1cac8e65bc7ce93ffe2a2eda9d79c45073226da0d2663a3be7402cd391264d44"
+    },
+    {
+      "source": "FlashAttention-3 - Fast and Accurate Attention with Asynchrony and Low-precision.pdf",
+      "point_count": 86,
+      "unique_chunk_count": 86,
+      "document_fingerprint": "7b3a7537bc8c0480efbdb5b45af1b1ce93c76ad094070b6a5654f0d2b430c965"
+    },
+    {
+      "source": "Folding and Unfolding - Erik D. Demaine - Ph.D Thesis 2001 (eddemaine2001).pdf",
+      "point_count": 337,
+      "unique_chunk_count": 337,
+      "document_fingerprint": "d42bf0705405b7b76ff2254ef7277a4a8164b8f21b614e66d900d31f3a6b4e41"
+    },
+    {
+      "source": "Fractal Prefetching B+ Trees - Optimizing Both Cache and Disk Performance.pdf",
+      "point_count": 217,
+      "unique_chunk_count": 217,
+      "document_fingerprint": "e13a604bf66e4b4a97ca0450cb6c90d78a466e197a1240acb8b437b1e79a37ff"
+    },
+    {
+      "source": "Futexes Are Tricky - Ulrich Depper (2005).pdf",
+      "point_count": 60,
+      "unique_chunk_count": 60,
+      "document_fingerprint": "6ae72adbe8ed3c369f3124774e3d235167353c95ac5f8cb13f6cb219800ac6f0"
+    },
+    {
+      "source": "Futexes Are Tricky - Ulrich Drepper (2011).pdf",
+      "point_count": 58,
+      "unique_chunk_count": 58,
+      "document_fingerprint": "6f7d3f6dd37daf86e5be66276f8d34bc62f8ca40f788d382efb3aeb9cfd2c2a7"
+    },
+    {
+      "source": "GPERF - A Perfect Hash Function Generator.pdf",
+      "point_count": 69,
+      "unique_chunk_count": 69,
+      "document_fingerprint": "d3c7dc5332dd69dcaf30668c837bdd3906677808ae3e182843d63c6de7b2f909"
+    },
+    {
+      "source": "GPT-4 System Card.pdf",
+      "point_count": 218,
+      "unique_chunk_count": 218,
+      "document_fingerprint": "032f1230c5ba8acb943d4e201a4d83aeeb7ffe1f0ed9465f1218aa290262e8e0"
+    },
+    {
+      "source": "GPT-4 Technical Report.pdf",
+      "point_count": 361,
+      "unique_chunk_count": 361,
+      "document_fingerprint": "4055a23b43f25026a3d86d7d0732bd0d11f92cbaf388f91ea2205fd298e35456"
+    },
+    {
+      "source": "GPU Control Flow and Synchronization - Slides.pdf",
+      "point_count": 19,
+      "unique_chunk_count": 19,
+      "document_fingerprint": "8cde39c736ed8d6686df04a8660ca5b134fa295fb0a6d3d639df8c1e94b9035b"
+    },
+    {
+      "source": "GPU Optimization Fundamentals.pdf",
+      "point_count": 107,
+      "unique_chunk_count": 107,
+      "document_fingerprint": "4e55108ac5e0055b284f6b06c7cd3849e424f4823de22f3325d75b57678ed637"
+    },
+    {
+      "source": "GPU Random Numbers via the Tiny Encryption Algorithm (2010).pdf",
+      "point_count": 46,
+      "unique_chunk_count": 46,
+      "document_fingerprint": "d46dd31301ad8432a5144ac89a6226221f11b1869212a45c2bd9267da4a2af31"
+    },
+    {
+      "source": "GPUDirect Storage - Slides (sc1922).pdf",
+      "point_count": 24,
+      "unique_chunk_count": 24,
+      "document_fingerprint": "9630d3f76e690d42857705f57fb49111a78812d73001780269f77415c35eda28"
+    },
+    {
+      "source": "GRIM - Leveraging GPUs for Kernel Integrity Monitoring.pdf",
+      "point_count": 74,
+      "unique_chunk_count": 74,
+      "document_fingerprint": "17254c6cd0e8f3a49cebc95810ddd12966d5aabc44b699cf1737d81df79bf8de"
+    },
+    {
+      "source": "GTC 2010 (Part 1) - High Productivity Development.pdf",
+      "point_count": 35,
+      "unique_chunk_count": 35,
+      "document_fingerprint": "7bf89db1b5f89373330bf9452812b7ec7ec1138d592899127f36740047cdd61e"
+    },
+    {
+      "source": "Gazing Beyond Reflection - CppCon2024 - Deck.pdf",
+      "point_count": 34,
+      "unique_chunk_count": 34,
+      "document_fingerprint": "87cc1fe59b6fe01f820e76c8efd26e067643ca1600ea8ed416fef099d73dda4a"
+    },
+    {
+      "source": "General Analysis of Maxima and Minima in Constrained Optimization Problems.pdf",
+      "point_count": 47,
+      "unique_chunk_count": 47,
+      "document_fingerprint": "3c77a3607d884f584d49dd79871c769a0e65b9890aaa8ef4a8c909d450488833"
+    },
+    {
+      "source": "General Incremental Sliding-Window Aggregation (p702-tangwongsan).pdf",
+      "point_count": 90,
+      "unique_chunk_count": 90,
+      "document_fingerprint": "30c0680472df37c934d63b2edea58bbb85fa739140842aee54d284cb85d74cc9"
+    },
+    {
+      "source": "General-Purpose Graphics Processor Architecture (2018).pdf",
+      "point_count": 425,
+      "unique_chunk_count": 425,
+      "document_fingerprint": "4e61d1211afba202ae76f39662964af9bc27341088a1e9398690c70c5bad8405"
+    },
+    {
+      "source": "Generalized Histogram Algorithms for CUDA GPUs - Slides - 2012 (histogram_para2012).pdf",
+      "point_count": 27,
+      "unique_chunk_count": 27,
+      "document_fingerprint": "0b701242b94f65fb8338a3b17b956c8776baec4d23c24a70909cd6b78726d158"
+    },
+    {
+      "source": "Generating Text with Recurrent Neural Networks (LANG-RNN).pdf",
+      "point_count": 49,
+      "unique_chunk_count": 49,
+      "document_fingerprint": "44e1ad8aa984d33701957c0328b8849c905749782a74f97a95f74b36371d92e6"
+    },
+    {
+      "source": "Git Magic.pdf",
+      "point_count": 136,
+      "unique_chunk_count": 136,
+      "document_fingerprint": "2b1b42834e4d6b8e07f19ac972a6a36958d6c87dec32b30e8437866e2628e79d"
+    },
+    {
+      "source": "Google C++ Style Guide.pdf",
+      "point_count": 256,
+      "unique_chunk_count": 256,
+      "document_fingerprint": "aefadea637af18e047c0be9c98c157149c889860b79cbd8e39074ea8c7ed8254"
+    },
+    {
+      "source": "Google's Neural Machine Translation System - Bridging the Gap between Human and Machine Translation - 2016 (1609.08144v1).pdf",
+      "point_count": 94,
+      "unique_chunk_count": 94,
+      "document_fingerprint": "cd820fe992cc1ed8553304de35aa8aa4d07d456a34edfe90d752307dbfde007d"
+    },
+    {
+      "source": "Gradient-Based Learning Applied to Document Recognition (Lecun98).pdf",
+      "point_count": 286,
+      "unique_chunk_count": 286,
+      "document_fingerprint": "d1e523f2ce63cfcc0a4eabd48aeaaad8db14785548ce5236a1ab6d301b0dd4f5"
+    },
+    {
+      "source": "Grand Central Dispatch - FreeBSD Dev Summit (18 Sep 2009).pdf",
+      "point_count": 34,
+      "unique_chunk_count": 34,
+      "document_fingerprint": "c91617ee486c0d841196b21d1e24889a5ccc399a487a93e6987d9ff97050d09b"
+    },
+    {
+      "source": "Guaranteed DGEMM Accuracy While Using Reduced Precision Tensor Cores Through Extensions of the Ozaki Scheme - 2025 (2511.13778v1).pdf",
+      "point_count": 79,
+      "unique_chunk_count": 79,
+      "document_fingerprint": "c74aea2dedfdec3f76e578b3275b7bd0ea34dc305e4bea156bbd4090990699c0"
+    },
+    {
+      "source": "Gunrock - A Fast and Programmable Multi-GPU Graph Processing Library - Slides - 2016 (S6374).pdf",
+      "point_count": 38,
+      "unique_chunk_count": 38,
+      "document_fingerprint": "ba6024564ca8971bfce7250d9c5ceb73ef2b9b33c1e5aeab32680df98c6400fe"
+    },
+    {
+      "source": "Gunrock - A High-Performance Graph Processing Library on the GPU - 2016.pdf",
+      "point_count": 98,
+      "unique_chunk_count": 98,
+      "document_fingerprint": "756040fda89cc5a599fc00b3ff3ad33eb4c993cdd066fa4f731e59ed1f1a69b7"
+    },
+    {
+      "source": "HASHI - An Application-Specific Instruction Set Extension for Hashing - 2014 (adms14_arnold).pdf",
+      "point_count": 55,
+      "unique_chunk_count": 55,
+      "document_fingerprint": "bf1ebfaedd692621b28dfba6f77fdc6103476f38f9693119abb2f1c0914c64d2"
+    },
+    {
+      "source": "HAT-trie - A Cache-conscious Trie-based Data Structure for Strings - 2007 (CRPITV62Askitis).pdf",
+      "point_count": 57,
+      "unique_chunk_count": 57,
+      "document_fingerprint": "fd2563f138817157697cfcb8d7b2ca0a304eb11932e9802d7b48cc5d1d253e14"
+    },
+    {
+      "source": "HELIX-RC - An Architecture-Compiler Co-Design for Automatic Parallelization of Irregular Programs (campanoni14-isca).pdf",
+      "point_count": 82,
+      "unique_chunk_count": 82,
+      "document_fingerprint": "6b4c4623a8278c1403b87197e9f5772bc64f87cb418486708ed42e3d3988afc7"
+    },
+    {
+      "source": "HTTP as the Narrow Waist of the Future Internet.pdf",
+      "point_count": 45,
+      "unique_chunk_count": 45,
+      "document_fingerprint": "154fad07e9e0e5d61558ae93b6055cac4626fb6b9a5f75e623f65147893c6878"
+    },
+    {
+      "source": "Hardware-Aware Optimization- Using Intel Streaming SIMD Extensions - Slides (2010).pdf",
+      "point_count": 47,
+      "unique_chunk_count": 47,
+      "document_fingerprint": "77dcc9b76e3c5b3e872620029f25290b98fad56fe95a8b0f672c0dfe8dc7a0c5"
+    },
+    {
+      "source": "Harnessing Intel Processor Trace on Windows for Vulnerability Discovery - D1T1 - Richard Johnson - Slides (2017).pdf",
+      "point_count": 42,
+      "unique_chunk_count": 42,
+      "document_fingerprint": "1fa9ff9fc1dfaff0365b8abeded67166afa05bde71581a4d222f33355f56dbd6"
+    },
+    {
+      "source": "Harnessing the Universal Geometry of Embeddings (2505.12540v2).pdf",
+      "point_count": 67,
+      "unique_chunk_count": 67,
+      "document_fingerprint": "d95325d5a7daa505b5c2143a5d58c8eaffc3b1c7b69925a8565700445f225b1a"
+    },
+    {
+      "source": "Hash Tables - Jeff Erickson (2014).pdf",
+      "point_count": 52,
+      "unique_chunk_count": 52,
+      "document_fingerprint": "401eda1283d1e810270184ab6352930b2ec495f9aa31d0059f74e607b2a30d77"
+    },
+    {
+      "source": "Haswell Block Diagram.pdf",
+      "point_count": 2,
+      "unique_chunk_count": 2,
+      "document_fingerprint": "d4d2aca1e33963abc74d82c18d42989f0498456b42c51787b08095c39f96103b"
+    },
+    {
+      "source": "Heapy - A Memory Profiler and Debugger for Python - 2006 (heapy-thesis).pdf",
+      "point_count": 214,
+      "unique_chunk_count": 214,
+      "document_fingerprint": "2c8d6d60075cf046082590af20df9ef074f4391ac2468c32c6e166b7c1963131"
+    },
+    {
+      "source": "HexRaysCodeXplorer - Making Object-Oriented RE Easier - Slides (2013).pdf",
+      "point_count": 17,
+      "unique_chunk_count": 17,
+      "document_fingerprint": "613bac0f9f8bbaf69a43692b9aae18433486d8a21eae119d2696b589e5e32cdb"
+    },
+    {
+      "source": "HexRaysCodeXplorer - Making Object-Oriented RE Easier - Slides (2014).pdf",
+      "point_count": 36,
+      "unique_chunk_count": 36,
+      "document_fingerprint": "47300ca8f4ca346690eb2540975335458beb98f9196776ef42bbcbe26a712d16"
+    },
+    {
+      "source": "Hidden Markov Model.pdf",
+      "point_count": 62,
+      "unique_chunk_count": 62,
+      "document_fingerprint": "706f37eeb533d29cf53490f18b06adc318be3d0624910692f757fe242dea2d24"
+    },
+    {
+      "source": "High Performance Construction of RecSplit Based Minimal Perfect Hash Functions -19 Dec 2022 (2212.09562).pdf",
+      "point_count": 82,
+      "unique_chunk_count": 82,
+      "document_fingerprint": "9755eff1af9fff57c755ace1ff5f9d656d5713ac770a7628a299cd814134be20"
+    },
+    {
+      "source": "High Speed Hashing for Integers and Strings - 2022 (1504.06804).pdf",
+      "point_count": 68,
+      "unique_chunk_count": 68,
+      "document_fingerprint": "e45dd4786afca3171244fe55adbde51ec49f8623d616b8852dd025dc6d647d19"
+    },
+    {
+      "source": "High Throughput Heavy Hitter Aggregation for Modern SIMD Processors (damon13).pdf",
+      "point_count": 41,
+      "unique_chunk_count": 41,
+      "document_fingerprint": "75c9b26fa1d854e9fac4e948d5a9611277cb78b3c4d1e0008d3ef4269fa7fef1"
+    },
+    {
+      "source": "Highway - Intro.pdf",
+      "point_count": 35,
+      "unique_chunk_count": 35,
+      "document_fingerprint": "f0e0f6e9b103ba72b38028ad50f08c628ef8e28f0a69dea347091571a0c946ba"
+    },
+    {
+      "source": "Histograms - CUDA Handbook - Slides (2015).pdf",
+      "point_count": 27,
+      "unique_chunk_count": 27,
+      "document_fingerprint": "b2575c90c8cb56278d1d123344c061bb391f3e2bf42aa5eb28132c9fc7c79fb6"
+    },
+    {
+      "source": "How Microsoft Builds Software (1997).pdf",
+      "point_count": 42,
+      "unique_chunk_count": 42,
+      "document_fingerprint": "f480a8e878762b899848d6cef0c1fea63c7c9ced9c26f9f751bc19aee33b27d3"
+    },
+    {
+      "source": "How To Overcome the GIL Limitations (While Staying In Python Ecosphere) - Francesc Alted (2011).pdf",
+      "point_count": 15,
+      "unique_chunk_count": 15,
+      "document_fingerprint": "6426ec2f946a14c5aaf682fc3430480dbd9fc10b5a6de841290ec090e129534a"
+    },
+    {
+      "source": "How the VAX Lost Its POLY (and EMOD and ACB_floating too) (vax_poly).pdf",
+      "point_count": 8,
+      "unique_chunk_count": 8,
+      "document_fingerprint": "f9947540b55e61d91caf3c17dbfc7bf86609f687ef2d99a69d89e65e48b3f8b6"
+    },
+    {
+      "source": "How to Write Fast Code - SIMD Vectorization - CMU - 2008 - Slides (slides-18-645-simd).pdf",
+      "point_count": 31,
+      "unique_chunk_count": 31,
+      "document_fingerprint": "81f88f1a1e1f52464aef7d0eab9e8630b147ab1ffc2ff5cd4bb06a2a8cf119ed"
+    },
+    {
+      "source": "How to miscompile programs with benign data races (Boehm).pdf",
+      "point_count": 30,
+      "unique_chunk_count": 30,
+      "document_fingerprint": "80c5b35c228bf5ee78424ae4859e19635b70bcdc4030303ddef86f3ef5c47644"
+    },
+    {
+      "source": "HyperANF - Approximating the Neighbourhood Function of Very Large Graphs on a Budget (2011).pdf",
+      "point_count": 66,
+      "unique_chunk_count": 66,
+      "document_fingerprint": "a76b4605d81920419db69100d524390302c5432680abae2bb0889cb8adece948"
+    },
+    {
+      "source": "HyperLogLog - The Analysis of a Near-Optimal Cardinality Estimation Algorithm (914-3045-2-PB).pdf",
+      "point_count": 61,
+      "unique_chunk_count": 61,
+      "document_fingerprint": "8c03283642d86f0baea4782ec737b4f2d23fd65302afe5e938647fdb0c4ed6af"
+    },
+    {
+      "source": "Hypergraph-Based Anomaly Detection in Very Large Networks - 2007 (silva_willett_tpami07).pdf",
+      "point_count": 72,
+      "unique_chunk_count": 72,
+      "document_fingerprint": "54c81c8d5fc1c526a00db5bf95526140f63dbdf702eaac99f7b410ebfcb4ade8"
+    },
+    {
+      "source": "IDA Plug-in Writing in C-C++ - Version 1.1 - Steve Micallef (2009).pdf",
+      "point_count": 296,
+      "unique_chunk_count": 296,
+      "document_fingerprint": "c6d47a78745f6ef7cd0ba436af43354d25ad453c3c5b949a277c960a6e8d02d9"
+    },
+    {
+      "source": "IMP - Indirect Memory Prefetcher - MIT (2015).pdf",
+      "point_count": 80,
+      "unique_chunk_count": 80,
+      "document_fingerprint": "0d66c4b86f6afcc8d70f7939877d399884323a1eda8bdf749654f6569b375f09"
+    },
+    {
+      "source": "IO is Faster Than the CPU - Let's Partition Resources and Eliminate (Most) OS Abstractions (parakernel-hotos19).pdf",
+      "point_count": 50,
+      "unique_chunk_count": 50,
+      "document_fingerprint": "7fa5292c119f93432c1f3bb3155c4e90ab7e9454f78f40c9d79807c582b74e9e"
+    },
+    {
+      "source": "Improved Division by Invariant Integers.pdf",
+      "point_count": 52,
+      "unique_chunk_count": 52,
+      "document_fingerprint": "f729cb30e59eaeaff732712197b84348fd21631fec61860107e6291b7533afed"
+    },
+    {
+      "source": "Improvement of Fitch function for Maximum Parsimony in Phylogenetic Reconstruction with Intel AVX2 Assembler Instructions - 24 June 2013 (TR20130624-1).pdf",
+      "point_count": 19,
+      "unique_chunk_count": 19,
+      "document_fingerprint": "a88ab2a27b202b4ba8ce0ad138f1e49172185a1b6ee0a78b8859887a322a20c9"
+    },
+    {
+      "source": "Improving Language Understanding by Generative Pre-Training (2018).pdf",
+      "point_count": 50,
+      "unique_chunk_count": 50,
+      "document_fingerprint": "e68ca152d0a82d281768b3ec915c3a959af13bdb6ed4f40cd7636942acff8fb6"
+    },
+    {
+      "source": "Improving Python's Memory Allocator - Evan Jones (2005).pdf",
+      "point_count": 17,
+      "unique_chunk_count": 17,
+      "document_fingerprint": "5f0c441ac16e0780109e39cf48693a4d2fe730e0be4cf340d9a5e7ec1e9979a2"
+    },
+    {
+      "source": "Index Internals - Rebuilding the Truth.pdf",
+      "point_count": 174,
+      "unique_chunk_count": 174,
+      "document_fingerprint": "bb863a36a8341c10aa803f22e384a498d87652f004bf90c1d28cc8b51ab60b8a"
+    },
+    {
+      "source": "Information Theory for Intelligent People (2018).pdf",
+      "point_count": 60,
+      "unique_chunk_count": 60,
+      "document_fingerprint": "c9dbdaf2d1d03e3c042630cde5c75f1db404c977968080dfa3f56107873eca50"
+    },
+    {
+      "source": "Inside IO Completion Ports.html",
+      "point_count": 15,
+      "unique_chunk_count": 15,
+      "document_fingerprint": "8f2997d4a4354f1ef360a9b6663305756cbae2d4256624467e68c8c3eda3037e"
+    },
+    {
+      "source": "Inside the Python GIL - Dave Beazley (2009).pdf",
+      "point_count": 29,
+      "unique_chunk_count": 29,
+      "document_fingerprint": "133acbf0104e96e57a9ee85f06fac19709d31cc7059f4b9db6350f940d6f9ce2"
+    },
+    {
+      "source": "Intel - Mitigations for Jump Conditional Code Erratum - Revision 1.0 (Nov 2019).pdf",
+      "point_count": 32,
+      "unique_chunk_count": 32,
+      "document_fingerprint": "7ee8ef77e0d40401c3b35adebb202c1e4c0f19508cb9d9f14263e773e734e388"
+    },
+    {
+      "source": "Intel - _vectorcall and __regcall Demystified.pdf",
+      "point_count": 14,
+      "unique_chunk_count": 14,
+      "document_fingerprint": "4b4e2c7b6a74a9155a51621e745f46e16fd20af5893bf0d571ecf60fe68234b8"
+    },
+    {
+      "source": "Intel 64 and IA-32 Architectures Performance Monitoring Events - Revision 1.0 - December 2017 (335279-001).pdf",
+      "point_count": 751,
+      "unique_chunk_count": 751,
+      "document_fingerprint": "89bb50d6795ccb173317cd5df18d7438d5efb5cd4bfcf82c6a1a961b4bd4b40d"
+    },
+    {
+      "source": "Intel Architecture - Instruction Set Extensions and Future Features - Programming Reference (January 2018).pdf",
+      "point_count": 376,
+      "unique_chunk_count": 376,
+      "document_fingerprint": "019ae5dd051316b14f6d6f8d52888567c72e5ef38609b72f500dec68f33c6998"
+    },
+    {
+      "source": "Intel Architecture - Instruction Set Extensions and Future Features - Programming Reference - May 2019 (319433-037).pdf",
+      "point_count": 395,
+      "unique_chunk_count": 395,
+      "document_fingerprint": "9c279b9274ff6fbf14d19c5934fb6143e2c9c7166145a4c06266a1ff36530190"
+    },
+    {
+      "source": "Intel Compiler Features + Performance Tips - Slides (2015) (IntelCompilerNERSC.201505013).pdf",
+      "point_count": 173,
+      "unique_chunk_count": 173,
+      "document_fingerprint": "4fabaca6b31f27fa8447bfb9aef47d7d31ef3389ab41f3a3394ece66778de5a1"
+    },
+    {
+      "source": "Intel Compiler Optimization and Building for KNL - Slides (2016).pdf",
+      "point_count": 61,
+      "unique_chunk_count": 61,
+      "document_fingerprint": "c872ce434e59a295f0470a37aa7f30f019af9c5ac412bf9b152c9a20f3cab6b4"
+    },
+    {
+      "source": "Intel IO Acceleration Technology Overview (2006).pdf",
+      "point_count": 19,
+      "unique_chunk_count": 19,
+      "document_fingerprint": "4acff55ca2aecb88a7913c086c1e2adb8bcfa4549a9d87f0f686150bc52191cd"
+    },
+    {
+      "source": "Intel Pro-1000 PT Quad Port Bypass Server Adapter.pdf",
+      "point_count": 4,
+      "unique_chunk_count": 4,
+      "document_fingerprint": "8be7530fec4df26600ab77cd76eeb838104a991ffcc36ae67195afc757da2728"
+    },
+    {
+      "source": "Intel SIMD Architecture - Yung-Yu - UCONN (2007).pdf",
+      "point_count": 115,
+      "unique_chunk_count": 115,
+      "document_fingerprint": "404d810688d77fce57aebc5dfb3e5a6132a3ed983d13a00e2ba1c5cafc0e6075"
+    },
+    {
+      "source": "Introduction to Coccinelle (Slides).pdf",
+      "point_count": 36,
+      "unique_chunk_count": 36,
+      "document_fingerprint": "09e520e37ce39f70e762fece26b8953de85677d0f42391930b051b50d27a56de"
+    },
+    {
+      "source": "Introduction to DPDK - Slides (2015).pdf",
+      "point_count": 56,
+      "unique_chunk_count": 56,
+      "document_fingerprint": "30389f44f0debbd4a34b8d0f5a1468c06cda3e5ef3bdf4c86ae7021be92abda1"
+    },
+    {
+      "source": "Introduction to Debugging the FreeBSD Kernel - Paper - BSDCan 2008.pdf",
+      "point_count": 51,
+      "unique_chunk_count": 51,
+      "document_fingerprint": "331d8225808657b19a925f6d5c2af6b6928dad4c157f3c07a471071f16ff911f"
+    },
+    {
+      "source": "Introduction to Debugging the FreeBSD Kernel -BSDCan 2008.pdf",
+      "point_count": 27,
+      "unique_chunk_count": 27,
+      "document_fingerprint": "140aa1b08173aecc36f4e8dc08afe8201ce457cabddbce8c1fcb9265f0a09ea7"
+    },
+    {
+      "source": "Introduction to Machine Learning - CMU-10701 - Deep Learning - Slides (Spring 2014).pdf",
+      "point_count": 64,
+      "unique_chunk_count": 64,
+      "document_fingerprint": "f13e90c7916eab8438737a594074e1047f4572dd1463be877de845dccb45aa39"
+    },
+    {
+      "source": "Introduction to Probability and Statistics with R (IPSUR).pdf",
+      "point_count": 972,
+      "unique_chunk_count": 972,
+      "document_fingerprint": "6f1707dbbcdec5f7905fc7c70d8e993c45ddb144864b28f72ad1957afe573a0d"
+    },
+    {
+      "source": "Introduction to Random Graphs - Slides - 2015 (Slides_TomaszLuczak1).pdf",
+      "point_count": 69,
+      "unique_chunk_count": 69,
+      "document_fingerprint": "248a0298e847f96a033da901d8d6f464c3988a3d724cedc990ccfe4e66b8dc4f"
+    },
+    {
+      "source": "Introduction to x64 Assembly.pdf",
+      "point_count": 33,
+      "unique_chunk_count": 33,
+      "document_fingerprint": "30550d83793e996964709436aeceff444725b4c6cdbbe03cfc0824dac96fd21e"
+    },
+    {
+      "source": "Investigation of Hardware Transactional Memory - 2015 (Andrew-Nguyen-Thesis).pdf",
+      "point_count": 84,
+      "unique_chunk_count": 84,
+      "document_fingerprint": "849cd2f39275ad26089ebceeea2e84d8cd10351de1f63098dadfd8370cc5c510"
+    },
+    {
+      "source": "Itanium - A System Implementor's Tale (2005).pdf",
+      "point_count": 83,
+      "unique_chunk_count": 83,
+      "document_fingerprint": "a4bd5b8d18cc86195087115aaa2ed6ac73486e4a6c92df6b2852aa3700c3bc73"
+    },
+    {
+      "source": "concepts__cluster-administration__logging.pdf",
+      "point_count": 22,
+      "unique_chunk_count": 22,
+      "document_fingerprint": "9336e74fd2148c9b12029fa72422058f8db901f6dcbafc50ded8d939c24e131e"
+    },
+    {
+      "source": "concepts__cluster-administration__monitoring.docx",
+      "point_count": 15,
+      "unique_chunk_count": 15,
+      "document_fingerprint": "ad87d05f1fdbf3f74fb811c252d87975d9517b41e4262ba465eb22775bc9cdff"
+    },
+    {
+      "source": "concepts__configuration__configmap.html",
+      "point_count": 15,
+      "unique_chunk_count": 15,
+      "document_fingerprint": "2fd662775c25264e46196f24ffec2843fa8732b510f8427507a5a36ca4d4c5ac"
+    },
+    {
+      "source": "concepts__configuration__secret.txt",
+      "point_count": 33,
+      "unique_chunk_count": 33,
+      "document_fingerprint": "de245e4974d956c582b99679e493dbc0e146f1556ffe256ea1a7de2c737a2ca9"
+    },
+    {
+      "source": "concepts__overview__components.pdf",
+      "point_count": 4,
+      "unique_chunk_count": 4,
+      "document_fingerprint": "5feabd446f19a4a45c7abd4515f512341e2ed9b4c6fd443ed7febc32e17fbe9d"
+    },
+    {
+      "source": "concepts__overview__what-is-kubernetes.docx",
+      "point_count": 12,
+      "unique_chunk_count": 12,
+      "document_fingerprint": "4d8475ed0b171ecc1f64ebfc6a9aab64ca4912ffeea64dbea2fc942d4101e98c"
+    },
+    {
+      "source": "concepts__policy__limit-range.html",
+      "point_count": 8,
+      "unique_chunk_count": 8,
+      "document_fingerprint": "a78c5e1a2245ea2c4b6508ec9c96f9330ec8bcfbdd0f01c7df0a451949139b1b"
+    },
+    {
+      "source": "concepts__policy__resource-quotas.txt",
+      "point_count": 29,
+      "unique_chunk_count": 29,
+      "document_fingerprint": "f5ac9aceea1081a881d64e1f988184ec1b0f05810f955e81205436e06f3df86c"
+    },
+    {
+      "source": "concepts__scheduling-eviction__kube-scheduler.pdf",
+      "point_count": 6,
+      "unique_chunk_count": 6,
+      "document_fingerprint": "655d324301c5b647f27261d945106e9662fd4ca4d0880ad9ff72928be2867f1e"
+    },
+    {
+      "source": "concepts__scheduling-eviction__node-pressure-eviction.docx",
+      "point_count": 27,
+      "unique_chunk_count": 27,
+      "document_fingerprint": "1047f49660e6cf042b28c27ed5be1ce9892280f5e485258b339403e3cde90ad3"
+    },
+    {
+      "source": "concepts__scheduling-eviction__pod-priority-preemption.html",
+      "point_count": 18,
+      "unique_chunk_count": 18,
+      "document_fingerprint": "a30bda04a3a94a03b6e8f23726db2ea9417323d7241229accb71171605c6c442"
+    },
+    {
+      "source": "concepts__security__overview.txt",
+      "point_count": 7,
+      "unique_chunk_count": 7,
+      "document_fingerprint": "0874c5496f9a3c7d7896274df27404f2c0aaca9819ef8e63ee73e50e49c6afff"
+    },
+    {
+      "source": "concepts__security__rbac-good-practices.pdf",
+      "point_count": 14,
+      "unique_chunk_count": 14,
+      "document_fingerprint": "4761586b787ba83cee45f8dbe27e097028f52a558e9428d61cb7cd63c59963d2"
+    },
+    {
+      "source": "concepts__services-networking__ingress.docx",
+      "point_count": 27,
+      "unique_chunk_count": 27,
+      "document_fingerprint": "32f4ff75fb4ec87d06f128634bdb1b4a4799d5c6a16ec01f7af968c73da9adc1"
+    },
+    {
+      "source": "concepts__services-networking__network-policies.html",
+      "point_count": 25,
+      "unique_chunk_count": 25,
+      "document_fingerprint": "68abb66a1bb67bff10f4de95fd5c9ea4ceb91f9e900db9220cc19196137e0593"
+    },
+    {
+      "source": "concepts__services-networking__service.txt",
+      "point_count": 44,
+      "unique_chunk_count": 44,
+      "document_fingerprint": "1a824702a630ab2a1dd31c23241c4e90ba154a12345777b7710a28f06d97138e"
+    },
+    {
+      "source": "concepts__storage__persistent-volumes.pdf",
+      "point_count": 61,
+      "unique_chunk_count": 61,
+      "document_fingerprint": "d7671a18795717441e05a7a019f0931f80ae4a69f96f5a9130826dd9fd5d386d"
+    },
+    {
+      "source": "concepts__storage__storage-classes.docx",
+      "point_count": 24,
+      "unique_chunk_count": 24,
+      "document_fingerprint": "807407b2543f13fd551eb77b2527b3543b546754916db272b5c21e300160a542"
+    },
+    {
+      "source": "concepts__workloads__controllers__daemonset.html",
+      "point_count": 14,
+      "unique_chunk_count": 14,
+      "document_fingerprint": "c4a9ffb607244bc887442a1713ede7b4b98ab71ec849a8f5df7b8c3b525e36ed"
+    },
+    {
+      "source": "concepts__workloads__controllers__deployment.txt",
+      "point_count": 55,
+      "unique_chunk_count": 55,
+      "document_fingerprint": "7c717f02befa92931aaf69bd641a44b7a3041dd08b66e22ddc46ee64e475cfdd"
+    },
+    {
+      "source": "concepts__workloads__controllers__job.pdf",
+      "point_count": 71,
+      "unique_chunk_count": 71,
+      "document_fingerprint": "c88de373ef1c681f982de5ef767d4400ed5c74f2c4880fd60f796ee366ba4ff4"
+    },
+    {
+      "source": "concepts__workloads__controllers__statefulset.docx",
+      "point_count": 27,
+      "unique_chunk_count": 27,
+      "document_fingerprint": "08112bd7ed40544b4da68354399de9fd9e3e8e8f50327f62faf9c50b10a313af"
+    },
+    {
+      "source": "concepts__workloads__pods.html",
+      "point_count": 24,
+      "unique_chunk_count": 24,
+      "document_fingerprint": "41521298bd848c38dd13d31ec0afdac05e8dc65b35d0f4afcd73b282df1c9ba1"
+    },
+    {
+      "source": "cuda-debugging.pdf",
+      "point_count": 28,
+      "unique_chunk_count": 28,
+      "document_fingerprint": "ae0fff00c360b8b7e866d04fbe92c26b956c918b0cb9c48c7c53f6c8788ac11f"
+    },
+    {
+      "source": "deploy_admin_upload_test.md",
+      "point_count": 1,
+      "unique_chunk_count": 1,
+      "document_fingerprint": "fe491efffe062db1ff6dceae7bd8a844a454da64270586c632dcb7b81070559e"
+    },
+    {
+      "source": "iSAX 2.0 - Indexing and Mining One Billion Time Series.pdf",
+      "point_count": 71,
+      "unique_chunk_count": 71,
+      "document_fingerprint": "ca10a75da0a07f7ae9af1375ab3e0d12f2d84d975d69752ac69eb06a559f2003"
+    },
+    {
+      "source": "incident-response-runbook.html",
+      "point_count": 1,
+      "unique_chunk_count": 1,
+      "document_fingerprint": "8b79e24b56fc2b14656d1ddb19ad4e891c75f493cae1043fa7b38df8aadf309f"
+    },
+    {
+      "source": "ispc - A SPMD Compiler for High-Performance CPU Programming (ispc_inpar_2012).pdf",
+      "point_count": 91,
+      "unique_chunk_count": 91,
+      "document_fingerprint": "e3d1cba52fd48a53488291ca8d76cb941bce0e49cab92ef57b956472bf2be75f"
+    },
+    {
+      "source": "oncall-escalation-policy.html",
+      "point_count": 1,
+      "unique_chunk_count": 1,
+      "document_fingerprint": "7d95cc7ff35a82ddb4eca44f11f98374c5f504a76da22f5c4e63176f8dca945a"
+    },
+    {
+      "source": "reference__kubectl__cheatsheet.txt",
+      "point_count": 26,
+      "unique_chunk_count": 26,
+      "document_fingerprint": "b2a44a903a29817293e834f348e9cbc21209aad0cdc61b3d46e1d22d974c5e00"
+    },
+    {
+      "source": "reference__kubectl__overview.pdf",
+      "point_count": 31,
+      "unique_chunk_count": 31,
+      "document_fingerprint": "2ba24c3c614d85c80691c00a94665f80751b449a4293861c17867637d9c310df"
+    },
+    {
+      "source": "reference__kubernetes-api__authentication-resources__service-account-v1.docx",
+      "point_count": 9,
+      "unique_chunk_count": 9,
+      "document_fingerprint": "fe3d607f42d970e87e85240fb4108e6de96fc2a6ed9e82eed930c4f8088fa719"
+    },
+    {
+      "source": "reference__kubernetes-api__config-and-storage-resources__config-map-v1.html",
+      "point_count": 8,
+      "unique_chunk_count": 8,
+      "document_fingerprint": "423ab57bb79f7afcb63c2eeb31a2e85156ba044059eeb22ed7c74554fd6cd9e6"
+    },
+    {
+      "source": "reference__kubernetes-api__service-resources__service-v1.txt",
+      "point_count": 34,
+      "unique_chunk_count": 34,
+      "document_fingerprint": "b81ebd27be68d2a1d5ffbd9a5525581bf471c3ad5cc28ee62c5353a68d55af99"
+    },
+    {
+      "source": "reference__kubernetes-api__workload-resources__deployment-v1.pdf",
+      "point_count": 17,
+      "unique_chunk_count": 17,
+      "document_fingerprint": "7b07e651948237cd6246bcca17f562de14a58187723a2f783f01e5cc7b5a8fe9"
+    },
+    {
+      "source": "reference__kubernetes-api__workload-resources__pod-v1.docx",
+      "point_count": 230,
+      "unique_chunk_count": 230,
+      "document_fingerprint": "78507bf15073ebdb163ec31c482aea98521ac28e8448f41a1a721c32ac5e4354"
+    },
+    {
+      "source": "tasks__access-application-cluster__web-ui-dashboard.html",
+      "point_count": 13,
+      "unique_chunk_count": 13,
+      "document_fingerprint": "f6e17ea760e9c84f6fbe4a6746aa97a670fa443458059b907ddf74261b1369d4"
+    },
+    {
+      "source": "tasks__administer-cluster__manage-resources__quota-memory-cpu-namespace.txt",
+      "point_count": 7,
+      "unique_chunk_count": 7,
+      "document_fingerprint": "1d7f30b6b0ba0671c34f77157a3c514b94f8524bb7a06faa927c25e3e04863de"
+    },
+    {
+      "source": "tasks__administer-cluster__namespaces-walkthrough.pdf",
+      "point_count": 11,
+      "unique_chunk_count": 11,
+      "document_fingerprint": "80ec8cb83422a0110d102a0030af0f8bff860533dcad5aeb72e6119f6459e67e"
+    },
+    {
+      "source": "tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx",
+      "point_count": 15,
+      "unique_chunk_count": 15,
+      "document_fingerprint": "39e884a5b28741328d6bbd991f9b229df0be31342b30abe389e63ad1652fab87"
+    },
+    {
+      "source": "tasks__configure-pod-container__configure-pod-configmap.html",
+      "point_count": 32,
+      "unique_chunk_count": 32,
+      "document_fingerprint": "8f6cae6b639f66cf4837d351dedbeaa86e5144f6cafdfc45901e9e5be4833435"
+    },
+    {
+      "source": "tasks__configure-pod-container__configure-service-account.txt",
+      "point_count": 21,
+      "unique_chunk_count": 21,
+      "document_fingerprint": "070bdeb69993e7a9b9d13372163c622ce59cdfb6a76b6f0780e6435f66ccfae4"
+    },
+    {
+      "source": "tasks__run-application__run-single-instance-stateful-application.pdf",
+      "point_count": 11,
+      "unique_chunk_count": 11,
+      "document_fingerprint": "39ba838928f6160da60556cfc08c49a181d5e4e0fed30a94d3e8db58532bef33"
+    },
+    {
+      "source": "tasks__run-application__run-stateless-application-deployment.docx",
+      "point_count": 6,
+      "unique_chunk_count": 6,
+      "document_fingerprint": "14994c7d1c8901478c56b1c6d8cb94de414e7decfacb7dec453e35ecf74070b8"
+    },
+    {
+      "source": "tutorials__kubernetes-basics.html",
+      "point_count": 3,
+      "unique_chunk_count": 3,
+      "document_fingerprint": "b21a9c1d5e7180c66ac6e528638f3ca1e5623f58c2e88d8c934c137beffb2f58"
+    },
+    {
+      "source": "tutorials__kubernetes-basics__deploy-app__deploy-intro.txt",
+      "point_count": 9,
+      "unique_chunk_count": 9,
+      "document_fingerprint": "0173ea34b8cbe1b51fcf9d4ff5f9fb5c94d833e1be73d71a39f947a1b22457a7"
+    },
+    {
+      "source": "tutorials__kubernetes-basics__explore__explore-intro.pdf",
+      "point_count": 9,
+      "unique_chunk_count": 9,
+      "document_fingerprint": "16a66bb37789689ddb9d56b8654c293ea946a273c65192aa8af660e1ef13607e"
+    },
+    {
+      "source": "tutorials__kubernetes-basics__expose__expose-intro.docx",
+      "point_count": 10,
+      "unique_chunk_count": 10,
+      "document_fingerprint": "96be279279445fb89e503f62e952c4c0fff48df4a53bf1f9579f4920a6bf58ae"
+    },
+    {
+      "source": "tutorials__kubernetes-basics__scale__scale-intro.html",
+      "point_count": 8,
+      "unique_chunk_count": 8,
+      "document_fingerprint": "526bf1871367ea130c75cb649b86ba2b20d31ff9ff5f608157c067b450463605"
+    },
+    {
+      "source": "tutorials__kubernetes-basics__update__update-intro.txt",
+      "point_count": 7,
+      "unique_chunk_count": 7,
+      "document_fingerprint": "948b6a91c7dcedde576845f6dcc1b5c70483e83defd31d10c3cc6f36d5043a86"
+    },
+    {
+      "source": "tutorials__security__cluster-level-pss.pdf",
+      "point_count": 16,
+      "unique_chunk_count": 16,
+      "document_fingerprint": "637ca7cf7fe385c4c1b649187ac201b16c8f984343a77590c3d69b1d18f2e3cc"
+    },
+    {
+      "source": "tutorials__services__connect-applications-service.docx",
+      "point_count": 19,
+      "unique_chunk_count": 19,
+      "document_fingerprint": "6e236633108b0aed6f33fd9a43ec46077ba7e46ab6b656e850f2f36a1052d2e2"
+    },
+    {
+      "source": "tutorials__stateful-application__basic-stateful-set.html",
+      "point_count": 43,
+      "unique_chunk_count": 43,
+      "document_fingerprint": "8d3103d121b628c1debc52c2eaeb7933d3e2a7c91a2a7e6583dce1779026b3e3"
+    }
+  ],
+  "limitations": [
+    "Qdrant stores source and text but no document content hash in this collection.",
+    "Identical source/text chunks overwrite by deterministic point ID, so original upload counts cannot be reconstructed exactly."
+  ]
+}

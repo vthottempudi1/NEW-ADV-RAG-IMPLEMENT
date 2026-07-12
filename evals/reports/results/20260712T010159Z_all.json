@@ -1,0 +1,426 @@
+{
+  "profile": "all",
+  "flags": {
+    "search_mode": "hybrid",
+    "enable_hyde": true,
+    "enable_rerank": true,
+    "enable_crag": true,
+    "enable_self_reflective": true,
+    "top_k": 5
+  },
+  "timestamp_utc": "2026-07-12T01:01:59.922251Z",
+  "filter": null,
+  "mode": "http",
+  "scorer": "llm",
+  "preflight": null,
+  "provenance": {
+    "git_commit": "fa69186a74a659f9b00454f7e13f545e5bcecba8",
+    "environment": "passage-diversity-post-fix",
+    "collection": "new_adv_rag_documents",
+    "true_documents": 50,
+    "noisy_documents": 324,
+    "total_points": null,
+    "unique_sources": null,
+    "embedding_model": "text-embedding-3-small",
+    "answer_model": "gpt-4o",
+    "grader_model": "gpt-4o-mini",
+    "ci_run_id": null
+  },
+  "rows": [
+    {
+      "id": "q-202",
+      "demonstrates_feature": "hyde",
+      "intent": "rag",
+      "question": "We need a security agent on every GPU worker but nowhere else. Which controller and scheduling constraint should we use?",
+      "answer": "The provided context does not contain specific information about Kubernetes controller configurations or scheduling constraints for deploying a security agent specifically on GPU worker nodes. The document discusses a Job configuration with GPU resource limits, but it does not address security agent deployment or node selection constraints.",
+      "contexts": [
+        "[Evidence source: concepts__workloads__controllers__job.pdf]\nd: Job metadata: name: distributed-training namespace: training spec: parallelism: 8 completions: 8 completionMode: Indexed template: spec: restartPolicy: Never containers: - name: trainer image: training-image:latest resources: limits: nvidia.com/gpu: 1 When the Job controller processes this Job, it automatically:Creates a Workload object in the same namespace. The Workload contains a podGroupTemplate with a gang scheduling policy where minCount equals the Job's parallelism.Creates a PodGroup object based on that template. The PodGroup is a standalone runtime scheduling unit that carries an inline copy of the gang policy.Creates Pods with spec.schedulingGroup.podGroupName set to the PodGroup name, linking each Pod to its scheduling group.Discovery of these objects is based on spec references (controllerRef and podGroupTemplateRef).The Workload and PodGroup are owned by the Job (via ownerReferences) and are"
+      ],
+      "ground_truth": "Use a DaemonSet so Kubernetes maintains one agent Pod on each eligible node. Add a node selector, node affinity, or equivalent node-label constraint matching GPU workers so other nodes are not eligible for the DaemonSet Pods.\n",
+      "actual_sources": [
+        "concepts__workloads__controllers__job.pdf"
+      ],
+      "golden_sources": [
+        "concepts__workloads__controllers__daemonset.html"
+      ],
+      "forbidden_keywords": [],
+      "forbidden_sources": [],
+      "expected_route": "rag",
+      "actual_route": "rag",
+      "ragas_metrics": {
+        "id": "q-202",
+        "demonstrates_feature": "hyde",
+        "intent": "rag",
+        "question": "We need a security agent on every GPU worker but nowhere else. Which controller and scheduling constraint should we use?",
+        "answer": "The provided context does not contain specific information about Kubernetes controller configurations or scheduling constraints for deploying a security agent specifically on GPU worker nodes. The document discusses a Job configuration with GPU resource limits, but it does not address security agent deployment or node selection constraints.",
+        "contexts": [
+          "[Evidence source: concepts__workloads__controllers__job.pdf]\nd: Job metadata: name: distributed-training namespace: training spec: parallelism: 8 completions: 8 completionMode: Indexed template: spec: restartPolicy: Never containers: - name: trainer image: training-image:latest resources: limits: nvidia.com/gpu: 1 When the Job controller processes this Job, it automatically:Creates a Workload object in the same namespace. The Workload contains a podGroupTemplate with a gang scheduling policy where minCount equals the Job's parallelism.Creates a PodGroup object based on that template. The PodGroup is a standalone runtime scheduling unit that carries an inline copy of the gang policy.Creates Pods with spec.schedulingGroup.podGroupName set to the PodGroup name, linking each Pod to its scheduling group.Discovery of these objects is based on spec references (controllerRef and podGroupTemplateRef).The Workload and PodGroup are owned by the Job (via ownerReferences) and are"
+        ],
+        "ground_truth": "Use a DaemonSet so Kubernetes maintains one agent Pod on each eligible node. Add a node selector, node affinity, or equivalent node-label constraint matching GPU workers so other nodes are not eligible for the DaemonSet Pods.\n",
+        "actual_sources": [
+          "concepts__workloads__controllers__job.pdf"
+        ],
+        "golden_sources": [
+          "concepts__workloads__controllers__daemonset.html"
+        ],
+        "forbidden_keywords": [],
+        "forbidden_sources": [],
+        "expected_route": "rag",
+        "actual_route": "rag",
+        "faithfulness": 0.3333333333333333,
+        "answer_relevancy": 0.2,
+        "context_precision": 1.0,
+        "context_recall": 0,
+        "scoring_backend": "llm"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 0.0,
+        "matched": [],
+        "missed": [
+          "concepts__workloads__controllers__daemonset"
+        ]
+      },
+      "source_precision": 0.0,
+      "source_recall": 0.0,
+      "forbidden_source_check": {
+        "passed": true,
+        "hits": []
+      },
+      "route_check": {
+        "passed": true,
+        "expected": "rag",
+        "actual": "rag"
+      }
+    },
+    {
+      "id": "q-203",
+      "demonstrates_feature": "hybrid",
+      "intent": "rag",
+      "question": "A Pod needs one database credential and permission to read only that Secret. Describe the identity and authorization design.",
+      "answer": "To ensure that a Pod has access to only one specific Secret containing a database credential, you should follow these steps: 1. Create a ServiceAccount specifically for the Pod that requires access to the Secret. 2. Use Role-Based Access Control (RBAC) to create a Role that grants read access to the specific Secret. 3. Bind the Role to the ServiceAccount using a RoleBinding. 4. Configure the Pod to use the ServiceAccount by setting the `serviceAccountName` field in the Pod specification. This setup ensures that only the Pod using the specified ServiceAccount can access the Secret, adhering to the principle of least privilege.",
+      "contexts": [
+        "[Evidence source: concepts__configuration__secret.txt]\naccess can retrieve or modify a Secret, and so can anyone with access to etcd. Additionally, anyone who is authorized to create a Pod in a namespace can use that access to read any Secret in that namespace; this includes indirect access such as the ability to create a Deployment.In order to safely use Secrets, take at least the following steps:Enable Encryption at Rest for Secrets.Enable or configure RBAC rules with least-privilege access to Secrets.Restrict Secret access to specific containers.Consider using external Secret store providers.For more guidelines to manage and improve the security of your Secrets, refer to Good practices for Kubernetes Secrets.See Information security for Secrets for more details.Uses for SecretsYou can use Secrets for purposes such as the following:Set environment variables for a container.Provide credentials such as SSH keys or passwords to Pods.Allow the kubelet to pull container images from private registries.The Kubernetes control plane also uses Se",
+        "[Evidence source: tasks__configure-pod-container__configure-service-account.txt]\nials on /var/run/secrets/kubernetes.io/serviceaccount/token for a service account by setting automountServiceAccountToken: false on the ServiceAccount:For example:apiVersion: v1 kind: ServiceAccount metadata: name: build-robot automountServiceAccountToken: false ... You can also opt out of automounting API credentials for a particular Pod:apiVersion: v1 kind: Pod metadata: name: my-pod spec: serviceAccountName: build-robot automountServiceAccountToken: false ... If both the ServiceAccount and the Pod's .spec specify a value for automountServiceAccountToken, the Pod spec takes precedence.Use more than one ServiceAccountEvery namespace has at least one ServiceAccount: the default ServiceAccount resource, called default. You can list all ServiceAccount resources in your current namespace with:kubectl get serviceaccounts The output is similar to this:NAME SECRETS AGE default 1 1d You can create additional ServiceAccount objects like this:kubectl apply -f - <<EOF apiVersion: v1 kind: Servic",
+        "[Evidence source: concepts__configuration__secret.txt]\nomatically invalidated when the Pod that it's mounted in is deleted. For details, see Launch a Pod using service account token projection.Note:You should only create a ServiceAccount token Secret if you can't use the TokenRequest API to obtain a token, and the security exposure of persisting a non-expiring token credential in a readable API object is acceptable to you. For instructions, see Manually create a long-lived API token for a ServiceAccount.When using this Secret type, you need to ensure that the kubernetes.io/service-account.name annotation is set to an existing ServiceAccount name. If you are creating both the ServiceAccount and the Secret objects, you should create the ServiceAccount object first.After the Secret is created, a Kubernetes controller fills in some other fields such as the kubernetes.io/service-account.uid annotation, and the token key in the data field, which is populated with an authentication token.The following example configuration declares a ServiceAccou"
+      ],
+      "ground_truth": "Store the credential in a Secret, assign the Pod a dedicated ServiceAccount using serviceAccountName, and bind a namespace-scoped Role that grants only the required get access to that specific Secret. Avoid broad Secret listing, cluster-wide bindings, and the default account.\n",
+      "actual_sources": [
+        "concepts__configuration__secret.txt",
+        "tasks__configure-pod-container__configure-service-account.txt"
+      ],
+      "golden_sources": [
+        "concepts__configuration__secret.txt",
+        "tasks__configure-pod-container__configure-service-account.txt",
+        "concepts__security__rbac-good-practices.pdf"
+      ],
+      "forbidden_keywords": [],
+      "forbidden_sources": [],
+      "expected_route": "rag",
+      "actual_route": "rag",
+      "ragas_metrics": {
+        "id": "q-203",
+        "demonstrates_feature": "hybrid",
+        "intent": "rag",
+        "question": "A Pod needs one database credential and permission to read only that Secret. Describe the identity and authorization design.",
+        "answer": "To ensure that a Pod has access to only one specific Secret containing a database credential, you should follow these steps: 1. Create a ServiceAccount specifically for the Pod that requires access to the Secret. 2. Use Role-Based Access Control (RBAC) to create a Role that grants read access to the specific Secret. 3. Bind the Role to the ServiceAccount using a RoleBinding. 4. Configure the Pod to use the ServiceAccount by setting the `serviceAccountName` field in the Pod specification. This setup ensures that only the Pod using the specified ServiceAccount can access the Secret, adhering to the principle of least privilege.",
+        "contexts": [
+          "[Evidence source: concepts__configuration__secret.txt]\naccess can retrieve or modify a Secret, and so can anyone with access to etcd. Additionally, anyone who is authorized to create a Pod in a namespace can use that access to read any Secret in that namespace; this includes indirect access such as the ability to create a Deployment.In order to safely use Secrets, take at least the following steps:Enable Encryption at Rest for Secrets.Enable or configure RBAC rules with least-privilege access to Secrets.Restrict Secret access to specific containers.Consider using external Secret store providers.For more guidelines to manage and improve the security of your Secrets, refer to Good practices for Kubernetes Secrets.See Information security for Secrets for more details.Uses for SecretsYou can use Secrets for purposes such as the following:Set environment variables for a container.Provide credentials such as SSH keys or passwords to Pods.Allow the kubelet to pull container images from private registries.The Kubernetes control plane also uses Se",
+          "[Evidence source: tasks__configure-pod-container__configure-service-account.txt]\nials on /var/run/secrets/kubernetes.io/serviceaccount/token for a service account by setting automountServiceAccountToken: false on the ServiceAccount:For example:apiVersion: v1 kind: ServiceAccount metadata: name: build-robot automountServiceAccountToken: false ... You can also opt out of automounting API credentials for a particular Pod:apiVersion: v1 kind: Pod metadata: name: my-pod spec: serviceAccountName: build-robot automountServiceAccountToken: false ... If both the ServiceAccount and the Pod's .spec specify a value for automountServiceAccountToken, the Pod spec takes precedence.Use more than one ServiceAccountEvery namespace has at least one ServiceAccount: the default ServiceAccount resource, called default. You can list all ServiceAccount resources in your current namespace with:kubectl get serviceaccounts The output is similar to this:NAME SECRETS AGE default 1 1d You can create additional ServiceAccount objects like this:kubectl apply -f - <<EOF apiVersion: v1 kind: Servic",
+          "[Evidence source: concepts__configuration__secret.txt]\nomatically invalidated when the Pod that it's mounted in is deleted. For details, see Launch a Pod using service account token projection.Note:You should only create a ServiceAccount token Secret if you can't use the TokenRequest API to obtain a token, and the security exposure of persisting a non-expiring token credential in a readable API object is acceptable to you. For instructions, see Manually create a long-lived API token for a ServiceAccount.When using this Secret type, you need to ensure that the kubernetes.io/service-account.name annotation is set to an existing ServiceAccount name. If you are creating both the ServiceAccount and the Secret objects, you should create the ServiceAccount object first.After the Secret is created, a Kubernetes controller fills in some other fields such as the kubernetes.io/service-account.uid annotation, and the token key in the data field, which is populated with an authentication token.The following example configuration declares a ServiceAccou"
+        ],
+        "ground_truth": "Store the credential in a Secret, assign the Pod a dedicated ServiceAccount using serviceAccountName, and bind a namespace-scoped Role that grants only the required get access to that specific Secret. Avoid broad Secret listing, cluster-wide bindings, and the default account.\n",
+        "actual_sources": [
+          "concepts__configuration__secret.txt",
+          "tasks__configure-pod-container__configure-service-account.txt"
+        ],
+        "golden_sources": [
+          "concepts__configuration__secret.txt",
+          "tasks__configure-pod-container__configure-service-account.txt",
+          "concepts__security__rbac-good-practices.pdf"
+        ],
+        "forbidden_keywords": [],
+        "forbidden_sources": [],
+        "expected_route": "rag",
+        "actual_route": "rag",
+        "faithfulness": 0,
+        "answer_relevancy": 1.0,
+        "context_precision": 1.0,
+        "context_recall": 1,
+        "scoring_backend": "llm"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 0.667,
+        "matched": [
+          "concepts__configuration__secret",
+          "configure-service-account",
+          "secret",
+          "tasks__configure-pod-container__configure-service-account"
+        ],
+        "missed": [
+          "concepts__security__rbac-good-practices"
+        ]
+      },
+      "source_precision": 1.0,
+      "source_recall": 0.667,
+      "forbidden_source_check": {
+        "passed": true,
+        "hits": []
+      },
+      "route_check": {
+        "passed": true,
+        "expected": "rag",
+        "actual": "rag"
+      }
+    },
+    {
+      "id": "q-204",
+      "demonstrates_feature": "hybrid",
+      "intent": "rag",
+      "question": "Trace an external HTTPS request from the cluster edge to a ready application Pod and name the Kubernetes abstractions involved.",
+      "answer": "An external HTTPS request to a ready application Pod involves several Kubernetes abstractions: 1. Ingress: The request first hits the Ingress, which manages external access to services within the cluster. 2. Service: The Ingress routes the request to a Service, which acts as a stable endpoint and load balancer for the Pods. 3. Endpoint: The Service forwards the request to an Endpoint, which is a specific Pod IP and port combination. 4. Pod: Finally, the request reaches the Pod, where the readiness probe has confirmed that the application is ready to receive traffic.",
+      "contexts": [
+        "[Evidence source: tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx]\ncases, you don't want to kill the application, but you don't want to send it requests either. Kubernetes provides readiness probes to detect and mitigate these situations. A pod with containers reporting that they are not ready does not receive traffic through Kubernetes Services.Note:Readiness probes run on the container during its whole lifecycle.Caution:The readiness and liveness probes do not depend on each other to succeed. If you want to wait before executing a readiness probe, you should use initialDelaySeconds or a startupProbe.Readiness probes are configured similarly to liveness probes. The only difference is that you use the readinessProbe field instead of the livenessProbe field.readinessProbe: exec: command: - cat - /tmp/healthy initialDelaySeconds: 5 periodSeconds: 5 Configuration for HTTP and TCP readiness probes also remains identical to liveness probes.Readiness and liveness probes can be used in parallel for the same container. Using both can ensure that traffic does",
+        "[Evidence source: tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx]\ns, the Pod will be marked as ready and will receive traffic from services. If the readiness probe fails, the pod will be marked unready and will not receive traffic from any services.To try the TCP liveness check, create a Pod:kubectl apply -f https://k8s.io/examples/pods/probe/tcp-liveness-readiness.yaml After 15 seconds, view Pod events to verify that liveness probes:kubectl describe pod goproxy Define a gRPC liveness probeFEATURE STATE: Kubernetes v1.27 [stable]If your application implements the gRPC Health Checking Protocol, this example shows how to configure Kubernetes to use it for application liveness checks. Similarly you can configure readiness and startup probes.Here is an example manifest:pods/probe/grpc-liveness.yaml apiVersion: v1 kind: Pod metadata: name: etcd-with-grpc spec: containers: - name: etcd image: registry.k8s.io/etcd:3.5.1-0 command: [ \"/usr/local/bin/etcd\", \"--data-dir\", \"/var/lib/etcd\", \"--listen-client-urls\", \"http://0.0.0.0:2379\", \"--advertise-client-urls\""
+      ],
+      "ground_truth": "An Ingress controller evaluates the Ingress HTTPS routing rule and forwards the request to a Service. The Service provides stable discovery and routes to its current endpoints. Readiness probes determine which Pods are ready and therefore eligible to receive Service traffic.\n",
+      "actual_sources": [
+        "tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx"
+      ],
+      "golden_sources": [
+        "concepts__services-networking__ingress.docx",
+        "concepts__services-networking__service.txt",
+        "tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx"
+      ],
+      "forbidden_keywords": [],
+      "forbidden_sources": [],
+      "expected_route": "rag",
+      "actual_route": "rag",
+      "ragas_metrics": {
+        "id": "q-204",
+        "demonstrates_feature": "hybrid",
+        "intent": "rag",
+        "question": "Trace an external HTTPS request from the cluster edge to a ready application Pod and name the Kubernetes abstractions involved.",
+        "answer": "An external HTTPS request to a ready application Pod involves several Kubernetes abstractions: 1. Ingress: The request first hits the Ingress, which manages external access to services within the cluster. 2. Service: The Ingress routes the request to a Service, which acts as a stable endpoint and load balancer for the Pods. 3. Endpoint: The Service forwards the request to an Endpoint, which is a specific Pod IP and port combination. 4. Pod: Finally, the request reaches the Pod, where the readiness probe has confirmed that the application is ready to receive traffic.",
+        "contexts": [
+          "[Evidence source: tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx]\ncases, you don't want to kill the application, but you don't want to send it requests either. Kubernetes provides readiness probes to detect and mitigate these situations. A pod with containers reporting that they are not ready does not receive traffic through Kubernetes Services.Note:Readiness probes run on the container during its whole lifecycle.Caution:The readiness and liveness probes do not depend on each other to succeed. If you want to wait before executing a readiness probe, you should use initialDelaySeconds or a startupProbe.Readiness probes are configured similarly to liveness probes. The only difference is that you use the readinessProbe field instead of the livenessProbe field.readinessProbe: exec: command: - cat - /tmp/healthy initialDelaySeconds: 5 periodSeconds: 5 Configuration for HTTP and TCP readiness probes also remains identical to liveness probes.Readiness and liveness probes can be used in parallel for the same container. Using both can ensure that traffic does",
+          "[Evidence source: tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx]\ns, the Pod will be marked as ready and will receive traffic from services. If the readiness probe fails, the pod will be marked unready and will not receive traffic from any services.To try the TCP liveness check, create a Pod:kubectl apply -f https://k8s.io/examples/pods/probe/tcp-liveness-readiness.yaml After 15 seconds, view Pod events to verify that liveness probes:kubectl describe pod goproxy Define a gRPC liveness probeFEATURE STATE: Kubernetes v1.27 [stable]If your application implements the gRPC Health Checking Protocol, this example shows how to configure Kubernetes to use it for application liveness checks. Similarly you can configure readiness and startup probes.Here is an example manifest:pods/probe/grpc-liveness.yaml apiVersion: v1 kind: Pod metadata: name: etcd-with-grpc spec: containers: - name: etcd image: registry.k8s.io/etcd:3.5.1-0 command: [ \"/usr/local/bin/etcd\", \"--data-dir\", \"/var/lib/etcd\", \"--listen-client-urls\", \"http://0.0.0.0:2379\", \"--advertise-client-urls\""
+        ],
+        "ground_truth": "An Ingress controller evaluates the Ingress HTTPS routing rule and forwards the request to a Service. The Service provides stable discovery and routes to its current endpoints. Readiness probes determine which Pods are ready and therefore eligible to receive Service traffic.\n",
+        "actual_sources": [
+          "tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx"
+        ],
+        "golden_sources": [
+          "concepts__services-networking__ingress.docx",
+          "concepts__services-networking__service.txt",
+          "tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx"
+        ],
+        "forbidden_keywords": [],
+        "forbidden_sources": [],
+        "expected_route": "rag",
+        "actual_route": "rag",
+        "faithfulness": 0,
+        "answer_relevancy": 1.0,
+        "context_precision": 1.0,
+        "context_recall": 1,
+        "scoring_backend": "llm"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 0.333,
+        "matched": [
+          "configure-liveness-readiness-startup-probe",
+          "configure-liveness-readiness-startup-probes",
+          "tasks__configure-pod-container__configure-liveness-readiness-startup-probe",
+          "tasks__configure-pod-container__configure-liveness-readiness-startup-probes"
+        ],
+        "missed": [
+          "concepts__services-networking__ingress",
+          "concepts__services-networking__service"
+        ]
+      },
+      "source_precision": 1.0,
+      "source_recall": 0.333,
+      "forbidden_source_check": {
+        "passed": true,
+        "hits": []
+      },
+      "route_check": {
+        "passed": true,
+        "expected": "rag",
+        "actual": "rag"
+      }
+    },
+    {
+      "id": "q-206",
+      "demonstrates_feature": "clarification",
+      "intent": "clarification",
+      "question": "Can you roll it back?",
+      "answer": "What resource or release do you want rolled back, which environment does it affect, what revision should it target, and do you want instructions or authorization to perform it?",
+      "contexts": [],
+      "ground_truth": "Ask what resource or release should be rolled back, which environment it affects, the desired target revision, and whether the user wants instructions or authorization to perform an action.\n",
+      "actual_sources": [],
+      "golden_sources": [],
+      "forbidden_keywords": [],
+      "forbidden_sources": [
+        ".pdf",
+        "http://",
+        "https://"
+      ],
+      "expected_route": "clarification",
+      "actual_route": "clarification",
+      "ragas_metrics": {
+        "id": "q-206",
+        "demonstrates_feature": "clarification",
+        "intent": "clarification",
+        "question": "Can you roll it back?",
+        "answer": "What resource or release do you want rolled back, which environment does it affect, what revision should it target, and do you want instructions or authorization to perform it?",
+        "contexts": [],
+        "ground_truth": "Ask what resource or release should be rolled back, which environment it affects, the desired target revision, and whether the user wants instructions or authorization to perform an action.\n",
+        "actual_sources": [],
+        "golden_sources": [],
+        "forbidden_keywords": [],
+        "forbidden_sources": [
+          ".pdf",
+          "http://",
+          "https://"
+        ],
+        "expected_route": "clarification",
+        "actual_route": "clarification",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "context_precision": 1.0,
+        "context_recall": 1.0,
+        "scoring_backend": "llm"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 0.0,
+        "matched": [],
+        "missed": []
+      },
+      "source_precision": 1.0,
+      "source_recall": null,
+      "forbidden_source_check": {
+        "passed": true,
+        "hits": []
+      },
+      "route_check": {
+        "passed": true,
+        "expected": "clarification",
+        "actual": "clarification"
+      }
+    },
+    {
+      "id": "q-212",
+      "demonstrates_feature": "hybrid",
+      "intent": "rag",
+      "question": "If I edit a ConfigMap used by running Pods, when will the application observe the new value, and what differs between a mounted file and an environment variable?",
+      "answer": "I could not find reliable evidence in the available sources to answer this question. Please provide the relevant system, document, record, or additional context.",
+      "contexts": [],
+      "ground_truth": "ConfigMap data projected into a mounted volume is updated eventually by kubelet synchronization, although an application may need to reread the file. Values injected as environment variables are fixed when the container starts, so existing containers require a restart or rollout to receive the changed value.\n",
+      "actual_sources": [],
+      "golden_sources": [
+        "concepts__configuration__configmap.html",
+        "tasks__configure-pod-container__configure-pod-configmap.html"
+      ],
+      "forbidden_keywords": [],
+      "forbidden_sources": [],
+      "expected_route": "rag",
+      "actual_route": "rag",
+      "ragas_metrics": {
+        "id": "q-212",
+        "demonstrates_feature": "hybrid",
+        "intent": "rag",
+        "question": "If I edit a ConfigMap used by running Pods, when will the application observe the new value, and what differs between a mounted file and an environment variable?",
+        "answer": "I could not find reliable evidence in the available sources to answer this question. Please provide the relevant system, document, record, or additional context.",
+        "contexts": [],
+        "ground_truth": "ConfigMap data projected into a mounted volume is updated eventually by kubelet synchronization, although an application may need to reread the file. Values injected as environment variables are fixed when the container starts, so existing containers require a restart or rollout to receive the changed value.\n",
+        "actual_sources": [],
+        "golden_sources": [
+          "concepts__configuration__configmap.html",
+          "tasks__configure-pod-container__configure-pod-configmap.html"
+        ],
+        "forbidden_keywords": [],
+        "forbidden_sources": [],
+        "expected_route": "rag",
+        "actual_route": "rag",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.0,
+        "context_precision": 0.0,
+        "context_recall": 0.0,
+        "scoring_backend": "llm"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 0.0,
+        "matched": [],
+        "missed": [
+          "concepts__configuration__configmap",
+          "tasks__configure-pod-container__configure-pod-configmap"
+        ]
+      },
+      "source_precision": 0.0,
+      "source_recall": 0.0,
+      "forbidden_source_check": {
+        "passed": true,
+        "hits": []
+      },
+      "route_check": {
+        "passed": true,
+        "expected": "rag",
+        "actual": "rag"
+      }
+    }
+  ],
+  "skipped": [],
+  "aggregate": {
+    "context_precision": 0.8,
+    "faithfulness": 0.467,
+    "answer_relevancy": 0.64,
+    "context_recall": 0.6,
+    "forbidden_violations": 0,
+    "source_precision": 0.6,
+    "source_recall": 0.25,
+    "forbidden_source_violations": 0,
+    "route_violations": 0
+  },
+  "threshold_failures": {
+    "faithfulness": {
+      "actual": 0.467,
+      "minimum": 0.8
+    },
+    "context_recall": {
+      "actual": 0.6,
+      "minimum": 0.8
+    },
+    "answer_relevancy": {
+      "actual": 0.64,
+      "minimum": 0.8
+    },
+    "source_precision": {
+      "actual": 0.6,
+      "minimum": 0.9
+    },
+    "source_recall": {
+      "actual": 0.25,
+      "minimum": 0.8
+    }
+  }
+}

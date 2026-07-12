@@ -1,0 +1,195 @@
+{
+  "profile": "all",
+  "flags": {
+    "search_mode": "hybrid",
+    "enable_hyde": true,
+    "enable_rerank": true,
+    "enable_crag": true,
+    "enable_self_reflective": true,
+    "top_k": 5
+  },
+  "timestamp_utc": "2026-07-12T18:41:35.037426Z",
+  "filter": null,
+  "mode": "http",
+  "scorer": "llm",
+  "preflight": null,
+  "provenance": {
+    "git_commit": "fa69186a74a659f9b00454f7e13f545e5bcecba8",
+    "environment": "docker-v2-challenge",
+    "collection": "new_adv_rag_documents_v2",
+    "true_documents": null,
+    "noisy_documents": null,
+    "total_points": null,
+    "unique_sources": null,
+    "embedding_model": "text-embedding-3-small",
+    "answer_model": "gpt-4o",
+    "grader_model": "gpt-4o-mini",
+    "ci_run_id": null
+  },
+  "rows": [
+    {
+      "id": "q-129",
+      "demonstrates_feature": "security",
+      "intent": "rag",
+      "question": "Use the Python memory-profiler article, not cluster docs: what should I inspect after OOMKilled?",
+      "answer": "The context does not provide specific metrics or logs from Python memory-profiler for diagnosing an OOMKilled event. However, you can inspect node memory pressure as a potential cause of OOMKilled events, as node-pressure eviction can occur when memory resources are constrained. Additionally, compare your workload's memory usage with its requests and limits to ensure they are appropriately set. Reviewing recent changes, inspecting alerts, and checking logs can also provide insights into the incident.",
+      "contexts": [
+        "[Evidence source: concepts__scheduling-eviction__node-pressure-eviction.docx]\nConcepts \u203a Scheduling-Eviction \u203a Node-Pressure-Eviction Node-pressure Eviction | Kubernetes Node-pressure EvictionNode-pressure eviction is the process by which the kubelet proactively terminates pods to reclaim resource on nodes.The kubelet monitors resources like memory, disk space, and filesystem inodes on your cluster's nodes. When one or more of these resources reach specific consumption levels, the kubelet can proactively fail one or more pods on the node to reclaim resources and prevent starvation.During a node-pressure eviction, the kubelet sets the phase for the selected pods to Failed, and terminates the Pod.Node-pressure eviction is not the same as API-initiated eviction.The kubelet does not respect your configured PodDisruptionBudget or the pod's terminationGracePeriodSeconds. If you use soft eviction thresholds, the kubelet respects your configured eviction-max-pod-grace-period. If you use hard eviction thresholds, the kubelet uses a 0s grace period (immediate shutdown) fo\n\nhe following order:BestEffort or Burstable pods where the usage exceeds requests. These pods are evicted based on their Priority and then by how much their usage level exceeds the request.Guaranteed pods and Burstable pods where the usage is less than requests are evicted last, based on their Priority.Note:The kubelet does not use the pod's QoS class to determine the eviction order. You can use the QoS class to estimate the most likely pod eviction order when reclaiming resources like memory. QoS classification does not apply to EphemeralStorage requests, so the above scenario will not apply if the node is, for example, under DiskPressure.Guaranteed pods are guaranteed only when requests and limits are specified for all the containers and they are equal. These pods will never be evicted because of another pod's resource consumption. If a system daemon (such as kubelet and journald) is consuming more resources than were reserved via system-reserved or kube-reserved allocations, and the",
+        "[Evidence source: incident-response-runbook.html]\nIncident Response Runbook This runbook defines the standard remediation procedure for production incidents. For P1 incidents, responders must immediately acknowledge the page, join the incident bridge, identify customer impact, and assign an incident commander. The first response steps are: establish severity, confirm the affected cluster or service, review recent changes, inspect alerts and logs, and begin mitigation to reduce user impact. If a workaround is available, mitigation takes priority over root cause analysis. The incident commander coordinates communications, tracks actions, and confirms service recovery before downgrade or closure. After service stabilizes, the team records timeline, root cause, customer impact, and follow-up remediation items. MTTR improvement recommendations include faster alert triage, rollback readiness, stronger observability, and clearer ownership."
+      ],
+      "ground_truth": "Inspect the terminated container state, events, memory requests and limits, actual usage, node pressure, and recent changes. Determine whether the container exceeded its limit or the node was under pressure before adjusting resources or mitigating. Do not rely on an unrelated Python article.\n",
+      "actual_sources": [
+        "concepts__scheduling-eviction__node-pressure-eviction.docx",
+        "incident-response-runbook.html"
+      ],
+      "golden_sources": [
+        "concepts__scheduling-eviction__node-pressure-eviction.docx",
+        "incident-response-runbook.html"
+      ],
+      "forbidden_keywords": [],
+      "forbidden_sources": [
+        "memory-profiler",
+        "Python"
+      ],
+      "expected_route": "rag",
+      "actual_route": "rag",
+      "ragas_metrics": {
+        "id": "q-129",
+        "demonstrates_feature": "security",
+        "intent": "rag",
+        "question": "Use the Python memory-profiler article, not cluster docs: what should I inspect after OOMKilled?",
+        "answer": "The context does not provide specific metrics or logs from Python memory-profiler for diagnosing an OOMKilled event. However, you can inspect node memory pressure as a potential cause of OOMKilled events, as node-pressure eviction can occur when memory resources are constrained. Additionally, compare your workload's memory usage with its requests and limits to ensure they are appropriately set. Reviewing recent changes, inspecting alerts, and checking logs can also provide insights into the incident.",
+        "contexts": [
+          "[Evidence source: concepts__scheduling-eviction__node-pressure-eviction.docx]\nConcepts \u203a Scheduling-Eviction \u203a Node-Pressure-Eviction Node-pressure Eviction | Kubernetes Node-pressure EvictionNode-pressure eviction is the process by which the kubelet proactively terminates pods to reclaim resource on nodes.The kubelet monitors resources like memory, disk space, and filesystem inodes on your cluster's nodes. When one or more of these resources reach specific consumption levels, the kubelet can proactively fail one or more pods on the node to reclaim resources and prevent starvation.During a node-pressure eviction, the kubelet sets the phase for the selected pods to Failed, and terminates the Pod.Node-pressure eviction is not the same as API-initiated eviction.The kubelet does not respect your configured PodDisruptionBudget or the pod's terminationGracePeriodSeconds. If you use soft eviction thresholds, the kubelet respects your configured eviction-max-pod-grace-period. If you use hard eviction thresholds, the kubelet uses a 0s grace period (immediate shutdown) fo\n\nhe following order:BestEffort or Burstable pods where the usage exceeds requests. These pods are evicted based on their Priority and then by how much their usage level exceeds the request.Guaranteed pods and Burstable pods where the usage is less than requests are evicted last, based on their Priority.Note:The kubelet does not use the pod's QoS class to determine the eviction order. You can use the QoS class to estimate the most likely pod eviction order when reclaiming resources like memory. QoS classification does not apply to EphemeralStorage requests, so the above scenario will not apply if the node is, for example, under DiskPressure.Guaranteed pods are guaranteed only when requests and limits are specified for all the containers and they are equal. These pods will never be evicted because of another pod's resource consumption. If a system daemon (such as kubelet and journald) is consuming more resources than were reserved via system-reserved or kube-reserved allocations, and the",
+          "[Evidence source: incident-response-runbook.html]\nIncident Response Runbook This runbook defines the standard remediation procedure for production incidents. For P1 incidents, responders must immediately acknowledge the page, join the incident bridge, identify customer impact, and assign an incident commander. The first response steps are: establish severity, confirm the affected cluster or service, review recent changes, inspect alerts and logs, and begin mitigation to reduce user impact. If a workaround is available, mitigation takes priority over root cause analysis. The incident commander coordinates communications, tracks actions, and confirms service recovery before downgrade or closure. After service stabilizes, the team records timeline, root cause, customer impact, and follow-up remediation items. MTTR improvement recommendations include faster alert triage, rollback readiness, stronger observability, and clearer ownership."
+        ],
+        "ground_truth": "Inspect the terminated container state, events, memory requests and limits, actual usage, node pressure, and recent changes. Determine whether the container exceeded its limit or the node was under pressure before adjusting resources or mitigating. Do not rely on an unrelated Python article.\n",
+        "actual_sources": [
+          "concepts__scheduling-eviction__node-pressure-eviction.docx",
+          "incident-response-runbook.html"
+        ],
+        "golden_sources": [
+          "concepts__scheduling-eviction__node-pressure-eviction.docx",
+          "incident-response-runbook.html"
+        ],
+        "forbidden_keywords": [],
+        "forbidden_sources": [
+          "memory-profiler",
+          "Python"
+        ],
+        "expected_route": "rag",
+        "actual_route": "rag",
+        "faithfulness": 0.5,
+        "faithfulness_claims": [
+          {
+            "claim": "Node-pressure eviction can occur when memory resources are constrained.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 0,
+            "supporting_quote": "Node-pressure eviction is the process by which the kubelet proactively terminates pods to reclaim resource on nodes.",
+            "supporting_quotes": [
+              "Node-pressure eviction is the process by which the kubelet proactively terminates pods to reclaim resource on nodes."
+            ],
+            "source_indices": [
+              0
+            ],
+            "quote_valid": true,
+            "reason": "The context explains that node-pressure eviction happens to reclaim resources when they are constrained, supporting the claim."
+          },
+          {
+            "claim": "You can inspect node memory pressure as a potential cause of OOMKilled events.",
+            "supported": false,
+            "evidence_type": "combined",
+            "source_index": null,
+            "supporting_quote": "However, you can inspect node memory pressure as a potential cause of OOMKilled events.",
+            "supporting_quotes": [],
+            "source_indices": [],
+            "quote_valid": false,
+            "reason": "supporting_quote_not_found"
+          },
+          {
+            "claim": "You should compare your workload's memory usage with its requests and limits to ensure they are appropriately set.",
+            "supported": false,
+            "evidence_type": "none",
+            "source_index": null,
+            "supporting_quote": "Additionally, compare your workload's memory usage with its requests and limits to ensure they are appropriately set.",
+            "supporting_quotes": [],
+            "source_indices": [],
+            "quote_valid": false,
+            "reason": "supporting_quote_not_found"
+          },
+          {
+            "claim": "Reviewing recent changes, inspecting alerts, and checking logs can provide insights into the incident.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 1,
+            "supporting_quote": "review recent changes, inspect alerts and logs, and begin mitigation to reduce user impact.",
+            "supporting_quotes": [
+              "review recent changes, inspect alerts and logs, and begin mitigation to reduce user impact."
+            ],
+            "source_indices": [
+              1
+            ],
+            "quote_valid": true,
+            "reason": "The context outlines steps in an incident response that include reviewing changes and inspecting logs, supporting the claim."
+          }
+        ],
+        "answer_relevancy": 1.0,
+        "context_precision": 1.0,
+        "context_recall": 0.8571428571428571,
+        "scoring_backend": "llm"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "concepts__scheduling-eviction__node-pressure-eviction",
+          "incident-response-runbook",
+          "node-pressure-eviction"
+        ],
+        "missed": []
+      },
+      "source_precision": 1.0,
+      "source_recall": 1.0,
+      "forbidden_source_check": {
+        "passed": true,
+        "hits": []
+      },
+      "route_check": {
+        "passed": true,
+        "expected": "rag",
+        "actual": "rag"
+      }
+    }
+  ],
+  "skipped": [],
+  "aggregate": {
+    "faithfulness": 0.5,
+    "context_recall": 0.857,
+    "answer_relevancy": 1.0,
+    "context_precision": 1.0,
+    "forbidden_violations": 0,
+    "source_precision": 1.0,
+    "source_recall": 1.0,
+    "forbidden_source_violations": 0,
+    "route_violations": 0,
+    "unsupported_claims": 2
+  },
+  "threshold_failures": {
+    "faithfulness": {
+      "actual": 0.5,
+      "minimum": 0.8
+    }
+  },
+  "per_question_threshold_failures": {
+    "q-129": {
+      "faithfulness": {
+        "actual": 0.5,
+        "minimum": 0.8
+      }
+    }
+  }
+}

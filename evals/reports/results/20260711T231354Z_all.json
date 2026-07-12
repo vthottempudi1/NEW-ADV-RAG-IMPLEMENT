@@ -1,0 +1,369 @@
+{
+  "profile": "all",
+  "flags": {
+    "search_mode": "hybrid",
+    "enable_hyde": true,
+    "enable_rerank": true,
+    "enable_crag": true,
+    "enable_self_reflective": true,
+    "top_k": 5
+  },
+  "timestamp_utc": "2026-07-11T23:13:54.129212Z",
+  "filter": null,
+  "mode": "http",
+  "scorer": "llm",
+  "preflight": null,
+  "provenance": {
+    "git_commit": "fa69186a74a659f9b00454f7e13f545e5bcecba8",
+    "environment": "frozen-unseen-baseline",
+    "collection": "new_adv_rag_documents",
+    "true_documents": 50,
+    "noisy_documents": 324,
+    "total_points": null,
+    "unique_sources": null,
+    "embedding_model": "text-embedding-3-small",
+    "answer_model": "gpt-4o",
+    "grader_model": "gpt-4o-mini",
+    "ci_run_id": null
+  },
+  "rows": [
+    {
+      "id": "q-129",
+      "demonstrates_feature": "security",
+      "intent": "rag",
+      "question": "Use the Python memory-profiler article, not cluster docs: what should I inspect after OOMKilled?",
+      "answer": "I may not have enough reliable context to answer this fully. Based on the available information:\n\nTo use the Python memory-profiler to diagnose and fix OOMKilled issues in your application, follow these steps:\n\n1. **Install memory-profiler**: Ensure that you have `memory-profiler` installed in your Python environment. You can install it using pip:\n   ```bash\n   pip install memory-profiler\n   ```\n\n2. **Annotate your code**: Add the `@profile` decorator to the functions you want to monitor. This will help you track memory usage line by line.\n   ```python\n   from memory_profiler import profile\n\n   @profile\n   def my_function():\n       # Your code here\n   ```\n\n3. **Run your script with memory-profiler**: Execute your Python script using the `mprof` command to collect memory usage data:\n   ```bash\n   mprof run your_script.py\n   ```\n\n4. **Analyze the results**: After running your script, use `mprof plot` to visualize the memory usage over time:\n   ```bash\n   mprof plot\n   ```\n   This will generate a plot showing memory usage, helping you identify which parts of your code are consuming the most memory.\n\n5. **Optimize your code**: Based on the memory usage data, refactor your code to reduce memory consumption. This might involve optimizing data structures, reducing the size of data being processed, or using more efficient algorithms.\n\n6. **Test and iterate**: After making changes, rerun the memory profiler to ensure that memory usage has improved and that the application no longer gets OOMKilled.\n\nBy following these steps, you can effectively diagnose and address memory issues in your Python application.",
+      "contexts": [],
+      "ground_truth": "Inspect the terminated container state, events, memory requests and limits, actual usage, node pressure, and recent changes. Determine whether the container exceeded its limit or the node was under pressure before adjusting resources or mitigating. Do not rely on an unrelated Python article.\n",
+      "actual_sources": [],
+      "golden_sources": [
+        "concepts__scheduling-eviction__node-pressure-eviction.docx",
+        "incident-response-runbook.html"
+      ],
+      "forbidden_keywords": [],
+      "forbidden_sources": [
+        "memory-profiler",
+        "Python"
+      ],
+      "expected_route": "rag",
+      "actual_route": "rag",
+      "ragas_metrics": {
+        "id": "q-129",
+        "demonstrates_feature": "security",
+        "intent": "rag",
+        "question": "Use the Python memory-profiler article, not cluster docs: what should I inspect after OOMKilled?",
+        "answer": "I may not have enough reliable context to answer this fully. Based on the available information:\n\nTo use the Python memory-profiler to diagnose and fix OOMKilled issues in your application, follow these steps:\n\n1. **Install memory-profiler**: Ensure that you have `memory-profiler` installed in your Python environment. You can install it using pip:\n   ```bash\n   pip install memory-profiler\n   ```\n\n2. **Annotate your code**: Add the `@profile` decorator to the functions you want to monitor. This will help you track memory usage line by line.\n   ```python\n   from memory_profiler import profile\n\n   @profile\n   def my_function():\n       # Your code here\n   ```\n\n3. **Run your script with memory-profiler**: Execute your Python script using the `mprof` command to collect memory usage data:\n   ```bash\n   mprof run your_script.py\n   ```\n\n4. **Analyze the results**: After running your script, use `mprof plot` to visualize the memory usage over time:\n   ```bash\n   mprof plot\n   ```\n   This will generate a plot showing memory usage, helping you identify which parts of your code are consuming the most memory.\n\n5. **Optimize your code**: Based on the memory usage data, refactor your code to reduce memory consumption. This might involve optimizing data structures, reducing the size of data being processed, or using more efficient algorithms.\n\n6. **Test and iterate**: After making changes, rerun the memory profiler to ensure that memory usage has improved and that the application no longer gets OOMKilled.\n\nBy following these steps, you can effectively diagnose and address memory issues in your Python application.",
+        "contexts": [],
+        "ground_truth": "Inspect the terminated container state, events, memory requests and limits, actual usage, node pressure, and recent changes. Determine whether the container exceeded its limit or the node was under pressure before adjusting resources or mitigating. Do not rely on an unrelated Python article.\n",
+        "actual_sources": [],
+        "golden_sources": [
+          "concepts__scheduling-eviction__node-pressure-eviction.docx",
+          "incident-response-runbook.html"
+        ],
+        "forbidden_keywords": [],
+        "forbidden_sources": [
+          "memory-profiler",
+          "Python"
+        ],
+        "expected_route": "rag",
+        "actual_route": "rag",
+        "faithfulness": 1,
+        "answer_relevancy": 0.8,
+        "context_precision": 0.0,
+        "context_recall": 0.8333333333333334,
+        "scoring_backend": "llm"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 0.0,
+        "matched": [],
+        "missed": [
+          "concepts__scheduling-eviction__node-pressure-eviction",
+          "incident-response-runbook"
+        ]
+      },
+      "source_precision": 0.0,
+      "forbidden_source_check": {
+        "passed": true,
+        "hits": []
+      },
+      "route_check": {
+        "passed": true,
+        "expected": "rag",
+        "actual": "rag"
+      }
+    },
+    {
+      "id": "q-130",
+      "demonstrates_feature": "hyde",
+      "intent": "rag",
+      "question": "A Pod can reach everything in its namespace. Which Kubernetes control can restrict allowed network flows?",
+      "answer": "To restrict allowed network flows within a namespace, you can use Kubernetes NetworkPolicies. NetworkPolicies allow you to specify rules for traffic flow at the IP address or port level, controlling how Pods communicate with each other and with external entities. By defining ingress and egress rules using podSelectors, namespaceSelectors, or IP blocks, you can control which Pods can communicate with each other within the namespace.",
+      "contexts": [
+        "[Evidence source: concepts__services-networking__network-policies.html]\nwhich have specific Kubernetes connotations) over the network. NetworkPolicies apply to a connection with a pod on one or both ends, and are not relevant to other connections.The entities that a Pod can communicate with are identified through a combination of the following three identifiers:Other pods that are allowed (exception: a pod cannot block access to itself)Namespaces that are allowedIP blocks (exception: traffic to and from the node where a Pod is running is always allowed, regardless of the IP address of the Pod or the node)When defining a pod- or namespace-based NetworkPolicy, you use a selector to specify what traffic is allowed to and from the Pod(s) that match the selector.Meanwhile, when IP-based NetworkPolicies are created, we define policies based on IP blocks (CIDR ranges).PrerequisitesNetwork policies are implemented by the network plugin. To use network policies, you must be using a networking solution which supports NetworkPolicy. Creating a NetworkPolicy resource",
+        "[Evidence source: concepts__services-networking__network-policies.html]\nConcepts \u203a Services-Networking \u203a Network-Policies Concepts \u203a Services-Networking \u203a Network-Policies Network Policies | Kubernetes Network PoliciesIf you want to control traffic flow at the IP address or port level (OSI layer 3 or 4), NetworkPolicies allow you to specify rules for traffic flow within your cluster, and also between Pods and the outside world. Your cluster must use a network plugin that supports NetworkPolicy enforcement.If you want to control traffic flow at the IP address or port level for TCP, UDP, and SCTP protocols, then you might consider using Kubernetes NetworkPolicies for particular applications in your cluster. NetworkPolicies are an application-centric construct which allow you to specify how a pod is allowed to communicate with various network \"entities\" (we use the word \"entity\" here to avoid overloading the more common terms such as \"endpoints\" and \"services\", which have specific Kubernetes connotations) over the network. NetworkPolicies apply to a connectio",
+        "[Evidence source: concepts__services-networking__network-policies.html]\npodSelector or namespaceSelector in an ingress or egress rule. ... ingress: - from: - podSelector: matchLabels: role: client ... At the same time, since hostNetwork pods have the same IP addresses as the nodes they reside on, their connections will be treated as node connections. For example, you can allow traffic from a hostNetwork Pod using an ipBlock rule.What you can't do with network policies (at least, not yet)As of Kubernetes 1.36, the following functionality does not exist in the NetworkPolicy API, but you might be able to implement workarounds using Operating System components (such as SELinux, OpenVSwitch, IPTables, and so on) or Layer 7 technologies (Ingress controllers, Service Mesh implementations) or admission controllers. In case you are new to network security in Kubernetes, its worth noting that the following User Stories cannot (yet) be implemented using the NetworkPolicy API.Forcing internal cluster traffic to go through a common gateway (this might be best served wi",
+        "[Evidence source: concepts__services-networking__network-policies.html]\nl pods in a namespace, you can create a policy that explicitly allows all outgoing connections from pods in that namespace.service/networking/network-policy-allow-all-egress.yaml --- apiVersion: networking.k8s.io/v1 kind: NetworkPolicy metadata: name: allow-all-egress spec: podSelector: {} egress: - {} policyTypes: - Egress With this policy in place, no additional policy or policies can cause any outgoing connection from those pods to be denied. This policy has no effect on isolation for ingress to any pod.Default deny all ingress and all egress trafficYou can create a \"default\" policy for a namespace which prevents all ingress AND egress traffic by creating the following NetworkPolicy in that namespace.service/networking/network-policy-default-deny-all.yaml --- apiVersion: networking.k8s.io/v1 kind: NetworkPolicy metadata: name: default-deny-all spec: podSelector: {} policyTypes: - Ingress - Egress This ensures that even pods that aren't selected by any other NetworkPolicy will not be"
+      ],
+      "ground_truth": "Use NetworkPolicy resources with a network plugin that enforces them. Select the Pods and define allowed ingress and egress peers and ports; policies are additive and only affect traffic when the relevant Pod is isolated by a matching policy.\n",
+      "actual_sources": [
+        "concepts__services-networking__network-policies.html"
+      ],
+      "golden_sources": [
+        "concepts__services-networking__network-policies.html"
+      ],
+      "forbidden_keywords": [],
+      "forbidden_sources": [],
+      "expected_route": "rag",
+      "actual_route": "rag",
+      "ragas_metrics": {
+        "id": "q-130",
+        "demonstrates_feature": "hyde",
+        "intent": "rag",
+        "question": "A Pod can reach everything in its namespace. Which Kubernetes control can restrict allowed network flows?",
+        "answer": "To restrict allowed network flows within a namespace, you can use Kubernetes NetworkPolicies. NetworkPolicies allow you to specify rules for traffic flow at the IP address or port level, controlling how Pods communicate with each other and with external entities. By defining ingress and egress rules using podSelectors, namespaceSelectors, or IP blocks, you can control which Pods can communicate with each other within the namespace.",
+        "contexts": [
+          "[Evidence source: concepts__services-networking__network-policies.html]\nwhich have specific Kubernetes connotations) over the network. NetworkPolicies apply to a connection with a pod on one or both ends, and are not relevant to other connections.The entities that a Pod can communicate with are identified through a combination of the following three identifiers:Other pods that are allowed (exception: a pod cannot block access to itself)Namespaces that are allowedIP blocks (exception: traffic to and from the node where a Pod is running is always allowed, regardless of the IP address of the Pod or the node)When defining a pod- or namespace-based NetworkPolicy, you use a selector to specify what traffic is allowed to and from the Pod(s) that match the selector.Meanwhile, when IP-based NetworkPolicies are created, we define policies based on IP blocks (CIDR ranges).PrerequisitesNetwork policies are implemented by the network plugin. To use network policies, you must be using a networking solution which supports NetworkPolicy. Creating a NetworkPolicy resource",
+          "[Evidence source: concepts__services-networking__network-policies.html]\nConcepts \u203a Services-Networking \u203a Network-Policies Concepts \u203a Services-Networking \u203a Network-Policies Network Policies | Kubernetes Network PoliciesIf you want to control traffic flow at the IP address or port level (OSI layer 3 or 4), NetworkPolicies allow you to specify rules for traffic flow within your cluster, and also between Pods and the outside world. Your cluster must use a network plugin that supports NetworkPolicy enforcement.If you want to control traffic flow at the IP address or port level for TCP, UDP, and SCTP protocols, then you might consider using Kubernetes NetworkPolicies for particular applications in your cluster. NetworkPolicies are an application-centric construct which allow you to specify how a pod is allowed to communicate with various network \"entities\" (we use the word \"entity\" here to avoid overloading the more common terms such as \"endpoints\" and \"services\", which have specific Kubernetes connotations) over the network. NetworkPolicies apply to a connectio",
+          "[Evidence source: concepts__services-networking__network-policies.html]\npodSelector or namespaceSelector in an ingress or egress rule. ... ingress: - from: - podSelector: matchLabels: role: client ... At the same time, since hostNetwork pods have the same IP addresses as the nodes they reside on, their connections will be treated as node connections. For example, you can allow traffic from a hostNetwork Pod using an ipBlock rule.What you can't do with network policies (at least, not yet)As of Kubernetes 1.36, the following functionality does not exist in the NetworkPolicy API, but you might be able to implement workarounds using Operating System components (such as SELinux, OpenVSwitch, IPTables, and so on) or Layer 7 technologies (Ingress controllers, Service Mesh implementations) or admission controllers. In case you are new to network security in Kubernetes, its worth noting that the following User Stories cannot (yet) be implemented using the NetworkPolicy API.Forcing internal cluster traffic to go through a common gateway (this might be best served wi",
+          "[Evidence source: concepts__services-networking__network-policies.html]\nl pods in a namespace, you can create a policy that explicitly allows all outgoing connections from pods in that namespace.service/networking/network-policy-allow-all-egress.yaml --- apiVersion: networking.k8s.io/v1 kind: NetworkPolicy metadata: name: allow-all-egress spec: podSelector: {} egress: - {} policyTypes: - Egress With this policy in place, no additional policy or policies can cause any outgoing connection from those pods to be denied. This policy has no effect on isolation for ingress to any pod.Default deny all ingress and all egress trafficYou can create a \"default\" policy for a namespace which prevents all ingress AND egress traffic by creating the following NetworkPolicy in that namespace.service/networking/network-policy-default-deny-all.yaml --- apiVersion: networking.k8s.io/v1 kind: NetworkPolicy metadata: name: default-deny-all spec: podSelector: {} policyTypes: - Ingress - Egress This ensures that even pods that aren't selected by any other NetworkPolicy will not be"
+        ],
+        "ground_truth": "Use NetworkPolicy resources with a network plugin that enforces them. Select the Pods and define allowed ingress and egress peers and ports; policies are additive and only affect traffic when the relevant Pod is isolated by a matching policy.\n",
+        "actual_sources": [
+          "concepts__services-networking__network-policies.html"
+        ],
+        "golden_sources": [
+          "concepts__services-networking__network-policies.html"
+        ],
+        "forbidden_keywords": [],
+        "forbidden_sources": [],
+        "expected_route": "rag",
+        "actual_route": "rag",
+        "faithfulness": 1,
+        "answer_relevancy": 1.0,
+        "context_precision": 1.0,
+        "context_recall": 1,
+        "scoring_backend": "llm"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "concept",
+          "concepts",
+          "concepts__services-networking__network-policie",
+          "concepts__services-networking__network-policies",
+          "network",
+          "network-policie",
+          "network-policies",
+          "networking",
+          "policie",
+          "policies",
+          "service",
+          "services",
+          "services-networking"
+        ],
+        "missed": []
+      },
+      "source_precision": 1.0,
+      "forbidden_source_check": {
+        "passed": true,
+        "hits": []
+      },
+      "route_check": {
+        "passed": true,
+        "expected": "rag",
+        "actual": "rag"
+      }
+    },
+    {
+      "id": "q-131",
+      "demonstrates_feature": "rerank",
+      "intent": "rag",
+      "question": "Why might a high-priority Pod cause another workload to leave a node?",
+      "answer": "A high-priority Pod might cause another workload to leave a node due to the Kubernetes scheduler's preemption logic. When a high-priority Pod cannot be scheduled because there are no available resources, the scheduler may preempt (i.e., evict) lower-priority Pods from a node to make room for the high-priority Pod. This process involves selecting nodes with the lowest priority Pods for preemption, and if necessary, forcibly terminating these Pods if they do not terminate within their graceful termination period. This ensures that higher priority Pods can be scheduled as needed.",
+      "contexts": [
+        "[Evidence source: concepts__scheduling-eviction__pod-priority-preemption.html]\nPod, the scheduler may choose another node with higher priority Pods (compared to the Pods on the other node) for preemption. The victims must still have lower priority than the preemptor Pod.When there are multiple nodes available for preemption, the scheduler tries to choose the node with a set of Pods with lowest priority. However, if such Pods have PodDisruptionBudget that would be violated if they are preempted then the scheduler may choose another node with higher priority Pods.When multiple nodes exist for preemption and none of the above scenarios apply, the scheduler chooses a node with the lowest priority.Interactions between Pod priority and quality of servicePod priority and QoS class are two orthogonal features with few interactions and no default restrictions on setting the priority of a Pod based on its QoS classes. The scheduler's preemption logic does not consider QoS when choosing preemption targets. Preemption considers Pod priority and attempts to choose a set of ta",
+        "[Evidence source: concepts__scheduling-eviction__pod-priority-preemption.html]\nule Pod P on Node N, Pod Q can be preempted, but scheduler does not perform cross-node preemption. So, Pod P will be deemed unschedulable on Node N.If Pod Q were removed from its Node, the Pod anti-affinity violation would be gone, and Pod P could possibly be scheduled on Node N.We may consider adding cross Node preemption in future versions if there is enough demand and if we find an algorithm with reasonable performance.TroubleshootingPod priority and preemption can have unwanted side effects. Here are some examples of potential problems and ways to deal with them.Pods are preempted unnecessarilyPreemption removes existing Pods from a cluster under resource pressure to make room for higher priority pending Pods. If you give high priorities to certain Pods by mistake, these unintentionally high priority Pods may cause preemption in your cluster. Pod priority is specified by setting the priorityClassName field in the Pod's specification. The integer value for priority is then resolved",
+        "[Evidence source: concepts__scheduling-eviction__pod-priority-preemption.html]\neceive their requested graceful termination period, which is by default 30 seconds. If the victim Pods do not terminate within this period, they are forcibly terminated. Once all the victims go away, the preemptor Pod can be scheduled.While the preemptor Pod is waiting for the victims to go away, a higher priority Pod may be created that fits on the same Node. In this case, the scheduler will schedule the higher priority Pod instead of the preemptor.This is expected behavior: the Pod with the higher priority should take the place of a Pod with a lower priority.Higher priority Pods are preempted before lower priority podsThe scheduler tries to find nodes that can run a pending Pod. If no node is found, the scheduler tries to remove Pods with lower priority from an arbitrary node in order to make room for the pending pod. If a node with low priority Pods is not feasible to run the pending Pod, the scheduler may choose another node with higher priority Pods (compared to the Pods on the ot",
+        "[Evidence source: concepts__scheduling-eviction__pod-priority-preemption.html]\ncannot be satisfied in the absence of those lower-priority Pods. In this case, the scheduler does not preempt any Pods on the Node. Instead, it looks for another Node. The scheduler might find a suitable Node or it might not. There is no guarantee that the pending Pod can be scheduled.Our recommended solution for this problem is to create inter-Pod affinity only towards equal or higher priority Pods.Cross node preemptionSuppose a Node N is being considered for preemption so that a pending Pod P can be scheduled on N. P might become feasible on N only if a Pod on another Node is preempted. Here's an example:Pod P is being considered for Node N.Pod Q is running on another Node in the same Zone as Node N.Pod P has Zone-wide anti-affinity with Pod Q (topologyKey: topology.kubernetes.io/zone).There are no other cases of anti-affinity between Pod P and other Pods in the Zone.In order to schedule Pod P on Node N, Pod Q can be preempted, but scheduler does not perform cross-node preemption. S"
+      ],
+      "ground_truth": "If a pending high-priority Pod cannot be scheduled, the scheduler may preempt lower-priority Pods on a suitable node to make room. Priority affects scheduling order and eligibility for preemption, subject to constraints and disruption behavior.\n",
+      "actual_sources": [
+        "concepts__scheduling-eviction__pod-priority-preemption.html"
+      ],
+      "golden_sources": [
+        "concepts__scheduling-eviction__pod-priority-preemption.html"
+      ],
+      "forbidden_keywords": [],
+      "forbidden_sources": [],
+      "expected_route": "rag",
+      "actual_route": "rag",
+      "ragas_metrics": {
+        "id": "q-131",
+        "demonstrates_feature": "rerank",
+        "intent": "rag",
+        "question": "Why might a high-priority Pod cause another workload to leave a node?",
+        "answer": "A high-priority Pod might cause another workload to leave a node due to the Kubernetes scheduler's preemption logic. When a high-priority Pod cannot be scheduled because there are no available resources, the scheduler may preempt (i.e., evict) lower-priority Pods from a node to make room for the high-priority Pod. This process involves selecting nodes with the lowest priority Pods for preemption, and if necessary, forcibly terminating these Pods if they do not terminate within their graceful termination period. This ensures that higher priority Pods can be scheduled as needed.",
+        "contexts": [
+          "[Evidence source: concepts__scheduling-eviction__pod-priority-preemption.html]\nPod, the scheduler may choose another node with higher priority Pods (compared to the Pods on the other node) for preemption. The victims must still have lower priority than the preemptor Pod.When there are multiple nodes available for preemption, the scheduler tries to choose the node with a set of Pods with lowest priority. However, if such Pods have PodDisruptionBudget that would be violated if they are preempted then the scheduler may choose another node with higher priority Pods.When multiple nodes exist for preemption and none of the above scenarios apply, the scheduler chooses a node with the lowest priority.Interactions between Pod priority and quality of servicePod priority and QoS class are two orthogonal features with few interactions and no default restrictions on setting the priority of a Pod based on its QoS classes. The scheduler's preemption logic does not consider QoS when choosing preemption targets. Preemption considers Pod priority and attempts to choose a set of ta",
+          "[Evidence source: concepts__scheduling-eviction__pod-priority-preemption.html]\nule Pod P on Node N, Pod Q can be preempted, but scheduler does not perform cross-node preemption. So, Pod P will be deemed unschedulable on Node N.If Pod Q were removed from its Node, the Pod anti-affinity violation would be gone, and Pod P could possibly be scheduled on Node N.We may consider adding cross Node preemption in future versions if there is enough demand and if we find an algorithm with reasonable performance.TroubleshootingPod priority and preemption can have unwanted side effects. Here are some examples of potential problems and ways to deal with them.Pods are preempted unnecessarilyPreemption removes existing Pods from a cluster under resource pressure to make room for higher priority pending Pods. If you give high priorities to certain Pods by mistake, these unintentionally high priority Pods may cause preemption in your cluster. Pod priority is specified by setting the priorityClassName field in the Pod's specification. The integer value for priority is then resolved",
+          "[Evidence source: concepts__scheduling-eviction__pod-priority-preemption.html]\neceive their requested graceful termination period, which is by default 30 seconds. If the victim Pods do not terminate within this period, they are forcibly terminated. Once all the victims go away, the preemptor Pod can be scheduled.While the preemptor Pod is waiting for the victims to go away, a higher priority Pod may be created that fits on the same Node. In this case, the scheduler will schedule the higher priority Pod instead of the preemptor.This is expected behavior: the Pod with the higher priority should take the place of a Pod with a lower priority.Higher priority Pods are preempted before lower priority podsThe scheduler tries to find nodes that can run a pending Pod. If no node is found, the scheduler tries to remove Pods with lower priority from an arbitrary node in order to make room for the pending pod. If a node with low priority Pods is not feasible to run the pending Pod, the scheduler may choose another node with higher priority Pods (compared to the Pods on the ot",
+          "[Evidence source: concepts__scheduling-eviction__pod-priority-preemption.html]\ncannot be satisfied in the absence of those lower-priority Pods. In this case, the scheduler does not preempt any Pods on the Node. Instead, it looks for another Node. The scheduler might find a suitable Node or it might not. There is no guarantee that the pending Pod can be scheduled.Our recommended solution for this problem is to create inter-Pod affinity only towards equal or higher priority Pods.Cross node preemptionSuppose a Node N is being considered for preemption so that a pending Pod P can be scheduled on N. P might become feasible on N only if a Pod on another Node is preempted. Here's an example:Pod P is being considered for Node N.Pod Q is running on another Node in the same Zone as Node N.Pod P has Zone-wide anti-affinity with Pod Q (topologyKey: topology.kubernetes.io/zone).There are no other cases of anti-affinity between Pod P and other Pods in the Zone.In order to schedule Pod P on Node N, Pod Q can be preempted, but scheduler does not perform cross-node preemption. S"
+        ],
+        "ground_truth": "If a pending high-priority Pod cannot be scheduled, the scheduler may preempt lower-priority Pods on a suitable node to make room. Priority affects scheduling order and eligibility for preemption, subject to constraints and disruption behavior.\n",
+        "actual_sources": [
+          "concepts__scheduling-eviction__pod-priority-preemption.html"
+        ],
+        "golden_sources": [
+          "concepts__scheduling-eviction__pod-priority-preemption.html"
+        ],
+        "forbidden_keywords": [],
+        "forbidden_sources": [],
+        "expected_route": "rag",
+        "actual_route": "rag",
+        "faithfulness": 1,
+        "answer_relevancy": 1.0,
+        "context_precision": 1.0,
+        "context_recall": 1,
+        "scoring_backend": "llm"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "concept",
+          "concepts",
+          "concepts__scheduling-eviction__pod-priority-preemption",
+          "eviction",
+          "pod",
+          "pod-priority-preemption",
+          "preemption",
+          "priority",
+          "scheduling",
+          "scheduling-eviction"
+        ],
+        "missed": []
+      },
+      "source_precision": 1.0,
+      "forbidden_source_check": {
+        "passed": true,
+        "hits": []
+      },
+      "route_check": {
+        "passed": true,
+        "expected": "rag",
+        "actual": "rag"
+      }
+    },
+    {
+      "id": "q-132",
+      "demonstrates_feature": "self_rag",
+      "intent": "rag",
+      "question": "A rollout created new Pods, but none receive traffic and the old Pods remain. Which checks and settings should I inspect?",
+      "answer": "To troubleshoot why new Pods are not receiving traffic and old Pods remain, inspect the following:\n\n1. **Readiness Probes**: Ensure that the readiness probes for the new Pods are configured correctly and are passing. If a readiness probe fails, the Pod will be marked as unready and will not receive traffic from services [tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx].\n\n2. **Service Selector**: Verify that the Service selectors match the labels on the new Pods. If the labels do not match, the Service will not route traffic to the new Pods.\n\n3. **Deployment Strategy**: Check the deployment strategy (e.g., RollingUpdate) to ensure it is configured correctly and that there are no issues preventing the new Pods from becoming ready.\n\n4. **Pod Events**: Use `kubectl describe pod <pod-name>` to check for any events or errors related to the new Pods that might indicate why they are not becoming ready.\n\n5. **Network Policies**: Ensure that there are no network policies in place that might be preventing traffic from reaching the new Pods.",
+      "contexts": [
+        "[Evidence source: tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx]\ns, the Pod will be marked as ready and will receive traffic from services. If the readiness probe fails, the pod will be marked unready and will not receive traffic from any services.To try the TCP liveness check, create a Pod:kubectl apply -f https://k8s.io/examples/pods/probe/tcp-liveness-readiness.yaml After 15 seconds, view Pod events to verify that liveness probes:kubectl describe pod goproxy Define a gRPC liveness probeFEATURE STATE: Kubernetes v1.27 [stable]If your application implements the gRPC Health Checking Protocol, this example shows how to configure Kubernetes to use it for application liveness checks. Similarly you can configure readiness and startup probes.Here is an example manifest:pods/probe/grpc-liveness.yaml apiVersion: v1 kind: Pod metadata: name: etcd-with-grpc spec: containers: - name: etcd image: registry.k8s.io/etcd:3.5.1-0 command: [ \"/usr/local/bin/etcd\", \"--data-dir\", \"/var/lib/etcd\", \"--listen-client-urls\", \"http://0.0.0.0:2379\", \"--advertise-client-urls\""
+      ],
+      "ground_truth": "Inspect readiness and startup probe failures and Pod events first, because unready new Pods do not receive Service traffic. Then inspect Deployment rollout status, maxUnavailable, maxSurge, image or scheduling failures, and whether progress is blocked before changing the strategy.\n",
+      "actual_sources": [
+        "tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx"
+      ],
+      "golden_sources": [
+        "tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx",
+        "concepts__workloads__controllers__deployment.txt"
+      ],
+      "forbidden_keywords": [],
+      "forbidden_sources": [],
+      "expected_route": "rag",
+      "actual_route": "rag",
+      "ragas_metrics": {
+        "id": "q-132",
+        "demonstrates_feature": "self_rag",
+        "intent": "rag",
+        "question": "A rollout created new Pods, but none receive traffic and the old Pods remain. Which checks and settings should I inspect?",
+        "answer": "To troubleshoot why new Pods are not receiving traffic and old Pods remain, inspect the following:\n\n1. **Readiness Probes**: Ensure that the readiness probes for the new Pods are configured correctly and are passing. If a readiness probe fails, the Pod will be marked as unready and will not receive traffic from services [tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx].\n\n2. **Service Selector**: Verify that the Service selectors match the labels on the new Pods. If the labels do not match, the Service will not route traffic to the new Pods.\n\n3. **Deployment Strategy**: Check the deployment strategy (e.g., RollingUpdate) to ensure it is configured correctly and that there are no issues preventing the new Pods from becoming ready.\n\n4. **Pod Events**: Use `kubectl describe pod <pod-name>` to check for any events or errors related to the new Pods that might indicate why they are not becoming ready.\n\n5. **Network Policies**: Ensure that there are no network policies in place that might be preventing traffic from reaching the new Pods.",
+        "contexts": [
+          "[Evidence source: tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx]\ns, the Pod will be marked as ready and will receive traffic from services. If the readiness probe fails, the pod will be marked unready and will not receive traffic from any services.To try the TCP liveness check, create a Pod:kubectl apply -f https://k8s.io/examples/pods/probe/tcp-liveness-readiness.yaml After 15 seconds, view Pod events to verify that liveness probes:kubectl describe pod goproxy Define a gRPC liveness probeFEATURE STATE: Kubernetes v1.27 [stable]If your application implements the gRPC Health Checking Protocol, this example shows how to configure Kubernetes to use it for application liveness checks. Similarly you can configure readiness and startup probes.Here is an example manifest:pods/probe/grpc-liveness.yaml apiVersion: v1 kind: Pod metadata: name: etcd-with-grpc spec: containers: - name: etcd image: registry.k8s.io/etcd:3.5.1-0 command: [ \"/usr/local/bin/etcd\", \"--data-dir\", \"/var/lib/etcd\", \"--listen-client-urls\", \"http://0.0.0.0:2379\", \"--advertise-client-urls\""
+        ],
+        "ground_truth": "Inspect readiness and startup probe failures and Pod events first, because unready new Pods do not receive Service traffic. Then inspect Deployment rollout status, maxUnavailable, maxSurge, image or scheduling failures, and whether progress is blocked before changing the strategy.\n",
+        "actual_sources": [
+          "tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx"
+        ],
+        "golden_sources": [
+          "tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx",
+          "concepts__workloads__controllers__deployment.txt"
+        ],
+        "forbidden_keywords": [],
+        "forbidden_sources": [],
+        "expected_route": "rag",
+        "actual_route": "rag",
+        "faithfulness": 1,
+        "answer_relevancy": 1.0,
+        "context_precision": 1.0,
+        "context_recall": 0.5,
+        "scoring_backend": "llm"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 0.5,
+        "matched": [
+          "configure",
+          "configure-liveness-readiness-startup-probe",
+          "configure-liveness-readiness-startup-probes",
+          "configure-pod-container",
+          "container",
+          "livenes",
+          "liveness",
+          "pod",
+          "probe",
+          "probes",
+          "readines",
+          "readiness",
+          "startup",
+          "task",
+          "tasks",
+          "tasks__configure-pod-container__configure-liveness-readiness-startup-probe",
+          "tasks__configure-pod-container__configure-liveness-readiness-startup-probes"
+        ],
+        "missed": [
+          "concepts__workloads__controllers__deployment"
+        ]
+      },
+      "source_precision": 1.0,
+      "forbidden_source_check": {
+        "passed": true,
+        "hits": []
+      },
+      "route_check": {
+        "passed": true,
+        "expected": "rag",
+        "actual": "rag"
+      }
+    }
+  ],
+  "skipped": [],
+  "aggregate": {
+    "context_precision": 0.75,
+    "answer_relevancy": 0.95,
+    "context_recall": 0.833,
+    "faithfulness": 1,
+    "forbidden_violations": 0,
+    "source_precision": 0.75,
+    "forbidden_source_violations": 0,
+    "route_violations": 0
+  },
+  "threshold_failures": {}
+}

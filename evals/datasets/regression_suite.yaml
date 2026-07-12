@@ -1,0 +1,189 @@
+# Final untouched holdout created 2026-07-11.
+# Freeze rule: do not edit expectations after the first application run.
+# This file must not be used to tune routing, retrieval, reranking, CRAG, or generation.
+
+- id: q-201
+  question: "A Java service takes four minutes to initialize. How do I stop Kubernetes from killing it during startup without hiding later deadlocks?"
+  intent: rag
+  golden_sources: [tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx]
+  golden_answer: >
+    Configure a startup probe with enough failure threshold and period to cover the four-minute
+    initialization window. Kubernetes suppresses liveness and readiness checks until that startup
+    probe succeeds. Keep a separate liveness probe afterward so later deadlocks still trigger a restart,
+    and use readiness to control whether the Pod receives Service traffic.
+  golden_answer_keywords: [startup probe, liveness probe, readiness, failure threshold]
+  demonstrates_feature: self_rag
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  notes: "[final-holdout] Slow-start lifecycle reasoning with three probe roles."
+
+- id: q-202
+  question: "We need a security agent on every GPU worker but nowhere else. Which controller and scheduling constraint should we use?"
+  intent: rag
+  golden_sources: [concepts__workloads__controllers__daemonset.html]
+  golden_answer: >
+    Use a DaemonSet so Kubernetes maintains one agent Pod on each eligible node. Add a node selector,
+    node affinity, or equivalent node-label constraint matching GPU workers so other nodes are not
+    eligible for the DaemonSet Pods.
+  golden_answer_keywords: [DaemonSet, node selector, node affinity, GPU]
+  demonstrates_feature: hyde
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  notes: "[final-holdout] Combines node-wide ownership with placement restriction."
+
+- id: q-203
+  question: "A Pod needs one database credential and permission to read only that Secret. Describe the identity and authorization design."
+  intent: rag
+  golden_sources: [concepts__configuration__secret.txt, tasks__configure-pod-container__configure-service-account.txt, concepts__security__rbac-good-practices.pdf]
+  golden_answer: >
+    Store the credential in a Secret, assign the Pod a dedicated ServiceAccount using
+    serviceAccountName, and bind a namespace-scoped Role that grants only the required get access to
+    that specific Secret. Avoid broad Secret listing, cluster-wide bindings, and the default account.
+  golden_answer_keywords: [Secret, ServiceAccount, Role, least privilege]
+  demonstrates_feature: hybrid
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  notes: "[final-holdout] Three-document workload identity and secret-access design."
+
+- id: q-204
+  question: "Trace an external HTTPS request from the cluster edge to a ready application Pod and name the Kubernetes abstractions involved."
+  intent: rag
+  golden_sources: [concepts__services-networking__ingress.docx, concepts__services-networking__service.txt, tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx]
+  golden_answer: >
+    An Ingress controller evaluates the Ingress HTTPS routing rule and forwards the request to a
+    Service. The Service provides stable discovery and routes to its current endpoints. Readiness
+    probes determine which Pods are ready and therefore eligible to receive Service traffic.
+  golden_answer_keywords: [Ingress controller, Service, endpoints, readiness probe]
+  demonstrates_feature: hybrid
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  notes: "[final-holdout] End-to-end networking path across three resources."
+
+- id: q-205
+  question: "A critical Pod is pending because every node is full. Under what condition can priority help, and what can happen to lower-priority Pods?"
+  intent: rag
+  golden_sources: [concepts__scheduling-eviction__pod-priority-preemption.html]
+  golden_answer: >
+    If the scheduler cannot place the high-priority Pod, it can evaluate whether removing lower-priority
+    Pods from a suitable node would make the Pod schedulable. It may nominate that node and preempt
+    lower-priority Pods, subject to scheduling constraints and preemption rules; priority does not
+    create capacity when no feasible placement can be made.
+  golden_answer_keywords: [priority, scheduler, preemption, lower-priority Pods]
+  demonstrates_feature: rerank
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  notes: "[final-holdout] Corrected minimum sufficient evidence contract: the preemption source covers feasibility and lower-priority Pod eviction."
+
+- id: q-206
+  question: "Can you roll it back?"
+  intent: clarification
+  golden_sources: []
+  golden_answer: >
+    Ask what resource or release should be rolled back, which environment it affects, the desired
+    target revision, and whether the user wants instructions or authorization to perform an action.
+  golden_answer_keywords: [what resource, environment, revision, authorization]
+  demonstrates_feature: clarification
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: clarification
+  forbidden_sources: [.pdf, "http://", "https://"]
+  notes: "[final-holdout] New ambiguous action not present in the development challenge."
+
+- id: q-207
+  question: "What exact configuration change caused our customer outage at 14:03 yesterday?"
+  intent: rag
+  golden_sources: []
+  golden_answer: >
+    The indexed documents do not include the deployment history, audit events, logs, or incident
+    timeline needed to identify an exact configuration change. State that the cause cannot be
+    determined from available evidence and request those operational records rather than speculate.
+  golden_answer_keywords: [cannot determine, audit events, logs, incident timeline]
+  demonstrates_feature: wild
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  forbidden_sources: [.pdf, "http://", "https://"]
+  notes: "[final-holdout] Organization-specific causal claim requiring abstention."
+
+- id: q-208
+  question: "Use the probability and statistics PDF as the authority: explain how kube-scheduler scores candidate nodes."
+  intent: rag
+  golden_sources: [concepts__scheduling-eviction__kube-scheduler.pdf]
+  golden_answer: >
+    After filtering infeasible nodes, kube-scheduler runs scoring plugins for the feasible candidates,
+    normalizes and combines their scores, and selects a highest-scoring node before binding the Pod.
+    An unrelated probability textbook is not authoritative Kubernetes scheduling evidence.
+  golden_answer_keywords: [filtering, scoring plugins, candidate nodes, binding]
+  demonstrates_feature: security
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  forbidden_sources: ["Introduction to Probability", IPSUR]
+  notes: "[final-holdout] Adversarial request for a noisy source on a technical topic."
+
+- id: q-209
+  question: "The P1 page has not been acknowledged and impact is expanding. What should happen next according to our operational documents?"
+  intent: rag
+  golden_sources: [oncall-escalation-policy.html, incident-response-runbook.html]
+  golden_answer: >
+    Treat the missed acknowledgement as an escalation condition and engage the next escalation path
+    immediately. Establish severity and impact, activate incident coordination, communicate status,
+    preserve evidence, and begin a safe mitigation or rollback while ownership is being restored.
+  golden_answer_keywords: [escalation, acknowledgement, impact, mitigation]
+  demonstrates_feature: rerank
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  notes: "[final-holdout] Internal policy and runbook synthesis under worsening impact."
+
+- id: q-210
+  question: "Only frontend Pods may call the payments Pods on TCP 8443, and payments must not initiate other egress. What policy model expresses this?"
+  intent: rag
+  golden_sources: [concepts__services-networking__network-policies.html]
+  golden_answer: >
+    Apply NetworkPolicies enforced by a compatible network plugin. Select the payments Pods, allow
+    ingress on TCP 8443 only from frontend Pods selected by labels, and apply an egress-isolating
+    policy with only explicitly required exceptions. Policies are additive, so account for every
+    policy selecting the Pods.
+  golden_answer_keywords: [NetworkPolicy, ingress, egress, TCP 8443]
+  demonstrates_feature: self_rag
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  notes: "[final-holdout] Directional network isolation and additive-policy semantics."
+
+- id: q-211
+  question: "When a dynamically provisioned claim is deleted, what determines whether its storage is deleted or retained?"
+  intent: rag
+  golden_sources: [concepts__storage__persistent-volumes.pdf]
+  golden_answer: >
+    The bound PersistentVolume's reclaim policy determines what happens after the claim is released.
+    For dynamically provisioned volumes, that policy is commonly inherited from the StorageClass.
+    Delete removes the backing storage, while Retain preserves it for manual recovery or reuse.
+  golden_answer_keywords: [reclaim policy, StorageClass, Delete, Retain]
+  demonstrates_feature: hybrid
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  notes: "[final-holdout] Corrected minimum sufficient evidence contract: the PersistentVolume source covers inherited reclaim policy, Delete, and Retain."
+
+- id: q-212
+  question: "If I edit a ConfigMap used by running Pods, when will the application observe the new value, and what differs between a mounted file and an environment variable?"
+  intent: rag
+  golden_sources: [concepts__configuration__configmap.html, tasks__configure-pod-container__configure-pod-configmap.html]
+  golden_answer: >
+    ConfigMap data projected into a mounted volume is updated eventually by kubelet synchronization,
+    although an application may need to reread the file. Values injected as environment variables are
+    fixed when the container starts, so existing containers require a restart or rollout to receive
+    the changed value.
+  golden_answer_keywords: [ConfigMap, mounted volume, environment variable, restart]
+  demonstrates_feature: hybrid
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  notes: "[final-holdout] Update propagation semantics across two consumption methods."

@@ -1,0 +1,135 @@
+{
+  "profile": "all",
+  "flags": {
+    "search_mode": "hybrid",
+    "enable_hyde": true,
+    "enable_rerank": true,
+    "enable_crag": true,
+    "enable_self_reflective": true,
+    "top_k": 5
+  },
+  "timestamp_utc": "2026-07-11T21:51:06.982433Z",
+  "filter": null,
+  "mode": "http",
+  "scorer": "heuristic",
+  "preflight": null,
+  "provenance": {
+    "git_commit": "fa69186a74a659f9b00454f7e13f545e5bcecba8",
+    "environment": "local-docker-security-fix2",
+    "collection": "new_adv_rag_documents",
+    "true_documents": 50,
+    "noisy_documents": 324,
+    "total_points": null,
+    "unique_sources": null,
+    "embedding_model": "text-embedding-3-small",
+    "answer_model": "gpt-4o",
+    "grader_model": "gpt-4o-mini",
+    "ci_run_id": null
+  },
+  "rows": [
+    {
+      "id": "q-059",
+      "demonstrates_feature": "self_rag",
+      "intent": "rag",
+      "question": "Tell me how to secure a Kubernetes cluster.",
+      "answer": "Securing a Kubernetes cluster involves several key practices and mechanisms:\n\n1. **Role-Based Access Control (RBAC):** Implement RBAC to ensure that users and workloads have only the necessary permissions. Follow the principle of least privilege by assigning minimal rights required for operation [concepts__security__rbac-good-practices.pdf].\n\n2. **Pod Security Standards (PSS):** Use Pod Security Standards to enforce security policies at the cluster or namespace level. This helps in applying consistent security configurations across your cluster [tutorials__security__cluster-level-pss.pdf].\n\n3. **Control Plane Protection:** Secure the Kubernetes API by controlling access and using TLS for data encryption in transit. This is crucial for protecting the control plane and its communications [concepts__security__overview.txt].\n\n4. **Resource Quotas:** Implement resource quotas to prevent denial of service attacks by limiting the number and size of objects that can be created in the cluster [concepts__security__rbac-good-practices.pdf].\n\n5. **PersistentVolume Access:** Restrict the creation of PersistentVolumes to trusted users and control plane components. Use PersistentVolumeClaims for constrained users to access storage [concepts__security__rbac-good-practices.pdf].\n\nBy following these practices, you can enhance the security posture of your Kubernetes cluster.",
+      "contexts": [
+        "[Evidence source: concepts__security__rbac-good-practices.pdf]\nects in a cluster may be able to create sufficient large objects to create a denial of service condition either based on the size or number of objects, as discussed in etcd used by Kubernetes is vulnerable to OOM attack. This may be specifically relevant in multi-tenant clusters if semi-trusted or untrusted users are allowed limited access to a system.One option for mitigation of this issue would be to use resource quotas to limit the quantity of objects which can be created.What's nextTo learn more about RBAC, see the RBAC documentation.FeedbackWas this page helpful?Yes NoThanks for the feedback. If you have a specific, answerable question about how to use Kubernetes, ask it on Stack Overflow. Open an issue in the GitHub Repository if you want to report a problem or suggest an improvement.Last modified January 28, 2026 at 10:04 AM PST: Strengthen and clarify nodes/proxy warnings (b78e1d54b8)",
+        "[Evidence source: concepts__security__overview.txt]\nSecurity | Kubernetes SecurityConcepts for keeping your cloud-native workload secure.This section of the Kubernetes documentation aims to help you learn to run workloads more securely, and about the essential aspects of keeping a Kubernetes cluster secure.Kubernetes is based on a cloud-native architecture, and draws on advice from the CNCF about good practice for cloud native information security.Read Cloud Native Security and Kubernetes for the broader context about how to secure your cluster and the applications that you're running on it.Kubernetes security mechanismsKubernetes includes several APIs and security controls, as well as ways to define policies that can form part of how you manage information security.Control plane protectionA key security mechanism for any Kubernetes cluster is to control access to the Kubernetes API.Kubernetes expects you to configure and use TLS to provide data encryption in transit within the control plane, and between the control plane and its client",
+        "[Evidence source: tutorials__security__cluster-level-pss.pdf]\nTutorials \u203a Security \u203a Cluster-Level-Pss Apply Pod Security Standards at the Cluster Level | Kubernetes Apply Pod Security Standards at the Cluster LevelNoteThis tutorial applies only for new clusters.Pod Security is an admission controller that carries out checks against the Kubernetes Pod Security Standards when new pods are created. It is a feature GA'ed in v1.25. This tutorial shows you how to enforce the baseline Pod Security Standard at the cluster level which applies a standard configuration to all namespaces in a cluster.To apply Pod Security Standards to specific namespaces, refer to Apply Pod Security Standards at the namespace level.If you are running a version of Kubernetes other than v1.36, check the documentation for that version.Before you beginInstall the following on your workstation:kindkubectlThis tutorial demonstrates what you can configure for a Kubernetes cluster that you fully control. If you are learning how to configure Pod Security Admission for a managed clus",
+        "[Evidence source: concepts__security__rbac-good-practices.pdf]\nConcepts \u203a Security \u203a Rbac-Good-Practices Role Based Access Control Good Practices | Kubernetes Role Based Access Control Good PracticesPrinciples and practices for good RBAC design for cluster operators.Kubernetes RBAC is a key security control to ensure that cluster users and workloads have only the access to resources required to execute their roles. It is important to ensure that, when designing permissions for cluster users, the cluster administrator understands the areas where privilege escalation could occur, to reduce the risk of excessive access leading to security incidents.The good practices laid out here should be read in conjunction with the general RBAC documentation.General good practiceLeast privilegeIdeally, minimal RBAC rights should be assigned to users and service accounts. Only permissions explicitly required for their operation should be used. While each cluster will be different, some general rules that can be applied are :Assign permissions at the namespace leve",
+        "[Evidence source: concepts__security__rbac-good-practices.pdf]\nservices, such as Kubelet.You should only allow access to create PersistentVolume objects for:Users (cluster operators) that need this access for their work, and who you trust.The Kubernetes control plane components which creates PersistentVolumes based on PersistentVolumeClaims that are configured for automatic provisioning. This is usually setup by the Kubernetes provider or by the operator when installing a CSI driver.Where access to persistent storage is required trusted administrators should create PersistentVolumes, and constrained users should use PersistentVolumeClaims to access that storage.Access to proxy subresource of NodesUsers with access to the nodes/proxy sub-resource have rights to the Kubelet API, which allows for command execution on every pod on the node(s) to which they have rights. This access bypasses audit logging and admission control, so care should be taken before granting any rights to this resource. These APIs can be exercised via websocket HTTP GET reques"
+      ],
+      "ground_truth": "RBAC, least privilege, security",
+      "actual_sources": [
+        "concepts__security__rbac-good-practices.pdf",
+        "concepts__security__overview.txt",
+        "tutorials__security__cluster-level-pss.pdf"
+      ],
+      "golden_sources": [
+        "concepts__security__overview.txt",
+        "concepts__security__rbac-good-practices.pdf"
+      ],
+      "forbidden_keywords": [],
+      "forbidden_sources": [],
+      "expected_route": "rag",
+      "actual_route": "rag",
+      "ragas_metrics": {
+        "id": "q-059",
+        "demonstrates_feature": "self_rag",
+        "intent": "rag",
+        "question": "Tell me how to secure a Kubernetes cluster.",
+        "answer": "Securing a Kubernetes cluster involves several key practices and mechanisms:\n\n1. **Role-Based Access Control (RBAC):** Implement RBAC to ensure that users and workloads have only the necessary permissions. Follow the principle of least privilege by assigning minimal rights required for operation [concepts__security__rbac-good-practices.pdf].\n\n2. **Pod Security Standards (PSS):** Use Pod Security Standards to enforce security policies at the cluster or namespace level. This helps in applying consistent security configurations across your cluster [tutorials__security__cluster-level-pss.pdf].\n\n3. **Control Plane Protection:** Secure the Kubernetes API by controlling access and using TLS for data encryption in transit. This is crucial for protecting the control plane and its communications [concepts__security__overview.txt].\n\n4. **Resource Quotas:** Implement resource quotas to prevent denial of service attacks by limiting the number and size of objects that can be created in the cluster [concepts__security__rbac-good-practices.pdf].\n\n5. **PersistentVolume Access:** Restrict the creation of PersistentVolumes to trusted users and control plane components. Use PersistentVolumeClaims for constrained users to access storage [concepts__security__rbac-good-practices.pdf].\n\nBy following these practices, you can enhance the security posture of your Kubernetes cluster.",
+        "contexts": [
+          "[Evidence source: concepts__security__rbac-good-practices.pdf]\nects in a cluster may be able to create sufficient large objects to create a denial of service condition either based on the size or number of objects, as discussed in etcd used by Kubernetes is vulnerable to OOM attack. This may be specifically relevant in multi-tenant clusters if semi-trusted or untrusted users are allowed limited access to a system.One option for mitigation of this issue would be to use resource quotas to limit the quantity of objects which can be created.What's nextTo learn more about RBAC, see the RBAC documentation.FeedbackWas this page helpful?Yes NoThanks for the feedback. If you have a specific, answerable question about how to use Kubernetes, ask it on Stack Overflow. Open an issue in the GitHub Repository if you want to report a problem or suggest an improvement.Last modified January 28, 2026 at 10:04 AM PST: Strengthen and clarify nodes/proxy warnings (b78e1d54b8)",
+          "[Evidence source: concepts__security__overview.txt]\nSecurity | Kubernetes SecurityConcepts for keeping your cloud-native workload secure.This section of the Kubernetes documentation aims to help you learn to run workloads more securely, and about the essential aspects of keeping a Kubernetes cluster secure.Kubernetes is based on a cloud-native architecture, and draws on advice from the CNCF about good practice for cloud native information security.Read Cloud Native Security and Kubernetes for the broader context about how to secure your cluster and the applications that you're running on it.Kubernetes security mechanismsKubernetes includes several APIs and security controls, as well as ways to define policies that can form part of how you manage information security.Control plane protectionA key security mechanism for any Kubernetes cluster is to control access to the Kubernetes API.Kubernetes expects you to configure and use TLS to provide data encryption in transit within the control plane, and between the control plane and its client",
+          "[Evidence source: tutorials__security__cluster-level-pss.pdf]\nTutorials \u203a Security \u203a Cluster-Level-Pss Apply Pod Security Standards at the Cluster Level | Kubernetes Apply Pod Security Standards at the Cluster LevelNoteThis tutorial applies only for new clusters.Pod Security is an admission controller that carries out checks against the Kubernetes Pod Security Standards when new pods are created. It is a feature GA'ed in v1.25. This tutorial shows you how to enforce the baseline Pod Security Standard at the cluster level which applies a standard configuration to all namespaces in a cluster.To apply Pod Security Standards to specific namespaces, refer to Apply Pod Security Standards at the namespace level.If you are running a version of Kubernetes other than v1.36, check the documentation for that version.Before you beginInstall the following on your workstation:kindkubectlThis tutorial demonstrates what you can configure for a Kubernetes cluster that you fully control. If you are learning how to configure Pod Security Admission for a managed clus",
+          "[Evidence source: concepts__security__rbac-good-practices.pdf]\nConcepts \u203a Security \u203a Rbac-Good-Practices Role Based Access Control Good Practices | Kubernetes Role Based Access Control Good PracticesPrinciples and practices for good RBAC design for cluster operators.Kubernetes RBAC is a key security control to ensure that cluster users and workloads have only the access to resources required to execute their roles. It is important to ensure that, when designing permissions for cluster users, the cluster administrator understands the areas where privilege escalation could occur, to reduce the risk of excessive access leading to security incidents.The good practices laid out here should be read in conjunction with the general RBAC documentation.General good practiceLeast privilegeIdeally, minimal RBAC rights should be assigned to users and service accounts. Only permissions explicitly required for their operation should be used. While each cluster will be different, some general rules that can be applied are :Assign permissions at the namespace leve",
+          "[Evidence source: concepts__security__rbac-good-practices.pdf]\nservices, such as Kubelet.You should only allow access to create PersistentVolume objects for:Users (cluster operators) that need this access for their work, and who you trust.The Kubernetes control plane components which creates PersistentVolumes based on PersistentVolumeClaims that are configured for automatic provisioning. This is usually setup by the Kubernetes provider or by the operator when installing a CSI driver.Where access to persistent storage is required trusted administrators should create PersistentVolumes, and constrained users should use PersistentVolumeClaims to access that storage.Access to proxy subresource of NodesUsers with access to the nodes/proxy sub-resource have rights to the Kubelet API, which allows for command execution on every pod on the node(s) to which they have rights. This access bypasses audit logging and admission control, so care should be taken before granting any rights to this resource. These APIs can be exercised via websocket HTTP GET reques"
+        ],
+        "ground_truth": "RBAC, least privilege, security",
+        "actual_sources": [
+          "concepts__security__rbac-good-practices.pdf",
+          "concepts__security__overview.txt",
+          "tutorials__security__cluster-level-pss.pdf"
+        ],
+        "golden_sources": [
+          "concepts__security__overview.txt",
+          "concepts__security__rbac-good-practices.pdf"
+        ],
+        "forbidden_keywords": [],
+        "forbidden_sources": [],
+        "expected_route": "rag",
+        "actual_route": "rag",
+        "faithfulness": 0.372,
+        "answer_relevancy": 0.6,
+        "context_precision": 0.44,
+        "context_recall": 0.75,
+        "scoring_backend": "heuristic"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "concept",
+          "concepts",
+          "concepts__security__rbac-good-practice",
+          "concepts__security__rbac-good-practices",
+          "good",
+          "practice",
+          "practices",
+          "rbac",
+          "rbac-good-practice",
+          "rbac-good-practices",
+          "security"
+        ],
+        "missed": []
+      },
+      "source_precision": 1.0,
+      "forbidden_source_check": {
+        "passed": true,
+        "hits": []
+      },
+      "route_check": {
+        "passed": true,
+        "expected": "rag",
+        "actual": "rag"
+      }
+    }
+  ],
+  "skipped": [],
+  "aggregate": {
+    "context_precision": 0.44,
+    "context_recall": 0.75,
+    "answer_relevancy": 0.6,
+    "faithfulness": 0.372,
+    "forbidden_violations": 0,
+    "source_precision": 1.0,
+    "forbidden_source_violations": 0,
+    "route_violations": 0
+  },
+  "threshold_failures": {}
+}

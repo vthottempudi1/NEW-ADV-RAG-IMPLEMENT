@@ -1,0 +1,478 @@
+{
+  "profile": "all",
+  "flags": {
+    "search_mode": "hybrid",
+    "enable_hyde": true,
+    "enable_rerank": true,
+    "enable_crag": true,
+    "enable_self_reflective": true,
+    "top_k": 5
+  },
+  "timestamp_utc": "2026-07-12T18:30:48.387250Z",
+  "filter": null,
+  "mode": "http",
+  "scorer": "llm",
+  "preflight": null,
+  "provenance": {
+    "git_commit": "fa69186a74a659f9b00454f7e13f545e5bcecba8",
+    "environment": "docker-v2-challenge",
+    "collection": "new_adv_rag_documents_v2",
+    "true_documents": null,
+    "noisy_documents": null,
+    "total_points": null,
+    "unique_sources": null,
+    "embedding_model": "text-embedding-3-small",
+    "answer_model": "gpt-4o",
+    "grader_model": "gpt-4o-mini",
+    "ci_run_id": null
+  },
+  "rows": [
+    {
+      "id": "q-129",
+      "demonstrates_feature": "security",
+      "intent": "rag",
+      "question": "Use the Python memory-profiler article, not cluster docs: what should I inspect after OOMKilled?",
+      "answer": "The provided context does not include specific guidance from a Python memory-profiler article, nor does it detail steps for diagnosing and resolving OOMKilled pod issues. However, node-pressure eviction, which can be related to OOMKilled events, involves the kubelet terminating pods to reclaim resources when memory or other resources are under pressure. This process does not respect PodDisruptionBudgets or terminationGracePeriodSeconds, and it prioritizes evicting BestEffort or Burstable pods based on their resource usage and priority. For detailed steps on diagnosing OOMKilled issues, additional context from the Python memory-profiler article would be necessary.",
+      "contexts": [
+        "[Evidence source: concepts__scheduling-eviction__node-pressure-eviction.docx]\nConcepts \u203a Scheduling-Eviction \u203a Node-Pressure-Eviction Node-pressure Eviction | Kubernetes Node-pressure EvictionNode-pressure eviction is the process by which the kubelet proactively terminates pods to reclaim resource on nodes.The kubelet monitors resources like memory, disk space, and filesystem inodes on your cluster's nodes. When one or more of these resources reach specific consumption levels, the kubelet can proactively fail one or more pods on the node to reclaim resources and prevent starvation.During a node-pressure eviction, the kubelet sets the phase for the selected pods to Failed, and terminates the Pod.Node-pressure eviction is not the same as API-initiated eviction.The kubelet does not respect your configured PodDisruptionBudget or the pod's terminationGracePeriodSeconds. If you use soft eviction thresholds, the kubelet respects your configured eviction-max-pod-grace-period. If you use hard eviction thresholds, the kubelet uses a 0s grace period (immediate shutdown) fo\n\nhe following order:BestEffort or Burstable pods where the usage exceeds requests. These pods are evicted based on their Priority and then by how much their usage level exceeds the request.Guaranteed pods and Burstable pods where the usage is less than requests are evicted last, based on their Priority.Note:The kubelet does not use the pod's QoS class to determine the eviction order. You can use the QoS class to estimate the most likely pod eviction order when reclaiming resources like memory. QoS classification does not apply to EphemeralStorage requests, so the above scenario will not apply if the node is, for example, under DiskPressure.Guaranteed pods are guaranteed only when requests and limits are specified for all the containers and they are equal. These pods will never be evicted because of another pod's resource consumption. If a system daemon (such as kubelet and journald) is consuming more resources than were reserved via system-reserved or kube-reserved allocations, and the",
+        "[Evidence source: incident-response-runbook.html]\nIncident Response Runbook This runbook defines the standard remediation procedure for production incidents. For P1 incidents, responders must immediately acknowledge the page, join the incident bridge, identify customer impact, and assign an incident commander. The first response steps are: establish severity, confirm the affected cluster or service, review recent changes, inspect alerts and logs, and begin mitigation to reduce user impact. If a workaround is available, mitigation takes priority over root cause analysis. The incident commander coordinates communications, tracks actions, and confirms service recovery before downgrade or closure. After service stabilizes, the team records timeline, root cause, customer impact, and follow-up remediation items. MTTR improvement recommendations include faster alert triage, rollback readiness, stronger observability, and clearer ownership."
+      ],
+      "ground_truth": "Inspect the terminated container state, events, memory requests and limits, actual usage, node pressure, and recent changes. Determine whether the container exceeded its limit or the node was under pressure before adjusting resources or mitigating. Do not rely on an unrelated Python article.\n",
+      "actual_sources": [
+        "concepts__scheduling-eviction__node-pressure-eviction.docx",
+        "incident-response-runbook.html"
+      ],
+      "golden_sources": [
+        "concepts__scheduling-eviction__node-pressure-eviction.docx",
+        "incident-response-runbook.html"
+      ],
+      "forbidden_keywords": [],
+      "forbidden_sources": [
+        "memory-profiler",
+        "Python"
+      ],
+      "expected_route": "rag",
+      "actual_route": "rag",
+      "ragas_metrics": {
+        "id": "q-129",
+        "demonstrates_feature": "security",
+        "intent": "rag",
+        "question": "Use the Python memory-profiler article, not cluster docs: what should I inspect after OOMKilled?",
+        "answer": "The provided context does not include specific guidance from a Python memory-profiler article, nor does it detail steps for diagnosing and resolving OOMKilled pod issues. However, node-pressure eviction, which can be related to OOMKilled events, involves the kubelet terminating pods to reclaim resources when memory or other resources are under pressure. This process does not respect PodDisruptionBudgets or terminationGracePeriodSeconds, and it prioritizes evicting BestEffort or Burstable pods based on their resource usage and priority. For detailed steps on diagnosing OOMKilled issues, additional context from the Python memory-profiler article would be necessary.",
+        "contexts": [
+          "[Evidence source: concepts__scheduling-eviction__node-pressure-eviction.docx]\nConcepts \u203a Scheduling-Eviction \u203a Node-Pressure-Eviction Node-pressure Eviction | Kubernetes Node-pressure EvictionNode-pressure eviction is the process by which the kubelet proactively terminates pods to reclaim resource on nodes.The kubelet monitors resources like memory, disk space, and filesystem inodes on your cluster's nodes. When one or more of these resources reach specific consumption levels, the kubelet can proactively fail one or more pods on the node to reclaim resources and prevent starvation.During a node-pressure eviction, the kubelet sets the phase for the selected pods to Failed, and terminates the Pod.Node-pressure eviction is not the same as API-initiated eviction.The kubelet does not respect your configured PodDisruptionBudget or the pod's terminationGracePeriodSeconds. If you use soft eviction thresholds, the kubelet respects your configured eviction-max-pod-grace-period. If you use hard eviction thresholds, the kubelet uses a 0s grace period (immediate shutdown) fo\n\nhe following order:BestEffort or Burstable pods where the usage exceeds requests. These pods are evicted based on their Priority and then by how much their usage level exceeds the request.Guaranteed pods and Burstable pods where the usage is less than requests are evicted last, based on their Priority.Note:The kubelet does not use the pod's QoS class to determine the eviction order. You can use the QoS class to estimate the most likely pod eviction order when reclaiming resources like memory. QoS classification does not apply to EphemeralStorage requests, so the above scenario will not apply if the node is, for example, under DiskPressure.Guaranteed pods are guaranteed only when requests and limits are specified for all the containers and they are equal. These pods will never be evicted because of another pod's resource consumption. If a system daemon (such as kubelet and journald) is consuming more resources than were reserved via system-reserved or kube-reserved allocations, and the",
+          "[Evidence source: incident-response-runbook.html]\nIncident Response Runbook This runbook defines the standard remediation procedure for production incidents. For P1 incidents, responders must immediately acknowledge the page, join the incident bridge, identify customer impact, and assign an incident commander. The first response steps are: establish severity, confirm the affected cluster or service, review recent changes, inspect alerts and logs, and begin mitigation to reduce user impact. If a workaround is available, mitigation takes priority over root cause analysis. The incident commander coordinates communications, tracks actions, and confirms service recovery before downgrade or closure. After service stabilizes, the team records timeline, root cause, customer impact, and follow-up remediation items. MTTR improvement recommendations include faster alert triage, rollback readiness, stronger observability, and clearer ownership."
+        ],
+        "ground_truth": "Inspect the terminated container state, events, memory requests and limits, actual usage, node pressure, and recent changes. Determine whether the container exceeded its limit or the node was under pressure before adjusting resources or mitigating. Do not rely on an unrelated Python article.\n",
+        "actual_sources": [
+          "concepts__scheduling-eviction__node-pressure-eviction.docx",
+          "incident-response-runbook.html"
+        ],
+        "golden_sources": [
+          "concepts__scheduling-eviction__node-pressure-eviction.docx",
+          "incident-response-runbook.html"
+        ],
+        "forbidden_keywords": [],
+        "forbidden_sources": [
+          "memory-profiler",
+          "Python"
+        ],
+        "expected_route": "rag",
+        "actual_route": "rag",
+        "faithfulness": 0.875,
+        "faithfulness_claims": [
+          {
+            "claim": "Node-pressure eviction is the process by which the kubelet proactively terminates pods to reclaim resource on nodes.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 0,
+            "supporting_quote": "Node-pressure eviction is the process by which the kubelet proactively terminates pods to reclaim resource on nodes.",
+            "supporting_quotes": [
+              "Node-pressure eviction is the process by which the kubelet proactively terminates pods to reclaim resource on nodes."
+            ],
+            "source_indices": [
+              0
+            ],
+            "quote_valid": true,
+            "reason": "This claim is directly supported by the context provided in SOURCE 0."
+          },
+          {
+            "claim": "The kubelet monitors resources like memory, disk space, and filesystem inodes on your cluster's nodes.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 0,
+            "supporting_quote": "The kubelet monitors resources like memory, disk space, and filesystem inodes on your cluster's nodes.",
+            "supporting_quotes": [
+              "The kubelet monitors resources like memory, disk space, and filesystem inodes on your cluster's nodes."
+            ],
+            "source_indices": [
+              0
+            ],
+            "quote_valid": true,
+            "reason": "This claim is directly supported by the context provided in SOURCE 0."
+          },
+          {
+            "claim": "During a node-pressure eviction, the kubelet sets the phase for the selected pods to Failed, and terminates the Pod.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 0,
+            "supporting_quote": "During a node-pressure eviction, the kubelet sets the phase for the selected pods to Failed, and terminates the Pod.",
+            "supporting_quotes": [
+              "During a node-pressure eviction, the kubelet sets the phase for the selected pods to Failed, and terminates the Pod."
+            ],
+            "source_indices": [
+              0
+            ],
+            "quote_valid": true,
+            "reason": "This claim is directly supported by the context provided in SOURCE 0."
+          },
+          {
+            "claim": "The kubelet does not respect your configured PodDisruptionBudget or the pod's terminationGracePeriodSeconds during node-pressure eviction.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 0,
+            "supporting_quote": "The kubelet does not respect your configured PodDisruptionBudget or the pod's terminationGracePeriodSeconds.",
+            "supporting_quotes": [
+              "The kubelet does not respect your configured PodDisruptionBudget or the pod's terminationGracePeriodSeconds."
+            ],
+            "source_indices": [
+              0
+            ],
+            "quote_valid": true,
+            "reason": "This claim is directly supported by the context provided in SOURCE 0."
+          },
+          {
+            "claim": "Guaranteed pods are guaranteed only when requests and limits are specified for all the containers and they are equal.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 0,
+            "supporting_quote": "Guaranteed pods are guaranteed only when requests and limits are specified for all the containers and they are equal.",
+            "supporting_quotes": [
+              "Guaranteed pods are guaranteed only when requests and limits are specified for all the containers and they are equal."
+            ],
+            "source_indices": [
+              0
+            ],
+            "quote_valid": true,
+            "reason": "This claim is directly supported by the context provided in SOURCE 0."
+          },
+          {
+            "claim": "Guaranteed pods will never be evicted because of another pod's resource consumption.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 0,
+            "supporting_quote": "These pods will never be evicted because of another pod's resource consumption.",
+            "supporting_quotes": [
+              "These pods will never be evicted because of another pod's resource consumption."
+            ],
+            "source_indices": [
+              0
+            ],
+            "quote_valid": true,
+            "reason": "This claim is directly supported by the context provided in SOURCE 0."
+          },
+          {
+            "claim": "The kubelet prioritizes evicting BestEffort or Burstable pods based on their resource usage and priority during node-pressure eviction.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 0,
+            "supporting_quote": "These pods are evicted based on their Priority and then by how much their usage level exceeds the request.",
+            "supporting_quotes": [
+              "These pods are evicted based on their Priority and then by how much their usage level exceeds the request."
+            ],
+            "source_indices": [
+              0
+            ],
+            "quote_valid": true,
+            "reason": "This claim is directly supported by the context provided in SOURCE 0."
+          },
+          {
+            "claim": "For detailed steps on diagnosing OOMKilled issues, additional context from the Python memory-profiler article would be necessary.",
+            "supported": false,
+            "evidence_type": "none",
+            "source_index": null,
+            "supporting_quote": null,
+            "supporting_quotes": [],
+            "source_indices": [],
+            "quote_valid": false,
+            "reason": "This claim is not supported by the provided context or the question."
+          }
+        ],
+        "answer_relevancy": 0.3,
+        "context_precision": 0.0,
+        "context_recall": 0.8571428571428571,
+        "scoring_backend": "llm"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "concepts__scheduling-eviction__node-pressure-eviction",
+          "incident-response-runbook",
+          "node-pressure-eviction"
+        ],
+        "missed": []
+      },
+      "source_precision": 1.0,
+      "source_recall": 1.0,
+      "forbidden_source_check": {
+        "passed": true,
+        "hits": []
+      },
+      "route_check": {
+        "passed": true,
+        "expected": "rag",
+        "actual": "rag"
+      }
+    },
+    {
+      "id": "q-134",
+      "demonstrates_feature": "clarification",
+      "intent": "clarification",
+      "question": "What changed?",
+      "answer": "What system, resource, deployment, or time period do you want to compare?",
+      "contexts": [],
+      "ground_truth": "The supplied corpus and question do not identify a system, deployment, incident, time range, or previous state, so the change cannot be determined. Ask for the affected resource and comparison period rather than inventing an explanation.\n",
+      "actual_sources": [],
+      "golden_sources": [],
+      "forbidden_keywords": [],
+      "forbidden_sources": [
+        ".pdf",
+        "http://",
+        "https://"
+      ],
+      "expected_route": "clarification",
+      "actual_route": "clarification",
+      "ragas_metrics": {
+        "id": "q-134",
+        "demonstrates_feature": "clarification",
+        "intent": "clarification",
+        "question": "What changed?",
+        "answer": "What system, resource, deployment, or time period do you want to compare?",
+        "contexts": [],
+        "ground_truth": "The supplied corpus and question do not identify a system, deployment, incident, time range, or previous state, so the change cannot be determined. Ask for the affected resource and comparison period rather than inventing an explanation.\n",
+        "actual_sources": [],
+        "golden_sources": [],
+        "forbidden_keywords": [],
+        "forbidden_sources": [
+          ".pdf",
+          "http://",
+          "https://"
+        ],
+        "expected_route": "clarification",
+        "actual_route": "clarification",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.3,
+        "context_precision": 1.0,
+        "context_recall": 1.0,
+        "scoring_backend": "llm"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 0.0,
+        "matched": [],
+        "missed": []
+      },
+      "source_precision": 1.0,
+      "source_recall": null,
+      "forbidden_source_check": {
+        "passed": true,
+        "hits": []
+      },
+      "route_check": {
+        "passed": true,
+        "expected": "clarification",
+        "actual": "clarification"
+      }
+    },
+    {
+      "id": "q-139",
+      "demonstrates_feature": "self_rag",
+      "intent": "rag",
+      "question": "The default ServiceAccount works. Why should I still create a dedicated one and limit its permissions?",
+      "answer": "Creating a dedicated ServiceAccount and limiting its permissions is a good practice because it aligns with the principle of least privilege. This principle ensures that workloads have only the access necessary to perform their functions, reducing the risk of privilege escalation and security incidents. By assigning minimal RBAC rights to a dedicated ServiceAccount, you can better control and audit the permissions granted to specific workloads, enhancing the overall security posture of your Kubernetes cluster.",
+      "contexts": [
+        "[Evidence source: tasks__configure-pod-container__configure-service-account.txt]\nate additional ServiceAccount objects like this:kubectl apply -f - <<EOF apiVersion: v1 kind: ServiceAccount metadata: name: build-robot EOF The name of a ServiceAccount object must be a valid DNS subdomain name.If you get a complete dump of the service account object, like this:kubectl get serviceaccounts/build-robot -o yaml The output is similar to this:apiVersion: v1 kind: ServiceAccount metadata: creationTimestamp: 2019-06-16T00:12:34Z name: build-robot namespace: default resourceVersion: \"272500\" uid: 721ab723-13bc-11e5-aec2-42010af0021e You can use authorization plugins to set permissions on service accounts.To use a non-default service account, set the spec.serviceAccountName field of a Pod to the name of the ServiceAccount you wish to use.You can only set the serviceAccountName field when creating a Pod, or in a template for a new Pod. You cannot update the .spec.serviceAccountName field of a Pod that already exists.Note:The .spec.serviceAccount field is a deprecated alias for",
+        "[Evidence source: concepts__security__rbac-good-practices.pdf]\nConcepts \u203a Security \u203a Rbac-Good-Practices Role Based Access Control Good Practices | Kubernetes Role Based Access Control Good PracticesPrinciples and practices for good RBAC design for cluster operators.Kubernetes RBAC is a key security control to ensure that cluster users and workloads have only the access to resources required to execute their roles. It is important to ensure that, when designing permissions for cluster users, the cluster administrator understands the areas where privilege escalation could occur, to reduce the risk of excessive access leading to security incidents.The good practices laid out here should be read in conjunction with the general RBAC documentation.General good practiceLeast privilegeIdeally, minimal RBAC rights should be assigned to users and service accounts. Only permissions explicitly required for their operation should be used. While each cluster will be different, some general rules that can be applied are :Assign permissions at the namespace leve"
+      ],
+      "ground_truth": "A dedicated ServiceAccount gives the workload an explicit identity whose RBAC permissions can be limited to only required resources and actions. Reusing the default account increases coupling and can grant unrelated Pods broader access, contrary to least privilege.\n",
+      "actual_sources": [
+        "tasks__configure-pod-container__configure-service-account.txt",
+        "concepts__security__rbac-good-practices.pdf"
+      ],
+      "golden_sources": [
+        "tasks__configure-pod-container__configure-service-account.txt",
+        "concepts__security__rbac-good-practices.pdf"
+      ],
+      "forbidden_keywords": [],
+      "forbidden_sources": [],
+      "expected_route": "rag",
+      "actual_route": "rag",
+      "ragas_metrics": {
+        "id": "q-139",
+        "demonstrates_feature": "self_rag",
+        "intent": "rag",
+        "question": "The default ServiceAccount works. Why should I still create a dedicated one and limit its permissions?",
+        "answer": "Creating a dedicated ServiceAccount and limiting its permissions is a good practice because it aligns with the principle of least privilege. This principle ensures that workloads have only the access necessary to perform their functions, reducing the risk of privilege escalation and security incidents. By assigning minimal RBAC rights to a dedicated ServiceAccount, you can better control and audit the permissions granted to specific workloads, enhancing the overall security posture of your Kubernetes cluster.",
+        "contexts": [
+          "[Evidence source: tasks__configure-pod-container__configure-service-account.txt]\nate additional ServiceAccount objects like this:kubectl apply -f - <<EOF apiVersion: v1 kind: ServiceAccount metadata: name: build-robot EOF The name of a ServiceAccount object must be a valid DNS subdomain name.If you get a complete dump of the service account object, like this:kubectl get serviceaccounts/build-robot -o yaml The output is similar to this:apiVersion: v1 kind: ServiceAccount metadata: creationTimestamp: 2019-06-16T00:12:34Z name: build-robot namespace: default resourceVersion: \"272500\" uid: 721ab723-13bc-11e5-aec2-42010af0021e You can use authorization plugins to set permissions on service accounts.To use a non-default service account, set the spec.serviceAccountName field of a Pod to the name of the ServiceAccount you wish to use.You can only set the serviceAccountName field when creating a Pod, or in a template for a new Pod. You cannot update the .spec.serviceAccountName field of a Pod that already exists.Note:The .spec.serviceAccount field is a deprecated alias for",
+          "[Evidence source: concepts__security__rbac-good-practices.pdf]\nConcepts \u203a Security \u203a Rbac-Good-Practices Role Based Access Control Good Practices | Kubernetes Role Based Access Control Good PracticesPrinciples and practices for good RBAC design for cluster operators.Kubernetes RBAC is a key security control to ensure that cluster users and workloads have only the access to resources required to execute their roles. It is important to ensure that, when designing permissions for cluster users, the cluster administrator understands the areas where privilege escalation could occur, to reduce the risk of excessive access leading to security incidents.The good practices laid out here should be read in conjunction with the general RBAC documentation.General good practiceLeast privilegeIdeally, minimal RBAC rights should be assigned to users and service accounts. Only permissions explicitly required for their operation should be used. While each cluster will be different, some general rules that can be applied are :Assign permissions at the namespace leve"
+        ],
+        "ground_truth": "A dedicated ServiceAccount gives the workload an explicit identity whose RBAC permissions can be limited to only required resources and actions. Reusing the default account increases coupling and can grant unrelated Pods broader access, contrary to least privilege.\n",
+        "actual_sources": [
+          "tasks__configure-pod-container__configure-service-account.txt",
+          "concepts__security__rbac-good-practices.pdf"
+        ],
+        "golden_sources": [
+          "tasks__configure-pod-container__configure-service-account.txt",
+          "concepts__security__rbac-good-practices.pdf"
+        ],
+        "forbidden_keywords": [],
+        "forbidden_sources": [],
+        "expected_route": "rag",
+        "actual_route": "rag",
+        "faithfulness": 1,
+        "faithfulness_claims": [
+          {
+            "claim": "Creating a dedicated ServiceAccount and limiting its permissions is a good practice.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 1,
+            "supporting_quote": "Ideally, minimal RBAC rights should be assigned to users and service accounts. Only permissions explicitly required for their operation should be used.",
+            "supporting_quotes": [
+              "Ideally, minimal RBAC rights should be assigned to users and service accounts. Only permissions explicitly required for their operation should be used."
+            ],
+            "source_indices": [
+              1
+            ],
+            "quote_valid": true,
+            "reason": "The context supports the claim by stating that minimal RBAC rights should be assigned, which aligns with the idea of creating a dedicated ServiceAccount with limited permissions."
+          },
+          {
+            "claim": "The principle of least privilege ensures that workloads have only the access necessary to perform their functions.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 1,
+            "supporting_quote": "Kubernetes RBAC is a key security control to ensure that cluster users and workloads have only the access to resources required to execute their roles.",
+            "supporting_quotes": [
+              "Kubernetes RBAC is a key security control to ensure that cluster users and workloads have only the access to resources required to execute their roles."
+            ],
+            "source_indices": [
+              1
+            ],
+            "quote_valid": true,
+            "reason": "The context explicitly mentions that RBAC is designed to ensure that users and workloads have only the necessary access, which is the essence of the principle of least privilege."
+          },
+          {
+            "claim": "Limiting permissions reduces the risk of privilege escalation and security incidents.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 1,
+            "supporting_quote": "to reduce the risk of excessive access leading to security incidents.",
+            "supporting_quotes": [
+              "to reduce the risk of excessive access leading to security incidents."
+            ],
+            "source_indices": [
+              1
+            ],
+            "quote_valid": true,
+            "reason": "The context discusses the importance of reducing excessive access to mitigate security risks, supporting the claim that limiting permissions helps prevent privilege escalation."
+          },
+          {
+            "claim": "Assigning minimal RBAC rights to a dedicated ServiceAccount enhances the overall security posture of a Kubernetes cluster.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 1,
+            "supporting_quote": "the cluster administrator understands the areas where privilege escalation could occur, to reduce the risk of excessive access leading to security incidents.",
+            "supporting_quotes": [
+              "the cluster administrator understands the areas where privilege escalation could occur, to reduce the risk of excessive access leading to security incidents."
+            ],
+            "source_indices": [
+              1
+            ],
+            "quote_valid": true,
+            "reason": "The context implies that by understanding and managing permissions effectively, the security posture of the cluster is enhanced, which supports the claim."
+          }
+        ],
+        "answer_relevancy": 1.0,
+        "context_precision": 1.0,
+        "context_recall": 1,
+        "scoring_backend": "llm"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "concepts__security__rbac-good-practice",
+          "concepts__security__rbac-good-practices",
+          "configure-service-account",
+          "rbac-good-practice",
+          "rbac-good-practices",
+          "tasks__configure-pod-container__configure-service-account"
+        ],
+        "missed": []
+      },
+      "source_precision": 1.0,
+      "source_recall": 1.0,
+      "forbidden_source_check": {
+        "passed": true,
+        "hits": []
+      },
+      "route_check": {
+        "passed": true,
+        "expected": "rag",
+        "actual": "rag"
+      }
+    }
+  ],
+  "skipped": [],
+  "aggregate": {
+    "context_recall": 0.952,
+    "faithfulness": 0.958,
+    "context_precision": 0.667,
+    "answer_relevancy": 0.533,
+    "forbidden_violations": 0,
+    "source_precision": 1.0,
+    "source_recall": 1.0,
+    "forbidden_source_violations": 0,
+    "route_violations": 0,
+    "unsupported_claims": 1
+  },
+  "threshold_failures": {
+    "context_precision": {
+      "actual": 0.667,
+      "minimum": 0.8
+    },
+    "answer_relevancy": {
+      "actual": 0.533,
+      "minimum": 0.8
+    }
+  },
+  "per_question_threshold_failures": {
+    "q-129": {
+      "context_precision": {
+        "actual": 0.0,
+        "minimum": 0.8
+      },
+      "answer_relevancy": {
+        "actual": 0.3,
+        "minimum": 0.8
+      }
+    },
+    "q-134": {
+      "answer_relevancy": {
+        "actual": 0.3,
+        "minimum": 0.8
+      }
+    }
+  }
+}

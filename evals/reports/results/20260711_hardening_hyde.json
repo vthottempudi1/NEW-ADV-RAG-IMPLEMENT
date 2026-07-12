@@ -1,0 +1,246 @@
+{
+  "profile": "hybrid+rerank+hyde",
+  "flags": {
+    "search_mode": "hybrid",
+    "enable_hyde": true,
+    "enable_rerank": true,
+    "enable_crag": false,
+    "enable_self_reflective": false,
+    "top_k": 5
+  },
+  "timestamp_utc": "2026-07-11T05:57:48.518345Z",
+  "filter": "hyde",
+  "mode": "local",
+  "scorer": "heuristic",
+  "preflight": {
+    "status": "ok",
+    "collection": "new_adv_rag_documents",
+    "total_points": 1179,
+    "unique_sources": 49,
+    "golden_source_coverage": 1.0,
+    "warnings": []
+  },
+  "provenance": {
+    "git_commit": "fa69186a74a659f9b00454f7e13f545e5bcecba8",
+    "environment": "local-hardening",
+    "collection": "new_adv_rag_documents",
+    "true_documents": 50,
+    "noisy_documents": 324,
+    "total_points": 1179,
+    "unique_sources": 49,
+    "embedding_model": "text-embedding-3-small",
+    "answer_model": "gpt-4o",
+    "grader_model": "gpt-4o-mini",
+    "ci_run_id": null
+  },
+  "rows": [
+    {
+      "id": "q-053",
+      "demonstrates_feature": "hyde",
+      "intent": "rag",
+      "question": "How can I stop one team from consuming all shared cluster resources?",
+      "answer": "To prevent one team from consuming all shared cluster resources, you can use Kubernetes Resource Quotas and Limit Ranges. Resource Quotas allow you to set constraints on the aggregate resource consumption per namespace, ensuring that each team is limited to a fair share of resources. You can define a ResourceQuota object for each namespace to limit the total amount of resources like CPU and memory that can be consumed. Additionally, you can use Limit Ranges to set minimum and maximum resource requests and limits for individual objects within a namespace, preventing any single object from monopolizing resources. These tools help ensure balanced resource usage across teams sharing the cluster.",
+      "contexts": [
+        "Resource Quotas | Kubernetes Resource QuotasWhen several users or teams share a cluster with a fixed number of nodes, there is a concern that one team could use more than its fair share of resources.Resource quotas are a tool for administrators to address this concern.A resource quota, defined by a ResourceQuota object, provides constraints that limit aggregate resource consumption per namespace. A ResourceQuota can also limit the quantity of objects that can be created in a namespace by API kind, as well as the total amount of infrastructure resources that may be consumed by API objects found in that namespace.Caution:Neither contention nor changes to quota will affect already created resources.How Kubernetes ResourceQuotas workResourceQuotas work like this:Different teams work in different namespaces. This separation can be enforced with RBAC or any other authorization mechanism.A cluster administrator creates at least one ResourceQuota for each namespace.To make sure the enforcement",
+        "Concepts \u203a Policy \u203a Limit-Range Concepts \u203a Policy \u203a Limit-Range Limit Ranges | Kubernetes Limit RangesBy default, containers run with unbounded compute resources on a Kubernetes cluster. Using Kubernetes resource quotas, administrators (also termed cluster operators) can restrict consumption and creation of cluster resources (such as CPU time, memory, and persistent storage) within a specified namespace. Within a namespace, a Pod can consume as much CPU and memory as is allowed by the ResourceQuotas that apply to that namespace. As a cluster operator, or as a namespace-level administrator, you might also be concerned about making sure that a single object cannot monopolize all available resources within a namespace.A LimitRange is a policy to constrain the resource allocations (limits and requests) that you can specify for each applicable object kind (such as Pod or PersistentVolumeClaim) in a namespace.A LimitRange provides constraints that can:Enforce minimum and maximum compute reso",
+        "ectl describe quota --namespace=myspace Name: test Namespace: myspace Resource Used Hard -------- ---- ---- count/deployments.apps 1 2 count/pods 2 3 count/replicasets.apps 1 4 count/secrets 1 4 Quota and Cluster CapacityResourceQuotas are independent of the cluster capacity. They are expressed in absolute units. So, if you add nodes to your cluster, this does not automatically give each namespace the ability to consume more resources.Sometimes more complex policies may be desired, such as:Proportionally divide total cluster resources among several teams.Allow each tenant to grow resource usage as needed, but have a generous limit to prevent accidental resource exhaustion.Detect demand from one namespace, add nodes, and increase quota.Such policies could be implemented using ResourceQuotas as building blocks, by writing a \"controller\" that watches the quota usage and adjusts the quota hard limits of each namespace according to other signals.Note that resource quota divides up aggregate",
+        "ter administrator creates at least one ResourceQuota for each namespace.To make sure the enforcement stays enforced, the cluster administrator should also restrict access to delete or update that ResourceQuota; for example, by defining a ValidatingAdmissionPolicy.Users create resources (pods, services, etc.) in the namespace, and the quota system tracks usage to ensure it does not exceed hard resource limits defined in a ResourceQuota.You can apply a scope to a ResourceQuota to limit where it applies,If creating or updating a resource violates a quota constraint, the control plane rejects that request with HTTP status code 403 Forbidden. The error includes a message explaining the constraint that would have been violated.If quotas are enabled in a namespace for resource such as cpu and memory, users must specify requests or limits for those values when they define a Pod; otherwise, the quota system may reject pod creation.The resource quota walkthrough shows an example of how to avoid",
+        "uture allocation.Limit the \"testing\" namespace to using 1 core and 1GiB RAM. Let the \"production\" namespace use any amount.In the case where the total capacity of the cluster is less than the sum of the quotas of the namespaces, there may be contention for resources. This is handled on a first-come-first-served basis.Enabling Resource QuotaResourceQuota support is enabled by default for many Kubernetes distributions. It is enabled when the API server --enable-admission-plugins= flag has ResourceQuota as one of its arguments.A resource quota is enforced in a particular namespace when there is a ResourceQuota in that namespace.Types of resource quotaThe ResourceQuota mechanism lets you enforce different kinds of limits. This section describes the types of limit that you can enforce.Quota for infrastructure resourcesYou can limit the total sum of compute resources that can be requested in a given namespace.The following resource types are supported:Resource NameDescriptionlimits.cpuAcross"
+      ],
+      "ground_truth": "quota, limit, namespace",
+      "actual_sources": [
+        "concepts__policy__resource-quotas.txt",
+        "concepts__policy__limit-range.html"
+      ],
+      "golden_sources": [
+        "concepts__policy__resource-quotas.txt",
+        "concepts__policy__limit-range.html"
+      ],
+      "forbidden_keywords": [],
+      "ragas_metrics": {
+        "id": "q-053",
+        "demonstrates_feature": "hyde",
+        "intent": "rag",
+        "question": "How can I stop one team from consuming all shared cluster resources?",
+        "answer": "To prevent one team from consuming all shared cluster resources, you can use Kubernetes Resource Quotas and Limit Ranges. Resource Quotas allow you to set constraints on the aggregate resource consumption per namespace, ensuring that each team is limited to a fair share of resources. You can define a ResourceQuota object for each namespace to limit the total amount of resources like CPU and memory that can be consumed. Additionally, you can use Limit Ranges to set minimum and maximum resource requests and limits for individual objects within a namespace, preventing any single object from monopolizing resources. These tools help ensure balanced resource usage across teams sharing the cluster.",
+        "contexts": [
+          "Resource Quotas | Kubernetes Resource QuotasWhen several users or teams share a cluster with a fixed number of nodes, there is a concern that one team could use more than its fair share of resources.Resource quotas are a tool for administrators to address this concern.A resource quota, defined by a ResourceQuota object, provides constraints that limit aggregate resource consumption per namespace. A ResourceQuota can also limit the quantity of objects that can be created in a namespace by API kind, as well as the total amount of infrastructure resources that may be consumed by API objects found in that namespace.Caution:Neither contention nor changes to quota will affect already created resources.How Kubernetes ResourceQuotas workResourceQuotas work like this:Different teams work in different namespaces. This separation can be enforced with RBAC or any other authorization mechanism.A cluster administrator creates at least one ResourceQuota for each namespace.To make sure the enforcement",
+          "Concepts \u203a Policy \u203a Limit-Range Concepts \u203a Policy \u203a Limit-Range Limit Ranges | Kubernetes Limit RangesBy default, containers run with unbounded compute resources on a Kubernetes cluster. Using Kubernetes resource quotas, administrators (also termed cluster operators) can restrict consumption and creation of cluster resources (such as CPU time, memory, and persistent storage) within a specified namespace. Within a namespace, a Pod can consume as much CPU and memory as is allowed by the ResourceQuotas that apply to that namespace. As a cluster operator, or as a namespace-level administrator, you might also be concerned about making sure that a single object cannot monopolize all available resources within a namespace.A LimitRange is a policy to constrain the resource allocations (limits and requests) that you can specify for each applicable object kind (such as Pod or PersistentVolumeClaim) in a namespace.A LimitRange provides constraints that can:Enforce minimum and maximum compute reso",
+          "ectl describe quota --namespace=myspace Name: test Namespace: myspace Resource Used Hard -------- ---- ---- count/deployments.apps 1 2 count/pods 2 3 count/replicasets.apps 1 4 count/secrets 1 4 Quota and Cluster CapacityResourceQuotas are independent of the cluster capacity. They are expressed in absolute units. So, if you add nodes to your cluster, this does not automatically give each namespace the ability to consume more resources.Sometimes more complex policies may be desired, such as:Proportionally divide total cluster resources among several teams.Allow each tenant to grow resource usage as needed, but have a generous limit to prevent accidental resource exhaustion.Detect demand from one namespace, add nodes, and increase quota.Such policies could be implemented using ResourceQuotas as building blocks, by writing a \"controller\" that watches the quota usage and adjusts the quota hard limits of each namespace according to other signals.Note that resource quota divides up aggregate",
+          "ter administrator creates at least one ResourceQuota for each namespace.To make sure the enforcement stays enforced, the cluster administrator should also restrict access to delete or update that ResourceQuota; for example, by defining a ValidatingAdmissionPolicy.Users create resources (pods, services, etc.) in the namespace, and the quota system tracks usage to ensure it does not exceed hard resource limits defined in a ResourceQuota.You can apply a scope to a ResourceQuota to limit where it applies,If creating or updating a resource violates a quota constraint, the control plane rejects that request with HTTP status code 403 Forbidden. The error includes a message explaining the constraint that would have been violated.If quotas are enabled in a namespace for resource such as cpu and memory, users must specify requests or limits for those values when they define a Pod; otherwise, the quota system may reject pod creation.The resource quota walkthrough shows an example of how to avoid",
+          "uture allocation.Limit the \"testing\" namespace to using 1 core and 1GiB RAM. Let the \"production\" namespace use any amount.In the case where the total capacity of the cluster is less than the sum of the quotas of the namespaces, there may be contention for resources. This is handled on a first-come-first-served basis.Enabling Resource QuotaResourceQuota support is enabled by default for many Kubernetes distributions. It is enabled when the API server --enable-admission-plugins= flag has ResourceQuota as one of its arguments.A resource quota is enforced in a particular namespace when there is a ResourceQuota in that namespace.Types of resource quotaThe ResourceQuota mechanism lets you enforce different kinds of limits. This section describes the types of limit that you can enforce.Quota for infrastructure resourcesYou can limit the total sum of compute resources that can be requested in a given namespace.The following resource types are supported:Resource NameDescriptionlimits.cpuAcross"
+        ],
+        "ground_truth": "quota, limit, namespace",
+        "actual_sources": [
+          "concepts__policy__resource-quotas.txt",
+          "concepts__policy__limit-range.html"
+        ],
+        "golden_sources": [
+          "concepts__policy__resource-quotas.txt",
+          "concepts__policy__limit-range.html"
+        ],
+        "forbidden_keywords": [],
+        "faithfulness": 0.475,
+        "answer_relevancy": 0.889,
+        "context_precision": 0.444,
+        "context_recall": 1.0,
+        "scoring_backend": "heuristic"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "concept",
+          "concepts",
+          "concepts__policy__resource-quota",
+          "concepts__policy__resource-quotas",
+          "policy",
+          "quota",
+          "quotas",
+          "resource",
+          "resource-quota",
+          "resource-quotas"
+        ],
+        "missed": []
+      }
+    },
+    {
+      "id": "q-054",
+      "demonstrates_feature": "hyde",
+      "intent": "rag",
+      "question": "What should run my database if it needs the same name and disk after rescheduling?",
+      "answer": "If your database requires the same name and disk after rescheduling, you should use a StatefulSet. StatefulSets provide a stable, unique network identity and persistent storage for each Pod, ensuring that each Pod maintains its identity across rescheduling events.",
+      "contexts": [
+        "Concepts \u203a Workloads \u203a Controllers \u203a Statefulset StatefulSets | Kubernetes StatefulSetsA StatefulSet runs a group of Pods, and maintains a sticky identity for each of those Pods. This is useful for managing applications that need persistent storage or a stable, unique network identity.StatefulSet is the workload API object used to manage stateful applications.Manages the deployment and scaling of a set of Pods, and provides guarantees about the ordering and uniqueness of these Pods.Like a Deployment, a StatefulSet manages Pods that are based on an identical container spec. Unlike a Deployment, a StatefulSet maintains a sticky identity for each of its Pods. These pods are created from the same spec, but are not interchangeable: each has a persistent identifier that it maintains across any rescheduling.If you want to use storage volumes to provide persistence for your workload, you can use a StatefulSet as part of the solution. Although individual Pods in a StatefulSet are susceptible to",
+        "iod and certain processes might implicitly assume this path. Therefore, altering this parameter must be approached with caution and at your own risk.Another caveat to keep in mind is that the kubelet supports the location being on the same disk as /var. Otherwise, if the logs are on a separate filesystem from /var, then the kubelet will not track that filesystem's usage, potentially leading to issues if it fills up.For details about etcd and its logs, view the etcd documentation. Again, you can use Kubernetes' storage mechanisms to map persistent storage into the container that runs the component.Note:If you deploy Kubernetes cluster components (such as the scheduler) to log to a volume shared from the parent node, you need to consider and ensure that those logs are rotated. Kubernetes does not manage that log rotation.Your operating system may automatically implement some log rotation - for example, if you share the directory /var/log into a static Pod for a component, node-level log",
+        "traffic). You write the code to look in an environment variable named DATABASE_HOST. Locally, you set that variable to localhost. In the cloud, you set it to refer to a Kubernetes Service that exposes the database component to your cluster. This lets you fetch a container image running in the cloud and debug the exact same code locally if needed.Note:A ConfigMap is not designed to hold large chunks of data. The data stored in a ConfigMap cannot exceed 1 MiB. If you need to store settings that are larger than this limit, you may want to consider mounting a volume or use a separate database or file service.ConfigMap objectA ConfigMap is an API object that lets you store configuration for other objects to use. Unlike most Kubernetes objects that have a spec, a ConfigMap has data and binaryData fields. These fields accept key-value pairs as their values. Both the data field and the binaryData are optional. The data field is designed to contain UTF-8 strings while the binaryData field is de",
+        "ynamically drive the cluster back to the desired state via the creation of new Pods to keep your application running. As another example, consider an image-processing backend with 3 replicas. Those replicas are exchangeable; the front-end system should not care about backend replicas or even if a Pod is lost and recreated. That said, each Pod in a Kubernetes cluster has a unique IP address, even Pods on the same Node, so there needs to be a way of automatically reconciling changes among Pods so that your applications continue to function.A Kubernetes Service is an abstraction layer which defines a logical set of Pods and enables external traffic exposure, load balancing and service discovery for those Pods.A Service in Kubernetes is an abstraction which defines a logical set of Pods and a policy by which to access them. Services enable a loose coupling between dependent Pods. A Service is defined using YAML or JSON, like all Kubernetes object manifests. The set of Pods targeted by a Se",
+        "Pods' PersistentVolume Claims are not deleted when the Pods, or StatefulSet are deleted. This must be done manually.Pod Name LabelWhen the StatefulSet controller creates a Pod, it adds a label, statefulset.kubernetes.io/pod-name, that is set to the name of the Pod. This label allows you to attach a Service to a specific Pod in the StatefulSet.Pod index labelFEATURE STATE: Kubernetes v1.32 [stable](enabled by default)When the StatefulSet controller creates a Pod, the new Pod is labelled with apps.kubernetes.io/pod-index. The value of this label is the ordinal index of the Pod. This label allows you to route traffic to a particular pod index, filter logs/metrics using the pod index label, and more. Note the feature gate PodIndexLabel is enabled and locked by default for this feature, in order to disable it, users will have to use server emulated version v1.31.Deployment and Scaling GuaranteesFor a StatefulSet with N replicas, when Pods are being deployed, they are created sequentially,"
+      ],
+      "ground_truth": "StatefulSet, stable, storage",
+      "actual_sources": [
+        "concepts__workloads__controllers__statefulset.docx",
+        "concepts__cluster-administration__logging.pdf",
+        "concepts__configuration__configmap.html",
+        "tutorials__kubernetes-basics__expose__expose-intro.docx"
+      ],
+      "golden_sources": [
+        "concepts__workloads__controllers__statefulset.docx"
+      ],
+      "forbidden_keywords": [],
+      "ragas_metrics": {
+        "id": "q-054",
+        "demonstrates_feature": "hyde",
+        "intent": "rag",
+        "question": "What should run my database if it needs the same name and disk after rescheduling?",
+        "answer": "If your database requires the same name and disk after rescheduling, you should use a StatefulSet. StatefulSets provide a stable, unique network identity and persistent storage for each Pod, ensuring that each Pod maintains its identity across rescheduling events.",
+        "contexts": [
+          "Concepts \u203a Workloads \u203a Controllers \u203a Statefulset StatefulSets | Kubernetes StatefulSetsA StatefulSet runs a group of Pods, and maintains a sticky identity for each of those Pods. This is useful for managing applications that need persistent storage or a stable, unique network identity.StatefulSet is the workload API object used to manage stateful applications.Manages the deployment and scaling of a set of Pods, and provides guarantees about the ordering and uniqueness of these Pods.Like a Deployment, a StatefulSet manages Pods that are based on an identical container spec. Unlike a Deployment, a StatefulSet maintains a sticky identity for each of its Pods. These pods are created from the same spec, but are not interchangeable: each has a persistent identifier that it maintains across any rescheduling.If you want to use storage volumes to provide persistence for your workload, you can use a StatefulSet as part of the solution. Although individual Pods in a StatefulSet are susceptible to",
+          "iod and certain processes might implicitly assume this path. Therefore, altering this parameter must be approached with caution and at your own risk.Another caveat to keep in mind is that the kubelet supports the location being on the same disk as /var. Otherwise, if the logs are on a separate filesystem from /var, then the kubelet will not track that filesystem's usage, potentially leading to issues if it fills up.For details about etcd and its logs, view the etcd documentation. Again, you can use Kubernetes' storage mechanisms to map persistent storage into the container that runs the component.Note:If you deploy Kubernetes cluster components (such as the scheduler) to log to a volume shared from the parent node, you need to consider and ensure that those logs are rotated. Kubernetes does not manage that log rotation.Your operating system may automatically implement some log rotation - for example, if you share the directory /var/log into a static Pod for a component, node-level log",
+          "traffic). You write the code to look in an environment variable named DATABASE_HOST. Locally, you set that variable to localhost. In the cloud, you set it to refer to a Kubernetes Service that exposes the database component to your cluster. This lets you fetch a container image running in the cloud and debug the exact same code locally if needed.Note:A ConfigMap is not designed to hold large chunks of data. The data stored in a ConfigMap cannot exceed 1 MiB. If you need to store settings that are larger than this limit, you may want to consider mounting a volume or use a separate database or file service.ConfigMap objectA ConfigMap is an API object that lets you store configuration for other objects to use. Unlike most Kubernetes objects that have a spec, a ConfigMap has data and binaryData fields. These fields accept key-value pairs as their values. Both the data field and the binaryData are optional. The data field is designed to contain UTF-8 strings while the binaryData field is de",
+          "ynamically drive the cluster back to the desired state via the creation of new Pods to keep your application running. As another example, consider an image-processing backend with 3 replicas. Those replicas are exchangeable; the front-end system should not care about backend replicas or even if a Pod is lost and recreated. That said, each Pod in a Kubernetes cluster has a unique IP address, even Pods on the same Node, so there needs to be a way of automatically reconciling changes among Pods so that your applications continue to function.A Kubernetes Service is an abstraction layer which defines a logical set of Pods and enables external traffic exposure, load balancing and service discovery for those Pods.A Service in Kubernetes is an abstraction which defines a logical set of Pods and a policy by which to access them. Services enable a loose coupling between dependent Pods. A Service is defined using YAML or JSON, like all Kubernetes object manifests. The set of Pods targeted by a Se",
+          "Pods' PersistentVolume Claims are not deleted when the Pods, or StatefulSet are deleted. This must be done manually.Pod Name LabelWhen the StatefulSet controller creates a Pod, it adds a label, statefulset.kubernetes.io/pod-name, that is set to the name of the Pod. This label allows you to attach a Service to a specific Pod in the StatefulSet.Pod index labelFEATURE STATE: Kubernetes v1.32 [stable](enabled by default)When the StatefulSet controller creates a Pod, the new Pod is labelled with apps.kubernetes.io/pod-index. The value of this label is the ordinal index of the Pod. This label allows you to route traffic to a particular pod index, filter logs/metrics using the pod index label, and more. Note the feature gate PodIndexLabel is enabled and locked by default for this feature, in order to disable it, users will have to use server emulated version v1.31.Deployment and Scaling GuaranteesFor a StatefulSet with N replicas, when Pods are being deployed, they are created sequentially,"
+        ],
+        "ground_truth": "StatefulSet, stable, storage",
+        "actual_sources": [
+          "concepts__workloads__controllers__statefulset.docx",
+          "concepts__cluster-administration__logging.pdf",
+          "concepts__configuration__configmap.html",
+          "tutorials__kubernetes-basics__expose__expose-intro.docx"
+        ],
+        "golden_sources": [
+          "concepts__workloads__controllers__statefulset.docx"
+        ],
+        "forbidden_keywords": [],
+        "faithfulness": 0.69,
+        "answer_relevancy": 0.8,
+        "context_precision": 0.28,
+        "context_recall": 1.0,
+        "scoring_backend": "heuristic"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "concept",
+          "concepts",
+          "concepts__workloads__controllers__statefulset",
+          "controller",
+          "controllers",
+          "statefulset",
+          "workload",
+          "workloads"
+        ],
+        "missed": []
+      }
+    },
+    {
+      "id": "q-055",
+      "demonstrates_feature": "hyde",
+      "intent": "rag",
+      "question": "How can clients find my application when its Pod IP addresses keep changing?",
+      "answer": "Clients should not rely on Pod IP addresses to connect to applications in a StatefulSet, as these IPs can change. Instead, they should use the stable DNS names provided by the StatefulSet. You can query the CNAME of the headless Service associated with the StatefulSet (e.g., nginx.default.svc.cluster.local) to discover the SRV records of the Pods that are Running and Ready. These SRV records will provide stable hostnames like web-0.nginx.default.svc.cluster.local and web-1.nginx.default.svc.cluster.local, which your application can use to connect to the Pods. Alternatively, if your application does not need to track specific Pods, you can connect to the IP address of a ClusterIP Service that is backed by the Pods in the StatefulSet.",
+      "contexts": [
+        "ow exit the container shell: exit)The Pods' ordinals, hostnames, SRV records, and A record names have not changed, but the IP addresses associated with the Pods may have changed. In the cluster used for this tutorial, they have. This is why it is important not to configure other applications to connect to Pods in a StatefulSet by the IP address of a particular Pod (it is OK to connect to Pods by resolving their hostname).Discovery for specific Pods in a StatefulSetIf you need to find and connect to the active members of a StatefulSet, you should query the CNAME of the headless Service (nginx.default.svc.cluster.local). The SRV records associated with the CNAME will contain only the Pods in the StatefulSet that are Running and Ready.If your application already implements connection logic that tests for liveness and readiness, you can use the SRV records of the Pods ( web-0.nginx.default.svc.cluster.local, web-1.nginx.default.svc.cluster.local), as they are stable, and your application w",
+        "vc.cluster.local, web-1.nginx.default.svc.cluster.local), as they are stable, and your application will be able to discover the Pods' addresses when they transition to Running and Ready.If your application wants to find any healthy Pod in a StatefulSet, and therefore does not need to track each specific Pod, you could also connect to the IP address of a type: ClusterIP Service, backed by the Pods in that StatefulSet. You can use the same Service that tracks the StatefulSet (specified in the serviceName of the StatefulSet) or a separate Service that selects the right set of Pods.Writing to stable storageGet the PersistentVolumeClaims for web-0 and web-1:kubectl get pvc -l app=nginx The output is similar to:NAME STATUS VOLUME CAPACITY ACCESSMODES AGE www-web-0 Bound pvc-15c268c7-b507-11e6-932f-42010a800002 1Gi RWO 48s www-web-1 Bound pvc-15c79307-b507-11e6-932f-42010a800002 1Gi RWO 48s The StatefulSet controller created two PersistentVolumeClaims that are bound to two PersistentVolumes.A"
+      ],
+      "ground_truth": "Service, endpoint, Pod",
+      "actual_sources": [
+        "tutorials__stateful-application__basic-stateful-set.html"
+      ],
+      "golden_sources": [
+        "concepts__services-networking__service.txt"
+      ],
+      "forbidden_keywords": [],
+      "ragas_metrics": {
+        "id": "q-055",
+        "demonstrates_feature": "hyde",
+        "intent": "rag",
+        "question": "How can clients find my application when its Pod IP addresses keep changing?",
+        "answer": "Clients should not rely on Pod IP addresses to connect to applications in a StatefulSet, as these IPs can change. Instead, they should use the stable DNS names provided by the StatefulSet. You can query the CNAME of the headless Service associated with the StatefulSet (e.g., nginx.default.svc.cluster.local) to discover the SRV records of the Pods that are Running and Ready. These SRV records will provide stable hostnames like web-0.nginx.default.svc.cluster.local and web-1.nginx.default.svc.cluster.local, which your application can use to connect to the Pods. Alternatively, if your application does not need to track specific Pods, you can connect to the IP address of a ClusterIP Service that is backed by the Pods in the StatefulSet.",
+        "contexts": [
+          "ow exit the container shell: exit)The Pods' ordinals, hostnames, SRV records, and A record names have not changed, but the IP addresses associated with the Pods may have changed. In the cluster used for this tutorial, they have. This is why it is important not to configure other applications to connect to Pods in a StatefulSet by the IP address of a particular Pod (it is OK to connect to Pods by resolving their hostname).Discovery for specific Pods in a StatefulSetIf you need to find and connect to the active members of a StatefulSet, you should query the CNAME of the headless Service (nginx.default.svc.cluster.local). The SRV records associated with the CNAME will contain only the Pods in the StatefulSet that are Running and Ready.If your application already implements connection logic that tests for liveness and readiness, you can use the SRV records of the Pods ( web-0.nginx.default.svc.cluster.local, web-1.nginx.default.svc.cluster.local), as they are stable, and your application w",
+          "vc.cluster.local, web-1.nginx.default.svc.cluster.local), as they are stable, and your application will be able to discover the Pods' addresses when they transition to Running and Ready.If your application wants to find any healthy Pod in a StatefulSet, and therefore does not need to track each specific Pod, you could also connect to the IP address of a type: ClusterIP Service, backed by the Pods in that StatefulSet. You can use the same Service that tracks the StatefulSet (specified in the serviceName of the StatefulSet) or a separate Service that selects the right set of Pods.Writing to stable storageGet the PersistentVolumeClaims for web-0 and web-1:kubectl get pvc -l app=nginx The output is similar to:NAME STATUS VOLUME CAPACITY ACCESSMODES AGE www-web-0 Bound pvc-15c268c7-b507-11e6-932f-42010a800002 1Gi RWO 48s www-web-1 Bound pvc-15c79307-b507-11e6-932f-42010a800002 1Gi RWO 48s The StatefulSet controller created two PersistentVolumeClaims that are bound to two PersistentVolumes.A"
+        ],
+        "ground_truth": "Service, endpoint, Pod",
+        "actual_sources": [
+          "tutorials__stateful-application__basic-stateful-set.html"
+        ],
+        "golden_sources": [
+          "concepts__services-networking__service.txt"
+        ],
+        "forbidden_keywords": [],
+        "faithfulness": 0.719,
+        "answer_relevancy": 0.6,
+        "context_precision": 0.6,
+        "context_recall": 0.667,
+        "scoring_backend": "heuristic"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 0.0,
+        "matched": [],
+        "missed": [
+          "concepts__services-networking__service"
+        ]
+      }
+    }
+  ],
+  "skipped": [],
+  "aggregate": {
+    "answer_relevancy": 0.763,
+    "context_recall": 0.889,
+    "faithfulness": 0.628,
+    "context_precision": 0.441,
+    "forbidden_violations": 0
+  }
+}

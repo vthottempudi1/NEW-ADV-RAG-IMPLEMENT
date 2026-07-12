@@ -17,6 +17,8 @@ Production-minded enterprise RAG backend with hybrid retrieval, SQL routing, hum
 
 Built with FastAPI, PostgreSQL, Qdrant, Upstash Redis with in-memory fallback, LangGraph, OpenAI, Docker, Pytest, ECS Fargate, Route 53, ACM, and CloudWatch.
 
+Operational policies: [Security](SECURITY.md) · [Data handling](docs/DATA_HANDLING.md) · [Reliability and recovery](docs/RELIABILITY.md) · [AWS deployment](AWS_DEPLOYMENT.md)
+
 This repository is designed to demonstrate the kind of engineering depth hiring managers usually look for in strong GenAI backend projects:
 
 - advanced retrieval beyond basic vector search
@@ -295,22 +297,66 @@ Practical outcome from the implemented evaluation flow:
 - `hybrid + rerank` is the strongest default profile
 - HyDE, CRAG, and SRAG are better treated as conditional policies rather than always-on defaults
 
+Production evaluation artifacts can record the Git commit, environment, collection, model names, and confirmed corpus composition. For example:
+
+```powershell
+python -m evals.runners.run `
+  --profile all `
+  --mode http `
+  --scorer llm `
+  --api-base "https://api.example.com" `
+  --environment production `
+  --true-documents 50 `
+  --noisy-documents 324
+```
+
+Provenance fields deliberately exclude credentials and API keys.
+
 ## Project Structure
 
 ```text
 app/
-  api/
-  core/
-  middleware/
-  security/
-  services/
-  storage/
+  api/v1/          # Versioned FastAPI endpoints
+  core/            # LangGraph orchestration and shared state
+  rag/             # Retrieval, reranking, HyDE, CRAG, Self-RAG, vectors
+  sql/             # Governed Text-to-SQL and approval persistence
+  security/        # Input/output guardrails and token budgets
+  caching/         # Query and document caches
+  ingestion/       # Parsing, chunking, embedding, and indexing
+  storage/         # Local and S3 storage adapters
+  observability/   # Cost and operational telemetry
+db/
+  migrations/
+  seeds/
 tests/
-Eval/
+  unit/
+  integration/
+  contract/
+  e2e/
+  fixtures/
+evals/
+  datasets/
+  runners/
+  reports/
+ui/
+  streamlit/
+infra/
+  docker/
+  ecs/
+  cloudwatch/
+  terraform/
 scripts/
-seed/
+loadtests/
+docs/
 .github/workflows/
 ```
+
+See [Enterprise Repository Structure](docs/ENTERPRISE_REPOSITORY_STRUCTURE.md)
+for dependency direction and the compatibility-migration policy.
+
+For a PowerShell-first guide covering setup, tests, evals, Docker, PostgreSQL,
+Qdrant, Upstash Redis, AWS deployment/rollback, health checks, load tests, and
+GitHub delivery, see [Commands Runbook](docs/COMMANDS_RUNBOOK.md).
 
 ## Quick Start
 
@@ -375,6 +421,8 @@ Open:
 - `GET /admin/budgets`
 - `GET /admin/rate-limits/{username}`
 
+The same endpoints are also available under the versioned `/api/v1` prefix.
+
 ## Example Query Body
 
 ```json
@@ -411,8 +459,14 @@ Examples of test coverage:
 
 GitHub Actions is configured to run:
 
+- Ruff linting
 - `pytest -q`
-- eval-smoke matrix jobs using `python -m Eval.run_ragas`
+- eval-smoke matrix jobs using `python -m evals.runners.run`
+- Python dependency auditing with `pip-audit`
+- Git-history secret scanning with Gitleaks
+- backend container vulnerability scanning with Trivy
+
+Dependabot checks Python packages and GitHub Actions weekly.
 
 The workflow uses current GitHub action versions and is set up for push and pull request validation on `main`.
 
@@ -439,7 +493,13 @@ That combination is much more compelling to hiring managers than a single-route 
 - admin-triggered real eval runs
 - richer cost telemetry
 - stronger multi-tenant / department-aware isolation
-- container registry and deployment pipeline
-- Kubernetes deployment manifests
-- broader cloud deployment automation
+- automated staging and production promotion pipeline
+- Terraform or CDK for reproducible AWS infrastructure
+- Alembic migration history and rollback workflows
+- OpenTelemetry traces and application-level SLO metrics
+- tested RDS, S3, and Qdrant backup restoration
 - domain-specific versions for life sciences, regulatory, and scientific knowledge copilots
+
+## License
+
+This project is available under the [MIT License](LICENSE).

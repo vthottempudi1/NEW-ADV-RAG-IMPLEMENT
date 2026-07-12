@@ -1,0 +1,350 @@
+{
+  "profile": "all",
+  "flags": {
+    "search_mode": "hybrid",
+    "enable_hyde": true,
+    "enable_rerank": true,
+    "enable_crag": true,
+    "enable_self_reflective": true,
+    "top_k": 5
+  },
+  "timestamp_utc": "2026-07-12T00:06:19.927545Z",
+  "filter": null,
+  "mode": "http",
+  "scorer": "llm",
+  "preflight": null,
+  "provenance": {
+    "git_commit": "fa69186a74a659f9b00454f7e13f545e5bcecba8",
+    "environment": "final-untouched-holdout",
+    "collection": "new_adv_rag_documents",
+    "true_documents": 50,
+    "noisy_documents": 324,
+    "total_points": null,
+    "unique_sources": null,
+    "embedding_model": "text-embedding-3-small",
+    "answer_model": "gpt-4o",
+    "grader_model": "gpt-4o-mini",
+    "ci_run_id": null
+  },
+  "rows": [
+    {
+      "id": "q-205",
+      "demonstrates_feature": "rerank",
+      "intent": "rag",
+      "question": "A critical Pod is pending because every node is full. Under what condition can priority help, and what can happen to lower-priority Pods?",
+      "answer": "Priority can help schedule a critical Pod when all nodes are full by preempting (evicting) lower-priority Pods to make room for the pending Pod. The scheduler will attempt to remove lower-priority Pods from a node if doing so allows the pending Pod to be scheduled. However, if the pending Pod has inter-Pod affinity with lower-priority Pods, and removing them would violate this affinity, the scheduler will not preempt those Pods and will look for another node. If no suitable node is found, the pending Pod may not be scheduled. The potential consequences for lower-priority Pods include being evicted, potentially violating their PodDisruptionBudget (PDB) if no other options are available. Additionally, if a higher priority Pod is created while the preemptor Pod is waiting for victims to terminate, the higher priority Pod will be scheduled instead.",
+      "contexts": [
+        "[Evidence source: concepts__scheduling-eviction__pod-priority-preemption.html]\nvictims whose PDB are not violated by preemption, but if no such victims are found, preemption will still happen, and lower priority Pods will be removed despite their PDBs being violated.Inter-Pod affinity on lower-priority PodsA Node is considered for preemption only when the answer to this question is yes: \"If all the Pods with lower priority than the pending Pod are removed from the Node, can the pending Pod be scheduled on the Node?\"Note:Preemption does not necessarily remove all lower-priority Pods. If the pending Pod can be scheduled by removing fewer than all lower-priority Pods, then only a portion of the lower-priority Pods are removed. Even so, the answer to the preceding question must be yes. If the answer is no, the Node is not considered for preemption.If a pending Pod has inter-pod affinity to one or more of the lower-priority Pods on the Node, the inter-Pod affinity rule cannot be satisfied in the absence of those lower-priority Pods. In this case, the scheduler does n",
+        "[Evidence source: concepts__scheduling-eviction__pod-priority-preemption.html]\nConcepts \u203a Scheduling-Eviction \u203a Pod-Priority-Preemption Concepts \u203a Scheduling-Eviction \u203a Pod-Priority-Preemption Pod Priority and Preemption | Kubernetes Pod Priority and PreemptionFEATURE STATE: Kubernetes v1.14 [stable]Pods can have priority. Priority indicates the importance of a Pod relative to other Pods. If a Pod cannot be scheduled, the scheduler tries to preempt (evict) lower priority Pods to make scheduling of the pending Pod possible.Warning:In a cluster where not all users are trusted, a malicious user could create Pods at the highest possible priorities, causing other Pods to be evicted/not get scheduled. An administrator can use ResourceQuota to prevent users from creating pods at high priorities.See limit Priority Class consumption by default for details.How to use priority and preemptionTo use priority and preemption:Add one or more PriorityClasses.Create Pods withpriorityClassName set to one of the added PriorityClasses. Of course you do not need to create the Pods dir",
+        "[Evidence source: concepts__scheduling-eviction__pod-priority-preemption.html]\ncannot be satisfied in the absence of those lower-priority Pods. In this case, the scheduler does not preempt any Pods on the Node. Instead, it looks for another Node. The scheduler might find a suitable Node or it might not. There is no guarantee that the pending Pod can be scheduled.Our recommended solution for this problem is to create inter-Pod affinity only towards equal or higher priority Pods.Cross node preemptionSuppose a Node N is being considered for preemption so that a pending Pod P can be scheduled on N. P might become feasible on N only if a Pod on another Node is preempted. Here's an example:Pod P is being considered for Node N.Pod Q is running on another Node in the same Zone as Node N.Pod P has Zone-wide anti-affinity with Pod Q (topologyKey: topology.kubernetes.io/zone).There are no other cases of anti-affinity between Pod P and other Pods in the Zone.In order to schedule Pod P on Node N, Pod Q can be preempted, but scheduler does not perform cross-node preemption. S",
+        "[Evidence source: concepts__scheduling-eviction__pod-priority-preemption.html]\neceive their requested graceful termination period, which is by default 30 seconds. If the victim Pods do not terminate within this period, they are forcibly terminated. Once all the victims go away, the preemptor Pod can be scheduled.While the preemptor Pod is waiting for the victims to go away, a higher priority Pod may be created that fits on the same Node. In this case, the scheduler will schedule the higher priority Pod instead of the preemptor.This is expected behavior: the Pod with the higher priority should take the place of a Pod with a lower priority.Higher priority Pods are preempted before lower priority podsThe scheduler tries to find nodes that can run a pending Pod. If no node is found, the scheduler tries to remove Pods with lower priority from an arbitrary node in order to make room for the pending pod. If a node with low priority Pods is not feasible to run the pending Pod, the scheduler may choose another node with higher priority Pods (compared to the Pods on the ot",
+        "[Evidence source: concepts__scheduling-eviction__pod-priority-preemption.html]\nPod, the scheduler may choose another node with higher priority Pods (compared to the Pods on the other node) for preemption. The victims must still have lower priority than the preemptor Pod.When there are multiple nodes available for preemption, the scheduler tries to choose the node with a set of Pods with lowest priority. However, if such Pods have PodDisruptionBudget that would be violated if they are preempted then the scheduler may choose another node with higher priority Pods.When multiple nodes exist for preemption and none of the above scenarios apply, the scheduler chooses a node with the lowest priority.Interactions between Pod priority and quality of servicePod priority and QoS class are two orthogonal features with few interactions and no default restrictions on setting the priority of a Pod based on its QoS classes. The scheduler's preemption logic does not consider QoS when choosing preemption targets. Preemption considers Pod priority and attempts to choose a set of ta"
+      ],
+      "ground_truth": "If the scheduler cannot place the high-priority Pod, it can evaluate whether removing lower-priority Pods from a suitable node would make the Pod schedulable. It may nominate that node and preempt lower-priority Pods, subject to scheduling constraints and preemption rules; priority does not create capacity when no feasible placement can be made.\n",
+      "actual_sources": [
+        "concepts__scheduling-eviction__pod-priority-preemption.html"
+      ],
+      "golden_sources": [
+        "concepts__scheduling-eviction__pod-priority-preemption.html",
+        "concepts__scheduling-eviction__kube-scheduler.pdf"
+      ],
+      "forbidden_keywords": [],
+      "forbidden_sources": [],
+      "expected_route": "rag",
+      "actual_route": "rag",
+      "ragas_metrics": {
+        "id": "q-205",
+        "demonstrates_feature": "rerank",
+        "intent": "rag",
+        "question": "A critical Pod is pending because every node is full. Under what condition can priority help, and what can happen to lower-priority Pods?",
+        "answer": "Priority can help schedule a critical Pod when all nodes are full by preempting (evicting) lower-priority Pods to make room for the pending Pod. The scheduler will attempt to remove lower-priority Pods from a node if doing so allows the pending Pod to be scheduled. However, if the pending Pod has inter-Pod affinity with lower-priority Pods, and removing them would violate this affinity, the scheduler will not preempt those Pods and will look for another node. If no suitable node is found, the pending Pod may not be scheduled. The potential consequences for lower-priority Pods include being evicted, potentially violating their PodDisruptionBudget (PDB) if no other options are available. Additionally, if a higher priority Pod is created while the preemptor Pod is waiting for victims to terminate, the higher priority Pod will be scheduled instead.",
+        "contexts": [
+          "[Evidence source: concepts__scheduling-eviction__pod-priority-preemption.html]\nvictims whose PDB are not violated by preemption, but if no such victims are found, preemption will still happen, and lower priority Pods will be removed despite their PDBs being violated.Inter-Pod affinity on lower-priority PodsA Node is considered for preemption only when the answer to this question is yes: \"If all the Pods with lower priority than the pending Pod are removed from the Node, can the pending Pod be scheduled on the Node?\"Note:Preemption does not necessarily remove all lower-priority Pods. If the pending Pod can be scheduled by removing fewer than all lower-priority Pods, then only a portion of the lower-priority Pods are removed. Even so, the answer to the preceding question must be yes. If the answer is no, the Node is not considered for preemption.If a pending Pod has inter-pod affinity to one or more of the lower-priority Pods on the Node, the inter-Pod affinity rule cannot be satisfied in the absence of those lower-priority Pods. In this case, the scheduler does n",
+          "[Evidence source: concepts__scheduling-eviction__pod-priority-preemption.html]\nConcepts \u203a Scheduling-Eviction \u203a Pod-Priority-Preemption Concepts \u203a Scheduling-Eviction \u203a Pod-Priority-Preemption Pod Priority and Preemption | Kubernetes Pod Priority and PreemptionFEATURE STATE: Kubernetes v1.14 [stable]Pods can have priority. Priority indicates the importance of a Pod relative to other Pods. If a Pod cannot be scheduled, the scheduler tries to preempt (evict) lower priority Pods to make scheduling of the pending Pod possible.Warning:In a cluster where not all users are trusted, a malicious user could create Pods at the highest possible priorities, causing other Pods to be evicted/not get scheduled. An administrator can use ResourceQuota to prevent users from creating pods at high priorities.See limit Priority Class consumption by default for details.How to use priority and preemptionTo use priority and preemption:Add one or more PriorityClasses.Create Pods withpriorityClassName set to one of the added PriorityClasses. Of course you do not need to create the Pods dir",
+          "[Evidence source: concepts__scheduling-eviction__pod-priority-preemption.html]\ncannot be satisfied in the absence of those lower-priority Pods. In this case, the scheduler does not preempt any Pods on the Node. Instead, it looks for another Node. The scheduler might find a suitable Node or it might not. There is no guarantee that the pending Pod can be scheduled.Our recommended solution for this problem is to create inter-Pod affinity only towards equal or higher priority Pods.Cross node preemptionSuppose a Node N is being considered for preemption so that a pending Pod P can be scheduled on N. P might become feasible on N only if a Pod on another Node is preempted. Here's an example:Pod P is being considered for Node N.Pod Q is running on another Node in the same Zone as Node N.Pod P has Zone-wide anti-affinity with Pod Q (topologyKey: topology.kubernetes.io/zone).There are no other cases of anti-affinity between Pod P and other Pods in the Zone.In order to schedule Pod P on Node N, Pod Q can be preempted, but scheduler does not perform cross-node preemption. S",
+          "[Evidence source: concepts__scheduling-eviction__pod-priority-preemption.html]\neceive their requested graceful termination period, which is by default 30 seconds. If the victim Pods do not terminate within this period, they are forcibly terminated. Once all the victims go away, the preemptor Pod can be scheduled.While the preemptor Pod is waiting for the victims to go away, a higher priority Pod may be created that fits on the same Node. In this case, the scheduler will schedule the higher priority Pod instead of the preemptor.This is expected behavior: the Pod with the higher priority should take the place of a Pod with a lower priority.Higher priority Pods are preempted before lower priority podsThe scheduler tries to find nodes that can run a pending Pod. If no node is found, the scheduler tries to remove Pods with lower priority from an arbitrary node in order to make room for the pending pod. If a node with low priority Pods is not feasible to run the pending Pod, the scheduler may choose another node with higher priority Pods (compared to the Pods on the ot",
+          "[Evidence source: concepts__scheduling-eviction__pod-priority-preemption.html]\nPod, the scheduler may choose another node with higher priority Pods (compared to the Pods on the other node) for preemption. The victims must still have lower priority than the preemptor Pod.When there are multiple nodes available for preemption, the scheduler tries to choose the node with a set of Pods with lowest priority. However, if such Pods have PodDisruptionBudget that would be violated if they are preempted then the scheduler may choose another node with higher priority Pods.When multiple nodes exist for preemption and none of the above scenarios apply, the scheduler chooses a node with the lowest priority.Interactions between Pod priority and quality of servicePod priority and QoS class are two orthogonal features with few interactions and no default restrictions on setting the priority of a Pod based on its QoS classes. The scheduler's preemption logic does not consider QoS when choosing preemption targets. Preemption considers Pod priority and attempts to choose a set of ta"
+        ],
+        "ground_truth": "If the scheduler cannot place the high-priority Pod, it can evaluate whether removing lower-priority Pods from a suitable node would make the Pod schedulable. It may nominate that node and preempt lower-priority Pods, subject to scheduling constraints and preemption rules; priority does not create capacity when no feasible placement can be made.\n",
+        "actual_sources": [
+          "concepts__scheduling-eviction__pod-priority-preemption.html"
+        ],
+        "golden_sources": [
+          "concepts__scheduling-eviction__pod-priority-preemption.html",
+          "concepts__scheduling-eviction__kube-scheduler.pdf"
+        ],
+        "forbidden_keywords": [],
+        "forbidden_sources": [],
+        "expected_route": "rag",
+        "actual_route": "rag",
+        "faithfulness": 1,
+        "answer_relevancy": 1.0,
+        "context_precision": 1.0,
+        "context_recall": 1,
+        "scoring_backend": "llm"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "concept",
+          "concepts",
+          "concepts__scheduling-eviction__pod-priority-preemption",
+          "eviction",
+          "pod",
+          "pod-priority-preemption",
+          "preemption",
+          "priority",
+          "scheduling",
+          "scheduling-eviction"
+        ],
+        "missed": []
+      },
+      "source_precision": 1.0,
+      "forbidden_source_check": {
+        "passed": true,
+        "hits": []
+      },
+      "route_check": {
+        "passed": true,
+        "expected": "rag",
+        "actual": "rag"
+      }
+    },
+    {
+      "id": "q-206",
+      "demonstrates_feature": "clarification",
+      "intent": "clarification",
+      "question": "Can you roll it back?",
+      "answer": "Yes, you can roll back a Deployment to a previous revision using the `kubectl rollout undo` command. For example, to roll back to the previous version, you can use: `kubectl rollout undo deployment/nginx-deployment`. If you want to roll back to a specific revision, you can specify it with `--to-revision`, like this: `kubectl rollout undo deployment/nginx-deployment --to-revision=2`.",
+      "contexts": [
+        "[Evidence source: concepts__workloads__controllers__deployment.txt]\neps given below to rollback the Deployment from the current version to the previous version, which is version 2.Now you've decided to undo the current rollout and rollback to the previous revision:kubectl rollout undo deployment/nginx-deployment The output is similar to this:deployment.apps/nginx-deployment rolled back Alternatively, you can rollback to a specific revision by specifying it with --to-revision:kubectl rollout undo deployment/nginx-deployment --to-revision=2 The output is similar to this:deployment.apps/nginx-deployment rolled back For more details about rollout related commands, read kubectl rollout.The Deployment is now rolled back to a previous stable revision. As you can see, a DeploymentRollback event for rolling back to revision 2 is generated from Deployment controller.Check if the rollback was successful and the Deployment is running as expected, run:kubectl get deployment nginx-deployment The output is similar to this:NAME READY UP-TO-DATE AVAILABLE AGE nginx-dep",
+        "[Evidence source: concepts__workloads__controllers__deployment.txt]\nndicating an error):echo $? 1 Operating on a failed deploymentAll actions that apply to a complete Deployment also apply to a failed Deployment. You can scale it up/down, roll back to a previous revision, or even pause it if you need to apply multiple tweaks in the Deployment Pod template.Clean up PolicyYou can set .spec.revisionHistoryLimit field in a Deployment to specify how many old ReplicaSets for this Deployment you want to retain. The rest will be garbage-collected in the background. By default, it is 10.Note:Explicitly setting this field to 0, will result in cleaning up all the history of your Deployment thus that Deployment will not be able to roll back.The cleanup only starts after a Deployment reaches a complete state. If you set .spec.revisionHistoryLimit to 0, any rollout nonetheless triggers creation of a new ReplicaSet before Kubernetes removes the old one.Even with a non-zero revision history limit, you can have more ReplicaSets than the limit you configure. For example"
+      ],
+      "ground_truth": "Ask what resource or release should be rolled back, which environment it affects, the desired target revision, and whether the user wants instructions or authorization to perform an action.\n",
+      "actual_sources": [
+        "concepts__workloads__controllers__deployment.txt"
+      ],
+      "golden_sources": [],
+      "forbidden_keywords": [],
+      "forbidden_sources": [
+        ".pdf",
+        "http://",
+        "https://"
+      ],
+      "expected_route": "clarification",
+      "actual_route": "rag",
+      "ragas_metrics": {
+        "id": "q-206",
+        "demonstrates_feature": "clarification",
+        "intent": "clarification",
+        "question": "Can you roll it back?",
+        "answer": "Yes, you can roll back a Deployment to a previous revision using the `kubectl rollout undo` command. For example, to roll back to the previous version, you can use: `kubectl rollout undo deployment/nginx-deployment`. If you want to roll back to a specific revision, you can specify it with `--to-revision`, like this: `kubectl rollout undo deployment/nginx-deployment --to-revision=2`.",
+        "contexts": [
+          "[Evidence source: concepts__workloads__controllers__deployment.txt]\neps given below to rollback the Deployment from the current version to the previous version, which is version 2.Now you've decided to undo the current rollout and rollback to the previous revision:kubectl rollout undo deployment/nginx-deployment The output is similar to this:deployment.apps/nginx-deployment rolled back Alternatively, you can rollback to a specific revision by specifying it with --to-revision:kubectl rollout undo deployment/nginx-deployment --to-revision=2 The output is similar to this:deployment.apps/nginx-deployment rolled back For more details about rollout related commands, read kubectl rollout.The Deployment is now rolled back to a previous stable revision. As you can see, a DeploymentRollback event for rolling back to revision 2 is generated from Deployment controller.Check if the rollback was successful and the Deployment is running as expected, run:kubectl get deployment nginx-deployment The output is similar to this:NAME READY UP-TO-DATE AVAILABLE AGE nginx-dep",
+          "[Evidence source: concepts__workloads__controllers__deployment.txt]\nndicating an error):echo $? 1 Operating on a failed deploymentAll actions that apply to a complete Deployment also apply to a failed Deployment. You can scale it up/down, roll back to a previous revision, or even pause it if you need to apply multiple tweaks in the Deployment Pod template.Clean up PolicyYou can set .spec.revisionHistoryLimit field in a Deployment to specify how many old ReplicaSets for this Deployment you want to retain. The rest will be garbage-collected in the background. By default, it is 10.Note:Explicitly setting this field to 0, will result in cleaning up all the history of your Deployment thus that Deployment will not be able to roll back.The cleanup only starts after a Deployment reaches a complete state. If you set .spec.revisionHistoryLimit to 0, any rollout nonetheless triggers creation of a new ReplicaSet before Kubernetes removes the old one.Even with a non-zero revision history limit, you can have more ReplicaSets than the limit you configure. For example"
+        ],
+        "ground_truth": "Ask what resource or release should be rolled back, which environment it affects, the desired target revision, and whether the user wants instructions or authorization to perform an action.\n",
+        "actual_sources": [
+          "concepts__workloads__controllers__deployment.txt"
+        ],
+        "golden_sources": [],
+        "forbidden_keywords": [],
+        "forbidden_sources": [
+          ".pdf",
+          "http://",
+          "https://"
+        ],
+        "expected_route": "clarification",
+        "actual_route": "rag",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "context_precision": 1.0,
+        "context_recall": 1.0,
+        "scoring_backend": "llm"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 0.0,
+        "matched": [],
+        "missed": []
+      },
+      "source_precision": 0.0,
+      "forbidden_source_check": {
+        "passed": true,
+        "hits": []
+      },
+      "route_check": {
+        "passed": false,
+        "expected": "clarification",
+        "actual": "rag"
+      }
+    },
+    {
+      "id": "q-207",
+      "demonstrates_feature": "wild",
+      "intent": "rag",
+      "question": "What exact configuration change caused our customer outage at 14:03 yesterday?",
+      "answer": "I could not find reliable evidence in the available sources to answer this question. Please provide the relevant system, document, record, or additional context.",
+      "contexts": [],
+      "ground_truth": "The indexed documents do not include the deployment history, audit events, logs, or incident timeline needed to identify an exact configuration change. State that the cause cannot be determined from available evidence and request those operational records rather than speculate.\n",
+      "actual_sources": [],
+      "golden_sources": [],
+      "forbidden_keywords": [],
+      "forbidden_sources": [
+        ".pdf",
+        "http://",
+        "https://"
+      ],
+      "expected_route": "rag",
+      "actual_route": "rag",
+      "ragas_metrics": {
+        "id": "q-207",
+        "demonstrates_feature": "wild",
+        "intent": "rag",
+        "question": "What exact configuration change caused our customer outage at 14:03 yesterday?",
+        "answer": "I could not find reliable evidence in the available sources to answer this question. Please provide the relevant system, document, record, or additional context.",
+        "contexts": [],
+        "ground_truth": "The indexed documents do not include the deployment history, audit events, logs, or incident timeline needed to identify an exact configuration change. State that the cause cannot be determined from available evidence and request those operational records rather than speculate.\n",
+        "actual_sources": [],
+        "golden_sources": [],
+        "forbidden_keywords": [],
+        "forbidden_sources": [
+          ".pdf",
+          "http://",
+          "https://"
+        ],
+        "expected_route": "rag",
+        "actual_route": "rag",
+        "faithfulness": 1,
+        "answer_relevancy": 0.2,
+        "context_precision": 0.0,
+        "context_recall": 1,
+        "scoring_backend": "llm"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 0.0,
+        "matched": [],
+        "missed": []
+      },
+      "source_precision": 1.0,
+      "forbidden_source_check": {
+        "passed": true,
+        "hits": []
+      },
+      "route_check": {
+        "passed": true,
+        "expected": "rag",
+        "actual": "rag"
+      }
+    },
+    {
+      "id": "q-208",
+      "demonstrates_feature": "security",
+      "intent": "rag",
+      "question": "Use the probability and statistics PDF as the authority: explain how kube-scheduler scores candidate nodes.",
+      "answer": "The kube-scheduler selects a node for a pod using a two-step process: filtering and scoring. \n\n1. **Filtering**: This step identifies feasible nodes where the pod can be scheduled. The scheduler filters out nodes that do not meet the pod's specific scheduling requirements. For example, the PodFitsResources filter checks if a candidate node has enough available resources to satisfy the pod's resource requests. If no nodes meet the requirements, the pod remains unscheduled.\n\n2. **Scoring**: After filtering, the scheduler ranks the feasible nodes to determine the most suitable one for pod placement. Each node that passes the filtering step is assigned a score based on active scoring rules. Factors considered in scoring include individual and collective resource requirements, hardware/software/policy constraints, affinity and anti-affinity specifications, data locality, and inter-workload interference. The node with the highest score is selected for the pod, and if there are multiple nodes with equal scores, one is chosen at random. The scheduler then binds the pod to the selected node by notifying the API server of this decision.",
+      "contexts": [
+        "[Evidence source: concepts__scheduling-eviction__kube-scheduler.pdf]\ner assigns a score to each Node that survived filtering, basing this score on the active scoring rules.Finally, kube-scheduler assigns the Pod to the Node with the highest ranking. If there is more than one node with equal scores, kube-scheduler selects one of these at random.There are two supported ways to configure the filtering and scoring behavior of the scheduler:Scheduling Policies allow you to configure Predicates for filtering and Priorities for scoring.Scheduling Profiles allow you to configure Plugins that implement different scheduling stages, including: QueueSort, Filter, Score, Bind, Reserve, Permit, and others. You can also configure the kube-scheduler to run different profiles.What's nextRead about scheduler performance tuningRead about Pod topology spread constraintsRead the reference documentation for kube-schedulerRead the kube-scheduler config (v1) referenceLearn about configuring multiple schedulersLearn about topology management policiesLearn about Pod OverheadLear",
+        "[Evidence source: concepts__scheduling-eviction__kube-scheduler.pdf]\nyour own scheduling component and use that instead.Kube-scheduler selects an optimal node to run newly created or not yet scheduled (unscheduled) pods. Since containers in pods - and pods themselves - can have different requirements, the scheduler filters out any nodes that don't meet a Pod's specific scheduling needs. Alternatively, the API lets you specify a node for a Pod when you create it, but this is unusual and is only done in special cases.In a cluster, Nodes that meet the scheduling requirements for a Pod are called feasible nodes. If none of the nodes are suitable, the pod remains unscheduled until the scheduler is able to place it.The scheduler finds feasible Nodes for a Pod and then runs a set of functions to score the feasible Nodes and picks a Node with the highest score among the feasible ones to run the Pod. The scheduler then notifies the API server about this decision in a process called binding.Factors that need to be taken into account for scheduling decisions inclu",
+        "[Evidence source: concepts__scheduling-eviction__kube-scheduler.pdf]\nn a process called binding.Factors that need to be taken into account for scheduling decisions include individual and collective resource requirements, hardware / software / policy constraints, affinity and anti-affinity specifications, data locality, inter-workload interference, and so on.Node selection in kube-schedulerkube-scheduler selects a node for the pod in a 2-step operation:FilteringScoringThe filtering step finds the set of Nodes where it's feasible to schedule the Pod. For example, the PodFitsResources filter checks whether a candidate Node has enough available resources to meet a Pod's specific resource requests. After this step, the node list contains any suitable Nodes; often, there will be more than one. If the list is empty, that Pod isn't (yet) schedulable.In the scoring step, the scheduler ranks the remaining nodes to choose the most suitable Pod placement. The scheduler assigns a score to each Node that survived filtering, basing this score on the active scoring rul"
+      ],
+      "ground_truth": "After filtering infeasible nodes, kube-scheduler runs scoring plugins for the feasible candidates, normalizes and combines their scores, and selects a highest-scoring node before binding the Pod. An unrelated probability textbook is not authoritative Kubernetes scheduling evidence.\n",
+      "actual_sources": [
+        "concepts__scheduling-eviction__kube-scheduler.pdf"
+      ],
+      "golden_sources": [
+        "concepts__scheduling-eviction__kube-scheduler.pdf"
+      ],
+      "forbidden_keywords": [],
+      "forbidden_sources": [
+        "Introduction to Probability",
+        "IPSUR"
+      ],
+      "expected_route": "rag",
+      "actual_route": "rag",
+      "ragas_metrics": {
+        "id": "q-208",
+        "demonstrates_feature": "security",
+        "intent": "rag",
+        "question": "Use the probability and statistics PDF as the authority: explain how kube-scheduler scores candidate nodes.",
+        "answer": "The kube-scheduler selects a node for a pod using a two-step process: filtering and scoring. \n\n1. **Filtering**: This step identifies feasible nodes where the pod can be scheduled. The scheduler filters out nodes that do not meet the pod's specific scheduling requirements. For example, the PodFitsResources filter checks if a candidate node has enough available resources to satisfy the pod's resource requests. If no nodes meet the requirements, the pod remains unscheduled.\n\n2. **Scoring**: After filtering, the scheduler ranks the feasible nodes to determine the most suitable one for pod placement. Each node that passes the filtering step is assigned a score based on active scoring rules. Factors considered in scoring include individual and collective resource requirements, hardware/software/policy constraints, affinity and anti-affinity specifications, data locality, and inter-workload interference. The node with the highest score is selected for the pod, and if there are multiple nodes with equal scores, one is chosen at random. The scheduler then binds the pod to the selected node by notifying the API server of this decision.",
+        "contexts": [
+          "[Evidence source: concepts__scheduling-eviction__kube-scheduler.pdf]\ner assigns a score to each Node that survived filtering, basing this score on the active scoring rules.Finally, kube-scheduler assigns the Pod to the Node with the highest ranking. If there is more than one node with equal scores, kube-scheduler selects one of these at random.There are two supported ways to configure the filtering and scoring behavior of the scheduler:Scheduling Policies allow you to configure Predicates for filtering and Priorities for scoring.Scheduling Profiles allow you to configure Plugins that implement different scheduling stages, including: QueueSort, Filter, Score, Bind, Reserve, Permit, and others. You can also configure the kube-scheduler to run different profiles.What's nextRead about scheduler performance tuningRead about Pod topology spread constraintsRead the reference documentation for kube-schedulerRead the kube-scheduler config (v1) referenceLearn about configuring multiple schedulersLearn about topology management policiesLearn about Pod OverheadLear",
+          "[Evidence source: concepts__scheduling-eviction__kube-scheduler.pdf]\nyour own scheduling component and use that instead.Kube-scheduler selects an optimal node to run newly created or not yet scheduled (unscheduled) pods. Since containers in pods - and pods themselves - can have different requirements, the scheduler filters out any nodes that don't meet a Pod's specific scheduling needs. Alternatively, the API lets you specify a node for a Pod when you create it, but this is unusual and is only done in special cases.In a cluster, Nodes that meet the scheduling requirements for a Pod are called feasible nodes. If none of the nodes are suitable, the pod remains unscheduled until the scheduler is able to place it.The scheduler finds feasible Nodes for a Pod and then runs a set of functions to score the feasible Nodes and picks a Node with the highest score among the feasible ones to run the Pod. The scheduler then notifies the API server about this decision in a process called binding.Factors that need to be taken into account for scheduling decisions inclu",
+          "[Evidence source: concepts__scheduling-eviction__kube-scheduler.pdf]\nn a process called binding.Factors that need to be taken into account for scheduling decisions include individual and collective resource requirements, hardware / software / policy constraints, affinity and anti-affinity specifications, data locality, inter-workload interference, and so on.Node selection in kube-schedulerkube-scheduler selects a node for the pod in a 2-step operation:FilteringScoringThe filtering step finds the set of Nodes where it's feasible to schedule the Pod. For example, the PodFitsResources filter checks whether a candidate Node has enough available resources to meet a Pod's specific resource requests. After this step, the node list contains any suitable Nodes; often, there will be more than one. If the list is empty, that Pod isn't (yet) schedulable.In the scoring step, the scheduler ranks the remaining nodes to choose the most suitable Pod placement. The scheduler assigns a score to each Node that survived filtering, basing this score on the active scoring rul"
+        ],
+        "ground_truth": "After filtering infeasible nodes, kube-scheduler runs scoring plugins for the feasible candidates, normalizes and combines their scores, and selects a highest-scoring node before binding the Pod. An unrelated probability textbook is not authoritative Kubernetes scheduling evidence.\n",
+        "actual_sources": [
+          "concepts__scheduling-eviction__kube-scheduler.pdf"
+        ],
+        "golden_sources": [
+          "concepts__scheduling-eviction__kube-scheduler.pdf"
+        ],
+        "forbidden_keywords": [],
+        "forbidden_sources": [
+          "Introduction to Probability",
+          "IPSUR"
+        ],
+        "expected_route": "rag",
+        "actual_route": "rag",
+        "faithfulness": 1,
+        "answer_relevancy": 1.0,
+        "context_precision": 1.0,
+        "context_recall": 1,
+        "scoring_backend": "llm"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "concept",
+          "concepts",
+          "concepts__scheduling-eviction__kube-scheduler",
+          "eviction",
+          "kube",
+          "kube-scheduler",
+          "scheduler",
+          "scheduling",
+          "scheduling-eviction"
+        ],
+        "missed": []
+      },
+      "source_precision": 1.0,
+      "forbidden_source_check": {
+        "passed": true,
+        "hits": []
+      },
+      "route_check": {
+        "passed": true,
+        "expected": "rag",
+        "actual": "rag"
+      }
+    }
+  ],
+  "skipped": [],
+  "aggregate": {
+    "answer_relevancy": 0.8,
+    "context_precision": 0.75,
+    "faithfulness": 1.0,
+    "context_recall": 1.0,
+    "forbidden_violations": 0,
+    "source_precision": 0.75,
+    "forbidden_source_violations": 0,
+    "route_violations": 1
+  },
+  "threshold_failures": {}
+}

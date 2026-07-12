@@ -1,6 +1,5 @@
 import re
 
-
 _BLOCKED_OUTPUT_PATTERNS = [
     r"(?i)system prompt",
     r"(?i)hidden instructions",
@@ -9,7 +8,13 @@ _BLOCKED_OUTPUT_PATTERNS = [
 ]
 
 
+# Learner note: Evaluates validate output safe as a guardrail before later pipeline stages proceed.
 def validate_output_safe(text: str) -> tuple[bool, str]:
+    """Perform validate output safe for the application security boundary.
+
+    Learner Note:
+        This function keeps the responsibility explicit for callers, tests, and operators.
+    """
     cleaned = text.strip()
     if not cleaned:
         return False, "empty_output"

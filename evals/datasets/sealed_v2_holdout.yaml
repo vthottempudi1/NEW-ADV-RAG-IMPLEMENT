@@ -1,0 +1,264 @@
+# Sealed v2 holdout created 2026-07-12.
+# Purpose: one-time generalization evaluation after v2 sentence-aware re-ingestion.
+# Do not run during development and do not edit expectations after the first run.
+# If a defect is found, record it and create a new versioned holdout instead of tuning this file.
+
+- id: q-301
+  question: "A Pod restarted and its previous container logs disappeared from the normal log command. Which logging limitation does this expose, and what architecture preserves logs beyond the node?"
+  intent: rag
+  golden_sources: [concepts__cluster-administration__logging.pdf]
+  golden_answer: >
+    Container logs stored on a node are tied to local files and lifecycle behavior, so they are not
+    a durable cluster-wide record. Preserve logs with cluster-level logging: a node-level logging
+    agent or sidecar forwards them to a separate backend whose lifecycle is independent of Pods and
+    nodes. For an immediate restart investigation, request the previous container instance when that
+    log is still locally available.
+  golden_answer_keywords: [cluster-level logging, node-level agent, backend, previous container]
+  demonstrates_feature: self_rag
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  notes: "[sealed-v2] Logging durability and container lifecycle reasoning."
+
+- id: q-302
+  question: "Why is the resource metrics pipeline useful for autoscaling but insufficient as the only long-term observability system?"
+  intent: rag
+  golden_sources: [concepts__cluster-administration__monitoring.docx]
+  golden_answer: >
+    The resource metrics pipeline provides a small set of recent CPU and memory measurements used by
+    components such as autoscalers and kubectl top. It is intentionally lightweight and is not a
+    full historical monitoring, alerting, or analytics backend. Long-term observability requires a
+    separate monitoring system that stores and analyzes broader metrics over time.
+  golden_answer_keywords: [resource metrics pipeline, autoscaling, CPU, long-term monitoring]
+  demonstrates_feature: dense
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  notes: "[sealed-v2] Distinguishes operational metrics APIs from durable observability."
+
+- id: q-303
+  question: "A newly created Pod has no node assigned yet. Which control-plane component makes that placement decision, and which node component later starts its containers?"
+  intent: rag
+  golden_sources: [concepts__overview__components.pdf, concepts__scheduling-eviction__kube-scheduler.pdf]
+  golden_answer: >
+    kube-scheduler watches for unscheduled Pods, evaluates feasible nodes, and records the selected
+    node through binding. On that node, kubelet observes the assigned Pod specification and works
+    with the container runtime to start and maintain the containers.
+  golden_answer_keywords: [kube-scheduler, binding, kubelet, container runtime]
+  demonstrates_feature: baseline
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  notes: "[sealed-v2] Separates scheduler and kubelet responsibilities."
+
+- id: q-304
+  question: "Two teams use different namespaces. Which boundaries do namespaces provide, and why should they not be described as a complete security boundary by themselves?"
+  intent: rag
+  golden_sources: [tasks__administer-cluster__namespaces-walkthrough.pdf, concepts__security__overview.txt]
+  golden_answer: >
+    Namespaces scope names and many namespaced resources, and they provide a unit for applying RBAC,
+    quotas, limits, and network policies. They do not automatically isolate every cluster-scoped
+    resource, node capability, network path, or privileged workload. Strong multi-tenant isolation
+    therefore requires additional authorization, admission, network, and workload-security controls.
+  golden_answer_keywords: [namespace, RBAC, quota, security boundary]
+  demonstrates_feature: crag
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  notes: "[sealed-v2] Namespace scope without overstating isolation."
+
+- id: q-305
+  question: "A Deployment rollout stops progressing after a bad image update. Which Deployment status and commands help confirm the failure before deciding whether to undo it?"
+  intent: rag
+  golden_sources: [concepts__workloads__controllers__deployment.txt, reference__kubectl__cheatsheet.txt]
+  golden_answer: >
+    Check rollout status and inspect the Deployment, ReplicaSets, Pods, and events. A Deployment that
+    exceeds its progress deadline reports a ProgressDeadlineExceeded condition rather than completing
+    normally. Use rollout history to identify revisions and rollout undo only after confirming the
+    failed revision and intended rollback target.
+  golden_answer_keywords: [rollout status, ProgressDeadlineExceeded, rollout history, rollout undo]
+  demonstrates_feature: sparse
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  notes: "[sealed-v2] Rollout diagnosis before rollback action."
+
+- id: q-306
+  question: "When I scale a Deployment from three replicas to six, what Kubernetes object changes desired state and what creates the additional Pods?"
+  intent: rag
+  golden_sources: [tutorials__kubernetes-basics__scale__scale-intro.html, concepts__workloads__controllers__deployment.txt]
+  golden_answer: >
+    Scaling changes the Deployment's desired replica count. The Deployment controller updates the
+    associated ReplicaSet, and the ReplicaSet creates additional Pods until observed replicas match
+    the desired count. A Service can continue presenting one network endpoint across those replicas.
+  golden_answer_keywords: [Deployment, replicas, ReplicaSet, Pods]
+  demonstrates_feature: hyde
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  notes: "[sealed-v2] Scaling ownership across Deployment, ReplicaSet, and Pods."
+
+- id: q-307
+  question: "Compare ClusterIP, NodePort, and LoadBalancer for exposing a Service. Which one remains internal, and how do the external options build on it?"
+  intent: rag
+  golden_sources: [concepts__services-networking__service.txt, tutorials__kubernetes-basics__expose__expose-intro.docx]
+  golden_answer: >
+    ClusterIP is the default internal Service type. NodePort exposes the Service on a port of each
+    node while retaining the Service's cluster networking. LoadBalancer asks a supported environment
+    to provision an external load balancer and normally builds on the NodePort and ClusterIP behavior.
+    The choice depends on whether access must remain cluster-internal or be reachable externally.
+  golden_answer_keywords: [ClusterIP, NodePort, LoadBalancer, external]
+  demonstrates_feature: hybrid
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  notes: "[sealed-v2] Service exposure hierarchy without assuming a cloud implementation."
+
+- id: q-308
+  question: "At cluster level, how do the Privileged, Baseline, and Restricted Pod Security Standards differ in intent?"
+  intent: rag
+  golden_sources: [tutorials__security__cluster-level-pss.pdf, concepts__security__overview.txt]
+  golden_answer: >
+    Privileged is intentionally unrestricted and permits known privilege escalations. Baseline blocks
+    common privilege escalations while remaining broadly compatible. Restricted applies current Pod
+    hardening best practices and is the most limiting profile. Enforcement should be selected per
+    namespace and workload compatibility rather than assuming one profile fits every workload.
+  golden_answer_keywords: [Privileged, Baseline, Restricted, privilege escalation]
+  demonstrates_feature: rerank
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  notes: "[sealed-v2] Security-profile intent and compatibility boundary."
+
+- id: q-309
+  question: "Why should an application Pod use a dedicated ServiceAccount, and how are modern short-lived API credentials delivered differently from long-lived Secret tokens?"
+  intent: rag
+  golden_sources: [tasks__configure-pod-container__configure-service-account.txt, reference__kubernetes-api__authentication-resources__service-account-v1.docx]
+  golden_answer: >
+    A dedicated ServiceAccount gives the workload an explicit identity that can receive narrowly
+    scoped RBAC permissions instead of inheriting broad or default access. Modern clusters use the
+    TokenRequest mechanism and projected service-account token volumes to deliver bounded,
+    automatically rotating credentials. Long-lived service-account token Secrets should not be the
+    default application credential design.
+  golden_answer_keywords: [ServiceAccount, RBAC, TokenRequest, projected token]
+  demonstrates_feature: hybrid
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  notes: "[sealed-v2] Workload identity and token-lifecycle synthesis."
+
+- id: q-310
+  question: "A namespace quota limits total CPU requests, but a new Pod declares no CPU request. Why can admission reject it, and which companion policy can supply defaults?"
+  intent: rag
+  golden_sources: [concepts__policy__resource-quotas.txt, concepts__policy__limit-range.html, tasks__administer-cluster__manage-resources__quota-memory-cpu-namespace.txt]
+  golden_answer: >
+    When a ResourceQuota tracks CPU requests or limits, admitted workloads must provide the values
+    needed for quota accounting. A Pod that omits them can be rejected. A LimitRange can define
+    default requests or limits for containers so the resulting Pod has values that quota admission
+    can evaluate, while ResourceQuota still controls the namespace aggregate.
+  golden_answer_keywords: [ResourceQuota, CPU request, admission, LimitRange]
+  demonstrates_feature: hybrid
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  notes: "[sealed-v2] Admission interaction between aggregate quota and defaults."
+
+- id: q-311
+  question: "What is the behavioral difference between a hard and soft node-pressure eviction threshold, and what role does the grace period play?"
+  intent: rag
+  golden_sources: [concepts__scheduling-eviction__node-pressure-eviction.docx]
+  golden_answer: >
+    A hard eviction threshold can trigger action as soon as its signal crosses the configured value
+    and does not provide the same graceful waiting behavior. A soft threshold must remain satisfied
+    for its configured eviction-soft-grace-period before kubelet acts. Operator transition periods
+    and Pod termination limits can further affect how quickly pressure conditions lead to eviction.
+  golden_answer_keywords: [hard threshold, soft threshold, grace period, kubelet]
+  demonstrates_feature: rerank
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  notes: "[sealed-v2] Temporal semantics of node-pressure eviction."
+
+- id: q-312
+  question: "A volume advertises ReadWriteOnce. Does that guarantee only one Pod can mount it, and what distinction must an operator understand?"
+  intent: rag
+  golden_sources: [concepts__storage__persistent-volumes.pdf]
+  golden_answer: >
+    ReadWriteOnce means the volume may be mounted read-write by a single node; it does not necessarily
+    mean only one Pod on that node can use it. Access modes describe attachment and mounting
+    capabilities rather than acting as a complete application-level write lock. When the storage
+    driver and cluster support it, ReadWriteOncePod is the mode intended to constrain read-write use
+    to a single Pod.
+  golden_answer_keywords: [ReadWriteOnce, node, Pod, ReadWriteOncePod]
+  demonstrates_feature: dense
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  notes: "[sealed-v2] Corrects a common persistent-volume access-mode misconception."
+
+- id: q-313
+  question: "Why is exposing the Kubernetes Dashboard publicly with broad credentials risky, and what safer access pattern does the documentation demonstrate?"
+  intent: rag
+  golden_sources: [tasks__access-application-cluster__web-ui-dashboard.html, concepts__security__rbac-good-practices.pdf]
+  golden_answer: >
+    Dashboard access can expose powerful cluster operations, so public exposure and broadly
+    privileged credentials create a large attack surface. Use authenticated, narrowly authorized
+    identities and least-privilege RBAC. The documented local access pattern uses kubectl proxy so
+    the API server's authentication and authorization remain in the path rather than publishing an
+    unrestricted Dashboard endpoint.
+  golden_answer_keywords: [Dashboard, kubectl proxy, authentication, least privilege]
+  demonstrates_feature: security
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  notes: "[sealed-v2] Dashboard access with an explicit least-privilege boundary."
+
+- id: q-314
+  question: "A Pod remains Pending. Give an evidence-first kubectl investigation sequence that distinguishes scheduling events from container startup logs."
+  intent: rag
+  golden_sources: [reference__kubectl__cheatsheet.txt, concepts__scheduling-eviction__kube-scheduler.pdf]
+  golden_answer: >
+    Start with kubectl get to confirm status, then kubectl describe the Pod and inspect its events for
+    FailedScheduling messages and unmet resource, affinity, taint, volume, or policy constraints.
+    Inspect relevant nodes and cluster events as needed. Container logs are normally useful only
+    after a container has started, so they are not the primary evidence for a Pod that has never
+    been scheduled.
+  golden_answer_keywords: [kubectl get, kubectl describe, events, FailedScheduling]
+  demonstrates_feature: sparse
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  notes: "[sealed-v2] Separates scheduler evidence from runtime log evidence."
+
+- id: q-315
+  question: "Can you make it private?"
+  intent: clarification
+  golden_sources: []
+  golden_answer: >
+    Ask what resource or traffic path should become private, who should retain access, which
+    environment is affected, and whether the user wants design guidance or an authorized change.
+    Do not assume the request refers to a Service, repository, document, cluster, or credential.
+  golden_answer_keywords: [what resource, access, environment, authorized change]
+  demonstrates_feature: clarification
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: clarification
+  forbidden_sources: [.pdf, "http://", "https://"]
+  notes: "[sealed-v2] Ambiguous security action requiring clarification before retrieval."
+
+- id: q-316
+  question: "Which engineer changed the production authorization policy at 02:17 today, and what exact field did they edit?"
+  intent: rag
+  golden_sources: []
+  golden_answer: >
+    The indexed documentation does not contain the live audit event, actor identity, timestamped
+    change record, or before-and-after policy object needed to answer. State that the engineer and
+    field cannot be determined from available evidence and request the Kubernetes audit logs, GitOps
+    history, deployment records, or cloud control-plane audit trail rather than guessing.
+  golden_answer_keywords: [cannot determine, audit logs, actor, change history]
+  demonstrates_feature: wild
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  forbidden_sources: [.pdf, "http://", "https://"]
+  notes: "[sealed-v2] Organization-specific attribution claim requiring abstention."

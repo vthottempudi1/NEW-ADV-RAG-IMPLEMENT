@@ -1,0 +1,274 @@
+{
+  "profile": "all",
+  "flags": {
+    "search_mode": "hybrid",
+    "enable_hyde": true,
+    "enable_rerank": true,
+    "enable_crag": true,
+    "enable_self_reflective": true,
+    "top_k": 5
+  },
+  "timestamp_utc": "2026-07-11T22:37:37.434260Z",
+  "filter": null,
+  "mode": "http",
+  "scorer": "heuristic",
+  "preflight": null,
+  "provenance": {
+    "git_commit": "fa69186a74a659f9b00454f7e13f545e5bcecba8",
+    "environment": "final-local-docker",
+    "collection": "new_adv_rag_documents",
+    "true_documents": 50,
+    "noisy_documents": 324,
+    "total_points": null,
+    "unique_sources": null,
+    "embedding_model": "text-embedding-3-small",
+    "answer_model": "gpt-4o",
+    "grader_model": "gpt-4o-mini",
+    "ci_run_id": null
+  },
+  "rows": [
+    {
+      "id": "q-056",
+      "demonstrates_feature": "crag",
+      "intent": "web_fallback",
+      "question": "What is the current recommended way to install Cilium on a new Kubernetes cluster?",
+      "answer": "To install Cilium on various Kubernetes platforms, follow these steps:\n\n1. **k3s**:\n   - Disable the default CNI plugin and built-in network policy enforcer during k3s cluster setup.\n   - Use the `kubeconfig` file at `/etc/rancher/k3s/k3s.yaml` by setting the `KUBECONFIG` environment variable.\n   - Install Cilium using the default configuration with encapsulation, cluster pool IPAM, and Kubernetes CRD as the datastore [source: 1, 2].\n\n2. **Google Kubernetes Engine (GKE)**:\n   - Create the cluster with the taint `node.cilium.io/agent-not-ready=true:NoExecute` using the `--node-taints` option.\n   - Install Cilium with encapsulation, cluster pool IPAM, and Kubernetes CRD as the datastore [source: 1].\n\n3. **Rancher Kubernetes Engine (RKE1/RKE2)**:\n   - Follow the specific installation instructions for standalone or Rancher-managed clusters as per the dedicated guide [source: 2].\n\n4. **OpenShift**:\n   - Cilium is a certified CNI plugin for OpenShift and should be installed when creating the cluster using the OpenShift installer [source: 2].\n\n5. **Minikube**:\n   - Download and install the Cilium CLI tool.\n   - Use `cilium install` to automatically detect the cluster configuration and install the necessary components [source: 4].\n\n6. **General Kubernetes Installation using Helm**:\n   - Set up the Helm repository or use OCI registries for installation.\n   - Use `cilium install` with the appropriate Helm values for your cluster [source: 3].\n\nEnsure that your Kubernetes cluster is properly configured and that you have the necessary permissions and tools (like `kubectl`) to manage the cluster.",
+      "contexts": [
+        "[Evidence source: https://docs.cilium.io/en/stable/gettingstarted/k8s-install-default]\nInstall Cilium:\n\nInstall Cilium into your newly created RKE cluster:\n\nTo install Cilium on k3s,\nperform the following steps:\n\nDefault Configuration:\n\n| Datapath | IPAM | Datastore |\n --- \n| Encapsulation | Cluster Pool | Kubernetes CRD |\n\nDatapath\n\nIPAM\n\nDatastore\n\nEncapsulation\n\nCluster Pool\n\nKubernetes CRD\n\nRequirements:\n\nInstall your k3s cluster as you normally would but making sure to disable\nsupport for the default CNI plugin and the built-in network policy enforcer so\nyou can install Cilium on top:\n\nFor the Cilium CLI to access the cluster in successive steps you will need to\nuse the `kubeconfig` file stored at `/etc/rancher/k3s/k3s.yaml` by setting\nthe `KUBECONFIG` environment variable:\n\n`kubeconfig`\n`/etc/rancher/k3s/k3s.yaml`\n`KUBECONFIG`\n\nInstall Cilium: [...] To install Cilium on Google Kubernetes Engine (GKE),\nperform the following steps:\n\nDefault Configuration:\n\n| Datapath | IPAM | Datastore |\n --- \n| Direct Routing | Kubernetes PodCIDR | Kubernetes CRD |\n\nDatapath\n\nIPAM\n\nDatastore\n\nDirect Routing\n\nKubernetes PodCIDR\n\nKubernetes CRD\n\nRequirements:\n\nThe cluster should be created with the taint `node.cilium.io/agent-not-ready=true:NoExecute`\nusing `--node-taints` option. However, there are other options. Please make\nsure to read and understand the documentation page on taint effects and unmanaged pods.\n\n`node.cilium.io/agent-not-ready=true:NoExecute`\n`--node-taints`\n\nInstall Cilium:\n\nInstall Cilium into the GKE cluster:\n\nConfiguration:\n\n| Datapath | IPAM | Datastore |\n --- \n| Encapsulation | Cluster Pool | Kubernetes CRD |\n\nDatapath\n\nIPAM [...] Install Cilium:\n\nInstall Cilium into your newly created Kubernetes cluster:\n\nYou can install Cilium using Helm on Alibaba ACK, refer to Installation using Helm for details.\n\nIf the installation fails for some reason, run `cilium status` to retrieve\nthe overall status of the Cilium deployment and inspect the logs of whatever\npods are failing to be deployed.\n\n`cilium status`\n\nTip\n\nYou may be seeing `cilium install` print something like this:\n\n`cilium install`\n\nThis indicates that your cluster was already running some pods before Cilium\nwas deployed and the installer has automatically restarted them to ensure\nall pods get networking provided by Cilium.\n\n## Validate the Installation\uf0c1\n\nTo validate that Cilium has been properly installed, you can run",
+        "[Evidence source: https://docs.cilium.io/en/stable/installation/k8s-install-helm]\n### Using Traditional Helm Repository\uf0c1\n\nYou can also install Cilium using the traditional Helm repository method.\nBoth installation methods are fully supported.\n\n## Install Cilium\uf0c1\n\nSetup Helm repository:\n\nCilium charts are also available via OCI registries (Quay.io and Docker Hub).\nNo setup required - you can install directly using `oci://` URLs.\n\n`oci://`\n\nSee the OCI Registry section for more information,\nincluding chart signing verification and digest-based installations.\n\nThese are the generic instructions on how to install Cilium into any\nKubernetes cluster using the default configuration options below. Please\nsee the other tabs for distribution/platform specific instructions which\nalso list the ideal default configuration for particular platforms.\n\nDefault Configuration: [...] Requirements:\n\nOpenShift 4.x\n\nInstall Cilium:\n\nCilium is a Certified OpenShift CNI Plugin\nand is best installed when an OpenShift cluster is created using the OpenShift\ninstaller. Please refer to Installation on OpenShift OKD for more information.\n\nTo install Cilium top of a standalone Rancher Kubernetes Engine 1 (RKE1)\nor Rancher Kubernetes Engine 2 (RKE2) cluster,\nfollow the installation instructions provided in the dedicated\nInstallation using Rancher Kubernetes Engine guide.\n\nIf your RKE1/2 cluster is managed by Rancher (non-standalone), follow the\nInstallation using Rancher guide instead.\n\nTo install Cilium on k3s,\nperform the following steps:\n\nDefault Configuration:\n\n| Datapath | IPAM | Datastore |\n --- \n| Encapsulation | Cluster Pool | Kubernetes CRD |\n\nDatapath\n\nIPAM\n\nDatastore [...] Datapath\n\nIPAM\n\nDatastore\n\nEncapsulation\n\nCluster Pool\n\nKubernetes CRD\n\nRequirements:\n\nInstall your k3s cluster as you normally would but making sure to disable\nsupport for the default CNI plugin and the built-in network policy enforcer so\nyou can install Cilium on top:\n\nFor the Cilium CLI to access the cluster in successive steps you will need to\nuse the `kubeconfig` file stored at `/etc/rancher/k3s/k3s.yaml` by setting\nthe `KUBECONFIG` environment variable:\n\n`kubeconfig`\n`/etc/rancher/k3s/k3s.yaml`\n`KUBECONFIG`\n\nInstall Cilium:\n\nConfigure Rancher Desktop:\n\nTo install Cilium on Rancher Desktop,\nperform the following steps:\n\nConfiguring Rancher Desktop is done using a YAML configuration file.\nThis step is necessary in order to disable the default CNI and replace it with\nCilium.",
+        "[Evidence source: https://github.com/cilium/cilium-cli]\n`cilium upgrade --version v1.13.3 --dry-run-helm-values`\n\nNote\nYou can use external diff tools such as dyff to make\n`kubectl diff` output more readable.\n\n`kubectl diff`\n\nIt is strongly recommended that you use Cilium's OCI dev chart repository\nif you need to deploy Cilium with a specific commit SHA. Alternatively, you can use `image.override`\nHelm value if you need to override the cilium-agent container image. For example:\n\n`image.override`\n`cilium upgrade --set image.override=quay.io/cilium/cilium-ci:103e277f78ce95e922bfac98f1e74138a411778a --reuse-values`\n\nPlease see Cilium's Helm Reference for the\ncomplete list of Helm values.\n\n## About\n\nCLI to install, manage & troubleshoot Kubernetes clusters running Cilium\n\n### Topics\n\n### Resources\n\n### License\n\n### Code of conduct [...] ### Encryption\n\nInstall a Cilium in a cluster and enable encryption with IPsec\n\n`cilium install --encryption=ipsec\n\ud83d\udd2e Auto-detected Kubernetes kind: kind\n\u2728 Running \"kind\" validation checks\n\u2705 Detected kind version \"0.9.0\"\n\u2139\ufe0f Cilium version not set, using default version \"v1.9.2\"\n\ud83d\udd2e Auto-detected cluster name: kind-chart-testing\n\ud83d\udd2e Auto-detected IPAM mode: kubernetes\n\ud83d\udd11 Found existing CA in secret cilium-ca\n\ud83d\udd11 Generating certificates for Hubble...\n\ud83d\ude80 Creating Service accounts...\n\ud83d\ude80 Creating Cluster roles...\n\ud83d\udd11 Generated encryption secret cilium-ipsec-keys\n\ud83d\ude80 Creating ConfigMap...\n\ud83d\ude80 Creating Agent DaemonSet...\n\ud83d\ude80 Creating Operator Deployment...\n\u231b Waiting for Cilium to be installed...`\n\n### Examples\n\n#### `install` examples\n\n`install`\n\nTo install the default version of Cilium:\n\n`cilium install` [...] `cilium install`\n\nTo see the Helm release that got deployed:\n\n`helm list -n kube-system --filter \"cilium\"`\n\nTo see non-default Helm values that `cilium-cli` used for this Cilium installation:\n\n`cilium-cli`\n`helm get values -n kube-system cilium`\n\nTo see all the Cilium-related resources without installing them to your cluster:\n\n`cilium install --dry-run`\n\nTo see all the non-default Helm values without actually performing the installation:\n\n`cilium install --dry-run-helm-values`\n\nTo install using Cilium's OCI dev chart repository:\n\n`cilium install --repository oci://quay.io/cilium-charts-dev/cilium --version 1.14.0-dev-dev.4-main-797347707c`\n\n#### `upgrade` examples\n\n`upgrade`\n\nTo upgrade to a specific version of Cilium:\n\n`cilium upgrade --version v1.13.3`",
+        "[Evidence source: https://kubernetes.io/docs/tasks/administer-cluster/network-policy-provider/cilium-network-policy]\n`minikube version`\n`minikube version: v1.5.2`\n`minikube start --network-plugin=cni`\n\nFor minikube you can install Cilium using its CLI tool. To do so, first download the latest\nversion of the CLI with the following command:\n\n`curl -LO \n\nThen extract the downloaded file to your `/usr/local/bin` directory with the following command:\n\n`/usr/local/bin`\n`sudo tar xzvfC cilium-linux-amd64.tar.gz /usr/local/bin\nrm cilium-linux-amd64.tar.gz`\n\nAfter running the above commands, you can now install Cilium with the following command:\n\n`cilium install`\n\nCilium will then automatically detect the cluster configuration and create and\ninstall the appropriate components for a successful installation.\nThe components are:\n\n`cilium-ca` [...] To check the version, enter `kubectl version`.\n\nYou need to have a Kubernetes cluster, and the kubectl command-line tool must\nbe configured to communicate with your cluster. It is recommended to run this tutorial on a cluster with at least two nodes that are not acting as control plane hosts. If you do not already have a\ncluster, you can create one by using\nminikube\nor you can use one of these Kubernetes playgrounds:\n\nTo check the version, enter `kubectl version`.\n\n`kubectl version`\n\n## Deploying Cilium on Minikube for Basic Testing\n\nTo get familiar with Cilium easily you can follow the\nCilium Kubernetes Getting Started Guide\nto perform a basic DaemonSet installation of Cilium in minikube.\n\nTo start minikube, which requires version v1.5.2 or higher, run it with the\nfollowing arguments:"
+      ],
+      "ground_truth": "Cilium, install",
+      "actual_sources": [
+        "https://docs.cilium.io/en/stable/gettingstarted/k8s-install-default",
+        "https://docs.cilium.io/en/stable/installation/k8s-install-helm",
+        "https://github.com/cilium/cilium-cli",
+        "https://kubernetes.io/docs/tasks/administer-cluster/network-policy-provider/cilium-network-policy"
+      ],
+      "golden_sources": [
+        "tavily_web"
+      ],
+      "forbidden_keywords": [],
+      "forbidden_sources": [],
+      "expected_route": "rag",
+      "actual_route": "rag",
+      "ragas_metrics": {
+        "id": "q-056",
+        "demonstrates_feature": "crag",
+        "intent": "web_fallback",
+        "question": "What is the current recommended way to install Cilium on a new Kubernetes cluster?",
+        "answer": "To install Cilium on various Kubernetes platforms, follow these steps:\n\n1. **k3s**:\n   - Disable the default CNI plugin and built-in network policy enforcer during k3s cluster setup.\n   - Use the `kubeconfig` file at `/etc/rancher/k3s/k3s.yaml` by setting the `KUBECONFIG` environment variable.\n   - Install Cilium using the default configuration with encapsulation, cluster pool IPAM, and Kubernetes CRD as the datastore [source: 1, 2].\n\n2. **Google Kubernetes Engine (GKE)**:\n   - Create the cluster with the taint `node.cilium.io/agent-not-ready=true:NoExecute` using the `--node-taints` option.\n   - Install Cilium with encapsulation, cluster pool IPAM, and Kubernetes CRD as the datastore [source: 1].\n\n3. **Rancher Kubernetes Engine (RKE1/RKE2)**:\n   - Follow the specific installation instructions for standalone or Rancher-managed clusters as per the dedicated guide [source: 2].\n\n4. **OpenShift**:\n   - Cilium is a certified CNI plugin for OpenShift and should be installed when creating the cluster using the OpenShift installer [source: 2].\n\n5. **Minikube**:\n   - Download and install the Cilium CLI tool.\n   - Use `cilium install` to automatically detect the cluster configuration and install the necessary components [source: 4].\n\n6. **General Kubernetes Installation using Helm**:\n   - Set up the Helm repository or use OCI registries for installation.\n   - Use `cilium install` with the appropriate Helm values for your cluster [source: 3].\n\nEnsure that your Kubernetes cluster is properly configured and that you have the necessary permissions and tools (like `kubectl`) to manage the cluster.",
+        "contexts": [
+          "[Evidence source: https://docs.cilium.io/en/stable/gettingstarted/k8s-install-default]\nInstall Cilium:\n\nInstall Cilium into your newly created RKE cluster:\n\nTo install Cilium on k3s,\nperform the following steps:\n\nDefault Configuration:\n\n| Datapath | IPAM | Datastore |\n --- \n| Encapsulation | Cluster Pool | Kubernetes CRD |\n\nDatapath\n\nIPAM\n\nDatastore\n\nEncapsulation\n\nCluster Pool\n\nKubernetes CRD\n\nRequirements:\n\nInstall your k3s cluster as you normally would but making sure to disable\nsupport for the default CNI plugin and the built-in network policy enforcer so\nyou can install Cilium on top:\n\nFor the Cilium CLI to access the cluster in successive steps you will need to\nuse the `kubeconfig` file stored at `/etc/rancher/k3s/k3s.yaml` by setting\nthe `KUBECONFIG` environment variable:\n\n`kubeconfig`\n`/etc/rancher/k3s/k3s.yaml`\n`KUBECONFIG`\n\nInstall Cilium: [...] To install Cilium on Google Kubernetes Engine (GKE),\nperform the following steps:\n\nDefault Configuration:\n\n| Datapath | IPAM | Datastore |\n --- \n| Direct Routing | Kubernetes PodCIDR | Kubernetes CRD |\n\nDatapath\n\nIPAM\n\nDatastore\n\nDirect Routing\n\nKubernetes PodCIDR\n\nKubernetes CRD\n\nRequirements:\n\nThe cluster should be created with the taint `node.cilium.io/agent-not-ready=true:NoExecute`\nusing `--node-taints` option. However, there are other options. Please make\nsure to read and understand the documentation page on taint effects and unmanaged pods.\n\n`node.cilium.io/agent-not-ready=true:NoExecute`\n`--node-taints`\n\nInstall Cilium:\n\nInstall Cilium into the GKE cluster:\n\nConfiguration:\n\n| Datapath | IPAM | Datastore |\n --- \n| Encapsulation | Cluster Pool | Kubernetes CRD |\n\nDatapath\n\nIPAM [...] Install Cilium:\n\nInstall Cilium into your newly created Kubernetes cluster:\n\nYou can install Cilium using Helm on Alibaba ACK, refer to Installation using Helm for details.\n\nIf the installation fails for some reason, run `cilium status` to retrieve\nthe overall status of the Cilium deployment and inspect the logs of whatever\npods are failing to be deployed.\n\n`cilium status`\n\nTip\n\nYou may be seeing `cilium install` print something like this:\n\n`cilium install`\n\nThis indicates that your cluster was already running some pods before Cilium\nwas deployed and the installer has automatically restarted them to ensure\nall pods get networking provided by Cilium.\n\n## Validate the Installation\uf0c1\n\nTo validate that Cilium has been properly installed, you can run",
+          "[Evidence source: https://docs.cilium.io/en/stable/installation/k8s-install-helm]\n### Using Traditional Helm Repository\uf0c1\n\nYou can also install Cilium using the traditional Helm repository method.\nBoth installation methods are fully supported.\n\n## Install Cilium\uf0c1\n\nSetup Helm repository:\n\nCilium charts are also available via OCI registries (Quay.io and Docker Hub).\nNo setup required - you can install directly using `oci://` URLs.\n\n`oci://`\n\nSee the OCI Registry section for more information,\nincluding chart signing verification and digest-based installations.\n\nThese are the generic instructions on how to install Cilium into any\nKubernetes cluster using the default configuration options below. Please\nsee the other tabs for distribution/platform specific instructions which\nalso list the ideal default configuration for particular platforms.\n\nDefault Configuration: [...] Requirements:\n\nOpenShift 4.x\n\nInstall Cilium:\n\nCilium is a Certified OpenShift CNI Plugin\nand is best installed when an OpenShift cluster is created using the OpenShift\ninstaller. Please refer to Installation on OpenShift OKD for more information.\n\nTo install Cilium top of a standalone Rancher Kubernetes Engine 1 (RKE1)\nor Rancher Kubernetes Engine 2 (RKE2) cluster,\nfollow the installation instructions provided in the dedicated\nInstallation using Rancher Kubernetes Engine guide.\n\nIf your RKE1/2 cluster is managed by Rancher (non-standalone), follow the\nInstallation using Rancher guide instead.\n\nTo install Cilium on k3s,\nperform the following steps:\n\nDefault Configuration:\n\n| Datapath | IPAM | Datastore |\n --- \n| Encapsulation | Cluster Pool | Kubernetes CRD |\n\nDatapath\n\nIPAM\n\nDatastore [...] Datapath\n\nIPAM\n\nDatastore\n\nEncapsulation\n\nCluster Pool\n\nKubernetes CRD\n\nRequirements:\n\nInstall your k3s cluster as you normally would but making sure to disable\nsupport for the default CNI plugin and the built-in network policy enforcer so\nyou can install Cilium on top:\n\nFor the Cilium CLI to access the cluster in successive steps you will need to\nuse the `kubeconfig` file stored at `/etc/rancher/k3s/k3s.yaml` by setting\nthe `KUBECONFIG` environment variable:\n\n`kubeconfig`\n`/etc/rancher/k3s/k3s.yaml`\n`KUBECONFIG`\n\nInstall Cilium:\n\nConfigure Rancher Desktop:\n\nTo install Cilium on Rancher Desktop,\nperform the following steps:\n\nConfiguring Rancher Desktop is done using a YAML configuration file.\nThis step is necessary in order to disable the default CNI and replace it with\nCilium.",
+          "[Evidence source: https://github.com/cilium/cilium-cli]\n`cilium upgrade --version v1.13.3 --dry-run-helm-values`\n\nNote\nYou can use external diff tools such as dyff to make\n`kubectl diff` output more readable.\n\n`kubectl diff`\n\nIt is strongly recommended that you use Cilium's OCI dev chart repository\nif you need to deploy Cilium with a specific commit SHA. Alternatively, you can use `image.override`\nHelm value if you need to override the cilium-agent container image. For example:\n\n`image.override`\n`cilium upgrade --set image.override=quay.io/cilium/cilium-ci:103e277f78ce95e922bfac98f1e74138a411778a --reuse-values`\n\nPlease see Cilium's Helm Reference for the\ncomplete list of Helm values.\n\n## About\n\nCLI to install, manage & troubleshoot Kubernetes clusters running Cilium\n\n### Topics\n\n### Resources\n\n### License\n\n### Code of conduct [...] ### Encryption\n\nInstall a Cilium in a cluster and enable encryption with IPsec\n\n`cilium install --encryption=ipsec\n\ud83d\udd2e Auto-detected Kubernetes kind: kind\n\u2728 Running \"kind\" validation checks\n\u2705 Detected kind version \"0.9.0\"\n\u2139\ufe0f Cilium version not set, using default version \"v1.9.2\"\n\ud83d\udd2e Auto-detected cluster name: kind-chart-testing\n\ud83d\udd2e Auto-detected IPAM mode: kubernetes\n\ud83d\udd11 Found existing CA in secret cilium-ca\n\ud83d\udd11 Generating certificates for Hubble...\n\ud83d\ude80 Creating Service accounts...\n\ud83d\ude80 Creating Cluster roles...\n\ud83d\udd11 Generated encryption secret cilium-ipsec-keys\n\ud83d\ude80 Creating ConfigMap...\n\ud83d\ude80 Creating Agent DaemonSet...\n\ud83d\ude80 Creating Operator Deployment...\n\u231b Waiting for Cilium to be installed...`\n\n### Examples\n\n#### `install` examples\n\n`install`\n\nTo install the default version of Cilium:\n\n`cilium install` [...] `cilium install`\n\nTo see the Helm release that got deployed:\n\n`helm list -n kube-system --filter \"cilium\"`\n\nTo see non-default Helm values that `cilium-cli` used for this Cilium installation:\n\n`cilium-cli`\n`helm get values -n kube-system cilium`\n\nTo see all the Cilium-related resources without installing them to your cluster:\n\n`cilium install --dry-run`\n\nTo see all the non-default Helm values without actually performing the installation:\n\n`cilium install --dry-run-helm-values`\n\nTo install using Cilium's OCI dev chart repository:\n\n`cilium install --repository oci://quay.io/cilium-charts-dev/cilium --version 1.14.0-dev-dev.4-main-797347707c`\n\n#### `upgrade` examples\n\n`upgrade`\n\nTo upgrade to a specific version of Cilium:\n\n`cilium upgrade --version v1.13.3`",
+          "[Evidence source: https://kubernetes.io/docs/tasks/administer-cluster/network-policy-provider/cilium-network-policy]\n`minikube version`\n`minikube version: v1.5.2`\n`minikube start --network-plugin=cni`\n\nFor minikube you can install Cilium using its CLI tool. To do so, first download the latest\nversion of the CLI with the following command:\n\n`curl -LO \n\nThen extract the downloaded file to your `/usr/local/bin` directory with the following command:\n\n`/usr/local/bin`\n`sudo tar xzvfC cilium-linux-amd64.tar.gz /usr/local/bin\nrm cilium-linux-amd64.tar.gz`\n\nAfter running the above commands, you can now install Cilium with the following command:\n\n`cilium install`\n\nCilium will then automatically detect the cluster configuration and create and\ninstall the appropriate components for a successful installation.\nThe components are:\n\n`cilium-ca` [...] To check the version, enter `kubectl version`.\n\nYou need to have a Kubernetes cluster, and the kubectl command-line tool must\nbe configured to communicate with your cluster. It is recommended to run this tutorial on a cluster with at least two nodes that are not acting as control plane hosts. If you do not already have a\ncluster, you can create one by using\nminikube\nor you can use one of these Kubernetes playgrounds:\n\nTo check the version, enter `kubectl version`.\n\n`kubectl version`\n\n## Deploying Cilium on Minikube for Basic Testing\n\nTo get familiar with Cilium easily you can follow the\nCilium Kubernetes Getting Started Guide\nto perform a basic DaemonSet installation of Cilium in minikube.\n\nTo start minikube, which requires version v1.5.2 or higher, run it with the\nfollowing arguments:"
+        ],
+        "ground_truth": "Cilium, install",
+        "actual_sources": [
+          "https://docs.cilium.io/en/stable/gettingstarted/k8s-install-default",
+          "https://docs.cilium.io/en/stable/installation/k8s-install-helm",
+          "https://github.com/cilium/cilium-cli",
+          "https://kubernetes.io/docs/tasks/administer-cluster/network-policy-provider/cilium-network-policy"
+        ],
+        "golden_sources": [
+          "tavily_web"
+        ],
+        "forbidden_keywords": [],
+        "forbidden_sources": [],
+        "expected_route": "rag",
+        "actual_route": "rag",
+        "faithfulness": 0.606,
+        "answer_relevancy": 0.5,
+        "context_precision": 0.562,
+        "context_recall": 1.0,
+        "scoring_backend": "heuristic"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "tavily_web",
+          "web"
+        ],
+        "missed": []
+      },
+      "source_precision": 1.0,
+      "forbidden_source_check": {
+        "passed": true,
+        "hits": []
+      },
+      "route_check": {
+        "passed": true,
+        "expected": "rag",
+        "actual": "rag"
+      }
+    },
+    {
+      "id": "q-057",
+      "demonstrates_feature": "crag",
+      "intent": "web_fallback",
+      "question": "What Kubernetes versions are currently supported by Amazon EKS?",
+      "answer": "The currently supported Kubernetes versions in Amazon EKS include both standard and extended support versions. For standard support, the versions are 1.36, 1.35, 1.34, and 1.33. For extended support, the versions are 1.32, 1.31, and 1.30.",
+      "contexts": [
+        "[Evidence source: https://docs.aws.amazon.com/batch/latest/userguide/supported_kubernetes_version.html]\nView a markdown version of this page\n\n# Supported Kubernetes versions\n\nAWS Batch on Amazon EKS currently supports the following Kubernetes versions:\n\n`1.35`\n\n`1.35`\n\n`1.34`\n\n`1.34`\n\n`1.33`\n\n`1.33`\n\n`1.32`\n\n`1.32`\n\n`1.31`\n\n`1.31`\n\n`1.30`\n\n`1.30`\n\n`1.29`\n\n`1.29`\n\nYou might see an error message that resembles the following when you use the\n`CreateComputeEnvironment` API operation or\n`UpdateComputeEnvironment`API operation to create or update a compute environment.\nThis issue occurs if you specify an unsupported Kubernetes version in\n`EC2Configuration`.\n\n`CreateComputeEnvironment`\n`UpdateComputeEnvironment`\n`EC2Configuration`\n`At least one imageKubernetesVersion in EC2Configuration is not supported.`",
+        "[Evidence source: https://docs.aws.amazon.com/eks/latest/userguide/kubernetes-versions.html]\nWe recommend that you create your cluster with the latest available Kubernetes version supported by Amazon EKS. If your application requires a specific version of Kubernetes, you can select older versions. You can create new Amazon EKS clusters on any version offered in standard or extended support.\n\n## Available versions on standard support\n\nThe following Kubernetes versions are currently available in Amazon EKS standard support:\n\n`1.36`\n\n`1.36`\n\n`1.35`\n\n`1.35`\n\n`1.34`\n\n`1.34`\n\n`1.33`\n\n`1.33`\n\nFor important changes to be aware of for each version in standard support, see Kubernetes versions standard support.\n\n## Available versions on extended support\n\nThe following Kubernetes versions are currently available in Amazon EKS extended support:\n\n`1.32`\n\n`1.32`\n\n`1.31`\n\n`1.31`\n\n`1.30`\n\n`1.30` [...] August 2, 2027\n\nAugust 2, 2028\n\n`1.35`\n\n`1.35`\n\nDecember 17, 2025\n\nJanuary 27, 2026\n\nMarch 27, 2027\n\nMarch 27, 2028\n\n`1.34`\n\n`1.34`\n\nAugust 27, 2025\n\nOctober 2, 2025\n\nDecember 2, 2026\n\nDecember 2, 2027\n\n`1.33`\n\n`1.33`\n\nApril 23, 2025\n\nMay 29, 2025\n\nJuly 29, 2026\n\nJuly 29, 2027\n\n`1.32`\n\n`1.32`\n\nDecember 11, 2024\n\nJanuary 23, 2025\n\nMarch 23, 2026\n\nMarch 23, 2027\n\n`1.31`\n\n`1.31`\n\nAugust 13, 2024\n\nSeptember 26, 2024\n\nNovember 26, 2025\n\nNovember 26, 2026\n\n`1.30`\n\n`1.30`\n\nApril 17, 2024\n\nMay 23, 2024\n\nJuly 23, 2025\n\nJuly 23, 2026\n\n## Get version information with AWS CLI\n\nYou can use the AWS CLI to get information about Kubernetes versions available on EKS, such as the end date of Standard Support.\n\n### To retrieve information about available Kubernetes versions on EKS using the AWS CLI [...] Open your terminal.\n\nEnsure you have the AWS CLI installed and configured. For more information, see Installing or updating to the latest version of the CLI.\n\nRun the following command:\n\nThe command will return a JSON output with details about the available cluster versions. Here\u2019s an example of the output:\n\n`{\n\"clusterVersions\": [\n{\n\"clusterVersion\": \"1.31\",\n\"clusterType\": \"eks\",\n\"defaultPlatformVersion\": \"eks.21\",\n\"defaultVersion\": true,\n\"releaseDate\": \"2024-09-25T17:00:00-07:00\",\n\"endOfStandardSupportDate\": \"2025-11-25T16:00:00-08:00\",\n\"endOfExtendedSupportDate\": \"2026-11-25T16:00:00-08:00\",\n\"status\": \"STANDARD_SUPPORT\",\n\"kubernetesPatchVersion\": \"1.31.3\"\n}\n]\n}`\n\nThe output provides the following information for each cluster version:",
+        "[Evidence source: https://aws.amazon.com/blogs/containers/amazon-eks-now-supports-kubernetes-version-1-28]\n## End of life support\n\nAmazon EKS provides support for at least four Kubernetes versions at any given time. Given the nature of the Kubernetes release cycle, it\u2019s critical for all customers to have an ongoing upgrade plan. If you\u2019re still running an older version of Kubernetes like 1.23 and 1.24, then please consider upgrading to one of the newer supported versions. The end-of-support for 1.23 clusters is October 11, 2023, and the end-of-support for 1.24 clusters will be in January 2024. If you have more questions concerning Amazon EKS version support, then refer to our FAQ.\n\n## Conclusion [...] give you some additional time for kubelet minor version updates on the data plane, it\u2019s important to note that this doesn\u2019t negate the importance of keeping up with newer Amazon Machine Image (AMI) versions for security reasons, especially in light of potential Common Vulnerabilities and Exposures (CVEs). Remember, the n-3 skew change is only applicable to versions that are currently supported. If a version has been sunset, you\u2019ll be limited to using only the versions that remain supported. [...] To learn more, see Changes to supported skew between control plane and node versions."
+      ],
+      "ground_truth": "Kubernetes, EKS, version",
+      "actual_sources": [
+        "https://docs.aws.amazon.com/batch/latest/userguide/supported_kubernetes_version.html",
+        "https://docs.aws.amazon.com/eks/latest/userguide/kubernetes-versions.html",
+        "https://aws.amazon.com/blogs/containers/amazon-eks-now-supports-kubernetes-version-1-28"
+      ],
+      "golden_sources": [
+        "tavily_web"
+      ],
+      "forbidden_keywords": [],
+      "forbidden_sources": [],
+      "expected_route": "rag",
+      "actual_route": "rag",
+      "ragas_metrics": {
+        "id": "q-057",
+        "demonstrates_feature": "crag",
+        "intent": "web_fallback",
+        "question": "What Kubernetes versions are currently supported by Amazon EKS?",
+        "answer": "The currently supported Kubernetes versions in Amazon EKS include both standard and extended support versions. For standard support, the versions are 1.36, 1.35, 1.34, and 1.33. For extended support, the versions are 1.32, 1.31, and 1.30.",
+        "contexts": [
+          "[Evidence source: https://docs.aws.amazon.com/batch/latest/userguide/supported_kubernetes_version.html]\nView a markdown version of this page\n\n# Supported Kubernetes versions\n\nAWS Batch on Amazon EKS currently supports the following Kubernetes versions:\n\n`1.35`\n\n`1.35`\n\n`1.34`\n\n`1.34`\n\n`1.33`\n\n`1.33`\n\n`1.32`\n\n`1.32`\n\n`1.31`\n\n`1.31`\n\n`1.30`\n\n`1.30`\n\n`1.29`\n\n`1.29`\n\nYou might see an error message that resembles the following when you use the\n`CreateComputeEnvironment` API operation or\n`UpdateComputeEnvironment`API operation to create or update a compute environment.\nThis issue occurs if you specify an unsupported Kubernetes version in\n`EC2Configuration`.\n\n`CreateComputeEnvironment`\n`UpdateComputeEnvironment`\n`EC2Configuration`\n`At least one imageKubernetesVersion in EC2Configuration is not supported.`",
+          "[Evidence source: https://docs.aws.amazon.com/eks/latest/userguide/kubernetes-versions.html]\nWe recommend that you create your cluster with the latest available Kubernetes version supported by Amazon EKS. If your application requires a specific version of Kubernetes, you can select older versions. You can create new Amazon EKS clusters on any version offered in standard or extended support.\n\n## Available versions on standard support\n\nThe following Kubernetes versions are currently available in Amazon EKS standard support:\n\n`1.36`\n\n`1.36`\n\n`1.35`\n\n`1.35`\n\n`1.34`\n\n`1.34`\n\n`1.33`\n\n`1.33`\n\nFor important changes to be aware of for each version in standard support, see Kubernetes versions standard support.\n\n## Available versions on extended support\n\nThe following Kubernetes versions are currently available in Amazon EKS extended support:\n\n`1.32`\n\n`1.32`\n\n`1.31`\n\n`1.31`\n\n`1.30`\n\n`1.30` [...] August 2, 2027\n\nAugust 2, 2028\n\n`1.35`\n\n`1.35`\n\nDecember 17, 2025\n\nJanuary 27, 2026\n\nMarch 27, 2027\n\nMarch 27, 2028\n\n`1.34`\n\n`1.34`\n\nAugust 27, 2025\n\nOctober 2, 2025\n\nDecember 2, 2026\n\nDecember 2, 2027\n\n`1.33`\n\n`1.33`\n\nApril 23, 2025\n\nMay 29, 2025\n\nJuly 29, 2026\n\nJuly 29, 2027\n\n`1.32`\n\n`1.32`\n\nDecember 11, 2024\n\nJanuary 23, 2025\n\nMarch 23, 2026\n\nMarch 23, 2027\n\n`1.31`\n\n`1.31`\n\nAugust 13, 2024\n\nSeptember 26, 2024\n\nNovember 26, 2025\n\nNovember 26, 2026\n\n`1.30`\n\n`1.30`\n\nApril 17, 2024\n\nMay 23, 2024\n\nJuly 23, 2025\n\nJuly 23, 2026\n\n## Get version information with AWS CLI\n\nYou can use the AWS CLI to get information about Kubernetes versions available on EKS, such as the end date of Standard Support.\n\n### To retrieve information about available Kubernetes versions on EKS using the AWS CLI [...] Open your terminal.\n\nEnsure you have the AWS CLI installed and configured. For more information, see Installing or updating to the latest version of the CLI.\n\nRun the following command:\n\nThe command will return a JSON output with details about the available cluster versions. Here\u2019s an example of the output:\n\n`{\n\"clusterVersions\": [\n{\n\"clusterVersion\": \"1.31\",\n\"clusterType\": \"eks\",\n\"defaultPlatformVersion\": \"eks.21\",\n\"defaultVersion\": true,\n\"releaseDate\": \"2024-09-25T17:00:00-07:00\",\n\"endOfStandardSupportDate\": \"2025-11-25T16:00:00-08:00\",\n\"endOfExtendedSupportDate\": \"2026-11-25T16:00:00-08:00\",\n\"status\": \"STANDARD_SUPPORT\",\n\"kubernetesPatchVersion\": \"1.31.3\"\n}\n]\n}`\n\nThe output provides the following information for each cluster version:",
+          "[Evidence source: https://aws.amazon.com/blogs/containers/amazon-eks-now-supports-kubernetes-version-1-28]\n## End of life support\n\nAmazon EKS provides support for at least four Kubernetes versions at any given time. Given the nature of the Kubernetes release cycle, it\u2019s critical for all customers to have an ongoing upgrade plan. If you\u2019re still running an older version of Kubernetes like 1.23 and 1.24, then please consider upgrading to one of the newer supported versions. The end-of-support for 1.23 clusters is October 11, 2023, and the end-of-support for 1.24 clusters will be in January 2024. If you have more questions concerning Amazon EKS version support, then refer to our FAQ.\n\n## Conclusion [...] give you some additional time for kubelet minor version updates on the data plane, it\u2019s important to note that this doesn\u2019t negate the importance of keeping up with newer Amazon Machine Image (AMI) versions for security reasons, especially in light of potential Common Vulnerabilities and Exposures (CVEs). Remember, the n-3 skew change is only applicable to versions that are currently supported. If a version has been sunset, you\u2019ll be limited to using only the versions that remain supported. [...] To learn more, see Changes to supported skew between control plane and node versions."
+        ],
+        "ground_truth": "Kubernetes, EKS, version",
+        "actual_sources": [
+          "https://docs.aws.amazon.com/batch/latest/userguide/supported_kubernetes_version.html",
+          "https://docs.aws.amazon.com/eks/latest/userguide/kubernetes-versions.html",
+          "https://aws.amazon.com/blogs/containers/amazon-eks-now-supports-kubernetes-version-1-28"
+        ],
+        "golden_sources": [
+          "tavily_web"
+        ],
+        "forbidden_keywords": [],
+        "forbidden_sources": [],
+        "expected_route": "rag",
+        "actual_route": "rag",
+        "faithfulness": 0.889,
+        "answer_relevancy": 0.857,
+        "context_precision": 0.905,
+        "context_recall": 1.0,
+        "scoring_backend": "heuristic"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "tavily_web",
+          "web"
+        ],
+        "missed": []
+      },
+      "source_precision": 1.0,
+      "forbidden_source_check": {
+        "passed": true,
+        "hits": []
+      },
+      "route_check": {
+        "passed": true,
+        "expected": "rag",
+        "actual": "rag"
+      }
+    },
+    {
+      "id": "q-058",
+      "demonstrates_feature": "crag",
+      "intent": "web_fallback",
+      "question": "What is the latest stable Argo CD release and its upgrade guidance?",
+      "answer": "The latest stable version of Argo CD mentioned in the provided documents is v3.3. The detailed steps for upgrading from the previous version (v3.2) include:\n\n1. **Helm Upgrade**: Argo CD v3.3 upgrades the bundled Helm version to 3.19.2. Ensure that you are not using Helm 2.x as it is no longer supported.\n\n2. **Kustomize Upgrade**: The bundled Kustomize version is upgraded from v5.7.0 to v5.8.0. It is recommended to upgrade Argo CD using Server Side Apply (SSA) along with `resolve conflicts` to avoid issues with annotation size limitations.\n\n3. **Deprecated Flags**: The `--self-heal-backoff-cooldown-seconds` flag is deprecated and will be removed in a future release.\n\n4. **Breaking Changes**: Be aware of breaking changes such as the ApplicationSet CRD exceeding the size limit for client-side apply and the removal of Application Path Cleaning during hydration.\n\n5. **Custom Modifications**: Note that any custom modifications to fields defined in the Argo CD manifests will be overwritten during the upgrade, while fields not specified in the manifests will be preserved.\n\n6. **Healthchecks**: New health checks have been added.\n\nFor a complete upgrade, ensure you follow the specific instructions for your deployment method, whether it's using Kustomize, Helm, or plain manifests.",
+      "contexts": [
+        "[Evidence source: https://argo-cd.readthedocs.io/en/stable/operator-manual/upgrading/3.2-3.3]\n### Deprecated --self-heal-backoff-cooldown-seconds flag\u00b6\n\nThe `--self-heal-backoff-cooldown-seconds` flag of the `argocd-application-controller` has been deprecated and will be removed in a future release.\n\n## Helm Upgraded to 3.19.2\u00b6\n\nArgo CD v3.3 upgrades the bundled Helm version to 3.19.2. There are no breaking changes in Helm 3.19.2 according to the release notes.\n\nHelm 2.x is no longer supported as we are dropping the `--client` flag in calls to `helm version`.\n\n## Kustomize Upgraded to 5.8.0\u00b6\n\nArgo CD v3.3 upgrades the bundled Kustomize version from v5.7.0 to v5.8.0. According to the 5.7.1 and 5.8.0 release notes, there are no breaking changes. [...] In order to avoid this issue, it is now required to upgrade Argo CD using Server Side Apply (SSA) along with `resolve conflicts`. SSA does not store the ApplicationSet fields in `last-applied` annotation, thus not impacted by the annotation size limitation. The `--force-conflicts` flag allows the apply operation to take ownership of fields that may have been previously managed by other tools (such as Helm or a previous `kubectl apply`). This is necessary for upgrades. Note that any custom modifications you've made to fields that are defined in the Argo CD manifests (like `affinity`, `env`, or `probes`) will be overwritten. However, fields not specified in the manifests (like `resources` limits/requests or `tolerations`) will be preserved.\n\n#### Upgrading Argo CD which is managing itself\u00b6 [...] Skip to content\n\n Breaking Changes \n\n  + ApplicationSet CRD exceeds the size limit for client-side apply \n\n    - Upgrading Argo CD which is managing itself\n    - Upgrading Argo CD manually using Kustomize or plain manifests\n    - Upgrading Argo CD manually using Helm\n    - Users who previously upgraded to 3.3.0 or 3.3.1\n  + Source Hydrator Now Tracks Hydration State Using Git Notes \n\n    - How It Works\n    - Migration Impact\n    - Rationale and Benefits\n  + Removal of Application Path Cleaning During Hydration\n  + Anonymous call to Settings API returns fewer fields\n  + New ENV Variable to control K8s Server Side Timeout of API Requests\n  + Deprecated --self-heal-backoff-cooldown-seconds flag\n Helm Upgraded to 3.19.2\n Kustomize Upgraded to 5.8.0\n Added Healthchecks\n\n# v3.2 to 3.3\u00b6",
+        "[Evidence source: https://argo-cd.readthedocs.io/en/stable/operator-manual/upgrading/2.12-2.13]\n`Custom Resource Health`\n\n## Upgraded Dex Version\u00b6\n\nDex v2.39.0 included a breaking change for the LDAP connector:\n\nThe validation of username and password in the LDAP connector is much more strict now.\nAs of today, Dex uses the EscapeFilter function to check for special characters in credentials and prevent injections by denying such requests.\n\n## Updated Job name for manually started CronJob jobs\u00b6\n\nThe naming of Jobs that are manually started from CronJobs (using Argo CD) was changed. Instead of the previous postfix `-YYYYMMDDHHmm` (4-digit year), manually started Jobs now receive postfix `-YYMMDDHHmm` (2-digit year).\n\n`-YYYYMMDDHHmm`\n`-YYMMDDHHmm`\n\nThe format of Jobs that are started from a CronJob on schedule (by Kubernetes) is not handled by Argo CD and remains unchanged. [...] ## Change in Log File Extension for Downloaded Logs\u00b6\n\nThe default extension for log files generated by Argo CD when using the \"Download Logs\" feature has been changed from `.txt` to `.log`. This change aligns with industry standards and improves compatibility with various log management tools and IDEs that offer enhanced features for `.log` files.\n\n`.txt`\n`.log`\n`.log`\n\nImpact:\n- Users and systems that rely on the `.txt` extension will need to adjust their workflows.\n- Automated scripts and processes that specifically target `.txt` log files should be updated to handle `.log` files.\n\n`.txt`\n`.txt`\n`.log`\n\nBenefits:\n- Improved readability and parsing in IDEs and log management tools.\n- Consistency with standard log file conventions."
+      ],
+      "ground_truth": "Argo CD, release, upgrade",
+      "actual_sources": [
+        "https://argo-cd.readthedocs.io/en/stable/operator-manual/upgrading/3.2-3.3",
+        "https://argo-cd.readthedocs.io/en/stable/operator-manual/upgrading/2.12-2.13"
+      ],
+      "golden_sources": [
+        "tavily_web"
+      ],
+      "forbidden_keywords": [],
+      "forbidden_sources": [],
+      "expected_route": "rag",
+      "actual_route": "rag",
+      "ragas_metrics": {
+        "id": "q-058",
+        "demonstrates_feature": "crag",
+        "intent": "web_fallback",
+        "question": "What is the latest stable Argo CD release and its upgrade guidance?",
+        "answer": "The latest stable version of Argo CD mentioned in the provided documents is v3.3. The detailed steps for upgrading from the previous version (v3.2) include:\n\n1. **Helm Upgrade**: Argo CD v3.3 upgrades the bundled Helm version to 3.19.2. Ensure that you are not using Helm 2.x as it is no longer supported.\n\n2. **Kustomize Upgrade**: The bundled Kustomize version is upgraded from v5.7.0 to v5.8.0. It is recommended to upgrade Argo CD using Server Side Apply (SSA) along with `resolve conflicts` to avoid issues with annotation size limitations.\n\n3. **Deprecated Flags**: The `--self-heal-backoff-cooldown-seconds` flag is deprecated and will be removed in a future release.\n\n4. **Breaking Changes**: Be aware of breaking changes such as the ApplicationSet CRD exceeding the size limit for client-side apply and the removal of Application Path Cleaning during hydration.\n\n5. **Custom Modifications**: Note that any custom modifications to fields defined in the Argo CD manifests will be overwritten during the upgrade, while fields not specified in the manifests will be preserved.\n\n6. **Healthchecks**: New health checks have been added.\n\nFor a complete upgrade, ensure you follow the specific instructions for your deployment method, whether it's using Kustomize, Helm, or plain manifests.",
+        "contexts": [
+          "[Evidence source: https://argo-cd.readthedocs.io/en/stable/operator-manual/upgrading/3.2-3.3]\n### Deprecated --self-heal-backoff-cooldown-seconds flag\u00b6\n\nThe `--self-heal-backoff-cooldown-seconds` flag of the `argocd-application-controller` has been deprecated and will be removed in a future release.\n\n## Helm Upgraded to 3.19.2\u00b6\n\nArgo CD v3.3 upgrades the bundled Helm version to 3.19.2. There are no breaking changes in Helm 3.19.2 according to the release notes.\n\nHelm 2.x is no longer supported as we are dropping the `--client` flag in calls to `helm version`.\n\n## Kustomize Upgraded to 5.8.0\u00b6\n\nArgo CD v3.3 upgrades the bundled Kustomize version from v5.7.0 to v5.8.0. According to the 5.7.1 and 5.8.0 release notes, there are no breaking changes. [...] In order to avoid this issue, it is now required to upgrade Argo CD using Server Side Apply (SSA) along with `resolve conflicts`. SSA does not store the ApplicationSet fields in `last-applied` annotation, thus not impacted by the annotation size limitation. The `--force-conflicts` flag allows the apply operation to take ownership of fields that may have been previously managed by other tools (such as Helm or a previous `kubectl apply`). This is necessary for upgrades. Note that any custom modifications you've made to fields that are defined in the Argo CD manifests (like `affinity`, `env`, or `probes`) will be overwritten. However, fields not specified in the manifests (like `resources` limits/requests or `tolerations`) will be preserved.\n\n#### Upgrading Argo CD which is managing itself\u00b6 [...] Skip to content\n\n Breaking Changes \n\n  + ApplicationSet CRD exceeds the size limit for client-side apply \n\n    - Upgrading Argo CD which is managing itself\n    - Upgrading Argo CD manually using Kustomize or plain manifests\n    - Upgrading Argo CD manually using Helm\n    - Users who previously upgraded to 3.3.0 or 3.3.1\n  + Source Hydrator Now Tracks Hydration State Using Git Notes \n\n    - How It Works\n    - Migration Impact\n    - Rationale and Benefits\n  + Removal of Application Path Cleaning During Hydration\n  + Anonymous call to Settings API returns fewer fields\n  + New ENV Variable to control K8s Server Side Timeout of API Requests\n  + Deprecated --self-heal-backoff-cooldown-seconds flag\n Helm Upgraded to 3.19.2\n Kustomize Upgraded to 5.8.0\n Added Healthchecks\n\n# v3.2 to 3.3\u00b6",
+          "[Evidence source: https://argo-cd.readthedocs.io/en/stable/operator-manual/upgrading/2.12-2.13]\n`Custom Resource Health`\n\n## Upgraded Dex Version\u00b6\n\nDex v2.39.0 included a breaking change for the LDAP connector:\n\nThe validation of username and password in the LDAP connector is much more strict now.\nAs of today, Dex uses the EscapeFilter function to check for special characters in credentials and prevent injections by denying such requests.\n\n## Updated Job name for manually started CronJob jobs\u00b6\n\nThe naming of Jobs that are manually started from CronJobs (using Argo CD) was changed. Instead of the previous postfix `-YYYYMMDDHHmm` (4-digit year), manually started Jobs now receive postfix `-YYMMDDHHmm` (2-digit year).\n\n`-YYYYMMDDHHmm`\n`-YYMMDDHHmm`\n\nThe format of Jobs that are started from a CronJob on schedule (by Kubernetes) is not handled by Argo CD and remains unchanged. [...] ## Change in Log File Extension for Downloaded Logs\u00b6\n\nThe default extension for log files generated by Argo CD when using the \"Download Logs\" feature has been changed from `.txt` to `.log`. This change aligns with industry standards and improves compatibility with various log management tools and IDEs that offer enhanced features for `.log` files.\n\n`.txt`\n`.log`\n`.log`\n\nImpact:\n- Users and systems that rely on the `.txt` extension will need to adjust their workflows.\n- Automated scripts and processes that specifically target `.txt` log files should be updated to handle `.log` files.\n\n`.txt`\n`.txt`\n`.log`\n\nBenefits:\n- Improved readability and parsing in IDEs and log management tools.\n- Consistency with standard log file conventions."
+        ],
+        "ground_truth": "Argo CD, release, upgrade",
+        "actual_sources": [
+          "https://argo-cd.readthedocs.io/en/stable/operator-manual/upgrading/3.2-3.3",
+          "https://argo-cd.readthedocs.io/en/stable/operator-manual/upgrading/2.12-2.13"
+        ],
+        "golden_sources": [
+          "tavily_web"
+        ],
+        "forbidden_keywords": [],
+        "forbidden_sources": [],
+        "expected_route": "rag",
+        "actual_route": "rag",
+        "faithfulness": 0.745,
+        "answer_relevancy": 0.75,
+        "context_precision": 0.5,
+        "context_recall": 1.0,
+        "scoring_backend": "heuristic"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "tavily_web",
+          "web"
+        ],
+        "missed": []
+      },
+      "source_precision": 1.0,
+      "forbidden_source_check": {
+        "passed": true,
+        "hits": []
+      },
+      "route_check": {
+        "passed": true,
+        "expected": "rag",
+        "actual": "rag"
+      }
+    }
+  ],
+  "skipped": [],
+  "aggregate": {
+    "answer_relevancy": 0.702,
+    "faithfulness": 0.747,
+    "context_precision": 0.656,
+    "context_recall": 1.0,
+    "forbidden_violations": 0,
+    "source_precision": 1.0,
+    "forbidden_source_violations": 0,
+    "route_violations": 0
+  },
+  "threshold_failures": {}
+}

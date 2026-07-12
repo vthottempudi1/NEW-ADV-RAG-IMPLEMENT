@@ -1,0 +1,1736 @@
+{
+  "profile": "hybrid+rerank+hyde",
+  "flags": {
+    "search_mode": "hybrid",
+    "enable_hyde": true,
+    "enable_rerank": true,
+    "enable_crag": false,
+    "enable_self_reflective": false,
+    "top_k": 5
+  },
+  "timestamp_utc": "2026-07-06T16:14:55.930557Z",
+  "filter": null,
+  "mode": "local",
+  "scorer": "llm",
+  "rows": [
+    {
+      "id": "q-001",
+      "demonstrates_feature": "baseline",
+      "intent": "rag",
+      "question": "What is a Pod in Kubernetes?",
+      "answer": "```json\n{\n  \"answer\": \"In Kubernetes, a Pod is the smallest deployable unit that can be created and managed. It wraps one or more containers, which share the same network namespace and storage resources.\",\n  \"sources\": [\"dummy_kubernetes.pdf\"],\n  \"confidence\": 0.9\n}\n```",
+      "contexts": [
+        "Kubernetes Overview (Sample / Dummy Document) This is a placeholder document for testing purposes, containing basic sample content about Kubernetes. What is Kubernetes? Kubernetes (often abbreviated K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. Core Components \u007f Pod - the smallest deployable unit, wrapping one or more containers \u007f Node - a worker machine (VM or physical) that runs pods \u007f Cluster - a set of nodes managed together \u007f Deployment - manages replica sets and rolling updates of pods \u007f Service - a stable network endpoint exposing a set of pods \u007f Namespace - a way to divide cluster resources between users/teams Sample kubectl Commands kubectl get pods kubectl get nodes kubectl apply -f deployment.yaml kubectl scale deployment my-app --replicas=3 kubectl logs my-pod-name Note: This document is a dummy/sample file generated for download and testing purposes only. It is not exhaustive",
+        "ument is a dummy/sample file generated for download and testing purposes only. It is not exhaustive documentation."
+      ],
+      "ground_truth": "pod, container, namespace",
+      "actual_sources": [
+        "dummy_kubernetes.pdf"
+      ],
+      "golden_sources": [
+        "pods.html"
+      ],
+      "forbidden_keywords": [],
+      "ragas_metrics": {
+        "id": "q-001",
+        "demonstrates_feature": "baseline",
+        "intent": "rag",
+        "question": "What is a Pod in Kubernetes?",
+        "answer": "```json\n{\n  \"answer\": \"In Kubernetes, a Pod is the smallest deployable unit that can be created and managed. It wraps one or more containers, which share the same network namespace and storage resources.\",\n  \"sources\": [\"dummy_kubernetes.pdf\"],\n  \"confidence\": 0.9\n}\n```",
+        "contexts": [
+          "Kubernetes Overview (Sample / Dummy Document) This is a placeholder document for testing purposes, containing basic sample content about Kubernetes. What is Kubernetes? Kubernetes (often abbreviated K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. Core Components \u007f Pod - the smallest deployable unit, wrapping one or more containers \u007f Node - a worker machine (VM or physical) that runs pods \u007f Cluster - a set of nodes managed together \u007f Deployment - manages replica sets and rolling updates of pods \u007f Service - a stable network endpoint exposing a set of pods \u007f Namespace - a way to divide cluster resources between users/teams Sample kubectl Commands kubectl get pods kubectl get nodes kubectl apply -f deployment.yaml kubectl scale deployment my-app --replicas=3 kubectl logs my-pod-name Note: This document is a dummy/sample file generated for download and testing purposes only. It is not exhaustive",
+          "ument is a dummy/sample file generated for download and testing purposes only. It is not exhaustive documentation."
+        ],
+        "ground_truth": "pod, container, namespace",
+        "actual_sources": [
+          "dummy_kubernetes.pdf"
+        ],
+        "golden_sources": [
+          "pods.html"
+        ],
+        "forbidden_keywords": [],
+        "faithfulness": 1,
+        "answer_relevancy": 1.0,
+        "context_precision": 1.0,
+        "context_recall": 1
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 0.0,
+        "matched": [],
+        "missed": [
+          "pods"
+        ]
+      }
+    },
+    {
+      "id": "q-002",
+      "demonstrates_feature": "baseline",
+      "intent": "rag",
+      "question": "What is a Kubernetes Deployment and what does it manage?",
+      "answer": "```json\n{\n  \"answer\": \"A Kubernetes Deployment is a resource object that manages the deployment and scaling of a set of pods. It handles the creation and management of ReplicaSets, which in turn manage the pods. Deployments are used to ensure that the desired number of pod replicas are running at any given time and to facilitate rolling updates to applications.\",\n  \"sources\": [\"dummy_kubernetes.pdf\"],\n  \"confidence\": 0.9\n}\n```",
+      "contexts": [
+        "Kubernetes Overview (Sample / Dummy Document) This is a placeholder document for testing purposes, containing basic sample content about Kubernetes. What is Kubernetes? Kubernetes (often abbreviated K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. Core Components \u007f Pod - the smallest deployable unit, wrapping one or more containers \u007f Node - a worker machine (VM or physical) that runs pods \u007f Cluster - a set of nodes managed together \u007f Deployment - manages replica sets and rolling updates of pods \u007f Service - a stable network endpoint exposing a set of pods \u007f Namespace - a way to divide cluster resources between users/teams Sample kubectl Commands kubectl get pods kubectl get nodes kubectl apply -f deployment.yaml kubectl scale deployment my-app --replicas=3 kubectl logs my-pod-name Note: This document is a dummy/sample file generated for download and testing purposes only. It is not exhaustive",
+        "ument is a dummy/sample file generated for download and testing purposes only. It is not exhaustive documentation."
+      ],
+      "ground_truth": "deployment, replica, rolling update",
+      "actual_sources": [
+        "dummy_kubernetes.pdf"
+      ],
+      "golden_sources": [
+        "deployments.html"
+      ],
+      "forbidden_keywords": [],
+      "ragas_metrics": {
+        "id": "q-002",
+        "demonstrates_feature": "baseline",
+        "intent": "rag",
+        "question": "What is a Kubernetes Deployment and what does it manage?",
+        "answer": "```json\n{\n  \"answer\": \"A Kubernetes Deployment is a resource object that manages the deployment and scaling of a set of pods. It handles the creation and management of ReplicaSets, which in turn manage the pods. Deployments are used to ensure that the desired number of pod replicas are running at any given time and to facilitate rolling updates to applications.\",\n  \"sources\": [\"dummy_kubernetes.pdf\"],\n  \"confidence\": 0.9\n}\n```",
+        "contexts": [
+          "Kubernetes Overview (Sample / Dummy Document) This is a placeholder document for testing purposes, containing basic sample content about Kubernetes. What is Kubernetes? Kubernetes (often abbreviated K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. Core Components \u007f Pod - the smallest deployable unit, wrapping one or more containers \u007f Node - a worker machine (VM or physical) that runs pods \u007f Cluster - a set of nodes managed together \u007f Deployment - manages replica sets and rolling updates of pods \u007f Service - a stable network endpoint exposing a set of pods \u007f Namespace - a way to divide cluster resources between users/teams Sample kubectl Commands kubectl get pods kubectl get nodes kubectl apply -f deployment.yaml kubectl scale deployment my-app --replicas=3 kubectl logs my-pod-name Note: This document is a dummy/sample file generated for download and testing purposes only. It is not exhaustive",
+          "ument is a dummy/sample file generated for download and testing purposes only. It is not exhaustive documentation."
+        ],
+        "ground_truth": "deployment, replica, rolling update",
+        "actual_sources": [
+          "dummy_kubernetes.pdf"
+        ],
+        "golden_sources": [
+          "deployments.html"
+        ],
+        "forbidden_keywords": [],
+        "faithfulness": 1,
+        "answer_relevancy": 1.0,
+        "context_precision": 1.0,
+        "context_recall": 1
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 0.0,
+        "matched": [],
+        "missed": [
+          "deployments"
+        ]
+      }
+    },
+    {
+      "id": "q-003",
+      "demonstrates_feature": "baseline",
+      "intent": "rag",
+      "question": "My pod keeps restarting and crashing \u2014 how do I figure out what's wrong?",
+      "answer": "```json\n{\n  \"answer\": \"To diagnose why your pod is restarting and crashing, you can follow these steps:\\n\\n1. **Check Pod Logs**: Use `kubectl logs <pod-name>` to view the logs of the crashing pod. This can provide insights into any errors or issues occurring within the application.\\n\\n2. **Describe the Pod**: Run `kubectl describe pod <pod-name>` to get detailed information about the pod's status, events, and any error messages related to the pod lifecycle.\\n\\n3. **Check Events**: Look for events related to the pod using `kubectl get events --sort-by=.metadata.creationTimestamp`. This can help identify issues like scheduling problems or resource constraints.\\n\\n4. **Inspect Resource Usage**: Ensure that the pod has sufficient CPU and memory resources. You can check the resource requests and limits in the pod's YAML configuration.\\n\\n5. **Review CrashLoopBackOff**: If the pod is in a CrashLoopBackOff state, it indicates that the pod is repeatedly crashing. Investigate the logs and events to determine the root cause.\\n\\n6. **Check Node Health**: Ensure that the node where the pod is scheduled is healthy and has enough resources.\\n\\nThese steps should help you identify the cause of the pod's restarts and crashes.\",\n  \"sources\": [\n    \"dummy_kubernetes.pdf\"\n  ],\n  \"confidence\": 0.8\n}\n```",
+      "contexts": [
+        "Kubernetes Overview (Sample / Dummy Document) This is a placeholder document for testing purposes, containing basic sample content about Kubernetes. What is Kubernetes? Kubernetes (often abbreviated K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. Core Components \u007f Pod - the smallest deployable unit, wrapping one or more containers \u007f Node - a worker machine (VM or physical) that runs pods \u007f Cluster - a set of nodes managed together \u007f Deployment - manages replica sets and rolling updates of pods \u007f Service - a stable network endpoint exposing a set of pods \u007f Namespace - a way to divide cluster resources between users/teams Sample kubectl Commands kubectl get pods kubectl get nodes kubectl apply -f deployment.yaml kubectl scale deployment my-app --replicas=3 kubectl logs my-pod-name Note: This document is a dummy/sample file generated for download and testing purposes only. It is not exhaustive",
+        "ument is a dummy/sample file generated for download and testing purposes only. It is not exhaustive documentation."
+      ],
+      "ground_truth": "CrashLoopBackOff, logs, kubectl",
+      "actual_sources": [
+        "dummy_kubernetes.pdf"
+      ],
+      "golden_sources": [
+        "troubleshooting-pods.html"
+      ],
+      "forbidden_keywords": [],
+      "ragas_metrics": {
+        "id": "q-003",
+        "demonstrates_feature": "baseline",
+        "intent": "rag",
+        "question": "My pod keeps restarting and crashing \u2014 how do I figure out what's wrong?",
+        "answer": "```json\n{\n  \"answer\": \"To diagnose why your pod is restarting and crashing, you can follow these steps:\\n\\n1. **Check Pod Logs**: Use `kubectl logs <pod-name>` to view the logs of the crashing pod. This can provide insights into any errors or issues occurring within the application.\\n\\n2. **Describe the Pod**: Run `kubectl describe pod <pod-name>` to get detailed information about the pod's status, events, and any error messages related to the pod lifecycle.\\n\\n3. **Check Events**: Look for events related to the pod using `kubectl get events --sort-by=.metadata.creationTimestamp`. This can help identify issues like scheduling problems or resource constraints.\\n\\n4. **Inspect Resource Usage**: Ensure that the pod has sufficient CPU and memory resources. You can check the resource requests and limits in the pod's YAML configuration.\\n\\n5. **Review CrashLoopBackOff**: If the pod is in a CrashLoopBackOff state, it indicates that the pod is repeatedly crashing. Investigate the logs and events to determine the root cause.\\n\\n6. **Check Node Health**: Ensure that the node where the pod is scheduled is healthy and has enough resources.\\n\\nThese steps should help you identify the cause of the pod's restarts and crashes.\",\n  \"sources\": [\n    \"dummy_kubernetes.pdf\"\n  ],\n  \"confidence\": 0.8\n}\n```",
+        "contexts": [
+          "Kubernetes Overview (Sample / Dummy Document) This is a placeholder document for testing purposes, containing basic sample content about Kubernetes. What is Kubernetes? Kubernetes (often abbreviated K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. Core Components \u007f Pod - the smallest deployable unit, wrapping one or more containers \u007f Node - a worker machine (VM or physical) that runs pods \u007f Cluster - a set of nodes managed together \u007f Deployment - manages replica sets and rolling updates of pods \u007f Service - a stable network endpoint exposing a set of pods \u007f Namespace - a way to divide cluster resources between users/teams Sample kubectl Commands kubectl get pods kubectl get nodes kubectl apply -f deployment.yaml kubectl scale deployment my-app --replicas=3 kubectl logs my-pod-name Note: This document is a dummy/sample file generated for download and testing purposes only. It is not exhaustive",
+          "ument is a dummy/sample file generated for download and testing purposes only. It is not exhaustive documentation."
+        ],
+        "ground_truth": "CrashLoopBackOff, logs, kubectl",
+        "actual_sources": [
+          "dummy_kubernetes.pdf"
+        ],
+        "golden_sources": [
+          "troubleshooting-pods.html"
+        ],
+        "forbidden_keywords": [],
+        "faithfulness": 1,
+        "answer_relevancy": 1.0,
+        "context_precision": 0.0,
+        "context_recall": 0.6666666666666666
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 0.0,
+        "matched": [],
+        "missed": [
+          "troubleshooting-pods"
+        ]
+      }
+    },
+    {
+      "id": "q-004",
+      "demonstrates_feature": "baseline",
+      "intent": "rag",
+      "question": "How do containers share resources within a Pod?",
+      "answer": "```json\n{\n  \"answer\": \"Within a Pod, containers share the same network namespace, which means they can communicate with each other using localhost. They also share storage volumes if specified, allowing them to access the same files. This setup facilitates easy communication and data sharing between containers in the same Pod.\",\n  \"sources\": [\"dummy_kubernetes.pdf\"],\n  \"confidence\": 0.8\n}\n```",
+      "contexts": [
+        "Kubernetes Overview (Sample / Dummy Document) This is a placeholder document for testing purposes, containing basic sample content about Kubernetes. What is Kubernetes? Kubernetes (often abbreviated K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. Core Components \u007f Pod - the smallest deployable unit, wrapping one or more containers \u007f Node - a worker machine (VM or physical) that runs pods \u007f Cluster - a set of nodes managed together \u007f Deployment - manages replica sets and rolling updates of pods \u007f Service - a stable network endpoint exposing a set of pods \u007f Namespace - a way to divide cluster resources between users/teams Sample kubectl Commands kubectl get pods kubectl get nodes kubectl apply -f deployment.yaml kubectl scale deployment my-app --replicas=3 kubectl logs my-pod-name Note: This document is a dummy/sample file generated for download and testing purposes only. It is not exhaustive",
+        "ument is a dummy/sample file generated for download and testing purposes only. It is not exhaustive documentation."
+      ],
+      "ground_truth": "network namespace, volumes, localhost",
+      "actual_sources": [
+        "dummy_kubernetes.pdf"
+      ],
+      "golden_sources": [
+        "pods.html"
+      ],
+      "forbidden_keywords": [],
+      "ragas_metrics": {
+        "id": "q-004",
+        "demonstrates_feature": "baseline",
+        "intent": "rag",
+        "question": "How do containers share resources within a Pod?",
+        "answer": "```json\n{\n  \"answer\": \"Within a Pod, containers share the same network namespace, which means they can communicate with each other using localhost. They also share storage volumes if specified, allowing them to access the same files. This setup facilitates easy communication and data sharing between containers in the same Pod.\",\n  \"sources\": [\"dummy_kubernetes.pdf\"],\n  \"confidence\": 0.8\n}\n```",
+        "contexts": [
+          "Kubernetes Overview (Sample / Dummy Document) This is a placeholder document for testing purposes, containing basic sample content about Kubernetes. What is Kubernetes? Kubernetes (often abbreviated K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. Core Components \u007f Pod - the smallest deployable unit, wrapping one or more containers \u007f Node - a worker machine (VM or physical) that runs pods \u007f Cluster - a set of nodes managed together \u007f Deployment - manages replica sets and rolling updates of pods \u007f Service - a stable network endpoint exposing a set of pods \u007f Namespace - a way to divide cluster resources between users/teams Sample kubectl Commands kubectl get pods kubectl get nodes kubectl apply -f deployment.yaml kubectl scale deployment my-app --replicas=3 kubectl logs my-pod-name Note: This document is a dummy/sample file generated for download and testing purposes only. It is not exhaustive",
+          "ument is a dummy/sample file generated for download and testing purposes only. It is not exhaustive documentation."
+        ],
+        "ground_truth": "network namespace, volumes, localhost",
+        "actual_sources": [
+          "dummy_kubernetes.pdf"
+        ],
+        "golden_sources": [
+          "pods.html"
+        ],
+        "forbidden_keywords": [],
+        "faithfulness": 1,
+        "answer_relevancy": 1.0,
+        "context_precision": 0.0,
+        "context_recall": 0
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 0.0,
+        "matched": [],
+        "missed": [
+          "pods"
+        ]
+      }
+    },
+    {
+      "id": "q-005",
+      "demonstrates_feature": "hybrid",
+      "intent": "rag",
+      "question": "What does error ErrImagePull mean and how do I fix it?",
+      "answer": "```json\n{\n  \"answer\": \"The error 'ErrImagePull' in Kubernetes indicates that the kubelet is unable to pull the container image specified in a Pod's configuration. This can happen due to several reasons, such as incorrect image name, lack of permissions, or network issues. To fix this error, you can try the following steps:\\n\\n1. Verify the image name and tag in your Pod or Deployment configuration to ensure they are correct.\\n2. Check if the image is available in the specified container registry.\\n3. Ensure that the node has network access to the container registry.\\n4. If the image is private, make sure you have provided the correct image pull secret.\\n5. Check the logs for more detailed error messages using `kubectl describe pod <pod-name>` and `kubectl logs <pod-name>`.\",\n  \"sources\": [],\n  \"confidence\": 0.8\n}\n```",
+      "contexts": [
+        "Kubernetes Overview (Sample / Dummy Document) This is a placeholder document for testing purposes, containing basic sample content about Kubernetes. What is Kubernetes? Kubernetes (often abbreviated K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. Core Components \u007f Pod - the smallest deployable unit, wrapping one or more containers \u007f Node - a worker machine (VM or physical) that runs pods \u007f Cluster - a set of nodes managed together \u007f Deployment - manages replica sets and rolling updates of pods \u007f Service - a stable network endpoint exposing a set of pods \u007f Namespace - a way to divide cluster resources between users/teams Sample kubectl Commands kubectl get pods kubectl get nodes kubectl apply -f deployment.yaml kubectl scale deployment my-app --replicas=3 kubectl logs my-pod-name Note: This document is a dummy/sample file generated for download and testing purposes only. It is not exhaustive"
+      ],
+      "ground_truth": "ErrImagePull, image, registry",
+      "actual_sources": [
+        "dummy_kubernetes.pdf"
+      ],
+      "golden_sources": [
+        "troubleshooting-pods.html",
+        "images.html"
+      ],
+      "forbidden_keywords": [],
+      "ragas_metrics": {
+        "id": "q-005",
+        "demonstrates_feature": "hybrid",
+        "intent": "rag",
+        "question": "What does error ErrImagePull mean and how do I fix it?",
+        "answer": "```json\n{\n  \"answer\": \"The error 'ErrImagePull' in Kubernetes indicates that the kubelet is unable to pull the container image specified in a Pod's configuration. This can happen due to several reasons, such as incorrect image name, lack of permissions, or network issues. To fix this error, you can try the following steps:\\n\\n1. Verify the image name and tag in your Pod or Deployment configuration to ensure they are correct.\\n2. Check if the image is available in the specified container registry.\\n3. Ensure that the node has network access to the container registry.\\n4. If the image is private, make sure you have provided the correct image pull secret.\\n5. Check the logs for more detailed error messages using `kubectl describe pod <pod-name>` and `kubectl logs <pod-name>`.\",\n  \"sources\": [],\n  \"confidence\": 0.8\n}\n```",
+        "contexts": [
+          "Kubernetes Overview (Sample / Dummy Document) This is a placeholder document for testing purposes, containing basic sample content about Kubernetes. What is Kubernetes? Kubernetes (often abbreviated K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. Core Components \u007f Pod - the smallest deployable unit, wrapping one or more containers \u007f Node - a worker machine (VM or physical) that runs pods \u007f Cluster - a set of nodes managed together \u007f Deployment - manages replica sets and rolling updates of pods \u007f Service - a stable network endpoint exposing a set of pods \u007f Namespace - a way to divide cluster resources between users/teams Sample kubectl Commands kubectl get pods kubectl get nodes kubectl apply -f deployment.yaml kubectl scale deployment my-app --replicas=3 kubectl logs my-pod-name Note: This document is a dummy/sample file generated for download and testing purposes only. It is not exhaustive"
+        ],
+        "ground_truth": "ErrImagePull, image, registry",
+        "actual_sources": [
+          "dummy_kubernetes.pdf"
+        ],
+        "golden_sources": [
+          "troubleshooting-pods.html",
+          "images.html"
+        ],
+        "forbidden_keywords": [],
+        "faithfulness": 1,
+        "answer_relevancy": 1.0,
+        "context_precision": 0.0,
+        "context_recall": 0
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 0.0,
+        "matched": [],
+        "missed": [
+          "images",
+          "troubleshooting-pods"
+        ]
+      }
+    },
+    {
+      "id": "q-006",
+      "demonstrates_feature": "hybrid",
+      "intent": "rag",
+      "question": "How does a StatefulSet differ from a Deployment for stateful applications?",
+      "answer": "```json\n{\n  \"answer\": \"A StatefulSet is specifically designed for managing stateful applications, providing guarantees about the ordering and uniqueness of pods. Unlike Deployments, which are suited for stateless applications, StatefulSets ensure that each pod has a stable, unique network identity and persistent storage. This is crucial for applications that require stable network identifiers or persistent storage, such as databases. StatefulSets manage the deployment and scaling of a set of pods, and provide guarantees about the ordering and uniqueness of these pods. In contrast, Deployments are used for stateless applications where each pod is interchangeable.\",\n  \"sources\": [],\n  \"confidence\": 0.9\n}\n```",
+      "contexts": [
+        "Kubernetes Overview (Sample / Dummy Document) This is a placeholder document for testing purposes, containing basic sample content about Kubernetes. What is Kubernetes? Kubernetes (often abbreviated K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. Core Components \u007f Pod - the smallest deployable unit, wrapping one or more containers \u007f Node - a worker machine (VM or physical) that runs pods \u007f Cluster - a set of nodes managed together \u007f Deployment - manages replica sets and rolling updates of pods \u007f Service - a stable network endpoint exposing a set of pods \u007f Namespace - a way to divide cluster resources between users/teams Sample kubectl Commands kubectl get pods kubectl get nodes kubectl apply -f deployment.yaml kubectl scale deployment my-app --replicas=3 kubectl logs my-pod-name Note: This document is a dummy/sample file generated for download and testing purposes only. It is not exhaustive"
+      ],
+      "ground_truth": "StatefulSet, stable identity, persistent",
+      "actual_sources": [
+        "dummy_kubernetes.pdf"
+      ],
+      "golden_sources": [
+        "statefulsets.html",
+        "deployments.html"
+      ],
+      "forbidden_keywords": [],
+      "ragas_metrics": {
+        "id": "q-006",
+        "demonstrates_feature": "hybrid",
+        "intent": "rag",
+        "question": "How does a StatefulSet differ from a Deployment for stateful applications?",
+        "answer": "```json\n{\n  \"answer\": \"A StatefulSet is specifically designed for managing stateful applications, providing guarantees about the ordering and uniqueness of pods. Unlike Deployments, which are suited for stateless applications, StatefulSets ensure that each pod has a stable, unique network identity and persistent storage. This is crucial for applications that require stable network identifiers or persistent storage, such as databases. StatefulSets manage the deployment and scaling of a set of pods, and provide guarantees about the ordering and uniqueness of these pods. In contrast, Deployments are used for stateless applications where each pod is interchangeable.\",\n  \"sources\": [],\n  \"confidence\": 0.9\n}\n```",
+        "contexts": [
+          "Kubernetes Overview (Sample / Dummy Document) This is a placeholder document for testing purposes, containing basic sample content about Kubernetes. What is Kubernetes? Kubernetes (often abbreviated K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. Core Components \u007f Pod - the smallest deployable unit, wrapping one or more containers \u007f Node - a worker machine (VM or physical) that runs pods \u007f Cluster - a set of nodes managed together \u007f Deployment - manages replica sets and rolling updates of pods \u007f Service - a stable network endpoint exposing a set of pods \u007f Namespace - a way to divide cluster resources between users/teams Sample kubectl Commands kubectl get pods kubectl get nodes kubectl apply -f deployment.yaml kubectl scale deployment my-app --replicas=3 kubectl logs my-pod-name Note: This document is a dummy/sample file generated for download and testing purposes only. It is not exhaustive"
+        ],
+        "ground_truth": "StatefulSet, stable identity, persistent",
+        "actual_sources": [
+          "dummy_kubernetes.pdf"
+        ],
+        "golden_sources": [
+          "statefulsets.html",
+          "deployments.html"
+        ],
+        "forbidden_keywords": [],
+        "faithfulness": 0,
+        "answer_relevancy": 1.0,
+        "context_precision": 0.0,
+        "context_recall": 0
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 0.0,
+        "matched": [],
+        "missed": [
+          "deployments",
+          "statefulsets"
+        ]
+      }
+    },
+    {
+      "id": "q-007",
+      "demonstrates_feature": "hybrid",
+      "intent": "rag",
+      "question": "Show me a Pod manifest with nodeSelector and explain when to use it",
+      "answer": "```json\n{\n  \"answer\": \"A Pod manifest with a nodeSelector can be used to ensure that the Pod is scheduled onto nodes that match specific labels. Here is an example of a Pod manifest with a nodeSelector:\\n\\n```yaml\\napiVersion: v1\\nkind: Pod\\nmetadata:\\n  name: example-pod\\nspec:\\n  containers:\\n  - name: example-container\\n    image: nginx\\n  nodeSelector:\\n    disktype: ssd\\n```\\n\\nIn this example, the Pod will only be scheduled on nodes that have the label `disktype=ssd`. You would use a nodeSelector when you want to ensure that certain workloads run on specific types of nodes, such as those with particular hardware characteristics or in specific zones.\",\n  \"sources\": [],\n  \"confidence\": 0.9\n}\n```",
+      "contexts": [
+        "Kubernetes Overview (Sample / Dummy Document) This is a placeholder document for testing purposes, containing basic sample content about Kubernetes. What is Kubernetes? Kubernetes (often abbreviated K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. Core Components \u007f Pod - the smallest deployable unit, wrapping one or more containers \u007f Node - a worker machine (VM or physical) that runs pods \u007f Cluster - a set of nodes managed together \u007f Deployment - manages replica sets and rolling updates of pods \u007f Service - a stable network endpoint exposing a set of pods \u007f Namespace - a way to divide cluster resources between users/teams Sample kubectl Commands kubectl get pods kubectl get nodes kubectl apply -f deployment.yaml kubectl scale deployment my-app --replicas=3 kubectl logs my-pod-name Note: This document is a dummy/sample file generated for download and testing purposes only. It is not exhaustive"
+      ],
+      "ground_truth": "nodeSelector, label, node",
+      "actual_sources": [
+        "dummy_kubernetes.pdf"
+      ],
+      "golden_sources": [
+        "pod-v1.docx"
+      ],
+      "forbidden_keywords": [],
+      "ragas_metrics": {
+        "id": "q-007",
+        "demonstrates_feature": "hybrid",
+        "intent": "rag",
+        "question": "Show me a Pod manifest with nodeSelector and explain when to use it",
+        "answer": "```json\n{\n  \"answer\": \"A Pod manifest with a nodeSelector can be used to ensure that the Pod is scheduled onto nodes that match specific labels. Here is an example of a Pod manifest with a nodeSelector:\\n\\n```yaml\\napiVersion: v1\\nkind: Pod\\nmetadata:\\n  name: example-pod\\nspec:\\n  containers:\\n  - name: example-container\\n    image: nginx\\n  nodeSelector:\\n    disktype: ssd\\n```\\n\\nIn this example, the Pod will only be scheduled on nodes that have the label `disktype=ssd`. You would use a nodeSelector when you want to ensure that certain workloads run on specific types of nodes, such as those with particular hardware characteristics or in specific zones.\",\n  \"sources\": [],\n  \"confidence\": 0.9\n}\n```",
+        "contexts": [
+          "Kubernetes Overview (Sample / Dummy Document) This is a placeholder document for testing purposes, containing basic sample content about Kubernetes. What is Kubernetes? Kubernetes (often abbreviated K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. Core Components \u007f Pod - the smallest deployable unit, wrapping one or more containers \u007f Node - a worker machine (VM or physical) that runs pods \u007f Cluster - a set of nodes managed together \u007f Deployment - manages replica sets and rolling updates of pods \u007f Service - a stable network endpoint exposing a set of pods \u007f Namespace - a way to divide cluster resources between users/teams Sample kubectl Commands kubectl get pods kubectl get nodes kubectl apply -f deployment.yaml kubectl scale deployment my-app --replicas=3 kubectl logs my-pod-name Note: This document is a dummy/sample file generated for download and testing purposes only. It is not exhaustive"
+        ],
+        "ground_truth": "nodeSelector, label, node",
+        "actual_sources": [
+          "dummy_kubernetes.pdf"
+        ],
+        "golden_sources": [
+          "pod-v1.docx"
+        ],
+        "forbidden_keywords": [],
+        "faithfulness": 1,
+        "answer_relevancy": 1.0,
+        "context_precision": 0.0,
+        "context_recall": 1
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 0.0,
+        "matched": [],
+        "missed": [
+          "pod-v1"
+        ]
+      }
+    },
+    {
+      "id": "q-008",
+      "demonstrates_feature": "hybrid",
+      "intent": "rag",
+      "question": "Find the runbook that mentions 'OOMKilled'",
+      "answer": "```json\n{\n  \"answer\": \"The context provided does not include any runbooks or specific mentions of 'OOMKilled'.\",\n  \"sources\": [],\n  \"confidence\": 0.2\n}\n```",
+      "contexts": [
+        "Kubernetes Overview (Sample / Dummy Document) This is a placeholder document for testing purposes, containing basic sample content about Kubernetes. What is Kubernetes? Kubernetes (often abbreviated K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. Core Components \u007f Pod - the smallest deployable unit, wrapping one or more containers \u007f Node - a worker machine (VM or physical) that runs pods \u007f Cluster - a set of nodes managed together \u007f Deployment - manages replica sets and rolling updates of pods \u007f Service - a stable network endpoint exposing a set of pods \u007f Namespace - a way to divide cluster resources between users/teams Sample kubectl Commands kubectl get pods kubectl get nodes kubectl apply -f deployment.yaml kubectl scale deployment my-app --replicas=3 kubectl logs my-pod-name Note: This document is a dummy/sample file generated for download and testing purposes only. It is not exhaustive"
+      ],
+      "ground_truth": "OOMKilled, memory, limit",
+      "actual_sources": [
+        "dummy_kubernetes.pdf"
+      ],
+      "golden_sources": [
+        "troubleshooting-pods.html"
+      ],
+      "forbidden_keywords": [],
+      "ragas_metrics": {
+        "id": "q-008",
+        "demonstrates_feature": "hybrid",
+        "intent": "rag",
+        "question": "Find the runbook that mentions 'OOMKilled'",
+        "answer": "```json\n{\n  \"answer\": \"The context provided does not include any runbooks or specific mentions of 'OOMKilled'.\",\n  \"sources\": [],\n  \"confidence\": 0.2\n}\n```",
+        "contexts": [
+          "Kubernetes Overview (Sample / Dummy Document) This is a placeholder document for testing purposes, containing basic sample content about Kubernetes. What is Kubernetes? Kubernetes (often abbreviated K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. Core Components \u007f Pod - the smallest deployable unit, wrapping one or more containers \u007f Node - a worker machine (VM or physical) that runs pods \u007f Cluster - a set of nodes managed together \u007f Deployment - manages replica sets and rolling updates of pods \u007f Service - a stable network endpoint exposing a set of pods \u007f Namespace - a way to divide cluster resources between users/teams Sample kubectl Commands kubectl get pods kubectl get nodes kubectl apply -f deployment.yaml kubectl scale deployment my-app --replicas=3 kubectl logs my-pod-name Note: This document is a dummy/sample file generated for download and testing purposes only. It is not exhaustive"
+        ],
+        "ground_truth": "OOMKilled, memory, limit",
+        "actual_sources": [
+          "dummy_kubernetes.pdf"
+        ],
+        "golden_sources": [
+          "troubleshooting-pods.html"
+        ],
+        "forbidden_keywords": [],
+        "faithfulness": 1,
+        "answer_relevancy": 0.2,
+        "context_precision": 0.0,
+        "context_recall": 0
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 0.0,
+        "matched": [],
+        "missed": [
+          "troubleshooting-pods"
+        ]
+      }
+    },
+    {
+      "id": "q-009",
+      "demonstrates_feature": "rerank",
+      "intent": "rag",
+      "question": "How long does a rolling update take in Kubernetes?",
+      "answer": "```json\n{\n  \"answer\": \"The duration of a rolling update in Kubernetes depends on several factors, including the number of replicas, the update strategy settings (such as maxUnavailable and maxSurge), and the time it takes for each pod to become ready. By default, Kubernetes uses a rolling update strategy that updates pods incrementally, ensuring that some pods remain available during the update process. Without specific configuration details, it's not possible to provide an exact duration.\",\n  \"sources\": [\"dummy_kubernetes.pdf\"],\n  \"confidence\": 0.7\n}\n```",
+      "contexts": [
+        "Kubernetes Overview (Sample / Dummy Document) This is a placeholder document for testing purposes, containing basic sample content about Kubernetes. What is Kubernetes? Kubernetes (often abbreviated K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. Core Components \u007f Pod - the smallest deployable unit, wrapping one or more containers \u007f Node - a worker machine (VM or physical) that runs pods \u007f Cluster - a set of nodes managed together \u007f Deployment - manages replica sets and rolling updates of pods \u007f Service - a stable network endpoint exposing a set of pods \u007f Namespace - a way to divide cluster resources between users/teams Sample kubectl Commands kubectl get pods kubectl get nodes kubectl apply -f deployment.yaml kubectl scale deployment my-app --replicas=3 kubectl logs my-pod-name Note: This document is a dummy/sample file generated for download and testing purposes only. It is not exhaustive",
+        "ument is a dummy/sample file generated for download and testing purposes only. It is not exhaustive documentation."
+      ],
+      "ground_truth": "rolling update, maxSurge, maxUnavailable",
+      "actual_sources": [
+        "dummy_kubernetes.pdf"
+      ],
+      "golden_sources": [
+        "deployments.html"
+      ],
+      "forbidden_keywords": [],
+      "ragas_metrics": {
+        "id": "q-009",
+        "demonstrates_feature": "rerank",
+        "intent": "rag",
+        "question": "How long does a rolling update take in Kubernetes?",
+        "answer": "```json\n{\n  \"answer\": \"The duration of a rolling update in Kubernetes depends on several factors, including the number of replicas, the update strategy settings (such as maxUnavailable and maxSurge), and the time it takes for each pod to become ready. By default, Kubernetes uses a rolling update strategy that updates pods incrementally, ensuring that some pods remain available during the update process. Without specific configuration details, it's not possible to provide an exact duration.\",\n  \"sources\": [\"dummy_kubernetes.pdf\"],\n  \"confidence\": 0.7\n}\n```",
+        "contexts": [
+          "Kubernetes Overview (Sample / Dummy Document) This is a placeholder document for testing purposes, containing basic sample content about Kubernetes. What is Kubernetes? Kubernetes (often abbreviated K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. Core Components \u007f Pod - the smallest deployable unit, wrapping one or more containers \u007f Node - a worker machine (VM or physical) that runs pods \u007f Cluster - a set of nodes managed together \u007f Deployment - manages replica sets and rolling updates of pods \u007f Service - a stable network endpoint exposing a set of pods \u007f Namespace - a way to divide cluster resources between users/teams Sample kubectl Commands kubectl get pods kubectl get nodes kubectl apply -f deployment.yaml kubectl scale deployment my-app --replicas=3 kubectl logs my-pod-name Note: This document is a dummy/sample file generated for download and testing purposes only. It is not exhaustive",
+          "ument is a dummy/sample file generated for download and testing purposes only. It is not exhaustive documentation."
+        ],
+        "ground_truth": "rolling update, maxSurge, maxUnavailable",
+        "actual_sources": [
+          "dummy_kubernetes.pdf"
+        ],
+        "golden_sources": [
+          "deployments.html"
+        ],
+        "forbidden_keywords": [],
+        "faithfulness": 1,
+        "answer_relevancy": 1.0,
+        "context_precision": 0.0,
+        "context_recall": 1
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 0.0,
+        "matched": [],
+        "missed": [
+          "deployments"
+        ]
+      }
+    },
+    {
+      "id": "q-010",
+      "demonstrates_feature": "rerank",
+      "intent": "rag",
+      "question": "When will my pod be ready to serve traffic?",
+      "answer": "```json\n{\n  \"answer\": \"A pod is ready to serve traffic when it passes its readiness probes, if configured, and is in the 'Running' state. You can check the status of a pod using the command `kubectl get pods` and look for the 'READY' column to see if all containers in the pod are ready. Additionally, ensure that the pod is part of a service that routes traffic to it.\",\n  \"sources\": [\"dummy_kubernetes.pdf\"],\n  \"confidence\": 0.8\n}\n```",
+      "contexts": [
+        "Kubernetes Overview (Sample / Dummy Document) This is a placeholder document for testing purposes, containing basic sample content about Kubernetes. What is Kubernetes? Kubernetes (often abbreviated K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. Core Components \u007f Pod - the smallest deployable unit, wrapping one or more containers \u007f Node - a worker machine (VM or physical) that runs pods \u007f Cluster - a set of nodes managed together \u007f Deployment - manages replica sets and rolling updates of pods \u007f Service - a stable network endpoint exposing a set of pods \u007f Namespace - a way to divide cluster resources between users/teams Sample kubectl Commands kubectl get pods kubectl get nodes kubectl apply -f deployment.yaml kubectl scale deployment my-app --replicas=3 kubectl logs my-pod-name Note: This document is a dummy/sample file generated for download and testing purposes only. It is not exhaustive",
+        "ument is a dummy/sample file generated for download and testing purposes only. It is not exhaustive documentation."
+      ],
+      "ground_truth": "readiness, probe, ready",
+      "actual_sources": [
+        "dummy_kubernetes.pdf"
+      ],
+      "golden_sources": [
+        "pods.html"
+      ],
+      "forbidden_keywords": [],
+      "ragas_metrics": {
+        "id": "q-010",
+        "demonstrates_feature": "rerank",
+        "intent": "rag",
+        "question": "When will my pod be ready to serve traffic?",
+        "answer": "```json\n{\n  \"answer\": \"A pod is ready to serve traffic when it passes its readiness probes, if configured, and is in the 'Running' state. You can check the status of a pod using the command `kubectl get pods` and look for the 'READY' column to see if all containers in the pod are ready. Additionally, ensure that the pod is part of a service that routes traffic to it.\",\n  \"sources\": [\"dummy_kubernetes.pdf\"],\n  \"confidence\": 0.8\n}\n```",
+        "contexts": [
+          "Kubernetes Overview (Sample / Dummy Document) This is a placeholder document for testing purposes, containing basic sample content about Kubernetes. What is Kubernetes? Kubernetes (often abbreviated K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. Core Components \u007f Pod - the smallest deployable unit, wrapping one or more containers \u007f Node - a worker machine (VM or physical) that runs pods \u007f Cluster - a set of nodes managed together \u007f Deployment - manages replica sets and rolling updates of pods \u007f Service - a stable network endpoint exposing a set of pods \u007f Namespace - a way to divide cluster resources between users/teams Sample kubectl Commands kubectl get pods kubectl get nodes kubectl apply -f deployment.yaml kubectl scale deployment my-app --replicas=3 kubectl logs my-pod-name Note: This document is a dummy/sample file generated for download and testing purposes only. It is not exhaustive",
+          "ument is a dummy/sample file generated for download and testing purposes only. It is not exhaustive documentation."
+        ],
+        "ground_truth": "readiness, probe, ready",
+        "actual_sources": [
+          "dummy_kubernetes.pdf"
+        ],
+        "golden_sources": [
+          "pods.html"
+        ],
+        "forbidden_keywords": [],
+        "faithfulness": 0.25,
+        "answer_relevancy": 1.0,
+        "context_precision": 0.0,
+        "context_recall": 0
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 0.0,
+        "matched": [],
+        "missed": [
+          "pods"
+        ]
+      }
+    },
+    {
+      "id": "q-011",
+      "demonstrates_feature": "rerank",
+      "intent": "rag",
+      "question": "What is the best practice for managing application secrets securely in Kubernetes?",
+      "answer": "```json\n{\n  \"answer\": \"The best practice for managing application secrets securely in Kubernetes is to use Kubernetes Secrets. Secrets are designed to store sensitive information, such as passwords, OAuth tokens, and SSH keys. To enhance security, it's recommended to enable encryption at rest for secrets, restrict access using RBAC (Role-Based Access Control), and avoid including secrets in container images or environment variables directly. Additionally, consider using external secret management tools like HashiCorp Vault or AWS Secrets Manager for more advanced use cases.\",\n  \"sources\": [],\n  \"confidence\": 0.8\n}\n```",
+      "contexts": [
+        "Kubernetes Overview (Sample / Dummy Document) This is a placeholder document for testing purposes, containing basic sample content about Kubernetes. What is Kubernetes? Kubernetes (often abbreviated K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. Core Components \u007f Pod - the smallest deployable unit, wrapping one or more containers \u007f Node - a worker machine (VM or physical) that runs pods \u007f Cluster - a set of nodes managed together \u007f Deployment - manages replica sets and rolling updates of pods \u007f Service - a stable network endpoint exposing a set of pods \u007f Namespace - a way to divide cluster resources between users/teams Sample kubectl Commands kubectl get pods kubectl get nodes kubectl apply -f deployment.yaml kubectl scale deployment my-app --replicas=3 kubectl logs my-pod-name Note: This document is a dummy/sample file generated for download and testing purposes only. It is not exhaustive",
+        "ument is a dummy/sample file generated for download and testing purposes only. It is not exhaustive documentation."
+      ],
+      "ground_truth": "secret, encrypt, base64",
+      "actual_sources": [
+        "dummy_kubernetes.pdf"
+      ],
+      "golden_sources": [
+        "secret.txt"
+      ],
+      "forbidden_keywords": [],
+      "ragas_metrics": {
+        "id": "q-011",
+        "demonstrates_feature": "rerank",
+        "intent": "rag",
+        "question": "What is the best practice for managing application secrets securely in Kubernetes?",
+        "answer": "```json\n{\n  \"answer\": \"The best practice for managing application secrets securely in Kubernetes is to use Kubernetes Secrets. Secrets are designed to store sensitive information, such as passwords, OAuth tokens, and SSH keys. To enhance security, it's recommended to enable encryption at rest for secrets, restrict access using RBAC (Role-Based Access Control), and avoid including secrets in container images or environment variables directly. Additionally, consider using external secret management tools like HashiCorp Vault or AWS Secrets Manager for more advanced use cases.\",\n  \"sources\": [],\n  \"confidence\": 0.8\n}\n```",
+        "contexts": [
+          "Kubernetes Overview (Sample / Dummy Document) This is a placeholder document for testing purposes, containing basic sample content about Kubernetes. What is Kubernetes? Kubernetes (often abbreviated K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. Core Components \u007f Pod - the smallest deployable unit, wrapping one or more containers \u007f Node - a worker machine (VM or physical) that runs pods \u007f Cluster - a set of nodes managed together \u007f Deployment - manages replica sets and rolling updates of pods \u007f Service - a stable network endpoint exposing a set of pods \u007f Namespace - a way to divide cluster resources between users/teams Sample kubectl Commands kubectl get pods kubectl get nodes kubectl apply -f deployment.yaml kubectl scale deployment my-app --replicas=3 kubectl logs my-pod-name Note: This document is a dummy/sample file generated for download and testing purposes only. It is not exhaustive",
+          "ument is a dummy/sample file generated for download and testing purposes only. It is not exhaustive documentation."
+        ],
+        "ground_truth": "secret, encrypt, base64",
+        "actual_sources": [
+          "dummy_kubernetes.pdf"
+        ],
+        "golden_sources": [
+          "secret.txt"
+        ],
+        "forbidden_keywords": [],
+        "faithfulness": 0,
+        "answer_relevancy": 1.0,
+        "context_precision": 0.0,
+        "context_recall": 0
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 0.0,
+        "matched": [],
+        "missed": [
+          "secret"
+        ]
+      }
+    },
+    {
+      "id": "q-012",
+      "demonstrates_feature": "rerank",
+      "intent": "rag",
+      "question": "How does Kubernetes decide which node is best to schedule a new pod onto?",
+      "answer": "```json\n{\n  \"answer\": \"Kubernetes uses a process called scheduling to decide which node is best to schedule a new pod onto. The scheduler evaluates the available nodes in the cluster and selects one based on several factors, including resource requests (CPU and memory), node affinity/anti-affinity rules, taints and tolerations, and other constraints or preferences defined in the pod specification. The goal is to optimize resource utilization and meet the scheduling requirements specified by the user.\",\n  \"sources\": [\"dummy_kubernetes.pdf\"],\n  \"confidence\": 0.8\n}\n```",
+      "contexts": [
+        "Kubernetes Overview (Sample / Dummy Document) This is a placeholder document for testing purposes, containing basic sample content about Kubernetes. What is Kubernetes? Kubernetes (often abbreviated K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. Core Components \u007f Pod - the smallest deployable unit, wrapping one or more containers \u007f Node - a worker machine (VM or physical) that runs pods \u007f Cluster - a set of nodes managed together \u007f Deployment - manages replica sets and rolling updates of pods \u007f Service - a stable network endpoint exposing a set of pods \u007f Namespace - a way to divide cluster resources between users/teams Sample kubectl Commands kubectl get pods kubectl get nodes kubectl apply -f deployment.yaml kubectl scale deployment my-app --replicas=3 kubectl logs my-pod-name Note: This document is a dummy/sample file generated for download and testing purposes only. It is not exhaustive",
+        "ument is a dummy/sample file generated for download and testing purposes only. It is not exhaustive documentation."
+      ],
+      "ground_truth": "scheduler, filter, score",
+      "actual_sources": [
+        "dummy_kubernetes.pdf"
+      ],
+      "golden_sources": [
+        "kube-scheduler.pdf"
+      ],
+      "forbidden_keywords": [],
+      "ragas_metrics": {
+        "id": "q-012",
+        "demonstrates_feature": "rerank",
+        "intent": "rag",
+        "question": "How does Kubernetes decide which node is best to schedule a new pod onto?",
+        "answer": "```json\n{\n  \"answer\": \"Kubernetes uses a process called scheduling to decide which node is best to schedule a new pod onto. The scheduler evaluates the available nodes in the cluster and selects one based on several factors, including resource requests (CPU and memory), node affinity/anti-affinity rules, taints and tolerations, and other constraints or preferences defined in the pod specification. The goal is to optimize resource utilization and meet the scheduling requirements specified by the user.\",\n  \"sources\": [\"dummy_kubernetes.pdf\"],\n  \"confidence\": 0.8\n}\n```",
+        "contexts": [
+          "Kubernetes Overview (Sample / Dummy Document) This is a placeholder document for testing purposes, containing basic sample content about Kubernetes. What is Kubernetes? Kubernetes (often abbreviated K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. Core Components \u007f Pod - the smallest deployable unit, wrapping one or more containers \u007f Node - a worker machine (VM or physical) that runs pods \u007f Cluster - a set of nodes managed together \u007f Deployment - manages replica sets and rolling updates of pods \u007f Service - a stable network endpoint exposing a set of pods \u007f Namespace - a way to divide cluster resources between users/teams Sample kubectl Commands kubectl get pods kubectl get nodes kubectl apply -f deployment.yaml kubectl scale deployment my-app --replicas=3 kubectl logs my-pod-name Note: This document is a dummy/sample file generated for download and testing purposes only. It is not exhaustive",
+          "ument is a dummy/sample file generated for download and testing purposes only. It is not exhaustive documentation."
+        ],
+        "ground_truth": "scheduler, filter, score",
+        "actual_sources": [
+          "dummy_kubernetes.pdf"
+        ],
+        "golden_sources": [
+          "kube-scheduler.pdf"
+        ],
+        "forbidden_keywords": [],
+        "faithfulness": 0,
+        "answer_relevancy": 1.0,
+        "context_precision": 0.0,
+        "context_recall": 0
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 0.0,
+        "matched": [],
+        "missed": [
+          "kube-scheduler"
+        ]
+      }
+    },
+    {
+      "id": "q-013",
+      "demonstrates_feature": "hyde",
+      "intent": "rag",
+      "question": "Is there a way to isolate network traffic between services in a cluster?",
+      "answer": "```json\n{\n  \"answer\": \"Yes, you can isolate network traffic between services in a Kubernetes cluster using Network Policies. Network Policies allow you to specify how groups of pods are allowed to communicate with each other and other network endpoints. By defining Network Policies, you can control the ingress and egress traffic to and from pods, effectively isolating network traffic between services.\",\n  \"sources\": [\"dummy_kubernetes.pdf\"],\n  \"confidence\": 0.9\n}\n```",
+      "contexts": [
+        "Kubernetes Overview (Sample / Dummy Document) This is a placeholder document for testing purposes, containing basic sample content about Kubernetes. What is Kubernetes? Kubernetes (often abbreviated K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. Core Components \u007f Pod - the smallest deployable unit, wrapping one or more containers \u007f Node - a worker machine (VM or physical) that runs pods \u007f Cluster - a set of nodes managed together \u007f Deployment - manages replica sets and rolling updates of pods \u007f Service - a stable network endpoint exposing a set of pods \u007f Namespace - a way to divide cluster resources between users/teams Sample kubectl Commands kubectl get pods kubectl get nodes kubectl apply -f deployment.yaml kubectl scale deployment my-app --replicas=3 kubectl logs my-pod-name Note: This document is a dummy/sample file generated for download and testing purposes only. It is not exhaustive",
+        "ument is a dummy/sample file generated for download and testing purposes only. It is not exhaustive documentation."
+      ],
+      "ground_truth": "NetworkPolicy, ingress, egress",
+      "actual_sources": [
+        "dummy_kubernetes.pdf"
+      ],
+      "golden_sources": [
+        "network-policies.html"
+      ],
+      "forbidden_keywords": [],
+      "ragas_metrics": {
+        "id": "q-013",
+        "demonstrates_feature": "hyde",
+        "intent": "rag",
+        "question": "Is there a way to isolate network traffic between services in a cluster?",
+        "answer": "```json\n{\n  \"answer\": \"Yes, you can isolate network traffic between services in a Kubernetes cluster using Network Policies. Network Policies allow you to specify how groups of pods are allowed to communicate with each other and other network endpoints. By defining Network Policies, you can control the ingress and egress traffic to and from pods, effectively isolating network traffic between services.\",\n  \"sources\": [\"dummy_kubernetes.pdf\"],\n  \"confidence\": 0.9\n}\n```",
+        "contexts": [
+          "Kubernetes Overview (Sample / Dummy Document) This is a placeholder document for testing purposes, containing basic sample content about Kubernetes. What is Kubernetes? Kubernetes (often abbreviated K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. Core Components \u007f Pod - the smallest deployable unit, wrapping one or more containers \u007f Node - a worker machine (VM or physical) that runs pods \u007f Cluster - a set of nodes managed together \u007f Deployment - manages replica sets and rolling updates of pods \u007f Service - a stable network endpoint exposing a set of pods \u007f Namespace - a way to divide cluster resources between users/teams Sample kubectl Commands kubectl get pods kubectl get nodes kubectl apply -f deployment.yaml kubectl scale deployment my-app --replicas=3 kubectl logs my-pod-name Note: This document is a dummy/sample file generated for download and testing purposes only. It is not exhaustive",
+          "ument is a dummy/sample file generated for download and testing purposes only. It is not exhaustive documentation."
+        ],
+        "ground_truth": "NetworkPolicy, ingress, egress",
+        "actual_sources": [
+          "dummy_kubernetes.pdf"
+        ],
+        "golden_sources": [
+          "network-policies.html"
+        ],
+        "forbidden_keywords": [],
+        "faithfulness": 0,
+        "answer_relevancy": 1.0,
+        "context_precision": 0.0,
+        "context_recall": 0
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 0.0,
+        "matched": [],
+        "missed": [
+          "network-policies"
+        ]
+      }
+    },
+    {
+      "id": "q-014",
+      "demonstrates_feature": "hyde",
+      "intent": "rag",
+      "question": "How can I make sure a critical workload always has compute resources reserved?",
+      "answer": "```json\n{\n  \"answer\": \"To ensure a critical workload always has compute resources reserved in Kubernetes, you can use Resource Requests and Limits in your Pod specifications. Resource Requests specify the minimum amount of CPU and memory that must be reserved for a Pod, ensuring that the scheduler allocates sufficient resources. Additionally, you can use Resource Quotas and Limit Ranges at the Namespace level to control the resource usage across multiple Pods and ensure that critical workloads have priority access to resources. Another approach is to use Pod Priority and Preemption to prioritize critical workloads over less important ones, allowing them to preempt lower-priority Pods if necessary.\",\n  \"sources\": [\"dummy_kubernetes.pdf\"],\n  \"confidence\": 0.8\n}\n```",
+      "contexts": [
+        "Kubernetes Overview (Sample / Dummy Document) This is a placeholder document for testing purposes, containing basic sample content about Kubernetes. What is Kubernetes? Kubernetes (often abbreviated K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. Core Components \u007f Pod - the smallest deployable unit, wrapping one or more containers \u007f Node - a worker machine (VM or physical) that runs pods \u007f Cluster - a set of nodes managed together \u007f Deployment - manages replica sets and rolling updates of pods \u007f Service - a stable network endpoint exposing a set of pods \u007f Namespace - a way to divide cluster resources between users/teams Sample kubectl Commands kubectl get pods kubectl get nodes kubectl apply -f deployment.yaml kubectl scale deployment my-app --replicas=3 kubectl logs my-pod-name Note: This document is a dummy/sample file generated for download and testing purposes only. It is not exhaustive",
+        "ument is a dummy/sample file generated for download and testing purposes only. It is not exhaustive documentation."
+      ],
+      "ground_truth": "requests, limits, QoS",
+      "actual_sources": [
+        "dummy_kubernetes.pdf"
+      ],
+      "golden_sources": [
+        "resource-management.html"
+      ],
+      "forbidden_keywords": [],
+      "ragas_metrics": {
+        "id": "q-014",
+        "demonstrates_feature": "hyde",
+        "intent": "rag",
+        "question": "How can I make sure a critical workload always has compute resources reserved?",
+        "answer": "```json\n{\n  \"answer\": \"To ensure a critical workload always has compute resources reserved in Kubernetes, you can use Resource Requests and Limits in your Pod specifications. Resource Requests specify the minimum amount of CPU and memory that must be reserved for a Pod, ensuring that the scheduler allocates sufficient resources. Additionally, you can use Resource Quotas and Limit Ranges at the Namespace level to control the resource usage across multiple Pods and ensure that critical workloads have priority access to resources. Another approach is to use Pod Priority and Preemption to prioritize critical workloads over less important ones, allowing them to preempt lower-priority Pods if necessary.\",\n  \"sources\": [\"dummy_kubernetes.pdf\"],\n  \"confidence\": 0.8\n}\n```",
+        "contexts": [
+          "Kubernetes Overview (Sample / Dummy Document) This is a placeholder document for testing purposes, containing basic sample content about Kubernetes. What is Kubernetes? Kubernetes (often abbreviated K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. Core Components \u007f Pod - the smallest deployable unit, wrapping one or more containers \u007f Node - a worker machine (VM or physical) that runs pods \u007f Cluster - a set of nodes managed together \u007f Deployment - manages replica sets and rolling updates of pods \u007f Service - a stable network endpoint exposing a set of pods \u007f Namespace - a way to divide cluster resources between users/teams Sample kubectl Commands kubectl get pods kubectl get nodes kubectl apply -f deployment.yaml kubectl scale deployment my-app --replicas=3 kubectl logs my-pod-name Note: This document is a dummy/sample file generated for download and testing purposes only. It is not exhaustive",
+          "ument is a dummy/sample file generated for download and testing purposes only. It is not exhaustive documentation."
+        ],
+        "ground_truth": "requests, limits, QoS",
+        "actual_sources": [
+          "dummy_kubernetes.pdf"
+        ],
+        "golden_sources": [
+          "resource-management.html"
+        ],
+        "forbidden_keywords": [],
+        "faithfulness": 1,
+        "answer_relevancy": 1.0,
+        "context_precision": 0.0,
+        "context_recall": 0
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 0.0,
+        "matched": [],
+        "missed": [
+          "resource-management"
+        ]
+      }
+    },
+    {
+      "id": "q-015",
+      "demonstrates_feature": "hyde",
+      "intent": "rag",
+      "question": "How do I make sure my app keeps running even if a server dies?",
+      "answer": "```json\n{\n  \"answer\": \"To ensure your application keeps running even if a server (node) fails, you can use Kubernetes Deployments. Deployments manage replica sets, which ensure that a specified number of pod replicas are running at all times. By setting the number of replicas to more than one, Kubernetes will automatically reschedule pods to other available nodes if a node fails. You can scale your deployment using the command: `kubectl scale deployment my-app --replicas=3` to maintain three replicas of your application pods running across the cluster.\",\n  \"sources\": [\"dummy_kubernetes.pdf\"],\n  \"confidence\": 0.9\n}\n```",
+      "contexts": [
+        "Kubernetes Overview (Sample / Dummy Document) This is a placeholder document for testing purposes, containing basic sample content about Kubernetes. What is Kubernetes? Kubernetes (often abbreviated K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. Core Components \u007f Pod - the smallest deployable unit, wrapping one or more containers \u007f Node - a worker machine (VM or physical) that runs pods \u007f Cluster - a set of nodes managed together \u007f Deployment - manages replica sets and rolling updates of pods \u007f Service - a stable network endpoint exposing a set of pods \u007f Namespace - a way to divide cluster resources between users/teams Sample kubectl Commands kubectl get pods kubectl get nodes kubectl apply -f deployment.yaml kubectl scale deployment my-app --replicas=3 kubectl logs my-pod-name Note: This document is a dummy/sample file generated for download and testing purposes only. It is not exhaustive",
+        "ument is a dummy/sample file generated for download and testing purposes only. It is not exhaustive documentation."
+      ],
+      "ground_truth": "deployment, replica, replicas",
+      "actual_sources": [
+        "dummy_kubernetes.pdf"
+      ],
+      "golden_sources": [
+        "deploy-intro.txt",
+        "run-stateless-application-deployment.docx",
+        "scale-intro.html"
+      ],
+      "forbidden_keywords": [],
+      "ragas_metrics": {
+        "id": "q-015",
+        "demonstrates_feature": "hyde",
+        "intent": "rag",
+        "question": "How do I make sure my app keeps running even if a server dies?",
+        "answer": "```json\n{\n  \"answer\": \"To ensure your application keeps running even if a server (node) fails, you can use Kubernetes Deployments. Deployments manage replica sets, which ensure that a specified number of pod replicas are running at all times. By setting the number of replicas to more than one, Kubernetes will automatically reschedule pods to other available nodes if a node fails. You can scale your deployment using the command: `kubectl scale deployment my-app --replicas=3` to maintain three replicas of your application pods running across the cluster.\",\n  \"sources\": [\"dummy_kubernetes.pdf\"],\n  \"confidence\": 0.9\n}\n```",
+        "contexts": [
+          "Kubernetes Overview (Sample / Dummy Document) This is a placeholder document for testing purposes, containing basic sample content about Kubernetes. What is Kubernetes? Kubernetes (often abbreviated K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. Core Components \u007f Pod - the smallest deployable unit, wrapping one or more containers \u007f Node - a worker machine (VM or physical) that runs pods \u007f Cluster - a set of nodes managed together \u007f Deployment - manages replica sets and rolling updates of pods \u007f Service - a stable network endpoint exposing a set of pods \u007f Namespace - a way to divide cluster resources between users/teams Sample kubectl Commands kubectl get pods kubectl get nodes kubectl apply -f deployment.yaml kubectl scale deployment my-app --replicas=3 kubectl logs my-pod-name Note: This document is a dummy/sample file generated for download and testing purposes only. It is not exhaustive",
+          "ument is a dummy/sample file generated for download and testing purposes only. It is not exhaustive documentation."
+        ],
+        "ground_truth": "deployment, replica, replicas",
+        "actual_sources": [
+          "dummy_kubernetes.pdf"
+        ],
+        "golden_sources": [
+          "deploy-intro.txt",
+          "run-stateless-application-deployment.docx",
+          "scale-intro.html"
+        ],
+        "forbidden_keywords": [],
+        "faithfulness": 1,
+        "answer_relevancy": 1.0,
+        "context_precision": 1.0,
+        "context_recall": 1
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 0.0,
+        "matched": [],
+        "missed": [
+          "deploy-intro",
+          "run-stateless-application-deployment",
+          "scale-intro"
+        ]
+      }
+    },
+    {
+      "id": "q-016",
+      "demonstrates_feature": "hyde",
+      "intent": "rag",
+      "question": "What stops a misbehaving tenant from using all the CPU on a shared computer?",
+      "answer": "```json\n{\n  \"answer\": \"In Kubernetes, resource quotas and limits can be used to prevent a misbehaving tenant from using all the CPU on a shared computer. Resource quotas are applied at the namespace level to limit the total amount of resources that can be consumed by all pods in that namespace. Additionally, resource limits can be set on individual pods or containers to restrict the maximum CPU and memory they can use. These mechanisms help ensure fair resource distribution among tenants and prevent any single tenant from monopolizing resources.\",\n  \"sources\": [\"dummy_kubernetes.pdf\"],\n  \"confidence\": 0.8\n}\n```",
+      "contexts": [
+        "Kubernetes Overview (Sample / Dummy Document) This is a placeholder document for testing purposes, containing basic sample content about Kubernetes. What is Kubernetes? Kubernetes (often abbreviated K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. Core Components \u007f Pod - the smallest deployable unit, wrapping one or more containers \u007f Node - a worker machine (VM or physical) that runs pods \u007f Cluster - a set of nodes managed together \u007f Deployment - manages replica sets and rolling updates of pods \u007f Service - a stable network endpoint exposing a set of pods \u007f Namespace - a way to divide cluster resources between users/teams Sample kubectl Commands kubectl get pods kubectl get nodes kubectl apply -f deployment.yaml kubectl scale deployment my-app --replicas=3 kubectl logs my-pod-name Note: This document is a dummy/sample file generated for download and testing purposes only. It is not exhaustive",
+        "ument is a dummy/sample file generated for download and testing purposes only. It is not exhaustive documentation."
+      ],
+      "ground_truth": "quota, limit, resource",
+      "actual_sources": [
+        "dummy_kubernetes.pdf"
+      ],
+      "golden_sources": [
+        "resource-quotas.txt",
+        "limit-range.html"
+      ],
+      "forbidden_keywords": [],
+      "ragas_metrics": {
+        "id": "q-016",
+        "demonstrates_feature": "hyde",
+        "intent": "rag",
+        "question": "What stops a misbehaving tenant from using all the CPU on a shared computer?",
+        "answer": "```json\n{\n  \"answer\": \"In Kubernetes, resource quotas and limits can be used to prevent a misbehaving tenant from using all the CPU on a shared computer. Resource quotas are applied at the namespace level to limit the total amount of resources that can be consumed by all pods in that namespace. Additionally, resource limits can be set on individual pods or containers to restrict the maximum CPU and memory they can use. These mechanisms help ensure fair resource distribution among tenants and prevent any single tenant from monopolizing resources.\",\n  \"sources\": [\"dummy_kubernetes.pdf\"],\n  \"confidence\": 0.8\n}\n```",
+        "contexts": [
+          "Kubernetes Overview (Sample / Dummy Document) This is a placeholder document for testing purposes, containing basic sample content about Kubernetes. What is Kubernetes? Kubernetes (often abbreviated K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. Core Components \u007f Pod - the smallest deployable unit, wrapping one or more containers \u007f Node - a worker machine (VM or physical) that runs pods \u007f Cluster - a set of nodes managed together \u007f Deployment - manages replica sets and rolling updates of pods \u007f Service - a stable network endpoint exposing a set of pods \u007f Namespace - a way to divide cluster resources between users/teams Sample kubectl Commands kubectl get pods kubectl get nodes kubectl apply -f deployment.yaml kubectl scale deployment my-app --replicas=3 kubectl logs my-pod-name Note: This document is a dummy/sample file generated for download and testing purposes only. It is not exhaustive",
+          "ument is a dummy/sample file generated for download and testing purposes only. It is not exhaustive documentation."
+        ],
+        "ground_truth": "quota, limit, resource",
+        "actual_sources": [
+          "dummy_kubernetes.pdf"
+        ],
+        "golden_sources": [
+          "resource-quotas.txt",
+          "limit-range.html"
+        ],
+        "forbidden_keywords": [],
+        "faithfulness": 0,
+        "answer_relevancy": 1.0,
+        "context_precision": 0.0,
+        "context_recall": 0
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 0.0,
+        "matched": [],
+        "missed": [
+          "limit-range",
+          "resource-quotas"
+        ]
+      }
+    },
+    {
+      "id": "q-017",
+      "demonstrates_feature": "crag",
+      "intent": "web_fallback",
+      "question": "What's the weather forecast for Seattle this weekend?",
+      "answer": "```json\n{\n  \"answer\": \"I'm unable to provide weather forecasts as the context provided does not include any information about weather. Please refer to a reliable weather service for this information.\",\n  \"sources\": [],\n  \"confidence\": 0.0\n}\n```",
+      "contexts": [
+        "Kubernetes Overview (Sample / Dummy Document) This is a placeholder document for testing purposes, containing basic sample content about Kubernetes. What is Kubernetes? Kubernetes (often abbreviated K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. Core Components \u007f Pod - the smallest deployable unit, wrapping one or more containers \u007f Node - a worker machine (VM or physical) that runs pods \u007f Cluster - a set of nodes managed together \u007f Deployment - manages replica sets and rolling updates of pods \u007f Service - a stable network endpoint exposing a set of pods \u007f Namespace - a way to divide cluster resources between users/teams Sample kubectl Commands kubectl get pods kubectl get nodes kubectl apply -f deployment.yaml kubectl scale deployment my-app --replicas=3 kubectl logs my-pod-name Note: This document is a dummy/sample file generated for download and testing purposes only. It is not exhaustive",
+        "ument is a dummy/sample file generated for download and testing purposes only. It is not exhaustive documentation."
+      ],
+      "ground_truth": "weather, Seattle",
+      "actual_sources": [
+        "dummy_kubernetes.pdf"
+      ],
+      "golden_sources": [
+        "tavily_web"
+      ],
+      "forbidden_keywords": [],
+      "ragas_metrics": {
+        "id": "q-017",
+        "demonstrates_feature": "crag",
+        "intent": "web_fallback",
+        "question": "What's the weather forecast for Seattle this weekend?",
+        "answer": "```json\n{\n  \"answer\": \"I'm unable to provide weather forecasts as the context provided does not include any information about weather. Please refer to a reliable weather service for this information.\",\n  \"sources\": [],\n  \"confidence\": 0.0\n}\n```",
+        "contexts": [
+          "Kubernetes Overview (Sample / Dummy Document) This is a placeholder document for testing purposes, containing basic sample content about Kubernetes. What is Kubernetes? Kubernetes (often abbreviated K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. Core Components \u007f Pod - the smallest deployable unit, wrapping one or more containers \u007f Node - a worker machine (VM or physical) that runs pods \u007f Cluster - a set of nodes managed together \u007f Deployment - manages replica sets and rolling updates of pods \u007f Service - a stable network endpoint exposing a set of pods \u007f Namespace - a way to divide cluster resources between users/teams Sample kubectl Commands kubectl get pods kubectl get nodes kubectl apply -f deployment.yaml kubectl scale deployment my-app --replicas=3 kubectl logs my-pod-name Note: This document is a dummy/sample file generated for download and testing purposes only. It is not exhaustive",
+          "ument is a dummy/sample file generated for download and testing purposes only. It is not exhaustive documentation."
+        ],
+        "ground_truth": "weather, Seattle",
+        "actual_sources": [
+          "dummy_kubernetes.pdf"
+        ],
+        "golden_sources": [
+          "tavily_web"
+        ],
+        "forbidden_keywords": [],
+        "faithfulness": 1,
+        "answer_relevancy": 0.0,
+        "context_precision": 0.0,
+        "context_recall": 0
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 0.0,
+        "matched": [],
+        "missed": [
+          "tavily_web"
+        ]
+      }
+    },
+    {
+      "id": "q-018",
+      "demonstrates_feature": "crag",
+      "intent": "web_fallback",
+      "question": "Explain the theory of quantum entanglement.",
+      "answer": "```json\n{\n  \"answer\": \"The provided context does not contain information about quantum entanglement. Quantum entanglement is a concept from quantum physics where two or more particles become linked and instantaneously affect each other, regardless of the distance separating them. For a detailed explanation, please refer to physics resources or quantum mechanics textbooks.\",\n  \"sources\": [],\n  \"confidence\": 0.0\n}\n```",
+      "contexts": [
+        "Kubernetes Overview (Sample / Dummy Document) This is a placeholder document for testing purposes, containing basic sample content about Kubernetes. What is Kubernetes? Kubernetes (often abbreviated K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. Core Components \u007f Pod - the smallest deployable unit, wrapping one or more containers \u007f Node - a worker machine (VM or physical) that runs pods \u007f Cluster - a set of nodes managed together \u007f Deployment - manages replica sets and rolling updates of pods \u007f Service - a stable network endpoint exposing a set of pods \u007f Namespace - a way to divide cluster resources between users/teams Sample kubectl Commands kubectl get pods kubectl get nodes kubectl apply -f deployment.yaml kubectl scale deployment my-app --replicas=3 kubectl logs my-pod-name Note: This document is a dummy/sample file generated for download and testing purposes only. It is not exhaustive",
+        "ument is a dummy/sample file generated for download and testing purposes only. It is not exhaustive documentation."
+      ],
+      "ground_truth": "quantum, entanglement",
+      "actual_sources": [
+        "dummy_kubernetes.pdf"
+      ],
+      "golden_sources": [
+        "tavily_web"
+      ],
+      "forbidden_keywords": [],
+      "ragas_metrics": {
+        "id": "q-018",
+        "demonstrates_feature": "crag",
+        "intent": "web_fallback",
+        "question": "Explain the theory of quantum entanglement.",
+        "answer": "```json\n{\n  \"answer\": \"The provided context does not contain information about quantum entanglement. Quantum entanglement is a concept from quantum physics where two or more particles become linked and instantaneously affect each other, regardless of the distance separating them. For a detailed explanation, please refer to physics resources or quantum mechanics textbooks.\",\n  \"sources\": [],\n  \"confidence\": 0.0\n}\n```",
+        "contexts": [
+          "Kubernetes Overview (Sample / Dummy Document) This is a placeholder document for testing purposes, containing basic sample content about Kubernetes. What is Kubernetes? Kubernetes (often abbreviated K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. Core Components \u007f Pod - the smallest deployable unit, wrapping one or more containers \u007f Node - a worker machine (VM or physical) that runs pods \u007f Cluster - a set of nodes managed together \u007f Deployment - manages replica sets and rolling updates of pods \u007f Service - a stable network endpoint exposing a set of pods \u007f Namespace - a way to divide cluster resources between users/teams Sample kubectl Commands kubectl get pods kubectl get nodes kubectl apply -f deployment.yaml kubectl scale deployment my-app --replicas=3 kubectl logs my-pod-name Note: This document is a dummy/sample file generated for download and testing purposes only. It is not exhaustive",
+          "ument is a dummy/sample file generated for download and testing purposes only. It is not exhaustive documentation."
+        ],
+        "ground_truth": "quantum, entanglement",
+        "actual_sources": [
+          "dummy_kubernetes.pdf"
+        ],
+        "golden_sources": [
+          "tavily_web"
+        ],
+        "forbidden_keywords": [],
+        "faithfulness": 0.6666666666666666,
+        "answer_relevancy": 1.0,
+        "context_precision": 0.0,
+        "context_recall": 0
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 0.0,
+        "matched": [],
+        "missed": [
+          "tavily_web"
+        ]
+      }
+    },
+    {
+      "id": "q-019",
+      "demonstrates_feature": "crag",
+      "intent": "web_fallback",
+      "question": "What is the latest Kubernetes 1.34 release date and what new features did it ship?",
+      "answer": "```json\n{\n  \"answer\": \"The context provided does not contain information about the Kubernetes 1.34 release date or its new features. Please refer to the official Kubernetes release notes or documentation for the most accurate and up-to-date information.\",\n  \"sources\": [],\n  \"confidence\": 0.0\n}\n```",
+      "contexts": [
+        "Kubernetes Overview (Sample / Dummy Document) This is a placeholder document for testing purposes, containing basic sample content about Kubernetes. What is Kubernetes? Kubernetes (often abbreviated K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. Core Components \u007f Pod - the smallest deployable unit, wrapping one or more containers \u007f Node - a worker machine (VM or physical) that runs pods \u007f Cluster - a set of nodes managed together \u007f Deployment - manages replica sets and rolling updates of pods \u007f Service - a stable network endpoint exposing a set of pods \u007f Namespace - a way to divide cluster resources between users/teams Sample kubectl Commands kubectl get pods kubectl get nodes kubectl apply -f deployment.yaml kubectl scale deployment my-app --replicas=3 kubectl logs my-pod-name Note: This document is a dummy/sample file generated for download and testing purposes only. It is not exhaustive",
+        "ument is a dummy/sample file generated for download and testing purposes only. It is not exhaustive documentation."
+      ],
+      "ground_truth": "kubernetes, 1.34",
+      "actual_sources": [
+        "dummy_kubernetes.pdf"
+      ],
+      "golden_sources": [
+        "tavily_web"
+      ],
+      "forbidden_keywords": [],
+      "ragas_metrics": {
+        "id": "q-019",
+        "demonstrates_feature": "crag",
+        "intent": "web_fallback",
+        "question": "What is the latest Kubernetes 1.34 release date and what new features did it ship?",
+        "answer": "```json\n{\n  \"answer\": \"The context provided does not contain information about the Kubernetes 1.34 release date or its new features. Please refer to the official Kubernetes release notes or documentation for the most accurate and up-to-date information.\",\n  \"sources\": [],\n  \"confidence\": 0.0\n}\n```",
+        "contexts": [
+          "Kubernetes Overview (Sample / Dummy Document) This is a placeholder document for testing purposes, containing basic sample content about Kubernetes. What is Kubernetes? Kubernetes (often abbreviated K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. Core Components \u007f Pod - the smallest deployable unit, wrapping one or more containers \u007f Node - a worker machine (VM or physical) that runs pods \u007f Cluster - a set of nodes managed together \u007f Deployment - manages replica sets and rolling updates of pods \u007f Service - a stable network endpoint exposing a set of pods \u007f Namespace - a way to divide cluster resources between users/teams Sample kubectl Commands kubectl get pods kubectl get nodes kubectl apply -f deployment.yaml kubectl scale deployment my-app --replicas=3 kubectl logs my-pod-name Note: This document is a dummy/sample file generated for download and testing purposes only. It is not exhaustive",
+          "ument is a dummy/sample file generated for download and testing purposes only. It is not exhaustive documentation."
+        ],
+        "ground_truth": "kubernetes, 1.34",
+        "actual_sources": [
+          "dummy_kubernetes.pdf"
+        ],
+        "golden_sources": [
+          "tavily_web"
+        ],
+        "forbidden_keywords": [],
+        "faithfulness": 1,
+        "answer_relevancy": 0.0,
+        "context_precision": 0.0,
+        "context_recall": 0
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 0.0,
+        "matched": [],
+        "missed": [
+          "tavily_web"
+        ]
+      }
+    },
+    {
+      "id": "q-020",
+      "demonstrates_feature": "crag",
+      "intent": "web_fallback",
+      "question": "What are the steps to deploy ArgoCD on a fresh Kubernetes cluster?",
+      "answer": "```json\n{\n  \"answer\": \"The context provided does not include specific steps for deploying ArgoCD on a Kubernetes cluster. Generally, deploying ArgoCD involves the following steps: 1. Install the ArgoCD namespace and CRDs using kubectl. 2. Apply the ArgoCD manifests to deploy the ArgoCD components. 3. Access the ArgoCD server and login using the initial admin password. 4. Configure ArgoCD to manage your applications. For detailed instructions, refer to the official ArgoCD documentation.\",\n  \"sources\": [],\n  \"confidence\": 0.5\n}\n```",
+      "contexts": [
+        "Kubernetes Overview (Sample / Dummy Document) This is a placeholder document for testing purposes, containing basic sample content about Kubernetes. What is Kubernetes? Kubernetes (often abbreviated K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. Core Components \u007f Pod - the smallest deployable unit, wrapping one or more containers \u007f Node - a worker machine (VM or physical) that runs pods \u007f Cluster - a set of nodes managed together \u007f Deployment - manages replica sets and rolling updates of pods \u007f Service - a stable network endpoint exposing a set of pods \u007f Namespace - a way to divide cluster resources between users/teams Sample kubectl Commands kubectl get pods kubectl get nodes kubectl apply -f deployment.yaml kubectl scale deployment my-app --replicas=3 kubectl logs my-pod-name Note: This document is a dummy/sample file generated for download and testing purposes only. It is not exhaustive"
+      ],
+      "ground_truth": "argo, argocd",
+      "actual_sources": [
+        "dummy_kubernetes.pdf"
+      ],
+      "golden_sources": [
+        "tavily_web"
+      ],
+      "forbidden_keywords": [],
+      "ragas_metrics": {
+        "id": "q-020",
+        "demonstrates_feature": "crag",
+        "intent": "web_fallback",
+        "question": "What are the steps to deploy ArgoCD on a fresh Kubernetes cluster?",
+        "answer": "```json\n{\n  \"answer\": \"The context provided does not include specific steps for deploying ArgoCD on a Kubernetes cluster. Generally, deploying ArgoCD involves the following steps: 1. Install the ArgoCD namespace and CRDs using kubectl. 2. Apply the ArgoCD manifests to deploy the ArgoCD components. 3. Access the ArgoCD server and login using the initial admin password. 4. Configure ArgoCD to manage your applications. For detailed instructions, refer to the official ArgoCD documentation.\",\n  \"sources\": [],\n  \"confidence\": 0.5\n}\n```",
+        "contexts": [
+          "Kubernetes Overview (Sample / Dummy Document) This is a placeholder document for testing purposes, containing basic sample content about Kubernetes. What is Kubernetes? Kubernetes (often abbreviated K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. Core Components \u007f Pod - the smallest deployable unit, wrapping one or more containers \u007f Node - a worker machine (VM or physical) that runs pods \u007f Cluster - a set of nodes managed together \u007f Deployment - manages replica sets and rolling updates of pods \u007f Service - a stable network endpoint exposing a set of pods \u007f Namespace - a way to divide cluster resources between users/teams Sample kubectl Commands kubectl get pods kubectl get nodes kubectl apply -f deployment.yaml kubectl scale deployment my-app --replicas=3 kubectl logs my-pod-name Note: This document is a dummy/sample file generated for download and testing purposes only. It is not exhaustive"
+        ],
+        "ground_truth": "argo, argocd",
+        "actual_sources": [
+          "dummy_kubernetes.pdf"
+        ],
+        "golden_sources": [
+          "tavily_web"
+        ],
+        "forbidden_keywords": [],
+        "faithfulness": 1,
+        "answer_relevancy": 0.8,
+        "context_precision": 0.0,
+        "context_recall": 0
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 0.0,
+        "matched": [],
+        "missed": [
+          "tavily_web"
+        ]
+      }
+    },
+    {
+      "id": "q-021",
+      "demonstrates_feature": "self_rag",
+      "intent": "rag",
+      "question": "Tell me about pods",
+      "answer": "```json\n{\n  \"answer\": \"In Kubernetes, a Pod is the smallest deployable unit that can be created and managed. It encapsulates one or more containers, which share the same network namespace, including IP address and port space, and can communicate with each other using localhost. Pods are designed to run a single instance of a given application, but they can also run multiple containers that need to work closely together. Pods are typically used to host a single application or a single instance of a microservice.\",\n  \"sources\": [\"dummy_kubernetes.pdf\"],\n  \"confidence\": 0.9\n}\n```",
+      "contexts": [
+        "Kubernetes Overview (Sample / Dummy Document) This is a placeholder document for testing purposes, containing basic sample content about Kubernetes. What is Kubernetes? Kubernetes (often abbreviated K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. Core Components \u007f Pod - the smallest deployable unit, wrapping one or more containers \u007f Node - a worker machine (VM or physical) that runs pods \u007f Cluster - a set of nodes managed together \u007f Deployment - manages replica sets and rolling updates of pods \u007f Service - a stable network endpoint exposing a set of pods \u007f Namespace - a way to divide cluster resources between users/teams Sample kubectl Commands kubectl get pods kubectl get nodes kubectl apply -f deployment.yaml kubectl scale deployment my-app --replicas=3 kubectl logs my-pod-name Note: This document is a dummy/sample file generated for download and testing purposes only. It is not exhaustive",
+        "ument is a dummy/sample file generated for download and testing purposes only. It is not exhaustive documentation."
+      ],
+      "ground_truth": "container, lifecycle, namespace",
+      "actual_sources": [
+        "dummy_kubernetes.pdf"
+      ],
+      "golden_sources": [
+        "pods.html",
+        "pod-lifecycle.html",
+        "troubleshooting-pods.html"
+      ],
+      "forbidden_keywords": [],
+      "ragas_metrics": {
+        "id": "q-021",
+        "demonstrates_feature": "self_rag",
+        "intent": "rag",
+        "question": "Tell me about pods",
+        "answer": "```json\n{\n  \"answer\": \"In Kubernetes, a Pod is the smallest deployable unit that can be created and managed. It encapsulates one or more containers, which share the same network namespace, including IP address and port space, and can communicate with each other using localhost. Pods are designed to run a single instance of a given application, but they can also run multiple containers that need to work closely together. Pods are typically used to host a single application or a single instance of a microservice.\",\n  \"sources\": [\"dummy_kubernetes.pdf\"],\n  \"confidence\": 0.9\n}\n```",
+        "contexts": [
+          "Kubernetes Overview (Sample / Dummy Document) This is a placeholder document for testing purposes, containing basic sample content about Kubernetes. What is Kubernetes? Kubernetes (often abbreviated K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. Core Components \u007f Pod - the smallest deployable unit, wrapping one or more containers \u007f Node - a worker machine (VM or physical) that runs pods \u007f Cluster - a set of nodes managed together \u007f Deployment - manages replica sets and rolling updates of pods \u007f Service - a stable network endpoint exposing a set of pods \u007f Namespace - a way to divide cluster resources between users/teams Sample kubectl Commands kubectl get pods kubectl get nodes kubectl apply -f deployment.yaml kubectl scale deployment my-app --replicas=3 kubectl logs my-pod-name Note: This document is a dummy/sample file generated for download and testing purposes only. It is not exhaustive",
+          "ument is a dummy/sample file generated for download and testing purposes only. It is not exhaustive documentation."
+        ],
+        "ground_truth": "container, lifecycle, namespace",
+        "actual_sources": [
+          "dummy_kubernetes.pdf"
+        ],
+        "golden_sources": [
+          "pods.html",
+          "pod-lifecycle.html",
+          "troubleshooting-pods.html"
+        ],
+        "forbidden_keywords": [],
+        "faithfulness": 1,
+        "answer_relevancy": 1.0,
+        "context_precision": 1.0,
+        "context_recall": 1
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 0.0,
+        "matched": [],
+        "missed": [
+          "pod-lifecycle",
+          "pods",
+          "troubleshooting-pods"
+        ]
+      }
+    },
+    {
+      "id": "q-022",
+      "demonstrates_feature": "self_rag",
+      "intent": "rag",
+      "question": "Tell me about incidents",
+      "answer": "```json\n{\n  \"answer\": \"The provided document does not contain information about incidents. It focuses on basic Kubernetes concepts and commands. For detailed information on handling incidents, you would typically refer to incident management documentation or runbooks specific to your organization.\",\n  \"sources\": [\"dummy_kubernetes.pdf\"],\n  \"confidence\": 0.5\n}\n```",
+      "contexts": [
+        "Kubernetes Overview (Sample / Dummy Document) This is a placeholder document for testing purposes, containing basic sample content about Kubernetes. What is Kubernetes? Kubernetes (often abbreviated K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. Core Components \u007f Pod - the smallest deployable unit, wrapping one or more containers \u007f Node - a worker machine (VM or physical) that runs pods \u007f Cluster - a set of nodes managed together \u007f Deployment - manages replica sets and rolling updates of pods \u007f Service - a stable network endpoint exposing a set of pods \u007f Namespace - a way to divide cluster resources between users/teams Sample kubectl Commands kubectl get pods kubectl get nodes kubectl apply -f deployment.yaml kubectl scale deployment my-app --replicas=3 kubectl logs my-pod-name Note: This document is a dummy/sample file generated for download and testing purposes only. It is not exhaustive"
+      ],
+      "ground_truth": "incident, severity, escalation, response",
+      "actual_sources": [
+        "dummy_kubernetes.pdf"
+      ],
+      "golden_sources": [
+        "incident-response-runbook.html",
+        "oncall-escalation-policy.html"
+      ],
+      "forbidden_keywords": [],
+      "ragas_metrics": {
+        "id": "q-022",
+        "demonstrates_feature": "self_rag",
+        "intent": "rag",
+        "question": "Tell me about incidents",
+        "answer": "```json\n{\n  \"answer\": \"The provided document does not contain information about incidents. It focuses on basic Kubernetes concepts and commands. For detailed information on handling incidents, you would typically refer to incident management documentation or runbooks specific to your organization.\",\n  \"sources\": [\"dummy_kubernetes.pdf\"],\n  \"confidence\": 0.5\n}\n```",
+        "contexts": [
+          "Kubernetes Overview (Sample / Dummy Document) This is a placeholder document for testing purposes, containing basic sample content about Kubernetes. What is Kubernetes? Kubernetes (often abbreviated K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. Core Components \u007f Pod - the smallest deployable unit, wrapping one or more containers \u007f Node - a worker machine (VM or physical) that runs pods \u007f Cluster - a set of nodes managed together \u007f Deployment - manages replica sets and rolling updates of pods \u007f Service - a stable network endpoint exposing a set of pods \u007f Namespace - a way to divide cluster resources between users/teams Sample kubectl Commands kubectl get pods kubectl get nodes kubectl apply -f deployment.yaml kubectl scale deployment my-app --replicas=3 kubectl logs my-pod-name Note: This document is a dummy/sample file generated for download and testing purposes only. It is not exhaustive"
+        ],
+        "ground_truth": "incident, severity, escalation, response",
+        "actual_sources": [
+          "dummy_kubernetes.pdf"
+        ],
+        "golden_sources": [
+          "incident-response-runbook.html",
+          "oncall-escalation-policy.html"
+        ],
+        "forbidden_keywords": [],
+        "faithfulness": 1,
+        "answer_relevancy": 0.5,
+        "context_precision": 0.0,
+        "context_recall": 0
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 0.0,
+        "matched": [],
+        "missed": [
+          "incident-response-runbook",
+          "oncall-escalation-policy"
+        ]
+      }
+    },
+    {
+      "id": "q-023",
+      "demonstrates_feature": "self_rag",
+      "intent": "rag",
+      "question": "explain",
+      "answer": "```json\n{\n  \"answer\": \"The provided documents are dummy/sample files meant for testing purposes and contain basic information about Kubernetes. Kubernetes is an open-source platform for automating the deployment, scaling, and management of containerized applications. Key components include Pods, Nodes, Clusters, Deployments, Services, and Namespaces. The document also lists some basic `kubectl` commands for interacting with Kubernetes resources.\",\n  \"sources\": [\"dummy_kubernetes.pdf\"],\n  \"confidence\": 0.8\n}\n```",
+      "contexts": [
+        "Kubernetes Overview (Sample / Dummy Document) This is a placeholder document for testing purposes, containing basic sample content about Kubernetes. What is Kubernetes? Kubernetes (often abbreviated K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. Core Components \u007f Pod - the smallest deployable unit, wrapping one or more containers \u007f Node - a worker machine (VM or physical) that runs pods \u007f Cluster - a set of nodes managed together \u007f Deployment - manages replica sets and rolling updates of pods \u007f Service - a stable network endpoint exposing a set of pods \u007f Namespace - a way to divide cluster resources between users/teams Sample kubectl Commands kubectl get pods kubectl get nodes kubectl apply -f deployment.yaml kubectl scale deployment my-app --replicas=3 kubectl logs my-pod-name Note: This document is a dummy/sample file generated for download and testing purposes only. It is not exhaustive",
+        "ument is a dummy/sample file generated for download and testing purposes only. It is not exhaustive documentation."
+      ],
+      "ground_truth": "kubectl, kubernetes, pod",
+      "actual_sources": [
+        "dummy_kubernetes.pdf"
+      ],
+      "golden_sources": [
+        "kubectl__overview.pdf",
+        "cheatsheet.txt"
+      ],
+      "forbidden_keywords": [],
+      "ragas_metrics": {
+        "id": "q-023",
+        "demonstrates_feature": "self_rag",
+        "intent": "rag",
+        "question": "explain",
+        "answer": "```json\n{\n  \"answer\": \"The provided documents are dummy/sample files meant for testing purposes and contain basic information about Kubernetes. Kubernetes is an open-source platform for automating the deployment, scaling, and management of containerized applications. Key components include Pods, Nodes, Clusters, Deployments, Services, and Namespaces. The document also lists some basic `kubectl` commands for interacting with Kubernetes resources.\",\n  \"sources\": [\"dummy_kubernetes.pdf\"],\n  \"confidence\": 0.8\n}\n```",
+        "contexts": [
+          "Kubernetes Overview (Sample / Dummy Document) This is a placeholder document for testing purposes, containing basic sample content about Kubernetes. What is Kubernetes? Kubernetes (often abbreviated K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. Core Components \u007f Pod - the smallest deployable unit, wrapping one or more containers \u007f Node - a worker machine (VM or physical) that runs pods \u007f Cluster - a set of nodes managed together \u007f Deployment - manages replica sets and rolling updates of pods \u007f Service - a stable network endpoint exposing a set of pods \u007f Namespace - a way to divide cluster resources between users/teams Sample kubectl Commands kubectl get pods kubectl get nodes kubectl apply -f deployment.yaml kubectl scale deployment my-app --replicas=3 kubectl logs my-pod-name Note: This document is a dummy/sample file generated for download and testing purposes only. It is not exhaustive",
+          "ument is a dummy/sample file generated for download and testing purposes only. It is not exhaustive documentation."
+        ],
+        "ground_truth": "kubectl, kubernetes, pod",
+        "actual_sources": [
+          "dummy_kubernetes.pdf"
+        ],
+        "golden_sources": [
+          "kubectl__overview.pdf",
+          "cheatsheet.txt"
+        ],
+        "forbidden_keywords": [],
+        "faithfulness": 1,
+        "answer_relevancy": 0.9,
+        "context_precision": 1.0,
+        "context_recall": 1
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 0.0,
+        "matched": [],
+        "missed": [
+          "cheatsheet",
+          "kubectl__overview"
+        ]
+      }
+    },
+    {
+      "id": "q-024",
+      "demonstrates_feature": "self_rag",
+      "intent": "rag",
+      "question": "what is wrong",
+      "answer": "```json\n{\n  \"answer\": \"The provided context is insufficient to determine what is wrong. The documents are dummy/sample files and do not contain specific information about any issues or errors.\",\n  \"sources\": [],\n  \"confidence\": 0.2\n}\n```",
+      "contexts": [
+        "Kubernetes Overview (Sample / Dummy Document) This is a placeholder document for testing purposes, containing basic sample content about Kubernetes. What is Kubernetes? Kubernetes (often abbreviated K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. Core Components \u007f Pod - the smallest deployable unit, wrapping one or more containers \u007f Node - a worker machine (VM or physical) that runs pods \u007f Cluster - a set of nodes managed together \u007f Deployment - manages replica sets and rolling updates of pods \u007f Service - a stable network endpoint exposing a set of pods \u007f Namespace - a way to divide cluster resources between users/teams Sample kubectl Commands kubectl get pods kubectl get nodes kubectl apply -f deployment.yaml kubectl scale deployment my-app --replicas=3 kubectl logs my-pod-name Note: This document is a dummy/sample file generated for download and testing purposes only. It is not exhaustive",
+        "ument is a dummy/sample file generated for download and testing purposes only. It is not exhaustive documentation."
+      ],
+      "ground_truth": "configmap, secret, pod",
+      "actual_sources": [
+        "dummy_kubernetes.pdf"
+      ],
+      "golden_sources": [
+        "pod-v1.docx",
+        "configure-pod-configmap.html"
+      ],
+      "forbidden_keywords": [],
+      "ragas_metrics": {
+        "id": "q-024",
+        "demonstrates_feature": "self_rag",
+        "intent": "rag",
+        "question": "what is wrong",
+        "answer": "```json\n{\n  \"answer\": \"The provided context is insufficient to determine what is wrong. The documents are dummy/sample files and do not contain specific information about any issues or errors.\",\n  \"sources\": [],\n  \"confidence\": 0.2\n}\n```",
+        "contexts": [
+          "Kubernetes Overview (Sample / Dummy Document) This is a placeholder document for testing purposes, containing basic sample content about Kubernetes. What is Kubernetes? Kubernetes (often abbreviated K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. Core Components \u007f Pod - the smallest deployable unit, wrapping one or more containers \u007f Node - a worker machine (VM or physical) that runs pods \u007f Cluster - a set of nodes managed together \u007f Deployment - manages replica sets and rolling updates of pods \u007f Service - a stable network endpoint exposing a set of pods \u007f Namespace - a way to divide cluster resources between users/teams Sample kubectl Commands kubectl get pods kubectl get nodes kubectl apply -f deployment.yaml kubectl scale deployment my-app --replicas=3 kubectl logs my-pod-name Note: This document is a dummy/sample file generated for download and testing purposes only. It is not exhaustive",
+          "ument is a dummy/sample file generated for download and testing purposes only. It is not exhaustive documentation."
+        ],
+        "ground_truth": "configmap, secret, pod",
+        "actual_sources": [
+          "dummy_kubernetes.pdf"
+        ],
+        "golden_sources": [
+          "pod-v1.docx",
+          "configure-pod-configmap.html"
+        ],
+        "forbidden_keywords": [],
+        "faithfulness": 1,
+        "answer_relevancy": 0.8,
+        "context_precision": 0.0,
+        "context_recall": 0.6666666666666666
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 0.0,
+        "matched": [],
+        "missed": [
+          "configure-pod-configmap",
+          "pod-v1"
+        ]
+      }
+    },
+    {
+      "id": "q-033",
+      "demonstrates_feature": "wild",
+      "intent": "rag",
+      "question": "How do I debug a CrashLoopBackOff?",
+      "answer": "```json\n{\n  \"answer\": \"To debug a CrashLoopBackOff in Kubernetes, follow these steps:\\n1. **Check Pod Logs**: Use `kubectl logs <pod-name>` to view the logs of the crashing container. This can provide insights into why the container is failing.\\n2. **Describe the Pod**: Run `kubectl describe pod <pod-name>` to get detailed information about the pod's status, events, and any error messages.\\n3. **Check Events**: Look for events related to the pod using `kubectl get events --sort-by=.metadata.creationTimestamp`. This can help identify issues like image pull errors or resource constraints.\\n4. **Inspect Resource Limits**: Ensure that the pod's resource requests and limits are appropriate. Resource constraints can cause containers to be killed.\\n5. **Review Configuration**: Check the pod's configuration for errors, such as incorrect environment variables or command arguments.\\n6. **Check Node Status**: Ensure that the node where the pod is scheduled is healthy and has sufficient resources.\\n\\nThese steps should help identify and resolve the cause of the CrashLoopBackOff.\",\n  \"sources\": [\"dummy_kubernetes.pdf\"],\n  \"confidence\": 0.8\n}\n```",
+      "contexts": [
+        "Kubernetes Overview (Sample / Dummy Document) This is a placeholder document for testing purposes, containing basic sample content about Kubernetes. What is Kubernetes? Kubernetes (often abbreviated K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. Core Components \u007f Pod - the smallest deployable unit, wrapping one or more containers \u007f Node - a worker machine (VM or physical) that runs pods \u007f Cluster - a set of nodes managed together \u007f Deployment - manages replica sets and rolling updates of pods \u007f Service - a stable network endpoint exposing a set of pods \u007f Namespace - a way to divide cluster resources between users/teams Sample kubectl Commands kubectl get pods kubectl get nodes kubectl apply -f deployment.yaml kubectl scale deployment my-app --replicas=3 kubectl logs my-pod-name Note: This document is a dummy/sample file generated for download and testing purposes only. It is not exhaustive"
+      ],
+      "ground_truth": "CrashLoopBackOff, kubectl logs, restart",
+      "actual_sources": [
+        "dummy_kubernetes.pdf"
+      ],
+      "golden_sources": [
+        "troubleshooting-pods.html",
+        "pod-lifecycle.html"
+      ],
+      "forbidden_keywords": [
+        "kubeconfig",
+        "ignore guidelines",
+        "service token"
+      ],
+      "ragas_metrics": {
+        "id": "q-033",
+        "demonstrates_feature": "wild",
+        "intent": "rag",
+        "question": "How do I debug a CrashLoopBackOff?",
+        "answer": "```json\n{\n  \"answer\": \"To debug a CrashLoopBackOff in Kubernetes, follow these steps:\\n1. **Check Pod Logs**: Use `kubectl logs <pod-name>` to view the logs of the crashing container. This can provide insights into why the container is failing.\\n2. **Describe the Pod**: Run `kubectl describe pod <pod-name>` to get detailed information about the pod's status, events, and any error messages.\\n3. **Check Events**: Look for events related to the pod using `kubectl get events --sort-by=.metadata.creationTimestamp`. This can help identify issues like image pull errors or resource constraints.\\n4. **Inspect Resource Limits**: Ensure that the pod's resource requests and limits are appropriate. Resource constraints can cause containers to be killed.\\n5. **Review Configuration**: Check the pod's configuration for errors, such as incorrect environment variables or command arguments.\\n6. **Check Node Status**: Ensure that the node where the pod is scheduled is healthy and has sufficient resources.\\n\\nThese steps should help identify and resolve the cause of the CrashLoopBackOff.\",\n  \"sources\": [\"dummy_kubernetes.pdf\"],\n  \"confidence\": 0.8\n}\n```",
+        "contexts": [
+          "Kubernetes Overview (Sample / Dummy Document) This is a placeholder document for testing purposes, containing basic sample content about Kubernetes. What is Kubernetes? Kubernetes (often abbreviated K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. Core Components \u007f Pod - the smallest deployable unit, wrapping one or more containers \u007f Node - a worker machine (VM or physical) that runs pods \u007f Cluster - a set of nodes managed together \u007f Deployment - manages replica sets and rolling updates of pods \u007f Service - a stable network endpoint exposing a set of pods \u007f Namespace - a way to divide cluster resources between users/teams Sample kubectl Commands kubectl get pods kubectl get nodes kubectl apply -f deployment.yaml kubectl scale deployment my-app --replicas=3 kubectl logs my-pod-name Note: This document is a dummy/sample file generated for download and testing purposes only. It is not exhaustive"
+        ],
+        "ground_truth": "CrashLoopBackOff, kubectl logs, restart",
+        "actual_sources": [
+          "dummy_kubernetes.pdf"
+        ],
+        "golden_sources": [
+          "troubleshooting-pods.html",
+          "pod-lifecycle.html"
+        ],
+        "forbidden_keywords": [
+          "kubeconfig",
+          "ignore guidelines",
+          "service token"
+        ],
+        "faithfulness": 1,
+        "answer_relevancy": 1.0,
+        "context_precision": 0.0,
+        "context_recall": 0.6666666666666666
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 0.0,
+        "matched": [],
+        "missed": [
+          "pod-lifecycle",
+          "troubleshooting-pods"
+        ]
+      }
+    },
+    {
+      "id": "q-034",
+      "demonstrates_feature": "wild",
+      "intent": "rag",
+      "question": "What are Kubernetes DaemonSets used for?",
+      "answer": "```json\n{\n  \"answer\": \"Kubernetes DaemonSets are used to ensure that a copy of a pod runs on all (or some) nodes in a cluster. They are typically used for deploying system-level services such as log collection, monitoring, or networking services that need to run on every node.\",\n  \"sources\": [],\n  \"confidence\": 0.9\n}\n```",
+      "contexts": [
+        "Kubernetes Overview (Sample / Dummy Document) This is a placeholder document for testing purposes, containing basic sample content about Kubernetes. What is Kubernetes? Kubernetes (often abbreviated K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. Core Components \u007f Pod - the smallest deployable unit, wrapping one or more containers \u007f Node - a worker machine (VM or physical) that runs pods \u007f Cluster - a set of nodes managed together \u007f Deployment - manages replica sets and rolling updates of pods \u007f Service - a stable network endpoint exposing a set of pods \u007f Namespace - a way to divide cluster resources between users/teams Sample kubectl Commands kubectl get pods kubectl get nodes kubectl apply -f deployment.yaml kubectl scale deployment my-app --replicas=3 kubectl logs my-pod-name Note: This document is a dummy/sample file generated for download and testing purposes only. It is not exhaustive"
+      ],
+      "ground_truth": "DaemonSet, node, every",
+      "actual_sources": [
+        "dummy_kubernetes.pdf"
+      ],
+      "golden_sources": [
+        "daemonset.html"
+      ],
+      "forbidden_keywords": [],
+      "ragas_metrics": {
+        "id": "q-034",
+        "demonstrates_feature": "wild",
+        "intent": "rag",
+        "question": "What are Kubernetes DaemonSets used for?",
+        "answer": "```json\n{\n  \"answer\": \"Kubernetes DaemonSets are used to ensure that a copy of a pod runs on all (or some) nodes in a cluster. They are typically used for deploying system-level services such as log collection, monitoring, or networking services that need to run on every node.\",\n  \"sources\": [],\n  \"confidence\": 0.9\n}\n```",
+        "contexts": [
+          "Kubernetes Overview (Sample / Dummy Document) This is a placeholder document for testing purposes, containing basic sample content about Kubernetes. What is Kubernetes? Kubernetes (often abbreviated K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. Core Components \u007f Pod - the smallest deployable unit, wrapping one or more containers \u007f Node - a worker machine (VM or physical) that runs pods \u007f Cluster - a set of nodes managed together \u007f Deployment - manages replica sets and rolling updates of pods \u007f Service - a stable network endpoint exposing a set of pods \u007f Namespace - a way to divide cluster resources between users/teams Sample kubectl Commands kubectl get pods kubectl get nodes kubectl apply -f deployment.yaml kubectl scale deployment my-app --replicas=3 kubectl logs my-pod-name Note: This document is a dummy/sample file generated for download and testing purposes only. It is not exhaustive"
+        ],
+        "ground_truth": "DaemonSet, node, every",
+        "actual_sources": [
+          "dummy_kubernetes.pdf"
+        ],
+        "golden_sources": [
+          "daemonset.html"
+        ],
+        "forbidden_keywords": [],
+        "faithfulness": 0,
+        "answer_relevancy": 1.0,
+        "context_precision": 0.0,
+        "context_recall": 0.3333333333333333
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 0.0,
+        "matched": [],
+        "missed": [
+          "daemonset"
+        ]
+      }
+    },
+    {
+      "id": "q-035",
+      "demonstrates_feature": "wild",
+      "intent": "rag",
+      "question": "How do I expose a Kubernetes Deployment to external traffic?",
+      "answer": "```json\n{\n  \"answer\": \"To expose a Kubernetes Deployment to external traffic, you typically create a Service of type LoadBalancer or NodePort. Here is a basic example using a LoadBalancer:\\n\\n1. Define a Service in a YAML file:\\n\\n```yaml\\napiVersion: v1\\nkind: Service\\nmetadata:\\n  name: my-service\\nspec:\\n  selector:\\n    app: my-app\\n  ports:\\n    - protocol: TCP\\n      port: 80\\n      targetPort: 8080\\n  type: LoadBalancer\\n```\\n\\n2. Apply the Service configuration using kubectl:\\n\\n```bash\\nkubectl apply -f service.yaml\\n```\\n\\nThis will create a LoadBalancer service that routes external traffic to the pods managed by your Deployment, assuming the Deployment's pods are labeled with `app: my-app`.\",\n  \"sources\": [\"dummy_kubernetes.pdf\"],\n  \"confidence\": 0.8\n}\n```",
+      "contexts": [
+        "Kubernetes Overview (Sample / Dummy Document) This is a placeholder document for testing purposes, containing basic sample content about Kubernetes. What is Kubernetes? Kubernetes (often abbreviated K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. Core Components \u007f Pod - the smallest deployable unit, wrapping one or more containers \u007f Node - a worker machine (VM or physical) that runs pods \u007f Cluster - a set of nodes managed together \u007f Deployment - manages replica sets and rolling updates of pods \u007f Service - a stable network endpoint exposing a set of pods \u007f Namespace - a way to divide cluster resources between users/teams Sample kubectl Commands kubectl get pods kubectl get nodes kubectl apply -f deployment.yaml kubectl scale deployment my-app --replicas=3 kubectl logs my-pod-name Note: This document is a dummy/sample file generated for download and testing purposes only. It is not exhaustive",
+        "ument is a dummy/sample file generated for download and testing purposes only. It is not exhaustive documentation."
+      ],
+      "ground_truth": "LoadBalancer, Service, ingress",
+      "actual_sources": [
+        "dummy_kubernetes.pdf"
+      ],
+      "golden_sources": [
+        "expose-intro.docx",
+        "service.txt"
+      ],
+      "forbidden_keywords": [],
+      "ragas_metrics": {
+        "id": "q-035",
+        "demonstrates_feature": "wild",
+        "intent": "rag",
+        "question": "How do I expose a Kubernetes Deployment to external traffic?",
+        "answer": "```json\n{\n  \"answer\": \"To expose a Kubernetes Deployment to external traffic, you typically create a Service of type LoadBalancer or NodePort. Here is a basic example using a LoadBalancer:\\n\\n1. Define a Service in a YAML file:\\n\\n```yaml\\napiVersion: v1\\nkind: Service\\nmetadata:\\n  name: my-service\\nspec:\\n  selector:\\n    app: my-app\\n  ports:\\n    - protocol: TCP\\n      port: 80\\n      targetPort: 8080\\n  type: LoadBalancer\\n```\\n\\n2. Apply the Service configuration using kubectl:\\n\\n```bash\\nkubectl apply -f service.yaml\\n```\\n\\nThis will create a LoadBalancer service that routes external traffic to the pods managed by your Deployment, assuming the Deployment's pods are labeled with `app: my-app`.\",\n  \"sources\": [\"dummy_kubernetes.pdf\"],\n  \"confidence\": 0.8\n}\n```",
+        "contexts": [
+          "Kubernetes Overview (Sample / Dummy Document) This is a placeholder document for testing purposes, containing basic sample content about Kubernetes. What is Kubernetes? Kubernetes (often abbreviated K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. Core Components \u007f Pod - the smallest deployable unit, wrapping one or more containers \u007f Node - a worker machine (VM or physical) that runs pods \u007f Cluster - a set of nodes managed together \u007f Deployment - manages replica sets and rolling updates of pods \u007f Service - a stable network endpoint exposing a set of pods \u007f Namespace - a way to divide cluster resources between users/teams Sample kubectl Commands kubectl get pods kubectl get nodes kubectl apply -f deployment.yaml kubectl scale deployment my-app --replicas=3 kubectl logs my-pod-name Note: This document is a dummy/sample file generated for download and testing purposes only. It is not exhaustive",
+          "ument is a dummy/sample file generated for download and testing purposes only. It is not exhaustive documentation."
+        ],
+        "ground_truth": "LoadBalancer, Service, ingress",
+        "actual_sources": [
+          "dummy_kubernetes.pdf"
+        ],
+        "golden_sources": [
+          "expose-intro.docx",
+          "service.txt"
+        ],
+        "forbidden_keywords": [],
+        "faithfulness": 1,
+        "answer_relevancy": 1.0,
+        "context_precision": 0.0,
+        "context_recall": 0.3333333333333333
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 0.0,
+        "matched": [],
+        "missed": [
+          "expose-intro",
+          "service"
+        ]
+      }
+    },
+    {
+      "id": "q-036",
+      "demonstrates_feature": "wild",
+      "intent": "rag",
+      "question": "What RBAC roles are recommended for restricting pod exec access?",
+      "answer": "```json\n{\n  \"answer\": \"The context provided does not include specific information about RBAC roles for restricting pod exec access. Generally, to restrict pod exec access, you would create a custom Role or ClusterRole that does not include the 'pods/exec' verb, and then bind this role to users or service accounts that should not have exec access. For more detailed guidance, refer to the official Kubernetes documentation on RBAC.\",\n  \"sources\": [],\n  \"confidence\": 0.3\n}\n```",
+      "contexts": [
+        "Kubernetes Overview (Sample / Dummy Document) This is a placeholder document for testing purposes, containing basic sample content about Kubernetes. What is Kubernetes? Kubernetes (often abbreviated K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. Core Components \u007f Pod - the smallest deployable unit, wrapping one or more containers \u007f Node - a worker machine (VM or physical) that runs pods \u007f Cluster - a set of nodes managed together \u007f Deployment - manages replica sets and rolling updates of pods \u007f Service - a stable network endpoint exposing a set of pods \u007f Namespace - a way to divide cluster resources between users/teams Sample kubectl Commands kubectl get pods kubectl get nodes kubectl apply -f deployment.yaml kubectl scale deployment my-app --replicas=3 kubectl logs my-pod-name Note: This document is a dummy/sample file generated for download and testing purposes only. It is not exhaustive",
+        "ument is a dummy/sample file generated for download and testing purposes only. It is not exhaustive documentation."
+      ],
+      "ground_truth": "RBAC, role, ClusterRole",
+      "actual_sources": [
+        "dummy_kubernetes.pdf"
+      ],
+      "golden_sources": [
+        "rbac-good-practices.pdf"
+      ],
+      "forbidden_keywords": [],
+      "ragas_metrics": {
+        "id": "q-036",
+        "demonstrates_feature": "wild",
+        "intent": "rag",
+        "question": "What RBAC roles are recommended for restricting pod exec access?",
+        "answer": "```json\n{\n  \"answer\": \"The context provided does not include specific information about RBAC roles for restricting pod exec access. Generally, to restrict pod exec access, you would create a custom Role or ClusterRole that does not include the 'pods/exec' verb, and then bind this role to users or service accounts that should not have exec access. For more detailed guidance, refer to the official Kubernetes documentation on RBAC.\",\n  \"sources\": [],\n  \"confidence\": 0.3\n}\n```",
+        "contexts": [
+          "Kubernetes Overview (Sample / Dummy Document) This is a placeholder document for testing purposes, containing basic sample content about Kubernetes. What is Kubernetes? Kubernetes (often abbreviated K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. Core Components \u007f Pod - the smallest deployable unit, wrapping one or more containers \u007f Node - a worker machine (VM or physical) that runs pods \u007f Cluster - a set of nodes managed together \u007f Deployment - manages replica sets and rolling updates of pods \u007f Service - a stable network endpoint exposing a set of pods \u007f Namespace - a way to divide cluster resources between users/teams Sample kubectl Commands kubectl get pods kubectl get nodes kubectl apply -f deployment.yaml kubectl scale deployment my-app --replicas=3 kubectl logs my-pod-name Note: This document is a dummy/sample file generated for download and testing purposes only. It is not exhaustive",
+          "ument is a dummy/sample file generated for download and testing purposes only. It is not exhaustive documentation."
+        ],
+        "ground_truth": "RBAC, role, ClusterRole",
+        "actual_sources": [
+          "dummy_kubernetes.pdf"
+        ],
+        "golden_sources": [
+          "rbac-good-practices.pdf"
+        ],
+        "forbidden_keywords": [],
+        "faithfulness": 0,
+        "answer_relevancy": 0.7,
+        "context_precision": 0.0,
+        "context_recall": 0
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 0.0,
+        "matched": [],
+        "missed": [
+          "rbac-good-practices"
+        ]
+      }
+    },
+    {
+      "id": "q-038",
+      "demonstrates_feature": "hyde",
+      "intent": "rag",
+      "question": "How do I make my application handle more traffic automatically?",
+      "answer": "```json\n{\n  \"answer\": \"To handle more traffic automatically in Kubernetes, you can use the Horizontal Pod Autoscaler (HPA). The HPA automatically adjusts the number of pod replicas in a deployment based on observed CPU utilization or other select metrics. You can configure it using the `kubectl autoscale` command, specifying the target deployment, the minimum and maximum number of replicas, and the target CPU utilization percentage. For example:\\n\\n```\\nkubectl autoscale deployment my-app --cpu-percent=50 --min=1 --max=10\\n```\\n\\nThis command will scale the 'my-app' deployment between 1 and 10 replicas to maintain an average CPU utilization of 50%.\",\n  \"sources\": [\"dummy_kubernetes.pdf\"],\n  \"confidence\": 0.8\n}\n```",
+      "contexts": [
+        "Kubernetes Overview (Sample / Dummy Document) This is a placeholder document for testing purposes, containing basic sample content about Kubernetes. What is Kubernetes? Kubernetes (often abbreviated K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. Core Components \u007f Pod - the smallest deployable unit, wrapping one or more containers \u007f Node - a worker machine (VM or physical) that runs pods \u007f Cluster - a set of nodes managed together \u007f Deployment - manages replica sets and rolling updates of pods \u007f Service - a stable network endpoint exposing a set of pods \u007f Namespace - a way to divide cluster resources between users/teams Sample kubectl Commands kubectl get pods kubectl get nodes kubectl apply -f deployment.yaml kubectl scale deployment my-app --replicas=3 kubectl logs my-pod-name Note: This document is a dummy/sample file generated for download and testing purposes only. It is not exhaustive",
+        "ument is a dummy/sample file generated for download and testing purposes only. It is not exhaustive documentation."
+      ],
+      "ground_truth": "autoscal, HPA, replicas",
+      "actual_sources": [
+        "dummy_kubernetes.pdf"
+      ],
+      "golden_sources": [
+        "horizontal-pod-autoscaler.html"
+      ],
+      "forbidden_keywords": [],
+      "ragas_metrics": {
+        "id": "q-038",
+        "demonstrates_feature": "hyde",
+        "intent": "rag",
+        "question": "How do I make my application handle more traffic automatically?",
+        "answer": "```json\n{\n  \"answer\": \"To handle more traffic automatically in Kubernetes, you can use the Horizontal Pod Autoscaler (HPA). The HPA automatically adjusts the number of pod replicas in a deployment based on observed CPU utilization or other select metrics. You can configure it using the `kubectl autoscale` command, specifying the target deployment, the minimum and maximum number of replicas, and the target CPU utilization percentage. For example:\\n\\n```\\nkubectl autoscale deployment my-app --cpu-percent=50 --min=1 --max=10\\n```\\n\\nThis command will scale the 'my-app' deployment between 1 and 10 replicas to maintain an average CPU utilization of 50%.\",\n  \"sources\": [\"dummy_kubernetes.pdf\"],\n  \"confidence\": 0.8\n}\n```",
+        "contexts": [
+          "Kubernetes Overview (Sample / Dummy Document) This is a placeholder document for testing purposes, containing basic sample content about Kubernetes. What is Kubernetes? Kubernetes (often abbreviated K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. Core Components \u007f Pod - the smallest deployable unit, wrapping one or more containers \u007f Node - a worker machine (VM or physical) that runs pods \u007f Cluster - a set of nodes managed together \u007f Deployment - manages replica sets and rolling updates of pods \u007f Service - a stable network endpoint exposing a set of pods \u007f Namespace - a way to divide cluster resources between users/teams Sample kubectl Commands kubectl get pods kubectl get nodes kubectl apply -f deployment.yaml kubectl scale deployment my-app --replicas=3 kubectl logs my-pod-name Note: This document is a dummy/sample file generated for download and testing purposes only. It is not exhaustive",
+          "ument is a dummy/sample file generated for download and testing purposes only. It is not exhaustive documentation."
+        ],
+        "ground_truth": "autoscal, HPA, replicas",
+        "actual_sources": [
+          "dummy_kubernetes.pdf"
+        ],
+        "golden_sources": [
+          "horizontal-pod-autoscaler.html"
+        ],
+        "forbidden_keywords": [],
+        "faithfulness": 1,
+        "answer_relevancy": 1.0,
+        "context_precision": 1.0,
+        "context_recall": 0
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 0.0,
+        "matched": [],
+        "missed": [
+          "horizontal-pod-autoscaler"
+        ]
+      }
+    },
+    {
+      "id": "q-039",
+      "demonstrates_feature": "rerank",
+      "intent": "rag",
+      "question": "How do I configure a liveness probe with an HTTP endpoint to detect application deadlocks?",
+      "answer": "```json\n{\n  \"answer\": \"To configure a liveness probe with an HTTP endpoint in Kubernetes, you need to define it in the Pod's specification. Here is a basic example:\\n\\n```yaml\\napiVersion: v1\\nkind: Pod\\nmetadata:\\n  name: my-app-pod\\nspec:\\n  containers:\\n  - name: my-app-container\\n    image: my-app-image\\n    livenessProbe:\\n      httpGet:\\n        path: /healthz\\n        port: 8080\\n      initialDelaySeconds: 10\\n      periodSeconds: 5\\n```\\n\\nIn this configuration:\\n- `httpGet` specifies the HTTP endpoint `/healthz` on port `8080` that Kubernetes will use to check the liveness of the application.\\n- `initialDelaySeconds` is the time to wait before starting the liveness checks.\\n- `periodSeconds` is the interval between each liveness check.\\n\\nThis setup helps detect application deadlocks by periodically checking if the application responds to HTTP requests at the specified endpoint.\",\n  \"sources\": [\n    \"dummy_kubernetes.pdf\"\n  ],\n  \"confidence\": 0.9\n}\n```",
+      "contexts": [
+        "Kubernetes Overview (Sample / Dummy Document) This is a placeholder document for testing purposes, containing basic sample content about Kubernetes. What is Kubernetes? Kubernetes (often abbreviated K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. Core Components \u007f Pod - the smallest deployable unit, wrapping one or more containers \u007f Node - a worker machine (VM or physical) that runs pods \u007f Cluster - a set of nodes managed together \u007f Deployment - manages replica sets and rolling updates of pods \u007f Service - a stable network endpoint exposing a set of pods \u007f Namespace - a way to divide cluster resources between users/teams Sample kubectl Commands kubectl get pods kubectl get nodes kubectl apply -f deployment.yaml kubectl scale deployment my-app --replicas=3 kubectl logs my-pod-name Note: This document is a dummy/sample file generated for download and testing purposes only. It is not exhaustive",
+        "ument is a dummy/sample file generated for download and testing purposes only. It is not exhaustive documentation."
+      ],
+      "ground_truth": "liveness, livenessProbe, httpGet",
+      "actual_sources": [
+        "dummy_kubernetes.pdf"
+      ],
+      "golden_sources": [
+        "configure-liveness-readiness-startup-probes.docx"
+      ],
+      "forbidden_keywords": [],
+      "ragas_metrics": {
+        "id": "q-039",
+        "demonstrates_feature": "rerank",
+        "intent": "rag",
+        "question": "How do I configure a liveness probe with an HTTP endpoint to detect application deadlocks?",
+        "answer": "```json\n{\n  \"answer\": \"To configure a liveness probe with an HTTP endpoint in Kubernetes, you need to define it in the Pod's specification. Here is a basic example:\\n\\n```yaml\\napiVersion: v1\\nkind: Pod\\nmetadata:\\n  name: my-app-pod\\nspec:\\n  containers:\\n  - name: my-app-container\\n    image: my-app-image\\n    livenessProbe:\\n      httpGet:\\n        path: /healthz\\n        port: 8080\\n      initialDelaySeconds: 10\\n      periodSeconds: 5\\n```\\n\\nIn this configuration:\\n- `httpGet` specifies the HTTP endpoint `/healthz` on port `8080` that Kubernetes will use to check the liveness of the application.\\n- `initialDelaySeconds` is the time to wait before starting the liveness checks.\\n- `periodSeconds` is the interval between each liveness check.\\n\\nThis setup helps detect application deadlocks by periodically checking if the application responds to HTTP requests at the specified endpoint.\",\n  \"sources\": [\n    \"dummy_kubernetes.pdf\"\n  ],\n  \"confidence\": 0.9\n}\n```",
+        "contexts": [
+          "Kubernetes Overview (Sample / Dummy Document) This is a placeholder document for testing purposes, containing basic sample content about Kubernetes. What is Kubernetes? Kubernetes (often abbreviated K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. Core Components \u007f Pod - the smallest deployable unit, wrapping one or more containers \u007f Node - a worker machine (VM or physical) that runs pods \u007f Cluster - a set of nodes managed together \u007f Deployment - manages replica sets and rolling updates of pods \u007f Service - a stable network endpoint exposing a set of pods \u007f Namespace - a way to divide cluster resources between users/teams Sample kubectl Commands kubectl get pods kubectl get nodes kubectl apply -f deployment.yaml kubectl scale deployment my-app --replicas=3 kubectl logs my-pod-name Note: This document is a dummy/sample file generated for download and testing purposes only. It is not exhaustive",
+          "ument is a dummy/sample file generated for download and testing purposes only. It is not exhaustive documentation."
+        ],
+        "ground_truth": "liveness, livenessProbe, httpGet",
+        "actual_sources": [
+          "dummy_kubernetes.pdf"
+        ],
+        "golden_sources": [
+          "configure-liveness-readiness-startup-probes.docx"
+        ],
+        "forbidden_keywords": [],
+        "faithfulness": 1,
+        "answer_relevancy": 1.0,
+        "context_precision": 0.0,
+        "context_recall": 0
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 0.0,
+        "matched": [],
+        "missed": [
+          "configure-liveness-readiness-startup-probes"
+        ]
+      }
+    },
+    {
+      "id": "q-040",
+      "demonstrates_feature": "hybrid",
+      "intent": "rag",
+      "question": "What are the security best practices for using RBAC and service accounts in Kubernetes?",
+      "answer": "```json\n{\n  \"answer\": \"The context provided does not include specific information on security best practices for using RBAC (Role-Based Access Control) and service accounts in Kubernetes. However, general best practices include: \\n1. **Principle of Least Privilege**: Grant the minimum permissions necessary for users and service accounts to perform their tasks. \\n2. **Use Namespaces**: Isolate resources and permissions using namespaces to limit the scope of access. \\n3. **Regular Audits**: Regularly review and audit RBAC policies and service account permissions to ensure they are up-to-date and appropriate. \\n4. **Use RoleBindings and ClusterRoleBindings Appropriately**: Use RoleBindings for namespace-specific permissions and ClusterRoleBindings for cluster-wide permissions. \\n5. **Avoid Using Default Service Accounts**: Create specific service accounts for applications with tailored permissions instead of using the default service account. \\n6. **Monitor and Log Access**: Enable logging and monitoring of access to detect and respond to unauthorized access attempts.\",\n  \"sources\": [],\n  \"confidence\": 0.5\n}\n```",
+      "contexts": [
+        "Kubernetes Overview (Sample / Dummy Document) This is a placeholder document for testing purposes, containing basic sample content about Kubernetes. What is Kubernetes? Kubernetes (often abbreviated K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. Core Components \u007f Pod - the smallest deployable unit, wrapping one or more containers \u007f Node - a worker machine (VM or physical) that runs pods \u007f Cluster - a set of nodes managed together \u007f Deployment - manages replica sets and rolling updates of pods \u007f Service - a stable network endpoint exposing a set of pods \u007f Namespace - a way to divide cluster resources between users/teams Sample kubectl Commands kubectl get pods kubectl get nodes kubectl apply -f deployment.yaml kubectl scale deployment my-app --replicas=3 kubectl logs my-pod-name Note: This document is a dummy/sample file generated for download and testing purposes only. It is not exhaustive",
+        "ument is a dummy/sample file generated for download and testing purposes only. It is not exhaustive documentation."
+      ],
+      "ground_truth": "RBAC, service account, least privilege",
+      "actual_sources": [
+        "dummy_kubernetes.pdf"
+      ],
+      "golden_sources": [
+        "rbac-good-practices.pdf",
+        "configure-service-account.txt"
+      ],
+      "forbidden_keywords": [],
+      "ragas_metrics": {
+        "id": "q-040",
+        "demonstrates_feature": "hybrid",
+        "intent": "rag",
+        "question": "What are the security best practices for using RBAC and service accounts in Kubernetes?",
+        "answer": "```json\n{\n  \"answer\": \"The context provided does not include specific information on security best practices for using RBAC (Role-Based Access Control) and service accounts in Kubernetes. However, general best practices include: \\n1. **Principle of Least Privilege**: Grant the minimum permissions necessary for users and service accounts to perform their tasks. \\n2. **Use Namespaces**: Isolate resources and permissions using namespaces to limit the scope of access. \\n3. **Regular Audits**: Regularly review and audit RBAC policies and service account permissions to ensure they are up-to-date and appropriate. \\n4. **Use RoleBindings and ClusterRoleBindings Appropriately**: Use RoleBindings for namespace-specific permissions and ClusterRoleBindings for cluster-wide permissions. \\n5. **Avoid Using Default Service Accounts**: Create specific service accounts for applications with tailored permissions instead of using the default service account. \\n6. **Monitor and Log Access**: Enable logging and monitoring of access to detect and respond to unauthorized access attempts.\",\n  \"sources\": [],\n  \"confidence\": 0.5\n}\n```",
+        "contexts": [
+          "Kubernetes Overview (Sample / Dummy Document) This is a placeholder document for testing purposes, containing basic sample content about Kubernetes. What is Kubernetes? Kubernetes (often abbreviated K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. Core Components \u007f Pod - the smallest deployable unit, wrapping one or more containers \u007f Node - a worker machine (VM or physical) that runs pods \u007f Cluster - a set of nodes managed together \u007f Deployment - manages replica sets and rolling updates of pods \u007f Service - a stable network endpoint exposing a set of pods \u007f Namespace - a way to divide cluster resources between users/teams Sample kubectl Commands kubectl get pods kubectl get nodes kubectl apply -f deployment.yaml kubectl scale deployment my-app --replicas=3 kubectl logs my-pod-name Note: This document is a dummy/sample file generated for download and testing purposes only. It is not exhaustive",
+          "ument is a dummy/sample file generated for download and testing purposes only. It is not exhaustive documentation."
+        ],
+        "ground_truth": "RBAC, service account, least privilege",
+        "actual_sources": [
+          "dummy_kubernetes.pdf"
+        ],
+        "golden_sources": [
+          "rbac-good-practices.pdf",
+          "configure-service-account.txt"
+        ],
+        "forbidden_keywords": [],
+        "faithfulness": 0,
+        "answer_relevancy": 1.0,
+        "context_precision": 0.0,
+        "context_recall": 0
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 0.0,
+        "matched": [],
+        "missed": [
+          "configure-service-account",
+          "rbac-good-practices"
+        ]
+      }
+    }
+  ],
+  "skipped": [
+    {
+      "id": "q-025",
+      "reason": "intent 'sql' is not supported by the current local service invoker"
+    },
+    {
+      "id": "q-026",
+      "reason": "intent 'sql' is not supported by the current local service invoker"
+    },
+    {
+      "id": "q-027",
+      "reason": "intent 'sql' is not supported by the current local service invoker"
+    },
+    {
+      "id": "q-028",
+      "reason": "intent 'sql' is not supported by the current local service invoker"
+    },
+    {
+      "id": "q-029",
+      "reason": "intent 'hybrid' is not supported by the current local service invoker"
+    },
+    {
+      "id": "q-030",
+      "reason": "intent 'hybrid' is not supported by the current local service invoker"
+    },
+    {
+      "id": "q-031",
+      "reason": "intent 'hybrid' is not supported by the current local service invoker"
+    },
+    {
+      "id": "q-032",
+      "reason": "intent 'hybrid' is not supported by the current local service invoker"
+    },
+    {
+      "id": "q-037",
+      "reason": "intent 'sql' is not supported by the current local service invoker"
+    }
+  ],
+  "aggregate": {
+    "context_recall": 0.312,
+    "answer_relevancy": 0.868,
+    "context_precision": 0.194,
+    "faithfulness": 0.707,
+    "forbidden_violations": 0
+  }
+}

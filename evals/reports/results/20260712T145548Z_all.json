@@ -1,0 +1,1422 @@
+{
+  "profile": "all",
+  "flags": {
+    "search_mode": "hybrid",
+    "enable_hyde": true,
+    "enable_rerank": true,
+    "enable_crag": true,
+    "enable_self_reflective": true,
+    "top_k": 5
+  },
+  "timestamp_utc": "2026-07-12T14:55:48.465738Z",
+  "filter": null,
+  "mode": "http",
+  "scorer": "llm",
+  "preflight": null,
+  "provenance": {
+    "git_commit": "fa69186a74a659f9b00454f7e13f545e5bcecba8",
+    "environment": "docker-v2",
+    "collection": "new_adv_rag_documents_v2",
+    "true_documents": 49,
+    "noisy_documents": 316,
+    "total_points": null,
+    "unique_sources": null,
+    "embedding_model": "text-embedding-3-small",
+    "answer_model": "gpt-4o",
+    "grader_model": "gpt-4o-mini",
+    "ci_run_id": null
+  },
+  "rows": [
+    {
+      "id": "q-201",
+      "demonstrates_feature": "self_rag",
+      "intent": "rag",
+      "question": "A Java service takes four minutes to initialize. How do I stop Kubernetes from killing it during startup without hiding later deadlocks?",
+      "answer": "To prevent Kubernetes from killing a Java service that takes four minutes to initialize, you should configure a startup probe with a failureThreshold and periodSeconds that together cover the worst-case startup time. For example, set the startup probe with a failureThreshold of 24 and periodSeconds of 10, which gives the service 240 seconds (4 minutes) to initialize. Once the startup probe succeeds, the liveness probe will take over to detect any later deadlocks.",
+      "contexts": [
+        "[Evidence source: tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx]\nIf the startup probe never succeeds, the container is killed after 300s and subject to the pod's restartPolicy.Define readiness probesSometimes, applications are temporarily unable to serve traffic. For example, an application might need to load large data or configuration files during startup, or depend on external services after startup. In such cases, you don't want to kill the application, but you don't want to send it requests either. Kubernetes provides readiness probes to detect and mitigate these situations. A pod with containers reporting that they are not ready does not receive traffic through Kubernetes Services.Note:Readiness probes run on the container during its whole lifecycle.Caution:The readiness and liveness probes do not depend on each other to succeed. If you want to wait before executing a readiness probe, you should use initialDelaySeconds or a startupProbe.Readiness probes are configured similarly to liveness probes.",
+        "[Evidence source: tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx]\nThe solution is to set up a startup probe with the same command, HTTP or TCP check, with a failureThreshold * periodSeconds long enough to cover the worst case startup time.So, the previous example would become:ports: - name: liveness-port containerPort: 8080 livenessProbe: httpGet: path: /healthz port: liveness-port failureThreshold: 1 periodSeconds: 10 startupProbe: httpGet: path: /healthz port: liveness-port failureThreshold: 30 periodSeconds: 10 Thanks to the startup probe, the application will have a maximum of 5 minutes (30 * 10 = 300s) to finish its startup. Once the startup probe has succeeded once, the liveness probe takes over to provide a fast response to container deadlocks. If the startup probe never succeeds, the container is killed after 300s and subject to the pod's restartPolicy.Define readiness probesSometimes, applications are temporarily unable to serve traffic."
+      ],
+      "ground_truth": "Configure a startup probe with enough failure threshold and period to cover the four-minute initialization window. Kubernetes suppresses liveness and readiness checks until that startup probe succeeds. Keep a separate liveness probe afterward so later deadlocks still trigger a restart, and use readiness to control whether the Pod receives Service traffic.\n",
+      "actual_sources": [
+        "tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx"
+      ],
+      "golden_sources": [
+        "tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx"
+      ],
+      "forbidden_keywords": [],
+      "forbidden_sources": [],
+      "expected_route": "rag",
+      "actual_route": "rag",
+      "ragas_metrics": {
+        "id": "q-201",
+        "demonstrates_feature": "self_rag",
+        "intent": "rag",
+        "question": "A Java service takes four minutes to initialize. How do I stop Kubernetes from killing it during startup without hiding later deadlocks?",
+        "answer": "To prevent Kubernetes from killing a Java service that takes four minutes to initialize, you should configure a startup probe with a failureThreshold and periodSeconds that together cover the worst-case startup time. For example, set the startup probe with a failureThreshold of 24 and periodSeconds of 10, which gives the service 240 seconds (4 minutes) to initialize. Once the startup probe succeeds, the liveness probe will take over to detect any later deadlocks.",
+        "contexts": [
+          "[Evidence source: tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx]\nIf the startup probe never succeeds, the container is killed after 300s and subject to the pod's restartPolicy.Define readiness probesSometimes, applications are temporarily unable to serve traffic. For example, an application might need to load large data or configuration files during startup, or depend on external services after startup. In such cases, you don't want to kill the application, but you don't want to send it requests either. Kubernetes provides readiness probes to detect and mitigate these situations. A pod with containers reporting that they are not ready does not receive traffic through Kubernetes Services.Note:Readiness probes run on the container during its whole lifecycle.Caution:The readiness and liveness probes do not depend on each other to succeed. If you want to wait before executing a readiness probe, you should use initialDelaySeconds or a startupProbe.Readiness probes are configured similarly to liveness probes.",
+          "[Evidence source: tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx]\nThe solution is to set up a startup probe with the same command, HTTP or TCP check, with a failureThreshold * periodSeconds long enough to cover the worst case startup time.So, the previous example would become:ports: - name: liveness-port containerPort: 8080 livenessProbe: httpGet: path: /healthz port: liveness-port failureThreshold: 1 periodSeconds: 10 startupProbe: httpGet: path: /healthz port: liveness-port failureThreshold: 30 periodSeconds: 10 Thanks to the startup probe, the application will have a maximum of 5 minutes (30 * 10 = 300s) to finish its startup. Once the startup probe has succeeded once, the liveness probe takes over to provide a fast response to container deadlocks. If the startup probe never succeeds, the container is killed after 300s and subject to the pod's restartPolicy.Define readiness probesSometimes, applications are temporarily unable to serve traffic."
+        ],
+        "ground_truth": "Configure a startup probe with enough failure threshold and period to cover the four-minute initialization window. Kubernetes suppresses liveness and readiness checks until that startup probe succeeds. Keep a separate liveness probe afterward so later deadlocks still trigger a restart, and use readiness to control whether the Pod receives Service traffic.\n",
+        "actual_sources": [
+          "tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx"
+        ],
+        "golden_sources": [
+          "tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx"
+        ],
+        "forbidden_keywords": [],
+        "forbidden_sources": [],
+        "expected_route": "rag",
+        "actual_route": "rag",
+        "faithfulness": 0.8333333333333334,
+        "faithfulness_claims": [
+          {
+            "claim": "A Java service takes four minutes to initialize.",
+            "supported": true,
+            "evidence_type": "question",
+            "source_index": null,
+            "supporting_quote": "A Java service takes four minutes to initialize.",
+            "quote_valid": true,
+            "reason": "The claim is directly stated in the user's question."
+          },
+          {
+            "claim": "Kubernetes will kill the container if the startup probe never succeeds after 300 seconds.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 0,
+            "supporting_quote": "If the startup probe never succeeds, the container is killed after 300s and subject to the pod's restartPolicy.",
+            "quote_valid": true,
+            "reason": "This claim is supported by the context which explains the behavior of Kubernetes regarding startup probes."
+          },
+          {
+            "claim": "Configuring a startup probe can prevent Kubernetes from killing the Java service during startup.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 1,
+            "supporting_quote": "The solution is to set up a startup probe with the same command, HTTP or TCP check, with a failureThreshold * periodSeconds long enough to cover the worst case startup time.",
+            "quote_valid": true,
+            "reason": "The context provides a solution for preventing Kubernetes from killing the service by configuring a startup probe."
+          },
+          {
+            "claim": "A startup probe can be configured with a failureThreshold and periodSeconds to cover the worst-case startup time.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 1,
+            "supporting_quote": "The solution is to set up a startup probe with the same command, HTTP or TCP check, with a failureThreshold * periodSeconds long enough to cover the worst case startup time.",
+            "quote_valid": true,
+            "reason": "The context explicitly states how to configure a startup probe to accommodate the startup time."
+          },
+          {
+            "claim": "Setting the startup probe with a failureThreshold of 24 and periodSeconds of 10 gives the service 240 seconds to initialize.",
+            "supported": false,
+            "evidence_type": "none",
+            "source_index": null,
+            "supporting_quote": null,
+            "quote_valid": false,
+            "reason": "While the answer suggests this configuration, it is not directly supported by the context provided."
+          },
+          {
+            "claim": "Once the startup probe succeeds, the liveness probe will take over to detect any later deadlocks.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 1,
+            "supporting_quote": "Once the startup probe has succeeded once, the liveness probe takes over to provide a fast response to container deadlocks.",
+            "quote_valid": true,
+            "reason": "This claim is supported by the context which explains the transition from startup probe to liveness probe."
+          }
+        ],
+        "answer_relevancy": 1.0,
+        "context_precision": 1.0,
+        "context_recall": 1,
+        "scoring_backend": "llm"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "configure-liveness-readiness-startup-probe",
+          "configure-liveness-readiness-startup-probes",
+          "tasks__configure-pod-container__configure-liveness-readiness-startup-probe",
+          "tasks__configure-pod-container__configure-liveness-readiness-startup-probes"
+        ],
+        "missed": []
+      },
+      "source_precision": 1.0,
+      "source_recall": 1.0,
+      "forbidden_source_check": {
+        "passed": true,
+        "hits": []
+      },
+      "route_check": {
+        "passed": true,
+        "expected": "rag",
+        "actual": "rag"
+      }
+    },
+    {
+      "id": "q-202",
+      "demonstrates_feature": "hyde",
+      "intent": "rag",
+      "question": "We need a security agent on every GPU worker but nowhere else. Which controller and scheduling constraint should we use?",
+      "answer": "To deploy a security agent on every GPU worker node but nowhere else, you should use a DaemonSet as the controller. To ensure the DaemonSet only runs on GPU worker nodes, you can use node selectors or node affinity as scheduling constraints to target nodes with specific labels indicating they are GPU workers.",
+      "contexts": [
+        "[Evidence source: concepts__workloads__controllers__daemonset.html]\nSome typical uses of a DaemonSet are:running a cluster storage daemon on every noderunning a logs collection daemon on every noderunning a node monitoring daemon on every nodeIn a simple case, one DaemonSet, covering all nodes, would be used for each type of daemon. A more complex setup might use multiple DaemonSets for a single type of daemon, but with different flags and/or different memory and cpu requests for different hardware types.Writing a DaemonSet SpecCreate a DaemonSetYou can describe a DaemonSet in a YAML file. For example, the daemonset.yaml file below describes a DaemonSet that runs the fluentd-elasticsearch Docker image:controllers/daemonset.yaml apiVersion: apps/v1 kind: DaemonSet metadata: name: fluentd-elasticsearch namespace: kube-system labels: k8s-app: fluentd-logging spec: selector: matchLabels: name: fluentd-elasticsearch template: metadata: labels: name: fluentd-elasticsearch spec: tolerations: # these tolerations are to have the daemonset runnable on control"
+      ],
+      "ground_truth": "Use a DaemonSet so Kubernetes maintains one agent Pod on each eligible node. Add a node selector, node affinity, or equivalent node-label constraint matching GPU workers so other nodes are not eligible for the DaemonSet Pods.\n",
+      "actual_sources": [
+        "concepts__workloads__controllers__daemonset.html"
+      ],
+      "golden_sources": [
+        "concepts__workloads__controllers__daemonset.html"
+      ],
+      "forbidden_keywords": [],
+      "forbidden_sources": [],
+      "expected_route": "rag",
+      "actual_route": "rag",
+      "ragas_metrics": {
+        "id": "q-202",
+        "demonstrates_feature": "hyde",
+        "intent": "rag",
+        "question": "We need a security agent on every GPU worker but nowhere else. Which controller and scheduling constraint should we use?",
+        "answer": "To deploy a security agent on every GPU worker node but nowhere else, you should use a DaemonSet as the controller. To ensure the DaemonSet only runs on GPU worker nodes, you can use node selectors or node affinity as scheduling constraints to target nodes with specific labels indicating they are GPU workers.",
+        "contexts": [
+          "[Evidence source: concepts__workloads__controllers__daemonset.html]\nSome typical uses of a DaemonSet are:running a cluster storage daemon on every noderunning a logs collection daemon on every noderunning a node monitoring daemon on every nodeIn a simple case, one DaemonSet, covering all nodes, would be used for each type of daemon. A more complex setup might use multiple DaemonSets for a single type of daemon, but with different flags and/or different memory and cpu requests for different hardware types.Writing a DaemonSet SpecCreate a DaemonSetYou can describe a DaemonSet in a YAML file. For example, the daemonset.yaml file below describes a DaemonSet that runs the fluentd-elasticsearch Docker image:controllers/daemonset.yaml apiVersion: apps/v1 kind: DaemonSet metadata: name: fluentd-elasticsearch namespace: kube-system labels: k8s-app: fluentd-logging spec: selector: matchLabels: name: fluentd-elasticsearch template: metadata: labels: name: fluentd-elasticsearch spec: tolerations: # these tolerations are to have the daemonset runnable on control"
+        ],
+        "ground_truth": "Use a DaemonSet so Kubernetes maintains one agent Pod on each eligible node. Add a node selector, node affinity, or equivalent node-label constraint matching GPU workers so other nodes are not eligible for the DaemonSet Pods.\n",
+        "actual_sources": [
+          "concepts__workloads__controllers__daemonset.html"
+        ],
+        "golden_sources": [
+          "concepts__workloads__controllers__daemonset.html"
+        ],
+        "forbidden_keywords": [],
+        "forbidden_sources": [],
+        "expected_route": "rag",
+        "actual_route": "rag",
+        "faithfulness": 0.6666666666666666,
+        "faithfulness_claims": [
+          {
+            "claim": "A security agent should be deployed on every GPU worker node but nowhere else.",
+            "supported": true,
+            "evidence_type": "question",
+            "source_index": null,
+            "supporting_quote": "We need a security agent on every GPU worker but nowhere else.",
+            "quote_valid": true,
+            "reason": "The user's question explicitly states the requirement for a security agent on GPU worker nodes only."
+          },
+          {
+            "claim": "A DaemonSet should be used as the controller.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 0,
+            "supporting_quote": "Some typical uses of a DaemonSet are: running a cluster storage daemon on every node running a logs collection daemon on every node running a node monitoring daemon on every node.",
+            "quote_valid": true,
+            "reason": "The context provides information about the typical uses of a DaemonSet, which supports the claim that it can be used for deploying agents on specific nodes."
+          },
+          {
+            "claim": "Node selectors or node affinity can be used as scheduling constraints to target nodes with specific labels indicating they are GPU workers.",
+            "supported": false,
+            "evidence_type": "none",
+            "source_index": null,
+            "supporting_quote": null,
+            "quote_valid": false,
+            "reason": "supporting_quote_not_found"
+          }
+        ],
+        "answer_relevancy": 1.0,
+        "context_precision": 1.0,
+        "context_recall": 0.5,
+        "scoring_backend": "llm"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "concepts__workloads__controllers__daemonset",
+          "daemonset"
+        ],
+        "missed": []
+      },
+      "source_precision": 1.0,
+      "source_recall": 1.0,
+      "forbidden_source_check": {
+        "passed": true,
+        "hits": []
+      },
+      "route_check": {
+        "passed": true,
+        "expected": "rag",
+        "actual": "rag"
+      }
+    },
+    {
+      "id": "q-203",
+      "demonstrates_feature": "hybrid",
+      "intent": "rag",
+      "question": "A Pod needs one database credential and permission to read only that Secret. Describe the identity and authorization design.",
+      "answer": "To design the identity and authorization for a Pod that needs access to a specific database credential stored in a Secret, follow these steps: 1. Create a ServiceAccount specifically for the Pod. 2. Assign the ServiceAccount to the Pod by setting the `spec.serviceAccountName` field in the Pod's specification. 3. Use Role and RoleBinding to grant the ServiceAccount permission to read only the specific Secret containing the database credential. Ensure that the Role is defined at the namespace level to adhere to the principle of least privilege. Avoid using ClusterRoleBindings unless absolutely necessary.",
+      "contexts": [
+        "[Evidence source: concepts__configuration__secret.txt]\nIf you are defining a type of Secret that's for public use, follow the convention and structure the Secret type to have your domain name before the name, separated by a /. For example: cloud-hosting.example.net/cloud-api-credentials.Opaque SecretsOpaque is the default Secret type if you don't explicitly specify a type in a Secret manifest. When you create a Secret using kubectl, you must use the generic subcommand to indicate an Opaque Secret type. For example, the following command creates an empty Secret of type Opaque:kubectl create secret generic empty-secret kubectl get secret empty-secret The output looks like:NAME TYPE DATA AGE empty-secret Opaque 0 2m6s The DATA column shows the number of data items stored in the Secret. In this case, 0 means you have created an empty Secret.ServiceAccount token SecretsA kubernetes.io/service-account-token type of Secret is used to store a token credential that identifies a ServiceAccount.",
+        "[Evidence source: tasks__configure-pod-container__configure-service-account.txt]\nIf you get a complete dump of the service account object, like this:kubectl get serviceaccounts/build-robot -o yaml The output is similar to this:apiVersion: v1 kind: ServiceAccount metadata: creationTimestamp: 2019-06-16T00:12:34Z name: build-robot namespace: default resourceVersion: \"272500\" uid: 721ab723-13bc-11e5-aec2-42010af0021e You can use authorization plugins to set permissions on service accounts.To use a non-default service account, set the spec.serviceAccountName field of a Pod to the name of the ServiceAccount you wish to use.You can only set the serviceAccountName field when creating a Pod, or in a template for a new Pod. You cannot update the .spec.serviceAccountName field of a Pod that already exists.Note:The .spec.serviceAccount field is a deprecated alias for .spec.serviceAccountName. If you want to remove the fields from a workload resource, set both fields to empty explicitly on the pod template.",
+        "[Evidence source: concepts__security__rbac-good-practices.pdf]\nGeneral good practiceLeast privilegeIdeally, minimal RBAC rights should be assigned to users and service accounts. Only permissions explicitly required for their operation should be used. While each cluster will be different, some general rules that can be applied are :Assign permissions at the namespace level where possible. Use RoleBindings as opposed to ClusterRoleBindings to give users rights only within a specific namespace.Avoid providing wildcard permissions when possible, especially to all resources. As Kubernetes is an extensible system, providing wildcard access gives rights not just to all object types that currently exist in the cluster, but also to all object types which are created in the future.Administrators should not use cluster-admin accounts except where specifically needed. Providing a low privileged account with impersonation rights can avoid accidental modification of cluster resources.Avoid adding users to the system:masters group."
+      ],
+      "ground_truth": "Store the credential in a Secret, assign the Pod a dedicated ServiceAccount using serviceAccountName, and bind a namespace-scoped Role that grants only the required get access to that specific Secret. Avoid broad Secret listing, cluster-wide bindings, and the default account.\n",
+      "actual_sources": [
+        "concepts__configuration__secret.txt",
+        "tasks__configure-pod-container__configure-service-account.txt",
+        "concepts__security__rbac-good-practices.pdf"
+      ],
+      "golden_sources": [
+        "concepts__configuration__secret.txt",
+        "tasks__configure-pod-container__configure-service-account.txt",
+        "concepts__security__rbac-good-practices.pdf"
+      ],
+      "forbidden_keywords": [],
+      "forbidden_sources": [],
+      "expected_route": "rag",
+      "actual_route": "rag",
+      "ragas_metrics": {
+        "id": "q-203",
+        "demonstrates_feature": "hybrid",
+        "intent": "rag",
+        "question": "A Pod needs one database credential and permission to read only that Secret. Describe the identity and authorization design.",
+        "answer": "To design the identity and authorization for a Pod that needs access to a specific database credential stored in a Secret, follow these steps: 1. Create a ServiceAccount specifically for the Pod. 2. Assign the ServiceAccount to the Pod by setting the `spec.serviceAccountName` field in the Pod's specification. 3. Use Role and RoleBinding to grant the ServiceAccount permission to read only the specific Secret containing the database credential. Ensure that the Role is defined at the namespace level to adhere to the principle of least privilege. Avoid using ClusterRoleBindings unless absolutely necessary.",
+        "contexts": [
+          "[Evidence source: concepts__configuration__secret.txt]\nIf you are defining a type of Secret that's for public use, follow the convention and structure the Secret type to have your domain name before the name, separated by a /. For example: cloud-hosting.example.net/cloud-api-credentials.Opaque SecretsOpaque is the default Secret type if you don't explicitly specify a type in a Secret manifest. When you create a Secret using kubectl, you must use the generic subcommand to indicate an Opaque Secret type. For example, the following command creates an empty Secret of type Opaque:kubectl create secret generic empty-secret kubectl get secret empty-secret The output looks like:NAME TYPE DATA AGE empty-secret Opaque 0 2m6s The DATA column shows the number of data items stored in the Secret. In this case, 0 means you have created an empty Secret.ServiceAccount token SecretsA kubernetes.io/service-account-token type of Secret is used to store a token credential that identifies a ServiceAccount.",
+          "[Evidence source: tasks__configure-pod-container__configure-service-account.txt]\nIf you get a complete dump of the service account object, like this:kubectl get serviceaccounts/build-robot -o yaml The output is similar to this:apiVersion: v1 kind: ServiceAccount metadata: creationTimestamp: 2019-06-16T00:12:34Z name: build-robot namespace: default resourceVersion: \"272500\" uid: 721ab723-13bc-11e5-aec2-42010af0021e You can use authorization plugins to set permissions on service accounts.To use a non-default service account, set the spec.serviceAccountName field of a Pod to the name of the ServiceAccount you wish to use.You can only set the serviceAccountName field when creating a Pod, or in a template for a new Pod. You cannot update the .spec.serviceAccountName field of a Pod that already exists.Note:The .spec.serviceAccount field is a deprecated alias for .spec.serviceAccountName. If you want to remove the fields from a workload resource, set both fields to empty explicitly on the pod template.",
+          "[Evidence source: concepts__security__rbac-good-practices.pdf]\nGeneral good practiceLeast privilegeIdeally, minimal RBAC rights should be assigned to users and service accounts. Only permissions explicitly required for their operation should be used. While each cluster will be different, some general rules that can be applied are :Assign permissions at the namespace level where possible. Use RoleBindings as opposed to ClusterRoleBindings to give users rights only within a specific namespace.Avoid providing wildcard permissions when possible, especially to all resources. As Kubernetes is an extensible system, providing wildcard access gives rights not just to all object types that currently exist in the cluster, but also to all object types which are created in the future.Administrators should not use cluster-admin accounts except where specifically needed. Providing a low privileged account with impersonation rights can avoid accidental modification of cluster resources.Avoid adding users to the system:masters group."
+        ],
+        "ground_truth": "Store the credential in a Secret, assign the Pod a dedicated ServiceAccount using serviceAccountName, and bind a namespace-scoped Role that grants only the required get access to that specific Secret. Avoid broad Secret listing, cluster-wide bindings, and the default account.\n",
+        "actual_sources": [
+          "concepts__configuration__secret.txt",
+          "tasks__configure-pod-container__configure-service-account.txt",
+          "concepts__security__rbac-good-practices.pdf"
+        ],
+        "golden_sources": [
+          "concepts__configuration__secret.txt",
+          "tasks__configure-pod-container__configure-service-account.txt",
+          "concepts__security__rbac-good-practices.pdf"
+        ],
+        "forbidden_keywords": [],
+        "forbidden_sources": [],
+        "expected_route": "rag",
+        "actual_route": "rag",
+        "faithfulness": 0.6666666666666666,
+        "faithfulness_claims": [
+          {
+            "claim": "A Pod needs one database credential and permission to read only that Secret.",
+            "supported": true,
+            "evidence_type": "question",
+            "source_index": null,
+            "supporting_quote": "A Pod needs one database credential and permission to read only that Secret.",
+            "quote_valid": true,
+            "reason": "The user's question explicitly states the requirement for a Pod to have a database credential and permission to read a specific Secret."
+          },
+          {
+            "claim": "Create a ServiceAccount specifically for the Pod.",
+            "supported": false,
+            "evidence_type": "none",
+            "source_index": null,
+            "supporting_quote": null,
+            "quote_valid": false,
+            "reason": "supporting_quote_not_found"
+          },
+          {
+            "claim": "Assign the ServiceAccount to the Pod by setting the spec.serviceAccountName field in the Pod's specification.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 1,
+            "supporting_quote": "To use a non-default service account, set the spec.serviceAccountName field of a Pod to the name of the ServiceAccount you wish to use.",
+            "quote_valid": true,
+            "reason": "This is supported by the context which explains how to assign a ServiceAccount to a Pod."
+          },
+          {
+            "claim": "Use Role and RoleBinding to grant the ServiceAccount permission to read only the specific Secret containing the database credential.",
+            "supported": false,
+            "evidence_type": "none",
+            "source_index": null,
+            "supporting_quote": null,
+            "quote_valid": false,
+            "reason": "supporting_quote_not_found"
+          },
+          {
+            "claim": "Ensure that the Role is defined at the namespace level to adhere to the principle of least privilege.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 2,
+            "supporting_quote": "Assign permissions at the namespace level where possible. Use RoleBindings as opposed to ClusterRoleBindings to give users rights only within a specific namespace.",
+            "quote_valid": true,
+            "reason": "This is supported by the context which emphasizes the importance of assigning permissions at the namespace level."
+          },
+          {
+            "claim": "Avoid using ClusterRoleBindings unless absolutely necessary.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 2,
+            "supporting_quote": "Avoid providing wildcard permissions when possible, especially to all resources.",
+            "quote_valid": true,
+            "reason": "This aligns with the context's recommendation to avoid broad permissions, which includes the use of ClusterRoleBindings."
+          }
+        ],
+        "answer_relevancy": 1.0,
+        "context_precision": 1.0,
+        "context_recall": 1,
+        "scoring_backend": "llm"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "concepts__configuration__secret",
+          "concepts__security__rbac-good-practice",
+          "concepts__security__rbac-good-practices",
+          "configure-service-account",
+          "rbac-good-practice",
+          "rbac-good-practices",
+          "secret",
+          "tasks__configure-pod-container__configure-service-account"
+        ],
+        "missed": []
+      },
+      "source_precision": 1.0,
+      "source_recall": 1.0,
+      "forbidden_source_check": {
+        "passed": true,
+        "hits": []
+      },
+      "route_check": {
+        "passed": true,
+        "expected": "rag",
+        "actual": "rag"
+      }
+    },
+    {
+      "id": "q-204",
+      "demonstrates_feature": "hybrid",
+      "intent": "rag",
+      "question": "Trace an external HTTPS request from the cluster edge to a ready application Pod and name the Kubernetes abstractions involved.",
+      "answer": "In a Kubernetes cluster, an external HTTPS request is processed through several abstractions and components:\n\n1. **Ingress Resource**: The request first hits the Ingress resource, which is responsible for exposing HTTP and HTTPS routes from outside the cluster to services within the cluster. The Ingress resource defines rules for routing traffic to the appropriate services based on the request's host and path [concepts__services-networking__ingress.docx].\n\n2. **Ingress Controller**: The Ingress resource is fulfilled by an Ingress controller, which typically uses a load balancer to manage incoming traffic. The Ingress controller can also configure edge routers or additional frontends to handle traffic. It ensures that the request is routed according to the rules defined in the Ingress resource [concepts__services-networking__ingress.docx].\n\n3. **Service**: Once the request is routed by the Ingress controller, it reaches a Kubernetes Service. A Service provides a stable endpoint for a set of Pods, allowing external clients to interact with the application running in the cluster. The Service abstracts the underlying Pods, ensuring that traffic is distributed among healthy Pods [concepts__services-networking__service.txt].\n\n4. **Pods**: The Service forwards the request to one of the Pods that are part of the application. Pods are the smallest deployable units in Kubernetes and contain one or more containers. The readiness probe ensures that only Pods that are ready to serve traffic receive requests [tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx].\n\n5. **Traffic Policies**: Traffic policies can be configured to control how traffic is routed to the Pods. For example, the `.spec.externalTrafficPolicy` can be set to control how external traffic is routed to the cluster [concepts__services-networking__service.txt].\n\nThis process ensures that external HTTPS requests are securely and efficiently routed to the appropriate application components within the Kubernetes cluster.",
+      "contexts": [
+        "[Evidence source: concepts__services-networking__ingress.docx]\nUnless mentioned otherwise, Services are assumed to have virtual IPs only routable within the cluster network.What is Ingress?Ingress exposes HTTP and HTTPS routes from outside the cluster to services within the cluster. Traffic routing is controlled by rules defined on the Ingress resource.Here is a simple example where an Ingress sends all its traffic to one Service:Figure. IngressAn Ingress may be configured to give Services externally-reachable URLs, load balance traffic, terminate SSL / TLS, and offer name-based virtual hosting. An Ingress controller is responsible for fulfilling the Ingress, usually with a load balancer, though it may also configure your edge router or additional frontends to help handle the traffic.An Ingress does not expose arbitrary ports or protocols. Exposing services other than HTTP and HTTPS to the internet typically uses a service of type Service.Type=NodePort or Service.Type=LoadBalancer.",
+        "[Evidence source: concepts__services-networking__service.txt]\nService | Kubernetes ServiceExpose an application running in your cluster behind a single outward-facing endpoint, even when the workload is split across multiple backends.In Kubernetes, a Service is a method for exposing a network application that is running as one or more Pods in your cluster.A key aim of Services in Kubernetes is that you don't need to modify your existing application to use an unfamiliar service discovery mechanism. You can run code in Pods, whether this is a code designed for a cloud-native world, or an older app you've containerized. You use a Service to make that set of Pods available on the network so that clients can interact with it.If you use a Deployment to run your app, that Deployment can create and destroy Pods dynamically. From one moment to the next, you don't know how many of those Pods are working and healthy; you might not even know what those healthy Pods are named.",
+        "[Evidence source: concepts__services-networking__service.txt]\nVirtual IP addressing mechanismRead Virtual IPs and Service Proxies explains the mechanism Kubernetes provides to expose a Service with a virtual IP address.Traffic policiesYou can set the .spec.internalTrafficPolicy and .spec.externalTrafficPolicy fields to control how Kubernetes routes traffic to healthy (\u201cready\u201d) backends.See Traffic Policies for more details.Traffic distribution controlThe .spec.trafficDistribution field provides another way to influence traffic routing within a Kubernetes Service. While traffic policies focus on strict semantic guarantees, traffic distribution allows you to express preferences (such as routing to topologically closer endpoints). This can help optimize for performance, cost, or reliability. In Kubernetes 1.36, the following values are supported:PreferSameZoneIndicates a preference for routing traffic to endpoints that are in the same zone as the client.",
+        "[Evidence source: tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx]\nIf the liveness probe fails, the container will be restarted. The kubelet will continue to run this check every 10 seconds.In addition to the liveness probe, this configuration includes a readiness probe. The kubelet will run the first readiness probe 15 seconds after the container starts. Similar to the liveness probe, this will attempt to connect to the goproxy container on port 8080. If the probe succeeds, the Pod will be marked as ready and will receive traffic from services. If the readiness probe fails, the pod will be marked unready and will not receive traffic from any services.To try the TCP liveness check, create a Pod:kubectl apply -f https://k8s.io/examples/pods/probe/tcp-liveness-readiness.yaml After 15 seconds, view Pod events to verify that liveness probes:kubectl describe pod goproxy Define a gRPC liveness probeFEATURE STATE: Kubernetes v1.27 [stable]If your application implements the gRPC Health Checking Protocol, this example shows how to configure Kubernetes to use"
+      ],
+      "ground_truth": "An Ingress controller evaluates the Ingress HTTPS routing rule and forwards the request to a Service. The Service provides stable discovery and routes to its current endpoints. Readiness probes determine which Pods are ready and therefore eligible to receive Service traffic.\n",
+      "actual_sources": [
+        "concepts__services-networking__ingress.docx",
+        "concepts__services-networking__service.txt",
+        "tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx"
+      ],
+      "golden_sources": [
+        "concepts__services-networking__ingress.docx",
+        "concepts__services-networking__service.txt",
+        "tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx"
+      ],
+      "forbidden_keywords": [],
+      "forbidden_sources": [],
+      "expected_route": "rag",
+      "actual_route": "rag",
+      "ragas_metrics": {
+        "id": "q-204",
+        "demonstrates_feature": "hybrid",
+        "intent": "rag",
+        "question": "Trace an external HTTPS request from the cluster edge to a ready application Pod and name the Kubernetes abstractions involved.",
+        "answer": "In a Kubernetes cluster, an external HTTPS request is processed through several abstractions and components:\n\n1. **Ingress Resource**: The request first hits the Ingress resource, which is responsible for exposing HTTP and HTTPS routes from outside the cluster to services within the cluster. The Ingress resource defines rules for routing traffic to the appropriate services based on the request's host and path [concepts__services-networking__ingress.docx].\n\n2. **Ingress Controller**: The Ingress resource is fulfilled by an Ingress controller, which typically uses a load balancer to manage incoming traffic. The Ingress controller can also configure edge routers or additional frontends to handle traffic. It ensures that the request is routed according to the rules defined in the Ingress resource [concepts__services-networking__ingress.docx].\n\n3. **Service**: Once the request is routed by the Ingress controller, it reaches a Kubernetes Service. A Service provides a stable endpoint for a set of Pods, allowing external clients to interact with the application running in the cluster. The Service abstracts the underlying Pods, ensuring that traffic is distributed among healthy Pods [concepts__services-networking__service.txt].\n\n4. **Pods**: The Service forwards the request to one of the Pods that are part of the application. Pods are the smallest deployable units in Kubernetes and contain one or more containers. The readiness probe ensures that only Pods that are ready to serve traffic receive requests [tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx].\n\n5. **Traffic Policies**: Traffic policies can be configured to control how traffic is routed to the Pods. For example, the `.spec.externalTrafficPolicy` can be set to control how external traffic is routed to the cluster [concepts__services-networking__service.txt].\n\nThis process ensures that external HTTPS requests are securely and efficiently routed to the appropriate application components within the Kubernetes cluster.",
+        "contexts": [
+          "[Evidence source: concepts__services-networking__ingress.docx]\nUnless mentioned otherwise, Services are assumed to have virtual IPs only routable within the cluster network.What is Ingress?Ingress exposes HTTP and HTTPS routes from outside the cluster to services within the cluster. Traffic routing is controlled by rules defined on the Ingress resource.Here is a simple example where an Ingress sends all its traffic to one Service:Figure. IngressAn Ingress may be configured to give Services externally-reachable URLs, load balance traffic, terminate SSL / TLS, and offer name-based virtual hosting. An Ingress controller is responsible for fulfilling the Ingress, usually with a load balancer, though it may also configure your edge router or additional frontends to help handle the traffic.An Ingress does not expose arbitrary ports or protocols. Exposing services other than HTTP and HTTPS to the internet typically uses a service of type Service.Type=NodePort or Service.Type=LoadBalancer.",
+          "[Evidence source: concepts__services-networking__service.txt]\nService | Kubernetes ServiceExpose an application running in your cluster behind a single outward-facing endpoint, even when the workload is split across multiple backends.In Kubernetes, a Service is a method for exposing a network application that is running as one or more Pods in your cluster.A key aim of Services in Kubernetes is that you don't need to modify your existing application to use an unfamiliar service discovery mechanism. You can run code in Pods, whether this is a code designed for a cloud-native world, or an older app you've containerized. You use a Service to make that set of Pods available on the network so that clients can interact with it.If you use a Deployment to run your app, that Deployment can create and destroy Pods dynamically. From one moment to the next, you don't know how many of those Pods are working and healthy; you might not even know what those healthy Pods are named.",
+          "[Evidence source: concepts__services-networking__service.txt]\nVirtual IP addressing mechanismRead Virtual IPs and Service Proxies explains the mechanism Kubernetes provides to expose a Service with a virtual IP address.Traffic policiesYou can set the .spec.internalTrafficPolicy and .spec.externalTrafficPolicy fields to control how Kubernetes routes traffic to healthy (\u201cready\u201d) backends.See Traffic Policies for more details.Traffic distribution controlThe .spec.trafficDistribution field provides another way to influence traffic routing within a Kubernetes Service. While traffic policies focus on strict semantic guarantees, traffic distribution allows you to express preferences (such as routing to topologically closer endpoints). This can help optimize for performance, cost, or reliability. In Kubernetes 1.36, the following values are supported:PreferSameZoneIndicates a preference for routing traffic to endpoints that are in the same zone as the client.",
+          "[Evidence source: tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx]\nIf the liveness probe fails, the container will be restarted. The kubelet will continue to run this check every 10 seconds.In addition to the liveness probe, this configuration includes a readiness probe. The kubelet will run the first readiness probe 15 seconds after the container starts. Similar to the liveness probe, this will attempt to connect to the goproxy container on port 8080. If the probe succeeds, the Pod will be marked as ready and will receive traffic from services. If the readiness probe fails, the pod will be marked unready and will not receive traffic from any services.To try the TCP liveness check, create a Pod:kubectl apply -f https://k8s.io/examples/pods/probe/tcp-liveness-readiness.yaml After 15 seconds, view Pod events to verify that liveness probes:kubectl describe pod goproxy Define a gRPC liveness probeFEATURE STATE: Kubernetes v1.27 [stable]If your application implements the gRPC Health Checking Protocol, this example shows how to configure Kubernetes to use"
+        ],
+        "ground_truth": "An Ingress controller evaluates the Ingress HTTPS routing rule and forwards the request to a Service. The Service provides stable discovery and routes to its current endpoints. Readiness probes determine which Pods are ready and therefore eligible to receive Service traffic.\n",
+        "actual_sources": [
+          "concepts__services-networking__ingress.docx",
+          "concepts__services-networking__service.txt",
+          "tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx"
+        ],
+        "golden_sources": [
+          "concepts__services-networking__ingress.docx",
+          "concepts__services-networking__service.txt",
+          "tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx"
+        ],
+        "forbidden_keywords": [],
+        "forbidden_sources": [],
+        "expected_route": "rag",
+        "actual_route": "rag",
+        "faithfulness": 1,
+        "faithfulness_claims": [
+          {
+            "claim": "The request first hits the Ingress resource, which is responsible for exposing HTTP and HTTPS routes from outside the cluster to services within the cluster.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 0,
+            "supporting_quote": "Ingress exposes HTTP and HTTPS routes from outside the cluster to services within the cluster.",
+            "quote_valid": true,
+            "reason": "The claim directly describes the function of the Ingress resource as stated in the context."
+          },
+          {
+            "claim": "The Ingress resource is fulfilled by an Ingress controller, which typically uses a load balancer to manage incoming traffic.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 0,
+            "supporting_quote": "An Ingress controller is responsible for fulfilling the Ingress, usually with a load balancer.",
+            "quote_valid": true,
+            "reason": "The claim accurately reflects the role of the Ingress controller as described in the context."
+          },
+          {
+            "claim": "A Service provides a stable endpoint for a set of Pods, allowing external clients to interact with the application running in the cluster.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 1,
+            "supporting_quote": "Expose an application running in your cluster behind a single outward-facing endpoint, even when the workload is split across multiple backends.",
+            "quote_valid": true,
+            "reason": "The claim summarizes the purpose of a Service in Kubernetes as stated in the context."
+          },
+          {
+            "claim": "The Service abstracts the underlying Pods, ensuring that traffic is distributed among healthy Pods.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 1,
+            "supporting_quote": "You use a Service to make that set of Pods available on the network so that clients can interact with it.",
+            "quote_valid": true,
+            "reason": "The claim reflects the function of a Service in managing traffic to Pods as described in the context."
+          },
+          {
+            "claim": "The readiness probe ensures that only Pods that are ready to serve traffic receive requests.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 3,
+            "supporting_quote": "If the readiness probe fails, the pod will be marked unready and will not receive traffic from any services.",
+            "quote_valid": true,
+            "reason": "The claim accurately describes the function of the readiness probe as stated in the context."
+          },
+          {
+            "claim": "Traffic policies can be configured to control how traffic is routed to the Pods.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 2,
+            "supporting_quote": "You can set the .spec.internalTrafficPolicy and .spec.externalTrafficPolicy fields to control how Kubernetes routes traffic to healthy ('ready') backends.",
+            "quote_valid": true,
+            "reason": "The claim reflects the ability to configure traffic policies as described in the context."
+          }
+        ],
+        "answer_relevancy": 1.0,
+        "context_precision": 1.0,
+        "context_recall": 1,
+        "scoring_backend": "llm"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "concepts__services-networking__ingres",
+          "concepts__services-networking__ingress",
+          "concepts__services-networking__service",
+          "configure-liveness-readiness-startup-probe",
+          "configure-liveness-readiness-startup-probes",
+          "ingres",
+          "ingress",
+          "service",
+          "tasks__configure-pod-container__configure-liveness-readiness-startup-probe",
+          "tasks__configure-pod-container__configure-liveness-readiness-startup-probes"
+        ],
+        "missed": []
+      },
+      "source_precision": 1.0,
+      "source_recall": 1.0,
+      "forbidden_source_check": {
+        "passed": true,
+        "hits": []
+      },
+      "route_check": {
+        "passed": true,
+        "expected": "rag",
+        "actual": "rag"
+      }
+    },
+    {
+      "id": "q-205",
+      "demonstrates_feature": "rerank",
+      "intent": "rag",
+      "question": "A critical Pod is pending because every node is full. Under what condition can priority help, and what can happen to lower-priority Pods?",
+      "answer": "Priority can help when a pending Pod has a higher priority than the Pods currently running on the nodes. In such cases, the scheduler may preempt lower-priority Pods to make room for the higher-priority pending Pod. The scheduler will attempt to find a node where removing one or more lower-priority Pods would allow the pending Pod to be scheduled. If such a node is found, the lower-priority Pods are evicted, and the pending Pod can be scheduled. However, if the pending Pod has inter-pod affinity with the lower-priority Pods, preemption will not occur on that node, and the scheduler will look for another node.",
+      "contexts": [
+        "[Evidence source: concepts__scheduling-eviction__pod-priority-preemption.html]\nThis is expected behavior: the Pod with the higher priority should take the place of a Pod with a lower priority.Higher priority Pods are preempted before lower priority podsThe scheduler tries to find nodes that can run a pending Pod. If no node is found, the scheduler tries to remove Pods with lower priority from an arbitrary node in order to make room for the pending pod. If a node with low priority Pods is not feasible to run the pending Pod, the scheduler may choose another node with higher priority Pods (compared to the Pods on the other node) for preemption. The victims must still have lower priority than the preemptor Pod.When there are multiple nodes available for preemption, the scheduler tries to choose the node with a set of Pods with lowest priority. However, if such Pods have PodDisruptionBudget that would be violated if they are preempted then the scheduler may choose another node with higher priority Pods.",
+        "[Evidence source: concepts__scheduling-eviction__pod-priority-preemption.html]\nThe scheduler tries to find victims whose PDB are not violated by preemption, but if no such victims are found, preemption will still happen, and lower priority Pods will be removed despite their PDBs being violated.Inter-Pod affinity on lower-priority PodsA Node is considered for preemption only when the answer to this question is yes: \"If all the Pods with lower priority than the pending Pod are removed from the Node, can the pending Pod be scheduled on the Node?\"Note:Preemption does not necessarily remove all lower-priority Pods. If the pending Pod can be scheduled by removing fewer than all lower-priority Pods, then only a portion of the lower-priority Pods are removed. Even so, the answer to the preceding question must be yes. If the answer is no, the Node is not considered for preemption.If a pending Pod has inter-pod affinity to one or more of the lower-priority Pods on the Node, the inter-Pod affinity rule cannot be satisfied in the absence of those lower-priority Pods.",
+        "[Evidence source: concepts__scheduling-eviction__pod-priority-preemption.html]\nAs a result, the higher priority Pod may be scheduled sooner than Pods with lower priority if its scheduling requirements are met. If such Pod cannot be scheduled, the scheduler will continue and try to schedule other lower priority Pods.PreemptionWhen Pods are created, they go to a queue and wait to be scheduled. The scheduler picks a Pod from the queue and tries to schedule it on a Node. If no Node is found that satisfies all the specified requirements of the Pod, preemption logic is triggered for the pending Pod. Let's call the pending Pod P. Preemption logic tries to find a Node where removal of one or more Pods with lower priority than P would enable P to be scheduled on that Node. If such a Node is found, one or more lower priority Pods get evicted from the Node. After the Pods are gone, P can be scheduled on the Node.User exposed informationWhen Pod P preempts one or more Pods on Node N, nominatedNodeName field of Pod P's status is set to the name of Node N.",
+        "[Evidence source: concepts__scheduling-eviction__pod-priority-preemption.html]\nIf a pending Pod has inter-pod affinity to one or more of the lower-priority Pods on the Node, the inter-Pod affinity rule cannot be satisfied in the absence of those lower-priority Pods. In this case, the scheduler does not preempt any Pods on the Node. Instead, it looks for another Node. The scheduler might find a suitable Node or it might not. There is no guarantee that the pending Pod can be scheduled.Our recommended solution for this problem is to create inter-Pod affinity only towards equal or higher priority Pods.Cross node preemptionSuppose a Node N is being considered for preemption so that a pending Pod P can be scheduled on N. P might become feasible on N only if a Pod on another Node is preempted. Here's an example:Pod P is being considered for Node N.Pod Q is running on another Node in the same Zone as Node N.Pod P has Zone-wide anti-affinity with Pod Q (topologyKey: topology.kubernetes.io/zone).",
+        "[Evidence source: concepts__scheduling-eviction__pod-priority-preemption.html]\nIn such cases, preemption happens only when the priority of the pending Pod (preemptor) is higher than the victim Pods. Preemption must not happen when there is no pending Pod, or when the pending Pods have equal or lower priority than the victims. If preemption happens in such scenarios, please file an issue.Pods are preempted, but the preemptor is not scheduledWhen pods are preempted, they receive their requested graceful termination period, which is by default 30 seconds. If the victim Pods do not terminate within this period, they are forcibly terminated. Once all the victims go away, the preemptor Pod can be scheduled.While the preemptor Pod is waiting for the victims to go away, a higher priority Pod may be created that fits on the same Node. In this case, the scheduler will schedule the higher priority Pod instead of the preemptor.This is expected behavior: the Pod with the higher priority should take the place of a Pod with a lower priority."
+      ],
+      "ground_truth": "If the scheduler cannot place the high-priority Pod, it can evaluate whether removing lower-priority Pods from a suitable node would make the Pod schedulable. It may nominate that node and preempt lower-priority Pods, subject to scheduling constraints and preemption rules; priority does not create capacity when no feasible placement can be made.\n",
+      "actual_sources": [
+        "concepts__scheduling-eviction__pod-priority-preemption.html"
+      ],
+      "golden_sources": [
+        "concepts__scheduling-eviction__pod-priority-preemption.html",
+        "concepts__scheduling-eviction__kube-scheduler.pdf"
+      ],
+      "forbidden_keywords": [],
+      "forbidden_sources": [],
+      "expected_route": "rag",
+      "actual_route": "rag",
+      "ragas_metrics": {
+        "id": "q-205",
+        "demonstrates_feature": "rerank",
+        "intent": "rag",
+        "question": "A critical Pod is pending because every node is full. Under what condition can priority help, and what can happen to lower-priority Pods?",
+        "answer": "Priority can help when a pending Pod has a higher priority than the Pods currently running on the nodes. In such cases, the scheduler may preempt lower-priority Pods to make room for the higher-priority pending Pod. The scheduler will attempt to find a node where removing one or more lower-priority Pods would allow the pending Pod to be scheduled. If such a node is found, the lower-priority Pods are evicted, and the pending Pod can be scheduled. However, if the pending Pod has inter-pod affinity with the lower-priority Pods, preemption will not occur on that node, and the scheduler will look for another node.",
+        "contexts": [
+          "[Evidence source: concepts__scheduling-eviction__pod-priority-preemption.html]\nThis is expected behavior: the Pod with the higher priority should take the place of a Pod with a lower priority.Higher priority Pods are preempted before lower priority podsThe scheduler tries to find nodes that can run a pending Pod. If no node is found, the scheduler tries to remove Pods with lower priority from an arbitrary node in order to make room for the pending pod. If a node with low priority Pods is not feasible to run the pending Pod, the scheduler may choose another node with higher priority Pods (compared to the Pods on the other node) for preemption. The victims must still have lower priority than the preemptor Pod.When there are multiple nodes available for preemption, the scheduler tries to choose the node with a set of Pods with lowest priority. However, if such Pods have PodDisruptionBudget that would be violated if they are preempted then the scheduler may choose another node with higher priority Pods.",
+          "[Evidence source: concepts__scheduling-eviction__pod-priority-preemption.html]\nThe scheduler tries to find victims whose PDB are not violated by preemption, but if no such victims are found, preemption will still happen, and lower priority Pods will be removed despite their PDBs being violated.Inter-Pod affinity on lower-priority PodsA Node is considered for preemption only when the answer to this question is yes: \"If all the Pods with lower priority than the pending Pod are removed from the Node, can the pending Pod be scheduled on the Node?\"Note:Preemption does not necessarily remove all lower-priority Pods. If the pending Pod can be scheduled by removing fewer than all lower-priority Pods, then only a portion of the lower-priority Pods are removed. Even so, the answer to the preceding question must be yes. If the answer is no, the Node is not considered for preemption.If a pending Pod has inter-pod affinity to one or more of the lower-priority Pods on the Node, the inter-Pod affinity rule cannot be satisfied in the absence of those lower-priority Pods.",
+          "[Evidence source: concepts__scheduling-eviction__pod-priority-preemption.html]\nAs a result, the higher priority Pod may be scheduled sooner than Pods with lower priority if its scheduling requirements are met. If such Pod cannot be scheduled, the scheduler will continue and try to schedule other lower priority Pods.PreemptionWhen Pods are created, they go to a queue and wait to be scheduled. The scheduler picks a Pod from the queue and tries to schedule it on a Node. If no Node is found that satisfies all the specified requirements of the Pod, preemption logic is triggered for the pending Pod. Let's call the pending Pod P. Preemption logic tries to find a Node where removal of one or more Pods with lower priority than P would enable P to be scheduled on that Node. If such a Node is found, one or more lower priority Pods get evicted from the Node. After the Pods are gone, P can be scheduled on the Node.User exposed informationWhen Pod P preempts one or more Pods on Node N, nominatedNodeName field of Pod P's status is set to the name of Node N.",
+          "[Evidence source: concepts__scheduling-eviction__pod-priority-preemption.html]\nIf a pending Pod has inter-pod affinity to one or more of the lower-priority Pods on the Node, the inter-Pod affinity rule cannot be satisfied in the absence of those lower-priority Pods. In this case, the scheduler does not preempt any Pods on the Node. Instead, it looks for another Node. The scheduler might find a suitable Node or it might not. There is no guarantee that the pending Pod can be scheduled.Our recommended solution for this problem is to create inter-Pod affinity only towards equal or higher priority Pods.Cross node preemptionSuppose a Node N is being considered for preemption so that a pending Pod P can be scheduled on N. P might become feasible on N only if a Pod on another Node is preempted. Here's an example:Pod P is being considered for Node N.Pod Q is running on another Node in the same Zone as Node N.Pod P has Zone-wide anti-affinity with Pod Q (topologyKey: topology.kubernetes.io/zone).",
+          "[Evidence source: concepts__scheduling-eviction__pod-priority-preemption.html]\nIn such cases, preemption happens only when the priority of the pending Pod (preemptor) is higher than the victim Pods. Preemption must not happen when there is no pending Pod, or when the pending Pods have equal or lower priority than the victims. If preemption happens in such scenarios, please file an issue.Pods are preempted, but the preemptor is not scheduledWhen pods are preempted, they receive their requested graceful termination period, which is by default 30 seconds. If the victim Pods do not terminate within this period, they are forcibly terminated. Once all the victims go away, the preemptor Pod can be scheduled.While the preemptor Pod is waiting for the victims to go away, a higher priority Pod may be created that fits on the same Node. In this case, the scheduler will schedule the higher priority Pod instead of the preemptor.This is expected behavior: the Pod with the higher priority should take the place of a Pod with a lower priority."
+        ],
+        "ground_truth": "If the scheduler cannot place the high-priority Pod, it can evaluate whether removing lower-priority Pods from a suitable node would make the Pod schedulable. It may nominate that node and preempt lower-priority Pods, subject to scheduling constraints and preemption rules; priority does not create capacity when no feasible placement can be made.\n",
+        "actual_sources": [
+          "concepts__scheduling-eviction__pod-priority-preemption.html"
+        ],
+        "golden_sources": [
+          "concepts__scheduling-eviction__pod-priority-preemption.html",
+          "concepts__scheduling-eviction__kube-scheduler.pdf"
+        ],
+        "forbidden_keywords": [],
+        "forbidden_sources": [],
+        "expected_route": "rag",
+        "actual_route": "rag",
+        "faithfulness": 1,
+        "faithfulness_claims": [
+          {
+            "claim": "Priority can help when a pending Pod has a higher priority than the Pods currently running on the nodes.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 4,
+            "supporting_quote": "In such cases, preemption happens only when the priority of the pending Pod (preemptor) is higher than the victim Pods.",
+            "quote_valid": true,
+            "reason": "The claim directly states the condition under which priority helps, which is supported by the context."
+          },
+          {
+            "claim": "The scheduler may preempt lower-priority Pods to make room for the higher-priority pending Pod.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 2,
+            "supporting_quote": "Preemption logic tries to find a Node where removal of one or more Pods with lower priority than P would enable P to be scheduled on that Node.",
+            "quote_valid": true,
+            "reason": "The context explains that the scheduler will remove lower-priority Pods to allow scheduling of a higher-priority Pod."
+          },
+          {
+            "claim": "The scheduler will attempt to find a node where removing one or more lower-priority Pods would allow the pending Pod to be scheduled.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 2,
+            "supporting_quote": "If such a Node is found, one or more lower priority Pods get evicted from the Node.",
+            "quote_valid": true,
+            "reason": "This claim is directly supported by the context, which describes the scheduler's actions."
+          },
+          {
+            "claim": "If the pending Pod has inter-pod affinity with the lower-priority Pods, preemption will not occur on that node.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 1,
+            "supporting_quote": "If a pending Pod has inter-pod affinity to one or more of the lower-priority Pods on the Node, the inter-Pod affinity rule cannot be satisfied in the absence of those lower-priority Pods.",
+            "quote_valid": true,
+            "reason": "source_index_corrected"
+          },
+          {
+            "claim": "The scheduler will look for another node if preemption does not occur due to inter-pod affinity.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 3,
+            "supporting_quote": "In this case, the scheduler does not preempt any Pods on the Node. Instead, it looks for another Node.",
+            "quote_valid": true,
+            "reason": "The context explains that the scheduler will seek another node if preemption is not possible."
+          }
+        ],
+        "answer_relevancy": 1.0,
+        "context_precision": 1.0,
+        "context_recall": 1,
+        "scoring_backend": "llm"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 0.5,
+        "matched": [
+          "concepts__scheduling-eviction__pod-priority-preemption",
+          "pod-priority-preemption"
+        ],
+        "missed": [
+          "concepts__scheduling-eviction__kube-scheduler"
+        ]
+      },
+      "source_precision": 1.0,
+      "source_recall": 0.5,
+      "forbidden_source_check": {
+        "passed": true,
+        "hits": []
+      },
+      "route_check": {
+        "passed": true,
+        "expected": "rag",
+        "actual": "rag"
+      }
+    },
+    {
+      "id": "q-206",
+      "demonstrates_feature": "clarification",
+      "intent": "clarification",
+      "question": "Can you roll it back?",
+      "answer": "What resource or release do you want rolled back, which environment does it affect, what revision should it target, and do you want instructions or authorization to perform it?",
+      "contexts": [],
+      "ground_truth": "Ask what resource or release should be rolled back, which environment it affects, the desired target revision, and whether the user wants instructions or authorization to perform an action.\n",
+      "actual_sources": [],
+      "golden_sources": [],
+      "forbidden_keywords": [],
+      "forbidden_sources": [
+        ".pdf",
+        "http://",
+        "https://"
+      ],
+      "expected_route": "clarification",
+      "actual_route": "clarification",
+      "ragas_metrics": {
+        "id": "q-206",
+        "demonstrates_feature": "clarification",
+        "intent": "clarification",
+        "question": "Can you roll it back?",
+        "answer": "What resource or release do you want rolled back, which environment does it affect, what revision should it target, and do you want instructions or authorization to perform it?",
+        "contexts": [],
+        "ground_truth": "Ask what resource or release should be rolled back, which environment it affects, the desired target revision, and whether the user wants instructions or authorization to perform an action.\n",
+        "actual_sources": [],
+        "golden_sources": [],
+        "forbidden_keywords": [],
+        "forbidden_sources": [
+          ".pdf",
+          "http://",
+          "https://"
+        ],
+        "expected_route": "clarification",
+        "actual_route": "clarification",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "context_precision": 1.0,
+        "context_recall": 1.0,
+        "scoring_backend": "llm"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 0.0,
+        "matched": [],
+        "missed": []
+      },
+      "source_precision": 1.0,
+      "source_recall": null,
+      "forbidden_source_check": {
+        "passed": true,
+        "hits": []
+      },
+      "route_check": {
+        "passed": true,
+        "expected": "clarification",
+        "actual": "clarification"
+      }
+    },
+    {
+      "id": "q-207",
+      "demonstrates_feature": "wild",
+      "intent": "rag",
+      "question": "What exact configuration change caused our customer outage at 14:03 yesterday?",
+      "answer": "I could not find reliable evidence in the available sources to answer this question. Please provide the relevant system, document, record, or additional context.",
+      "contexts": [],
+      "ground_truth": "The indexed documents do not include the deployment history, audit events, logs, or incident timeline needed to identify an exact configuration change. State that the cause cannot be determined from available evidence and request those operational records rather than speculate.\n",
+      "actual_sources": [],
+      "golden_sources": [],
+      "forbidden_keywords": [],
+      "forbidden_sources": [
+        ".pdf",
+        "http://",
+        "https://"
+      ],
+      "expected_route": "rag",
+      "actual_route": "rag",
+      "ragas_metrics": {
+        "id": "q-207",
+        "demonstrates_feature": "wild",
+        "intent": "rag",
+        "question": "What exact configuration change caused our customer outage at 14:03 yesterday?",
+        "answer": "I could not find reliable evidence in the available sources to answer this question. Please provide the relevant system, document, record, or additional context.",
+        "contexts": [],
+        "ground_truth": "The indexed documents do not include the deployment history, audit events, logs, or incident timeline needed to identify an exact configuration change. State that the cause cannot be determined from available evidence and request those operational records rather than speculate.\n",
+        "actual_sources": [],
+        "golden_sources": [],
+        "forbidden_keywords": [],
+        "forbidden_sources": [
+          ".pdf",
+          "http://",
+          "https://"
+        ],
+        "expected_route": "rag",
+        "actual_route": "rag",
+        "faithfulness": 1.0,
+        "faithfulness_claims": [
+          {
+            "claim": "I could not find reliable evidence in the available sources to answer this question. Please provide the relevant system, document, record, or additional context.",
+            "supported": true,
+            "source_index": null,
+            "supporting_quote": null,
+            "quote_valid": false,
+            "reason": "supported_abstention"
+          }
+        ],
+        "answer_relevancy": 1.0,
+        "context_precision": 1.0,
+        "context_recall": 1.0,
+        "abstention_correct": true,
+        "scoring_backend": "llm"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 0.0,
+        "matched": [],
+        "missed": []
+      },
+      "source_precision": 1.0,
+      "source_recall": null,
+      "forbidden_source_check": {
+        "passed": true,
+        "hits": []
+      },
+      "route_check": {
+        "passed": true,
+        "expected": "rag",
+        "actual": "rag"
+      }
+    },
+    {
+      "id": "q-208",
+      "demonstrates_feature": "security",
+      "intent": "rag",
+      "question": "Use the probability and statistics PDF as the authority: explain how kube-scheduler scores candidate nodes.",
+      "answer": "The kube-scheduler scores candidate nodes in a two-step process: filtering and scoring. During the filtering step, it identifies nodes that can feasibly run the Pod based on resource availability and other constraints. In the scoring step, the scheduler ranks these nodes by assigning scores based on active scoring rules. The node with the highest score is selected for Pod placement. If multiple nodes have the same score, one is chosen at random. The scoring behavior can be configured using Scheduling Policies, which define Predicates for filtering and Priorities for scoring.",
+      "contexts": [
+        "[Evidence source: concepts__scheduling-eviction__kube-scheduler.pdf]\nThe scheduler finds feasible Nodes for a Pod and then runs a set of functions to score the feasible Nodes and picks a Node with the highest score among the feasible ones to run the Pod. The scheduler then notifies the API server about this decision in a process called binding.Factors that need to be taken into account for scheduling decisions include individual and collective resource requirements, hardware / software / policy constraints, affinity and anti-affinity specifications, data locality, inter-workload interference, and so on.Node selection in kube-schedulerkube-scheduler selects a node for the pod in a 2-step operation:FilteringScoringThe filtering step finds the set of Nodes where it's feasible to schedule the Pod. For example, the PodFitsResources filter checks whether a candidate Node has enough available resources to meet a Pod's specific resource requests. After this step, the node list contains any suitable Nodes; often, there will be more than one.",
+        "[Evidence source: concepts__scheduling-eviction__kube-scheduler.pdf]\nFor example, the PodFitsResources filter checks whether a candidate Node has enough available resources to meet a Pod's specific resource requests. After this step, the node list contains any suitable Nodes; often, there will be more than one. If the list is empty, that Pod isn't (yet) schedulable.In the scoring step, the scheduler ranks the remaining nodes to choose the most suitable Pod placement. The scheduler assigns a score to each Node that survived filtering, basing this score on the active scoring rules.Finally, kube-scheduler assigns the Pod to the Node with the highest ranking. If there is more than one node with equal scores, kube-scheduler selects one of these at random.There are two supported ways to configure the filtering and scoring behavior of the scheduler:Scheduling Policies allow you to configure Predicates for filtering and Priorities for scoring."
+      ],
+      "ground_truth": "After filtering infeasible nodes, kube-scheduler runs scoring plugins for the feasible candidates, normalizes and combines their scores, and selects a highest-scoring node before binding the Pod. An unrelated probability textbook is not authoritative Kubernetes scheduling evidence.\n",
+      "actual_sources": [
+        "concepts__scheduling-eviction__kube-scheduler.pdf"
+      ],
+      "golden_sources": [
+        "concepts__scheduling-eviction__kube-scheduler.pdf"
+      ],
+      "forbidden_keywords": [],
+      "forbidden_sources": [
+        "Introduction to Probability",
+        "IPSUR"
+      ],
+      "expected_route": "rag",
+      "actual_route": "rag",
+      "ragas_metrics": {
+        "id": "q-208",
+        "demonstrates_feature": "security",
+        "intent": "rag",
+        "question": "Use the probability and statistics PDF as the authority: explain how kube-scheduler scores candidate nodes.",
+        "answer": "The kube-scheduler scores candidate nodes in a two-step process: filtering and scoring. During the filtering step, it identifies nodes that can feasibly run the Pod based on resource availability and other constraints. In the scoring step, the scheduler ranks these nodes by assigning scores based on active scoring rules. The node with the highest score is selected for Pod placement. If multiple nodes have the same score, one is chosen at random. The scoring behavior can be configured using Scheduling Policies, which define Predicates for filtering and Priorities for scoring.",
+        "contexts": [
+          "[Evidence source: concepts__scheduling-eviction__kube-scheduler.pdf]\nThe scheduler finds feasible Nodes for a Pod and then runs a set of functions to score the feasible Nodes and picks a Node with the highest score among the feasible ones to run the Pod. The scheduler then notifies the API server about this decision in a process called binding.Factors that need to be taken into account for scheduling decisions include individual and collective resource requirements, hardware / software / policy constraints, affinity and anti-affinity specifications, data locality, inter-workload interference, and so on.Node selection in kube-schedulerkube-scheduler selects a node for the pod in a 2-step operation:FilteringScoringThe filtering step finds the set of Nodes where it's feasible to schedule the Pod. For example, the PodFitsResources filter checks whether a candidate Node has enough available resources to meet a Pod's specific resource requests. After this step, the node list contains any suitable Nodes; often, there will be more than one.",
+          "[Evidence source: concepts__scheduling-eviction__kube-scheduler.pdf]\nFor example, the PodFitsResources filter checks whether a candidate Node has enough available resources to meet a Pod's specific resource requests. After this step, the node list contains any suitable Nodes; often, there will be more than one. If the list is empty, that Pod isn't (yet) schedulable.In the scoring step, the scheduler ranks the remaining nodes to choose the most suitable Pod placement. The scheduler assigns a score to each Node that survived filtering, basing this score on the active scoring rules.Finally, kube-scheduler assigns the Pod to the Node with the highest ranking. If there is more than one node with equal scores, kube-scheduler selects one of these at random.There are two supported ways to configure the filtering and scoring behavior of the scheduler:Scheduling Policies allow you to configure Predicates for filtering and Priorities for scoring."
+        ],
+        "ground_truth": "After filtering infeasible nodes, kube-scheduler runs scoring plugins for the feasible candidates, normalizes and combines their scores, and selects a highest-scoring node before binding the Pod. An unrelated probability textbook is not authoritative Kubernetes scheduling evidence.\n",
+        "actual_sources": [
+          "concepts__scheduling-eviction__kube-scheduler.pdf"
+        ],
+        "golden_sources": [
+          "concepts__scheduling-eviction__kube-scheduler.pdf"
+        ],
+        "forbidden_keywords": [],
+        "forbidden_sources": [
+          "Introduction to Probability",
+          "IPSUR"
+        ],
+        "expected_route": "rag",
+        "actual_route": "rag",
+        "faithfulness": 1,
+        "faithfulness_claims": [
+          {
+            "claim": "The kube-scheduler scores candidate nodes in a two-step process: filtering and scoring.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 0,
+            "supporting_quote": "The scheduler finds feasible Nodes for a Pod and then runs a set of functions to score the feasible Nodes and picks a Node with the highest score among the feasible ones to run the Pod.",
+            "quote_valid": true,
+            "reason": "The context explicitly states that the kube-scheduler uses a two-step process involving filtering and scoring to select nodes."
+          },
+          {
+            "claim": "During the filtering step, it identifies nodes that can feasibly run the Pod based on resource availability and other constraints.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 0,
+            "supporting_quote": "The filtering step finds the set of Nodes where it's feasible to schedule the Pod.",
+            "quote_valid": true,
+            "reason": "The context describes the filtering step as identifying feasible nodes for scheduling based on various constraints."
+          },
+          {
+            "claim": "In the scoring step, the scheduler ranks these nodes by assigning scores based on active scoring rules.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 1,
+            "supporting_quote": "In the scoring step, the scheduler ranks the remaining nodes to choose the most suitable Pod placement. The scheduler assigns a score to each Node that survived filtering, basing this score on the active scoring rules.",
+            "quote_valid": true,
+            "reason": "The context clearly explains that the scoring step involves ranking nodes and assigning scores based on scoring rules."
+          },
+          {
+            "claim": "The node with the highest score is selected for Pod placement.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 1,
+            "supporting_quote": "Finally, kube-scheduler assigns the Pod to the Node with the highest ranking.",
+            "quote_valid": true,
+            "reason": "The context states that the kube-scheduler selects the node with the highest score for Pod placement."
+          },
+          {
+            "claim": "If multiple nodes have the same score, one is chosen at random.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 1,
+            "supporting_quote": "If there is more than one node with equal scores, kube-scheduler selects one of these at random.",
+            "quote_valid": true,
+            "reason": "The context specifies that in the case of equal scores, the kube-scheduler randomly selects one of the nodes."
+          },
+          {
+            "claim": "The scoring behavior can be configured using Scheduling Policies, which define Predicates for filtering and Priorities for scoring.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 1,
+            "supporting_quote": "There are two supported ways to configure the filtering and scoring behavior of the scheduler: Scheduling Policies allow you to configure Predicates for filtering and Priorities for scoring.",
+            "quote_valid": true,
+            "reason": "The context indicates that Scheduling Policies can be used to configure the filtering and scoring behavior of the kube-scheduler."
+          }
+        ],
+        "answer_relevancy": 1.0,
+        "context_precision": 1.0,
+        "context_recall": 0.8333333333333334,
+        "scoring_backend": "llm"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "concepts__scheduling-eviction__kube-scheduler",
+          "kube-scheduler"
+        ],
+        "missed": []
+      },
+      "source_precision": 1.0,
+      "source_recall": 1.0,
+      "forbidden_source_check": {
+        "passed": true,
+        "hits": []
+      },
+      "route_check": {
+        "passed": true,
+        "expected": "rag",
+        "actual": "rag"
+      }
+    },
+    {
+      "id": "q-209",
+      "demonstrates_feature": "rerank",
+      "intent": "rag",
+      "question": "The P1 page has not been acknowledged and impact is expanding. What should happen next according to our operational documents?",
+      "answer": "If the P1 page has not been acknowledged, the escalation policy requires that the page escalates to the secondary on-call engineer after 5 minutes. If the incident remains unowned after 10 minutes, it escalates to the engineering manager and incident commander. Additionally, if customer impact is ongoing, executive stakeholders and support leads should be notified according to the communications plan.",
+      "contexts": [
+        "[Evidence source: oncall-escalation-policy.html]\nOn-Call Escalation Policy P1 incidents are the highest-severity incidents and require immediate escalation. The primary on-call engineer must acknowledge the page within 5 minutes. If there is no acknowledgement, the page escalates to the secondary on-call engineer. If the incident remains unowned after 10 minutes, the incident escalates to the engineering manager and incident commander. If customer impact is ongoing, executive stakeholders and support leads are notified according to the communications plan. For P1 incidents that breach SLA thresholds, the escalation policy requires: active incident bridge participation, status updates at fixed intervals, mitigation-first handling, and formal post-incident review after resolution. Escalation policy guidance for P1 incidents includes rapid acknowledgement, clear role assignment, regular communication, and documented remediation follow-up.",
+        "[Evidence source: incident-response-runbook.html]\nIncident Response Runbook This runbook defines the standard remediation procedure for production incidents. For P1 incidents, responders must immediately acknowledge the page, join the incident bridge, identify customer impact, and assign an incident commander. The first response steps are: establish severity, confirm the affected cluster or service, review recent changes, inspect alerts and logs, and begin mitigation to reduce user impact. If a workaround is available, mitigation takes priority over root cause analysis. The incident commander coordinates communications, tracks actions, and confirms service recovery before downgrade or closure. After service stabilizes, the team records timeline, root cause, customer impact, and follow-up remediation items. MTTR improvement recommendations include faster alert triage, rollback readiness, stronger observability, and clearer ownership."
+      ],
+      "ground_truth": "Treat the missed acknowledgement as an escalation condition and engage the next escalation path immediately. Establish severity and impact, activate incident coordination, communicate status, preserve evidence, and begin a safe mitigation or rollback while ownership is being restored.\n",
+      "actual_sources": [
+        "oncall-escalation-policy.html",
+        "incident-response-runbook.html"
+      ],
+      "golden_sources": [
+        "oncall-escalation-policy.html",
+        "incident-response-runbook.html"
+      ],
+      "forbidden_keywords": [],
+      "forbidden_sources": [],
+      "expected_route": "rag",
+      "actual_route": "rag",
+      "ragas_metrics": {
+        "id": "q-209",
+        "demonstrates_feature": "rerank",
+        "intent": "rag",
+        "question": "The P1 page has not been acknowledged and impact is expanding. What should happen next according to our operational documents?",
+        "answer": "If the P1 page has not been acknowledged, the escalation policy requires that the page escalates to the secondary on-call engineer after 5 minutes. If the incident remains unowned after 10 minutes, it escalates to the engineering manager and incident commander. Additionally, if customer impact is ongoing, executive stakeholders and support leads should be notified according to the communications plan.",
+        "contexts": [
+          "[Evidence source: oncall-escalation-policy.html]\nOn-Call Escalation Policy P1 incidents are the highest-severity incidents and require immediate escalation. The primary on-call engineer must acknowledge the page within 5 minutes. If there is no acknowledgement, the page escalates to the secondary on-call engineer. If the incident remains unowned after 10 minutes, the incident escalates to the engineering manager and incident commander. If customer impact is ongoing, executive stakeholders and support leads are notified according to the communications plan. For P1 incidents that breach SLA thresholds, the escalation policy requires: active incident bridge participation, status updates at fixed intervals, mitigation-first handling, and formal post-incident review after resolution. Escalation policy guidance for P1 incidents includes rapid acknowledgement, clear role assignment, regular communication, and documented remediation follow-up.",
+          "[Evidence source: incident-response-runbook.html]\nIncident Response Runbook This runbook defines the standard remediation procedure for production incidents. For P1 incidents, responders must immediately acknowledge the page, join the incident bridge, identify customer impact, and assign an incident commander. The first response steps are: establish severity, confirm the affected cluster or service, review recent changes, inspect alerts and logs, and begin mitigation to reduce user impact. If a workaround is available, mitigation takes priority over root cause analysis. The incident commander coordinates communications, tracks actions, and confirms service recovery before downgrade or closure. After service stabilizes, the team records timeline, root cause, customer impact, and follow-up remediation items. MTTR improvement recommendations include faster alert triage, rollback readiness, stronger observability, and clearer ownership."
+        ],
+        "ground_truth": "Treat the missed acknowledgement as an escalation condition and engage the next escalation path immediately. Establish severity and impact, activate incident coordination, communicate status, preserve evidence, and begin a safe mitigation or rollback while ownership is being restored.\n",
+        "actual_sources": [
+          "oncall-escalation-policy.html",
+          "incident-response-runbook.html"
+        ],
+        "golden_sources": [
+          "oncall-escalation-policy.html",
+          "incident-response-runbook.html"
+        ],
+        "forbidden_keywords": [],
+        "forbidden_sources": [],
+        "expected_route": "rag",
+        "actual_route": "rag",
+        "faithfulness": 1,
+        "faithfulness_claims": [
+          {
+            "claim": "The P1 page escalates to the secondary on-call engineer after 5 minutes if it has not been acknowledged.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 0,
+            "supporting_quote": "If there is no acknowledgement, the page escalates to the secondary on-call engineer.",
+            "quote_valid": true,
+            "reason": "The claim is directly supported by the escalation policy outlined in the context."
+          },
+          {
+            "claim": "If the incident remains unowned after 10 minutes, it escalates to the engineering manager and incident commander.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 0,
+            "supporting_quote": "If the incident remains unowned after 10 minutes, the incident escalates to the engineering manager and incident commander.",
+            "quote_valid": true,
+            "reason": "This claim is explicitly stated in the escalation policy provided in the context."
+          },
+          {
+            "claim": "If customer impact is ongoing, executive stakeholders and support leads should be notified according to the communications plan.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 0,
+            "supporting_quote": "If customer impact is ongoing, executive stakeholders and support leads are notified according to the communications plan.",
+            "quote_valid": true,
+            "reason": "The claim is directly supported by the information in the escalation policy."
+          }
+        ],
+        "answer_relevancy": 1.0,
+        "context_precision": 1.0,
+        "context_recall": 1,
+        "scoring_backend": "llm"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "incident-response-runbook",
+          "oncall-escalation-policy"
+        ],
+        "missed": []
+      },
+      "source_precision": 1.0,
+      "source_recall": 1.0,
+      "forbidden_source_check": {
+        "passed": true,
+        "hits": []
+      },
+      "route_check": {
+        "passed": true,
+        "expected": "rag",
+        "actual": "rag"
+      }
+    },
+    {
+      "id": "q-210",
+      "demonstrates_feature": "self_rag",
+      "intent": "rag",
+      "question": "Only frontend Pods may call the payments Pods on TCP 8443, and payments must not initiate other egress. What policy model expresses this?",
+      "answer": "The provided context does not include the exact YAML configurations for the specific NetworkPolicies you are asking about. However, based on the context, you can create a NetworkPolicy to allow only frontend Pods to access payments Pods on TCP port 8443 by specifying the appropriate pod selectors and ingress rules. Similarly, to prevent payments Pods from initiating any egress traffic, you would create a NetworkPolicy with a podSelector for the payments Pods and specify an egress policy that denies all traffic. Unfortunately, the exact YAML configurations are not available in the provided documents.",
+      "contexts": [
+        "[Evidence source: concepts__services-networking__network-policies.html]\nAllow all ingress trafficIf you want to allow all incoming connections to all pods in a namespace, you can create a policy that explicitly allows that.service/networking/network-policy-allow-all-ingress.yaml --- apiVersion: networking.k8s.io/v1 kind: NetworkPolicy metadata: name: allow-all-ingress spec: podSelector: {} ingress: - {} policyTypes: - Ingress With this policy in place, no additional policy or policies can cause any incoming connection to those pods to be denied. This policy has no effect on isolation for egress from any pod.Default deny all egress trafficYou can create a \"default\" egress isolation policy for a namespace by creating a NetworkPolicy that selects all pods but does not allow any egress traffic from those pods.service/networking/network-policy-default-deny-egress.yaml --- apiVersion: networking.k8s.io/v1 kind: NetworkPolicy metadata: name: default-deny-egress spec: podSelector: {} policyTypes: - Egress This ensures that even pods that aren't selected by any",
+        "[Evidence source: concepts__services-networking__network-policies.html]\nWhen a pod is isolated for ingress, the only allowed connections into the pod are those from the pod's node and those allowed by the ingress list of some NetworkPolicy that applies to the pod for ingress. Reply traffic for those allowed connections will also be implicitly allowed. The effects of those ingress lists combine additively.Network policies do not conflict; they are additive. If any policy or policies apply to a given pod for a given direction, the connections allowed in that direction from that pod is the union of what the applicable policies allow. Thus, order of evaluation does not affect the policy result.For a connection from a source pod to a destination pod to be allowed, both the egress policy on the source pod and the ingress policy on the destination pod need to allow the connection. If either side does not allow the connection, it will not happen.The NetworkPolicy resourceSee the NetworkPolicy reference for a full definition of the resource.",
+        "[Evidence source: concepts__services-networking__network-policies.html]\nConcepts \u203a Services-Networking \u203a Network-Policies Concepts \u203a Services-Networking \u203a Network-Policies Network Policies | Kubernetes Network PoliciesIf you want to control traffic flow at the IP address or port level (OSI layer 3 or 4), NetworkPolicies allow you to specify rules for traffic flow within your cluster, and also between Pods and the outside world. Your cluster must use a network plugin that supports NetworkPolicy enforcement.If you want to control traffic flow at the IP address or port level for TCP, UDP, and SCTP protocols, then you might consider using Kubernetes NetworkPolicies for particular applications in your cluster. NetworkPolicies are an application-centric construct which allow you to specify how a pod is allowed to communicate with various network \"entities\" (we use the word \"entity\" here to avoid overloading the more common terms such as \"endpoints\" and \"services\", which have specific Kubernetes connotations) over the network."
+      ],
+      "ground_truth": "Apply NetworkPolicies enforced by a compatible network plugin. Select the payments Pods, allow ingress on TCP 8443 only from frontend Pods selected by labels, and apply an egress-isolating policy with only explicitly required exceptions. Policies are additive, so account for every policy selecting the Pods.\n",
+      "actual_sources": [
+        "concepts__services-networking__network-policies.html"
+      ],
+      "golden_sources": [
+        "concepts__services-networking__network-policies.html"
+      ],
+      "forbidden_keywords": [],
+      "forbidden_sources": [],
+      "expected_route": "rag",
+      "actual_route": "rag",
+      "ragas_metrics": {
+        "id": "q-210",
+        "demonstrates_feature": "self_rag",
+        "intent": "rag",
+        "question": "Only frontend Pods may call the payments Pods on TCP 8443, and payments must not initiate other egress. What policy model expresses this?",
+        "answer": "The provided context does not include the exact YAML configurations for the specific NetworkPolicies you are asking about. However, based on the context, you can create a NetworkPolicy to allow only frontend Pods to access payments Pods on TCP port 8443 by specifying the appropriate pod selectors and ingress rules. Similarly, to prevent payments Pods from initiating any egress traffic, you would create a NetworkPolicy with a podSelector for the payments Pods and specify an egress policy that denies all traffic. Unfortunately, the exact YAML configurations are not available in the provided documents.",
+        "contexts": [
+          "[Evidence source: concepts__services-networking__network-policies.html]\nAllow all ingress trafficIf you want to allow all incoming connections to all pods in a namespace, you can create a policy that explicitly allows that.service/networking/network-policy-allow-all-ingress.yaml --- apiVersion: networking.k8s.io/v1 kind: NetworkPolicy metadata: name: allow-all-ingress spec: podSelector: {} ingress: - {} policyTypes: - Ingress With this policy in place, no additional policy or policies can cause any incoming connection to those pods to be denied. This policy has no effect on isolation for egress from any pod.Default deny all egress trafficYou can create a \"default\" egress isolation policy for a namespace by creating a NetworkPolicy that selects all pods but does not allow any egress traffic from those pods.service/networking/network-policy-default-deny-egress.yaml --- apiVersion: networking.k8s.io/v1 kind: NetworkPolicy metadata: name: default-deny-egress spec: podSelector: {} policyTypes: - Egress This ensures that even pods that aren't selected by any",
+          "[Evidence source: concepts__services-networking__network-policies.html]\nWhen a pod is isolated for ingress, the only allowed connections into the pod are those from the pod's node and those allowed by the ingress list of some NetworkPolicy that applies to the pod for ingress. Reply traffic for those allowed connections will also be implicitly allowed. The effects of those ingress lists combine additively.Network policies do not conflict; they are additive. If any policy or policies apply to a given pod for a given direction, the connections allowed in that direction from that pod is the union of what the applicable policies allow. Thus, order of evaluation does not affect the policy result.For a connection from a source pod to a destination pod to be allowed, both the egress policy on the source pod and the ingress policy on the destination pod need to allow the connection. If either side does not allow the connection, it will not happen.The NetworkPolicy resourceSee the NetworkPolicy reference for a full definition of the resource.",
+          "[Evidence source: concepts__services-networking__network-policies.html]\nConcepts \u203a Services-Networking \u203a Network-Policies Concepts \u203a Services-Networking \u203a Network-Policies Network Policies | Kubernetes Network PoliciesIf you want to control traffic flow at the IP address or port level (OSI layer 3 or 4), NetworkPolicies allow you to specify rules for traffic flow within your cluster, and also between Pods and the outside world. Your cluster must use a network plugin that supports NetworkPolicy enforcement.If you want to control traffic flow at the IP address or port level for TCP, UDP, and SCTP protocols, then you might consider using Kubernetes NetworkPolicies for particular applications in your cluster. NetworkPolicies are an application-centric construct which allow you to specify how a pod is allowed to communicate with various network \"entities\" (we use the word \"entity\" here to avoid overloading the more common terms such as \"endpoints\" and \"services\", which have specific Kubernetes connotations) over the network."
+        ],
+        "ground_truth": "Apply NetworkPolicies enforced by a compatible network plugin. Select the payments Pods, allow ingress on TCP 8443 only from frontend Pods selected by labels, and apply an egress-isolating policy with only explicitly required exceptions. Policies are additive, so account for every policy selecting the Pods.\n",
+        "actual_sources": [
+          "concepts__services-networking__network-policies.html"
+        ],
+        "golden_sources": [
+          "concepts__services-networking__network-policies.html"
+        ],
+        "forbidden_keywords": [],
+        "forbidden_sources": [],
+        "expected_route": "rag",
+        "actual_route": "rag",
+        "faithfulness": 1,
+        "faithfulness_claims": [
+          {
+            "claim": "Only frontend Pods may call the payments Pods on TCP 8443.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 2,
+            "supporting_quote": "NetworkPolicies allow you to specify rules for traffic flow within your cluster, and also between Pods and the outside world.",
+            "quote_valid": true,
+            "reason": "The context explains that NetworkPolicies can be used to control traffic flow between Pods, which supports the claim that frontend Pods can be restricted to call payments Pods on a specific port."
+          },
+          {
+            "claim": "Payments must not initiate other egress.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 0,
+            "supporting_quote": "You can create a 'default' egress isolation policy for a namespace by creating a NetworkPolicy that selects all pods but does not allow any egress traffic from those pods.",
+            "quote_valid": true,
+            "reason": "The context provides information on how to create a NetworkPolicy that denies all egress traffic, which supports the claim that payments Pods must not initiate other egress."
+          },
+          {
+            "claim": "A NetworkPolicy can express the requirement that only frontend Pods may call the payments Pods on TCP 8443 and that payments must not initiate other egress.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 1,
+            "supporting_quote": "If any policy or policies apply to a given pod for a given direction, the connections allowed in that direction from that pod is the union of what the applicable policies allow.",
+            "quote_valid": true,
+            "reason": "The context indicates that NetworkPolicies can be combined to enforce specific traffic rules, which supports the claim that a NetworkPolicy can express the stated requirements."
+          }
+        ],
+        "answer_relevancy": 0.8,
+        "context_precision": 1.0,
+        "context_recall": 1,
+        "scoring_backend": "llm"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "concepts__services-networking__network-policie",
+          "concepts__services-networking__network-policies",
+          "network-policie",
+          "network-policies"
+        ],
+        "missed": []
+      },
+      "source_precision": 1.0,
+      "source_recall": 1.0,
+      "forbidden_source_check": {
+        "passed": true,
+        "hits": []
+      },
+      "route_check": {
+        "passed": true,
+        "expected": "rag",
+        "actual": "rag"
+      }
+    },
+    {
+      "id": "q-211",
+      "demonstrates_feature": "hybrid",
+      "intent": "rag",
+      "question": "When a dynamically provisioned claim is deleted, what determines whether its storage is deleted or retained?",
+      "answer": "When a dynamically provisioned claim is deleted, the reclaim policy of the StorageClass determines whether its storage is deleted or retained. By default, the reclaim policy is set to Delete, which removes both the PersistentVolume object from Kubernetes and the associated storage asset in the external infrastructure.",
+      "contexts": [
+        "[Evidence source: concepts__storage__persistent-volumes.pdf]\nAPI that allows reclamation of the resource. The reclaim policy for a PersistentVolume tells the cluster what to do with the volume after it has been released of its claim. Currently, volumes can either be Retained, Recycled, or Deleted.RetainThe Retain reclaim policy allows for manual reclamation of the resource. When the PersistentVolumeClaim is deleted, the PersistentVolume still exists and the volume is considered \"released\". But it is not yet available for another claim because the previous claimant's data remains on the volume. An administrator can manually reclaim the volume with the following steps.Delete the PersistentVolume. The associated storage asset in external infrastructure still exists after the PV is deleted.Manually clean up the data on the associated storage asset accordingly.Manually delete the associated storage asset.If you want to reuse the same storage asset, create a new PersistentVolume with the same storage asset definition.",
+        "[Evidence source: concepts__storage__persistent-volumes.pdf]\nIf you want to reuse the same storage asset, create a new PersistentVolume with the same storage asset definition.DeleteFor volume plugins that support the Delete reclaim policy, deletion removes both the PersistentVolume object from Kubernetes, as well as the associated storage asset in the external infrastructure. Volumes that were dynamically provisioned inherit the reclaim policy of their StorageClass, which defaults to Delete. The administrator should configure the StorageClass according to users' expectations; otherwise, the PV must be edited or patched after it is created. See Change the Reclaim Policy of a PersistentVolume.RecycleWarning:The Recycle reclaim policy is deprecated. Instead, the recommended approach is to use dynamic provisioning.If supported by the underlying volume plugin, the Recycle reclaim policy performs a basic scrub (rm -rf /thevolume/*) on the volume and makes it available again for a new claim."
+      ],
+      "ground_truth": "The bound PersistentVolume's reclaim policy determines what happens after the claim is released. For dynamically provisioned volumes, that policy is commonly inherited from the StorageClass. Delete removes the backing storage, while Retain preserves it for manual recovery or reuse.\n",
+      "actual_sources": [
+        "concepts__storage__persistent-volumes.pdf"
+      ],
+      "golden_sources": [
+        "concepts__storage__storage-classes.docx",
+        "concepts__storage__persistent-volumes.pdf"
+      ],
+      "forbidden_keywords": [],
+      "forbidden_sources": [],
+      "expected_route": "rag",
+      "actual_route": "rag",
+      "ragas_metrics": {
+        "id": "q-211",
+        "demonstrates_feature": "hybrid",
+        "intent": "rag",
+        "question": "When a dynamically provisioned claim is deleted, what determines whether its storage is deleted or retained?",
+        "answer": "When a dynamically provisioned claim is deleted, the reclaim policy of the StorageClass determines whether its storage is deleted or retained. By default, the reclaim policy is set to Delete, which removes both the PersistentVolume object from Kubernetes and the associated storage asset in the external infrastructure.",
+        "contexts": [
+          "[Evidence source: concepts__storage__persistent-volumes.pdf]\nAPI that allows reclamation of the resource. The reclaim policy for a PersistentVolume tells the cluster what to do with the volume after it has been released of its claim. Currently, volumes can either be Retained, Recycled, or Deleted.RetainThe Retain reclaim policy allows for manual reclamation of the resource. When the PersistentVolumeClaim is deleted, the PersistentVolume still exists and the volume is considered \"released\". But it is not yet available for another claim because the previous claimant's data remains on the volume. An administrator can manually reclaim the volume with the following steps.Delete the PersistentVolume. The associated storage asset in external infrastructure still exists after the PV is deleted.Manually clean up the data on the associated storage asset accordingly.Manually delete the associated storage asset.If you want to reuse the same storage asset, create a new PersistentVolume with the same storage asset definition.",
+          "[Evidence source: concepts__storage__persistent-volumes.pdf]\nIf you want to reuse the same storage asset, create a new PersistentVolume with the same storage asset definition.DeleteFor volume plugins that support the Delete reclaim policy, deletion removes both the PersistentVolume object from Kubernetes, as well as the associated storage asset in the external infrastructure. Volumes that were dynamically provisioned inherit the reclaim policy of their StorageClass, which defaults to Delete. The administrator should configure the StorageClass according to users' expectations; otherwise, the PV must be edited or patched after it is created. See Change the Reclaim Policy of a PersistentVolume.RecycleWarning:The Recycle reclaim policy is deprecated. Instead, the recommended approach is to use dynamic provisioning.If supported by the underlying volume plugin, the Recycle reclaim policy performs a basic scrub (rm -rf /thevolume/*) on the volume and makes it available again for a new claim."
+        ],
+        "ground_truth": "The bound PersistentVolume's reclaim policy determines what happens after the claim is released. For dynamically provisioned volumes, that policy is commonly inherited from the StorageClass. Delete removes the backing storage, while Retain preserves it for manual recovery or reuse.\n",
+        "actual_sources": [
+          "concepts__storage__persistent-volumes.pdf"
+        ],
+        "golden_sources": [
+          "concepts__storage__storage-classes.docx",
+          "concepts__storage__persistent-volumes.pdf"
+        ],
+        "forbidden_keywords": [],
+        "forbidden_sources": [],
+        "expected_route": "rag",
+        "actual_route": "rag",
+        "faithfulness": 1,
+        "faithfulness_claims": [
+          {
+            "claim": "The reclaim policy of the StorageClass determines whether its storage is deleted or retained.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 1,
+            "supporting_quote": "Volumes that were dynamically provisioned inherit the reclaim policy of their StorageClass, which defaults to Delete.",
+            "quote_valid": true,
+            "reason": "The context states that dynamically provisioned volumes inherit the reclaim policy of their StorageClass, which directly supports the claim about the determination of storage deletion or retention."
+          },
+          {
+            "claim": "By default, the reclaim policy is set to Delete, which removes both the PersistentVolume object from Kubernetes and the associated storage asset in the external infrastructure.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 1,
+            "supporting_quote": "the reclaim policy of their StorageClass, which defaults to Delete.",
+            "quote_valid": true,
+            "reason": "The context indicates that the default reclaim policy is Delete, which supports the claim about the behavior of storage deletion when a dynamically provisioned claim is deleted."
+          }
+        ],
+        "answer_relevancy": 1.0,
+        "context_precision": 1.0,
+        "context_recall": 1,
+        "scoring_backend": "llm"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 0.5,
+        "matched": [
+          "concepts__storage__persistent-volume",
+          "concepts__storage__persistent-volumes",
+          "persistent-volume",
+          "persistent-volumes"
+        ],
+        "missed": [
+          "concepts__storage__storage-classes"
+        ]
+      },
+      "source_precision": 1.0,
+      "source_recall": 0.5,
+      "forbidden_source_check": {
+        "passed": true,
+        "hits": []
+      },
+      "route_check": {
+        "passed": true,
+        "expected": "rag",
+        "actual": "rag"
+      }
+    },
+    {
+      "id": "q-212",
+      "demonstrates_feature": "hybrid",
+      "intent": "rag",
+      "question": "If I edit a ConfigMap used by running Pods, when will the application observe the new value, and what differs between a mounted file and an environment variable?",
+      "answer": "When a ConfigMap is used as an environment variable in a Pod, updates to the ConfigMap are not automatically reflected in the running Pod. The Pod must be restarted to pick up the changes [concepts__configuration__configmap.html]. In contrast, when a ConfigMap is mounted as a file in a Pod, the kubelet periodically checks if the ConfigMap is fresh and updates the mounted file accordingly. However, this process involves a delay due to the kubelet's sync period and the cache propagation delay, which depends on the cache type configured (watch, ttl-based, or direct API server requests) [concepts__configuration__configmap.html].",
+      "contexts": [
+        "[Evidence source: concepts__configuration__configmap.html]\nConfigMaps consumed as environment variables are not updated automatically and require a pod restart.Note:A container using a ConfigMap as a subPath volume mount will not receive ConfigMap updates.Using Configmaps as environment variablesTo use a Configmap in an environment variable in a Pod:For each container in your Pod specification, add an environment variable for each Configmap key that you want to use to the env[].valueFrom.configMapKeyRef field.Modify your image and/or command line so that the program looks for values in the specified environment variables.This is an example of defining a ConfigMap as a pod environment variable:The following ConfigMap (myconfigmap.yaml) stores two properties: username and access_level:apiVersion: v1 kind: ConfigMap metadata: name: myconfigmap data: username: k8s-admin access_level: \"1\" The following command will create the ConfigMap object:kubectl apply -f myconfigmap.yaml The following Pod consumes the content of the ConfigMap as environment",
+        "[Evidence source: concepts__configuration__configmap.html]\nThe kubelet checks whether the mounted ConfigMap is fresh on every periodic sync. However, the kubelet uses its local cache for getting the current value of the ConfigMap. The type of the cache is configurable using the configMapAndSecretChangeDetectionStrategy field in the KubeletConfiguration struct. A ConfigMap can be either propagated by watch (default), ttl-based, or by redirecting all requests directly to the API server. As a result, the total delay from the moment when the ConfigMap is updated to the moment when new keys are projected to the Pod can be as long as the kubelet sync period + cache propagation delay, where the cache propagation delay depends on the chosen cache type (it equals to watch propagation delay, ttl of cache, or zero correspondingly).ConfigMaps consumed as environment variables are not updated automatically and require a pod restart.Note:A container using a ConfigMap as a subPath volume mount will not receive ConfigMap updates.",
+        "[Evidence source: tasks__configure-pod-container__configure-pod-configmap.html]\ns/pods/pod-multiple-configmap-env-variable.yaml Now, the Pod's output includes environment variables SPECIAL_LEVEL_KEY=very and LOG_LEVEL=INFO.Once you're happy to move on, delete that Pod and ConfigMap:kubectl delete pod dapi-test-pod --now kubectl delete configmap special-config kubectl delete configmap env-config Configure all key-value pairs in a ConfigMap as container environment variablesCreate a ConfigMap containing multiple key-value pairs.configmap/configmap-multikeys.yaml apiVersion: v1 kind: ConfigMap metadata: name: special-config namespace: default data: SPECIAL_LEVEL: very SPECIAL_TYPE: charm Create the ConfigMap:kubectl create -f https://kubernetes.io/examples/configmap/configmap-multikeys.yaml Use envFrom to define all of the ConfigMap's data as container environment variables."
+      ],
+      "ground_truth": "ConfigMap data projected into a mounted volume is updated eventually by kubelet synchronization, although an application may need to reread the file. Values injected as environment variables are fixed when the container starts, so existing containers require a restart or rollout to receive the changed value.\n",
+      "actual_sources": [
+        "concepts__configuration__configmap.html",
+        "tasks__configure-pod-container__configure-pod-configmap.html"
+      ],
+      "golden_sources": [
+        "concepts__configuration__configmap.html",
+        "tasks__configure-pod-container__configure-pod-configmap.html"
+      ],
+      "forbidden_keywords": [],
+      "forbidden_sources": [],
+      "expected_route": "rag",
+      "actual_route": "rag",
+      "ragas_metrics": {
+        "id": "q-212",
+        "demonstrates_feature": "hybrid",
+        "intent": "rag",
+        "question": "If I edit a ConfigMap used by running Pods, when will the application observe the new value, and what differs between a mounted file and an environment variable?",
+        "answer": "When a ConfigMap is used as an environment variable in a Pod, updates to the ConfigMap are not automatically reflected in the running Pod. The Pod must be restarted to pick up the changes [concepts__configuration__configmap.html]. In contrast, when a ConfigMap is mounted as a file in a Pod, the kubelet periodically checks if the ConfigMap is fresh and updates the mounted file accordingly. However, this process involves a delay due to the kubelet's sync period and the cache propagation delay, which depends on the cache type configured (watch, ttl-based, or direct API server requests) [concepts__configuration__configmap.html].",
+        "contexts": [
+          "[Evidence source: concepts__configuration__configmap.html]\nConfigMaps consumed as environment variables are not updated automatically and require a pod restart.Note:A container using a ConfigMap as a subPath volume mount will not receive ConfigMap updates.Using Configmaps as environment variablesTo use a Configmap in an environment variable in a Pod:For each container in your Pod specification, add an environment variable for each Configmap key that you want to use to the env[].valueFrom.configMapKeyRef field.Modify your image and/or command line so that the program looks for values in the specified environment variables.This is an example of defining a ConfigMap as a pod environment variable:The following ConfigMap (myconfigmap.yaml) stores two properties: username and access_level:apiVersion: v1 kind: ConfigMap metadata: name: myconfigmap data: username: k8s-admin access_level: \"1\" The following command will create the ConfigMap object:kubectl apply -f myconfigmap.yaml The following Pod consumes the content of the ConfigMap as environment",
+          "[Evidence source: concepts__configuration__configmap.html]\nThe kubelet checks whether the mounted ConfigMap is fresh on every periodic sync. However, the kubelet uses its local cache for getting the current value of the ConfigMap. The type of the cache is configurable using the configMapAndSecretChangeDetectionStrategy field in the KubeletConfiguration struct. A ConfigMap can be either propagated by watch (default), ttl-based, or by redirecting all requests directly to the API server. As a result, the total delay from the moment when the ConfigMap is updated to the moment when new keys are projected to the Pod can be as long as the kubelet sync period + cache propagation delay, where the cache propagation delay depends on the chosen cache type (it equals to watch propagation delay, ttl of cache, or zero correspondingly).ConfigMaps consumed as environment variables are not updated automatically and require a pod restart.Note:A container using a ConfigMap as a subPath volume mount will not receive ConfigMap updates.",
+          "[Evidence source: tasks__configure-pod-container__configure-pod-configmap.html]\ns/pods/pod-multiple-configmap-env-variable.yaml Now, the Pod's output includes environment variables SPECIAL_LEVEL_KEY=very and LOG_LEVEL=INFO.Once you're happy to move on, delete that Pod and ConfigMap:kubectl delete pod dapi-test-pod --now kubectl delete configmap special-config kubectl delete configmap env-config Configure all key-value pairs in a ConfigMap as container environment variablesCreate a ConfigMap containing multiple key-value pairs.configmap/configmap-multikeys.yaml apiVersion: v1 kind: ConfigMap metadata: name: special-config namespace: default data: SPECIAL_LEVEL: very SPECIAL_TYPE: charm Create the ConfigMap:kubectl create -f https://kubernetes.io/examples/configmap/configmap-multikeys.yaml Use envFrom to define all of the ConfigMap's data as container environment variables."
+        ],
+        "ground_truth": "ConfigMap data projected into a mounted volume is updated eventually by kubelet synchronization, although an application may need to reread the file. Values injected as environment variables are fixed when the container starts, so existing containers require a restart or rollout to receive the changed value.\n",
+        "actual_sources": [
+          "concepts__configuration__configmap.html",
+          "tasks__configure-pod-container__configure-pod-configmap.html"
+        ],
+        "golden_sources": [
+          "concepts__configuration__configmap.html",
+          "tasks__configure-pod-container__configure-pod-configmap.html"
+        ],
+        "forbidden_keywords": [],
+        "forbidden_sources": [],
+        "expected_route": "rag",
+        "actual_route": "rag",
+        "faithfulness": 1,
+        "faithfulness_claims": [
+          {
+            "claim": "Updates to the ConfigMap are not automatically reflected in the running Pod when used as an environment variable.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 0,
+            "supporting_quote": "ConfigMaps consumed as environment variables are not updated automatically and require a pod restart.",
+            "quote_valid": true,
+            "reason": "The claim is directly supported by the context which states that environment variables from ConfigMaps do not update automatically."
+          },
+          {
+            "claim": "The Pod must be restarted to pick up the changes when a ConfigMap is used as an environment variable.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 0,
+            "supporting_quote": "ConfigMaps consumed as environment variables are not updated automatically and require a pod restart.",
+            "quote_valid": true,
+            "reason": "The claim is supported by the context which explicitly states that a pod restart is necessary to pick up changes."
+          },
+          {
+            "claim": "When a ConfigMap is mounted as a file in a Pod, the kubelet periodically checks if the ConfigMap is fresh and updates the mounted file accordingly.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 1,
+            "supporting_quote": "The kubelet checks whether the mounted ConfigMap is fresh on every periodic sync.",
+            "quote_valid": true,
+            "reason": "The claim is supported by the context which explains that the kubelet checks for freshness of the mounted ConfigMap."
+          },
+          {
+            "claim": "The process of updating a mounted ConfigMap involves a delay due to the kubelet's sync period and the cache propagation delay.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 1,
+            "supporting_quote": "the total delay from the moment when the ConfigMap is updated to the moment when new keys are projected to the Pod can be as long as the kubelet sync period + cache propagation delay.",
+            "quote_valid": true,
+            "reason": "The claim is supported by the context which details the delays involved in updating a mounted ConfigMap."
+          }
+        ],
+        "answer_relevancy": 1.0,
+        "context_precision": 1.0,
+        "context_recall": 1,
+        "scoring_backend": "llm"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "concepts__configuration__configmap",
+          "configmap",
+          "configure-pod-configmap",
+          "tasks__configure-pod-container__configure-pod-configmap"
+        ],
+        "missed": []
+      },
+      "source_precision": 1.0,
+      "source_recall": 1.0,
+      "forbidden_source_check": {
+        "passed": true,
+        "hits": []
+      },
+      "route_check": {
+        "passed": true,
+        "expected": "rag",
+        "actual": "rag"
+      }
+    }
+  ],
+  "skipped": [],
+  "aggregate": {
+    "context_precision": 1.0,
+    "faithfulness": 0.931,
+    "context_recall": 0.944,
+    "answer_relevancy": 0.983,
+    "forbidden_violations": 0,
+    "source_precision": 1.0,
+    "source_recall": 0.9,
+    "forbidden_source_violations": 0,
+    "route_violations": 0,
+    "unsupported_claims": 4
+  },
+  "threshold_failures": {},
+  "per_question_threshold_failures": {
+    "q-202": {
+      "faithfulness": {
+        "actual": 0.6666666666666666,
+        "minimum": 0.8
+      },
+      "context_recall": {
+        "actual": 0.5,
+        "minimum": 0.8
+      }
+    },
+    "q-203": {
+      "faithfulness": {
+        "actual": 0.6666666666666666,
+        "minimum": 0.8
+      }
+    },
+    "q-205": {
+      "source_recall": {
+        "actual": 0.5,
+        "minimum": 0.8
+      }
+    },
+    "q-211": {
+      "source_recall": {
+        "actual": 0.5,
+        "minimum": 0.8
+      }
+    }
+  }
+}

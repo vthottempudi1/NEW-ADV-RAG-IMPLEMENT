@@ -1,0 +1,41 @@
+{
+  "family": "new-adv-rag-streamlit",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "512",
+  "memory": "1024",
+  "executionRoleArn": "arn:aws:iam::785282204559:role/ecsTaskExecutionRole",
+  "taskRoleArn": "arn:aws:iam::785282204559:role/new-adv-rag-streamlit-task-role",
+  "containerDefinitions": [
+    {
+      "name": "streamlit",
+      "image": "785282204559.dkr.ecr.us-east-2.amazonaws.com/new-adv-rag-streamlit:20260711-context-precision2",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 8501,
+          "protocol": "tcp"
+        }
+      ],
+      "environment": [
+        { "name": "STREAMLIT_BROWSER_GATHER_USAGE_STATS", "value": "false" },
+        { "name": "API_BASE_URL", "value": "https://api.aiscientificlabs.com" }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/new-adv-rag-streamlit",
+          "awslogs-region": "us-east-2",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+      "healthCheck": {
+        "command": ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://127.0.0.1:8501/_stcore/health').read()\""],
+        "interval": 30,
+        "timeout": 5,
+        "retries": 3,
+        "startPeriod": 30
+      }
+    }
+  ]
+}

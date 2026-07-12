@@ -33,8 +33,62 @@ jobs:
       - name: Install project and test dependencies
         run: pip install ".[dev]"
 
+      - name: Lint application, evaluation, UI, scripts, and tests
+        run: ruff check app evals Eval scripts ui tests
+
+      - name: Enforce complete learner documentation
+        run: python scripts/add_learner_docs.py && git diff --exit-code
+
       - name: Run tests
         run: pytest -q
+
+  dependency-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install project and audit tool
+        run: |
+          python -m pip install --upgrade pip
+          pip install . pip-audit
+
+      - name: Audit Python dependencies
+        run: pip-audit
+
+  secret-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout full history
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Scan Git history for secrets
+        uses: gitleaks/gitleaks-action@v2.3.9
+
+  container-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Build backend image
+        run: docker build --file infra/docker/backend.Dockerfile --tag new-adv-rag-backend:ci .
+
+      - name: Scan backend image
+        uses: aquasecurity/trivy-action@0.35.0
+        with:
+          image-ref: new-adv-rag-backend:ci
+          format: table
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+          exit-code: "1"
 
   eval-smoke:
     runs-on: ubuntu-latest
@@ -45,16 +99,19 @@ jobs:
         include:
           - profile: naive
             filter: baseline
-            output: Eval/results/ci_baseline.json
+            output: evals/reports/results/ci_baseline.json
           - profile: hybrid
             filter: hybrid
-            output: Eval/results/ci_hybrid.json
+            output: evals/reports/results/ci_hybrid.json
           - profile: hybrid
             filter: hybrid_rag_sql
-            output: Eval/results/ci_hybrid_sql.json
+            output: evals/reports/results/ci_hybrid_sql.json
           - profile: hybrid+rerank+crag
             filter: crag
-            output: Eval/results/ci_crag.json
+            output: evals/reports/results/ci_crag.json
+          - profile: naive
+            filter: clarification
+            output: evals/reports/results/ci_clarification.json
     env:
       OPENAI_API_KEY: test-key
       TAVILY_API_KEY: test-key
@@ -78,11 +135,12 @@ jobs:
 
       - name: Run eval smoke
         run: >
-          python -m Eval.run_ragas
+          python -m evals.runners.run
           --profile "${{ matrix.profile }}"
           --filter "${{ matrix.filter }}"
           --mode fixture
           --scorer heuristic
+          --strict
           --output "${{ matrix.output }}"
 
       - name: Upload eval artifact

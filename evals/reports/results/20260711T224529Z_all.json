@@ -1,0 +1,280 @@
+{
+  "profile": "all",
+  "flags": {
+    "search_mode": "hybrid",
+    "enable_hyde": true,
+    "enable_rerank": true,
+    "enable_crag": true,
+    "enable_self_reflective": true,
+    "top_k": 5
+  },
+  "timestamp_utc": "2026-07-11T22:45:29.689337Z",
+  "filter": null,
+  "mode": "http",
+  "scorer": "llm",
+  "preflight": null,
+  "provenance": {
+    "git_commit": "fa69186a74a659f9b00454f7e13f545e5bcecba8",
+    "environment": "final-local-docker-llm",
+    "collection": "new_adv_rag_documents",
+    "true_documents": 50,
+    "noisy_documents": 324,
+    "total_points": null,
+    "unique_sources": null,
+    "embedding_model": "text-embedding-3-small",
+    "answer_model": "gpt-4o",
+    "grader_model": "gpt-4o-mini",
+    "ci_run_id": null
+  },
+  "rows": [
+    {
+      "id": "q-044",
+      "demonstrates_feature": "sparse",
+      "intent": "rag",
+      "question": "What does ResourceQuota limit inside a namespace?",
+      "answer": "A ResourceQuota in a Kubernetes namespace can limit the total memory requests, memory limits, CPU requests, and CPU limits for all Pods running in that namespace. This affects resource allocation by ensuring that the total resource usage by all Pods does not exceed the specified limits. If a Pod's resource request or limit would cause the namespace to exceed its quota, the Pod's creation or resource resize is rejected.",
+      "contexts": [
+        "[Evidence source: tasks__administer-cluster__manage-resources__quota-memory-cpu-namespace.txt]\n0Mi, limited: requests.memory=1Gi DiscussionAs you have seen in this exercise, you can use a ResourceQuota to restrict the memory request total for all Pods running in a namespace. You can also restrict the totals for memory limit, cpu request, and cpu limit.Instead of managing total resource use within a namespace, you might want to restrict individual Pods, or the containers in those Pods. To achieve that kind of limiting, use a LimitRange.Note:When using in-place Pod resize, ResourceQuota enforcement applies to the resized values. If a resize would cause the namespace to exceed its quota limits, the resize is rejected and the Pod's resources remain unchanged.Clean upDelete your namespace:kubectl delete namespace quota-mem-cpu-example What's nextFor cluster administratorsConfigure Default Memory Requests and Limits for a NamespaceConfigure Default CPU Requests and Limits for a NamespaceConfigure Minimum and Maximum Memory Constraints for a NamespaceConfigure Minimum and Maximum CPU C"
+      ],
+      "ground_truth": "ResourceQuota, namespace, resources",
+      "actual_sources": [
+        "tasks__administer-cluster__manage-resources__quota-memory-cpu-namespace.txt"
+      ],
+      "golden_sources": [
+        "concepts__policy__resource-quotas.txt"
+      ],
+      "forbidden_keywords": [],
+      "forbidden_sources": [],
+      "expected_route": "rag",
+      "actual_route": "rag",
+      "ragas_metrics": {
+        "id": "q-044",
+        "demonstrates_feature": "sparse",
+        "intent": "rag",
+        "question": "What does ResourceQuota limit inside a namespace?",
+        "answer": "A ResourceQuota in a Kubernetes namespace can limit the total memory requests, memory limits, CPU requests, and CPU limits for all Pods running in that namespace. This affects resource allocation by ensuring that the total resource usage by all Pods does not exceed the specified limits. If a Pod's resource request or limit would cause the namespace to exceed its quota, the Pod's creation or resource resize is rejected.",
+        "contexts": [
+          "[Evidence source: tasks__administer-cluster__manage-resources__quota-memory-cpu-namespace.txt]\n0Mi, limited: requests.memory=1Gi DiscussionAs you have seen in this exercise, you can use a ResourceQuota to restrict the memory request total for all Pods running in a namespace. You can also restrict the totals for memory limit, cpu request, and cpu limit.Instead of managing total resource use within a namespace, you might want to restrict individual Pods, or the containers in those Pods. To achieve that kind of limiting, use a LimitRange.Note:When using in-place Pod resize, ResourceQuota enforcement applies to the resized values. If a resize would cause the namespace to exceed its quota limits, the resize is rejected and the Pod's resources remain unchanged.Clean upDelete your namespace:kubectl delete namespace quota-mem-cpu-example What's nextFor cluster administratorsConfigure Default Memory Requests and Limits for a NamespaceConfigure Default CPU Requests and Limits for a NamespaceConfigure Minimum and Maximum Memory Constraints for a NamespaceConfigure Minimum and Maximum CPU C"
+        ],
+        "ground_truth": "ResourceQuota, namespace, resources",
+        "actual_sources": [
+          "tasks__administer-cluster__manage-resources__quota-memory-cpu-namespace.txt"
+        ],
+        "golden_sources": [
+          "concepts__policy__resource-quotas.txt"
+        ],
+        "forbidden_keywords": [],
+        "forbidden_sources": [],
+        "expected_route": "rag",
+        "actual_route": "rag",
+        "faithfulness": 1,
+        "answer_relevancy": 1.0,
+        "context_precision": 1.0,
+        "context_recall": 1,
+        "scoring_backend": "llm"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "quota",
+          "resource"
+        ],
+        "missed": []
+      },
+      "source_precision": 1.0,
+      "forbidden_source_check": {
+        "passed": true,
+        "hits": []
+      },
+      "route_check": {
+        "passed": true,
+        "expected": "rag",
+        "actual": "rag"
+      }
+    },
+    {
+      "id": "q-045",
+      "demonstrates_feature": "sparse",
+      "intent": "rag",
+      "question": "How do maxSurge and maxUnavailable control a Deployment rollout?",
+      "answer": "In a Kubernetes Deployment rollout, 'maxSurge' and 'maxUnavailable' are parameters that control the rolling update process. 'maxSurge' specifies the maximum number of Pods that can be created over the desired number of Pods during the update. It can be set as an absolute number or a percentage of the desired Pods, with the default being 25%. This allows the new ReplicaSet to be scaled up immediately, ensuring that the total number of Pods does not exceed the specified percentage of the desired Pods. 'maxUnavailable', on the other hand, specifies the maximum number of Pods that can be unavailable during the update. It also can be set as an absolute number or a percentage, with the default being 25%. This ensures that at least a certain percentage of the desired Pods are available at all times during the update. Together, these parameters help manage the balance between availability and resource usage during a rolling update.",
+      "contexts": [
+        "[Evidence source: concepts__workloads__controllers__deployment.txt]\n/1 Running 0 25s nginx-deployment-3066724191-08mng 0/1 ImagePullBackOff 0 6s Note:The Deployment controller stops the bad rollout automatically, and stops scaling up the new ReplicaSet. This depends on the rollingUpdate parameters (maxUnavailable specifically) that you have specified. Kubernetes by default sets the value to 25%.Get the description of the Deployment:kubectl describe deployment The output is similar to this:Name: nginx-deployment Namespace: default CreationTimestamp: Tue, 15 Mar 2016 14:48:04 -0700 Labels: app=nginx Selector: app=nginx Replicas: 3 desired | 1 updated | 4 total | 3 available | 1 unavailable StrategyType: RollingUpdate MinReadySeconds: 0 RollingUpdateStrategy: 25% max unavailable, 25% max surge Pod Template: Labels: app=nginx Containers: nginx: Image: nginx:1.161 Port: 80/TCP Host Port: 0/TCP Environment: <none> Mounts: <none> Volumes: <none> Conditions: Type Status Reason ---- ------ ------ Available True MinimumReplicasAvailable Progressing True ReplicaS",
+        "[Evidence source: concepts__workloads__controllers__deployment.txt]\nSet, and the old ReplicaSet is scaled down to 0.Note:Kubernetes doesn't count terminating Pods when calculating the number of availableReplicas, which must be between replicas - maxUnavailable and replicas + maxSurge. As a result, you might notice that there are more Pods than expected during a rollout, and that the total resources consumed by the Deployment is more than replicas + maxSurge until the terminationGracePeriodSeconds of the terminating Pods expires.Rollover (aka multiple updates in-flight)Each time a new Deployment is observed by the Deployment controller, a ReplicaSet is created to bring up the desired Pods. If the Deployment is updated, the existing ReplicaSet that controls Pods whose labels match .spec.selector but whose template does not match .spec.template is scaled down. Eventually, the new ReplicaSet is scaled to .spec.replicas and all old ReplicaSets is scaled to 0.If you update a Deployment while an existing rollout is in progress, the Deployment creates a new Re",
+        "[Evidence source: concepts__workloads__controllers__deployment.txt]\nhe old ReplicaSets and scale up the new one) when .spec.strategy.type==RollingUpdate. You can specify maxUnavailable and maxSurge to control the rolling update process.Max Unavailable.spec.strategy.rollingUpdate.maxUnavailable is an optional field that specifies the maximum number of Pods that can be unavailable during the update process. The value can be an absolute number (for example, 5) or a percentage of desired Pods (for example, 10%). The absolute number is calculated from percentage by rounding down. The value cannot be 0 if .spec.strategy.rollingUpdate.maxSurge is 0. The default value is 25%.For example, when this value is set to 30%, the old ReplicaSet can be scaled down to 70% of desired Pods immediately when the rolling update starts. Once new Pods are ready, old ReplicaSet can be scaled down further, followed by scaling up the new ReplicaSet, ensuring that the total number of Pods available at all times during the update is at least 70% of the desired Pods.Max Surge.spec.s",
+        "[Evidence source: concepts__workloads__controllers__deployment.txt]\nf Pods available at all times during the update is at least 70% of the desired Pods.Max Surge.spec.strategy.rollingUpdate.maxSurge is an optional field that specifies the maximum number of Pods that can be created over the desired number of Pods. The value can be an absolute number (for example, 5) or a percentage of desired Pods (for example, 10%). The value cannot be 0 if maxUnavailable is 0. The absolute number is calculated from the percentage by rounding up. The default value is 25%.For example, when this value is set to 30%, the new ReplicaSet can be scaled up immediately when the rolling update starts, such that the total number of old and new Pods does not exceed 130% of desired Pods. Once old Pods have been killed, the new ReplicaSet can be scaled up further, ensuring that the total number of Pods running at any time during the update is at most 130% of desired Pods.Here are some Rolling Update Deployment examples that use the maxUnavailable and maxSurge:Max UnavailableMax Sur",
+        "[Evidence source: reference__kubernetes-api__workload-resources__deployment-v1.pdf]\new ones.\"RollingUpdate\" Replace the old ReplicaSets by new one using rolling update i.e gradually scale down the old ReplicaSets and scale up the new one.strategy.rollingUpdate (RollingUpdateDeployment)Rolling update config params. Present only if DeploymentStrategyType = RollingUpdate.Spec to control the desired behavior of rolling update.strategy.rollingUpdate.maxSurge (IntOrString)The maximum number of pods that can be scheduled above the desired number of pods. Value can be an absolute number (ex: 5) or a percentage of desired pods (ex: 10%). This can not be 0 if MaxUnavailable is 0. Absolute number is calculated from percentage by rounding up. Defaults to 25%. Example: when this is set to 30%, the new ReplicaSet can be scaled up immediately when the rolling update starts, such that the total number of old and new pods do not exceed 130% of desired pods. Once old pods have been killed, new ReplicaSet can be scaled up further, ensuring that total number of pods running at any time d"
+      ],
+      "ground_truth": "maxSurge, maxUnavailable, rolling update",
+      "actual_sources": [
+        "concepts__workloads__controllers__deployment.txt",
+        "reference__kubernetes-api__workload-resources__deployment-v1.pdf"
+      ],
+      "golden_sources": [
+        "concepts__workloads__controllers__deployment.txt"
+      ],
+      "forbidden_keywords": [],
+      "forbidden_sources": [],
+      "expected_route": "rag",
+      "actual_route": "rag",
+      "ragas_metrics": {
+        "id": "q-045",
+        "demonstrates_feature": "sparse",
+        "intent": "rag",
+        "question": "How do maxSurge and maxUnavailable control a Deployment rollout?",
+        "answer": "In a Kubernetes Deployment rollout, 'maxSurge' and 'maxUnavailable' are parameters that control the rolling update process. 'maxSurge' specifies the maximum number of Pods that can be created over the desired number of Pods during the update. It can be set as an absolute number or a percentage of the desired Pods, with the default being 25%. This allows the new ReplicaSet to be scaled up immediately, ensuring that the total number of Pods does not exceed the specified percentage of the desired Pods. 'maxUnavailable', on the other hand, specifies the maximum number of Pods that can be unavailable during the update. It also can be set as an absolute number or a percentage, with the default being 25%. This ensures that at least a certain percentage of the desired Pods are available at all times during the update. Together, these parameters help manage the balance between availability and resource usage during a rolling update.",
+        "contexts": [
+          "[Evidence source: concepts__workloads__controllers__deployment.txt]\n/1 Running 0 25s nginx-deployment-3066724191-08mng 0/1 ImagePullBackOff 0 6s Note:The Deployment controller stops the bad rollout automatically, and stops scaling up the new ReplicaSet. This depends on the rollingUpdate parameters (maxUnavailable specifically) that you have specified. Kubernetes by default sets the value to 25%.Get the description of the Deployment:kubectl describe deployment The output is similar to this:Name: nginx-deployment Namespace: default CreationTimestamp: Tue, 15 Mar 2016 14:48:04 -0700 Labels: app=nginx Selector: app=nginx Replicas: 3 desired | 1 updated | 4 total | 3 available | 1 unavailable StrategyType: RollingUpdate MinReadySeconds: 0 RollingUpdateStrategy: 25% max unavailable, 25% max surge Pod Template: Labels: app=nginx Containers: nginx: Image: nginx:1.161 Port: 80/TCP Host Port: 0/TCP Environment: <none> Mounts: <none> Volumes: <none> Conditions: Type Status Reason ---- ------ ------ Available True MinimumReplicasAvailable Progressing True ReplicaS",
+          "[Evidence source: concepts__workloads__controllers__deployment.txt]\nSet, and the old ReplicaSet is scaled down to 0.Note:Kubernetes doesn't count terminating Pods when calculating the number of availableReplicas, which must be between replicas - maxUnavailable and replicas + maxSurge. As a result, you might notice that there are more Pods than expected during a rollout, and that the total resources consumed by the Deployment is more than replicas + maxSurge until the terminationGracePeriodSeconds of the terminating Pods expires.Rollover (aka multiple updates in-flight)Each time a new Deployment is observed by the Deployment controller, a ReplicaSet is created to bring up the desired Pods. If the Deployment is updated, the existing ReplicaSet that controls Pods whose labels match .spec.selector but whose template does not match .spec.template is scaled down. Eventually, the new ReplicaSet is scaled to .spec.replicas and all old ReplicaSets is scaled to 0.If you update a Deployment while an existing rollout is in progress, the Deployment creates a new Re",
+          "[Evidence source: concepts__workloads__controllers__deployment.txt]\nhe old ReplicaSets and scale up the new one) when .spec.strategy.type==RollingUpdate. You can specify maxUnavailable and maxSurge to control the rolling update process.Max Unavailable.spec.strategy.rollingUpdate.maxUnavailable is an optional field that specifies the maximum number of Pods that can be unavailable during the update process. The value can be an absolute number (for example, 5) or a percentage of desired Pods (for example, 10%). The absolute number is calculated from percentage by rounding down. The value cannot be 0 if .spec.strategy.rollingUpdate.maxSurge is 0. The default value is 25%.For example, when this value is set to 30%, the old ReplicaSet can be scaled down to 70% of desired Pods immediately when the rolling update starts. Once new Pods are ready, old ReplicaSet can be scaled down further, followed by scaling up the new ReplicaSet, ensuring that the total number of Pods available at all times during the update is at least 70% of the desired Pods.Max Surge.spec.s",
+          "[Evidence source: concepts__workloads__controllers__deployment.txt]\nf Pods available at all times during the update is at least 70% of the desired Pods.Max Surge.spec.strategy.rollingUpdate.maxSurge is an optional field that specifies the maximum number of Pods that can be created over the desired number of Pods. The value can be an absolute number (for example, 5) or a percentage of desired Pods (for example, 10%). The value cannot be 0 if maxUnavailable is 0. The absolute number is calculated from the percentage by rounding up. The default value is 25%.For example, when this value is set to 30%, the new ReplicaSet can be scaled up immediately when the rolling update starts, such that the total number of old and new Pods does not exceed 130% of desired Pods. Once old Pods have been killed, the new ReplicaSet can be scaled up further, ensuring that the total number of Pods running at any time during the update is at most 130% of desired Pods.Here are some Rolling Update Deployment examples that use the maxUnavailable and maxSurge:Max UnavailableMax Sur",
+          "[Evidence source: reference__kubernetes-api__workload-resources__deployment-v1.pdf]\new ones.\"RollingUpdate\" Replace the old ReplicaSets by new one using rolling update i.e gradually scale down the old ReplicaSets and scale up the new one.strategy.rollingUpdate (RollingUpdateDeployment)Rolling update config params. Present only if DeploymentStrategyType = RollingUpdate.Spec to control the desired behavior of rolling update.strategy.rollingUpdate.maxSurge (IntOrString)The maximum number of pods that can be scheduled above the desired number of pods. Value can be an absolute number (ex: 5) or a percentage of desired pods (ex: 10%). This can not be 0 if MaxUnavailable is 0. Absolute number is calculated from percentage by rounding up. Defaults to 25%. Example: when this is set to 30%, the new ReplicaSet can be scaled up immediately when the rolling update starts, such that the total number of old and new pods do not exceed 130% of desired pods. Once old pods have been killed, new ReplicaSet can be scaled up further, ensuring that total number of pods running at any time d"
+        ],
+        "ground_truth": "maxSurge, maxUnavailable, rolling update",
+        "actual_sources": [
+          "concepts__workloads__controllers__deployment.txt",
+          "reference__kubernetes-api__workload-resources__deployment-v1.pdf"
+        ],
+        "golden_sources": [
+          "concepts__workloads__controllers__deployment.txt"
+        ],
+        "forbidden_keywords": [],
+        "forbidden_sources": [],
+        "expected_route": "rag",
+        "actual_route": "rag",
+        "faithfulness": 1,
+        "answer_relevancy": 1.0,
+        "context_precision": 1.0,
+        "context_recall": 1,
+        "scoring_backend": "llm"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "concept",
+          "concepts",
+          "concepts__workloads__controllers__deployment",
+          "controller",
+          "controllers",
+          "deployment",
+          "workload",
+          "workloads"
+        ],
+        "missed": []
+      },
+      "source_precision": 1.0,
+      "forbidden_source_check": {
+        "passed": true,
+        "hits": []
+      },
+      "route_check": {
+        "passed": true,
+        "expected": "rag",
+        "actual": "rag"
+      }
+    },
+    {
+      "id": "q-046",
+      "demonstrates_feature": "sparse",
+      "intent": "rag",
+      "question": "Where is serviceAccountName configured for a Pod?",
+      "answer": "The serviceAccountName for a Pod is configured in the Pod's specification under the field .spec.serviceAccountName. If this field is not specified, Kubernetes automatically assigns the default ServiceAccount of the namespace to the Pod.",
+      "contexts": [
+        "[Evidence source: tasks__configure-pod-container__configure-service-account.txt]\nials on /var/run/secrets/kubernetes.io/serviceaccount/token for a service account by setting automountServiceAccountToken: false on the ServiceAccount:For example:apiVersion: v1 kind: ServiceAccount metadata: name: build-robot automountServiceAccountToken: false ... You can also opt out of automounting API credentials for a particular Pod:apiVersion: v1 kind: Pod metadata: name: my-pod spec: serviceAccountName: build-robot automountServiceAccountToken: false ... If both the ServiceAccount and the Pod's .spec specify a value for automountServiceAccountToken, the Pod spec takes precedence.Use more than one ServiceAccountEvery namespace has at least one ServiceAccount: the default ServiceAccount resource, called default. You can list all ServiceAccount resources in your current namespace with:kubectl get serviceaccounts The output is similar to this:NAME SECRETS AGE default 1 1d You can create additional ServiceAccount objects like this:kubectl apply -f - <<EOF apiVersion: v1 kind: Servic",
+        "[Evidence source: tasks__configure-pod-container__configure-service-account.txt]\nme field of a Pod that already exists.Note:The .spec.serviceAccount field is a deprecated alias for .spec.serviceAccountName. If you want to remove the fields from a workload resource, set both fields to empty explicitly on the pod template.CleanupIf you tried creating build-robot ServiceAccount from the example above, you can clean it up by running:kubectl delete serviceaccount/build-robot Manually create an API token for a ServiceAccountSuppose you have an existing service account named \"build-robot\" as mentioned earlier.You can get a time-limited API token for that ServiceAccount using kubectl:kubectl create token build-robot The output from that command is a token that you can use to authenticate as that ServiceAccount. You can request a specific token duration using the --duration command line argument to kubectl create token (the actual duration of the issued token might be shorter, or could even be longer).FEATURE STATE: Kubernetes v1.33 [stable](enabled by default)Using kubectl",
+        "[Evidence source: tasks__configure-pod-container__configure-service-account.txt]\nem:serviceaccount:kube-system:coredns\" } Launch a Pod using service account token projectionTo provide a Pod with a token with an audience of vault and a validity duration of two hours, you could define a Pod manifest that is similar to:pods/pod-projected-svc-token.yaml apiVersion: v1 kind: Pod metadata: name: nginx spec: containers: - image: nginx name: nginx volumeMounts: - mountPath: /var/run/secrets/tokens name: vault-token serviceAccountName: build-robot volumes: - name: vault-token projected: sources: - serviceAccountToken: path: vault-token expirationSeconds: 7200 audience: vault Create the Pod:kubectl create -f https://k8s.io/examples/pods/pod-projected-svc-token.yaml The kubelet will: request and store the token on behalf of the Pod; make the token available to the Pod at a configurable file path; and refresh the token as it approaches expiration. The kubelet proactively requests rotation for the token if it is older than 80% of its total time-to-live (TTL), or if the token is",
+        "[Evidence source: tasks__configure-pod-container__configure-service-account.txt]\nith at least two nodes that are not acting as control plane hosts. If you do not already have a cluster, you can create one by using minikube or you can use one of these Kubernetes playgrounds:iximiuz LabsKillercodaKodeKloudUse the default service account to access the API serverWhen Pods contact the API server, Pods authenticate as a particular ServiceAccount (for example, default). There is always at least one ServiceAccount in each namespace.Every Kubernetes namespace contains at least one ServiceAccount: the default ServiceAccount for that namespace, named default. If you do not specify a ServiceAccount when you create a Pod, Kubernetes automatically assigns the ServiceAccount named default in that namespace.You can fetch the details for a Pod you have created. For example:kubectl get pods/<podname> -o yaml In the output, you see a field spec.serviceAccountName. Kubernetes automatically sets that value if you don't specify it when you create a Pod.An application running inside a Po"
+      ],
+      "ground_truth": "serviceAccountName, Pod, ServiceAccount",
+      "actual_sources": [
+        "tasks__configure-pod-container__configure-service-account.txt"
+      ],
+      "golden_sources": [
+        "tasks__configure-pod-container__configure-service-account.txt"
+      ],
+      "forbidden_keywords": [],
+      "forbidden_sources": [],
+      "expected_route": "rag",
+      "actual_route": "rag",
+      "ragas_metrics": {
+        "id": "q-046",
+        "demonstrates_feature": "sparse",
+        "intent": "rag",
+        "question": "Where is serviceAccountName configured for a Pod?",
+        "answer": "The serviceAccountName for a Pod is configured in the Pod's specification under the field .spec.serviceAccountName. If this field is not specified, Kubernetes automatically assigns the default ServiceAccount of the namespace to the Pod.",
+        "contexts": [
+          "[Evidence source: tasks__configure-pod-container__configure-service-account.txt]\nials on /var/run/secrets/kubernetes.io/serviceaccount/token for a service account by setting automountServiceAccountToken: false on the ServiceAccount:For example:apiVersion: v1 kind: ServiceAccount metadata: name: build-robot automountServiceAccountToken: false ... You can also opt out of automounting API credentials for a particular Pod:apiVersion: v1 kind: Pod metadata: name: my-pod spec: serviceAccountName: build-robot automountServiceAccountToken: false ... If both the ServiceAccount and the Pod's .spec specify a value for automountServiceAccountToken, the Pod spec takes precedence.Use more than one ServiceAccountEvery namespace has at least one ServiceAccount: the default ServiceAccount resource, called default. You can list all ServiceAccount resources in your current namespace with:kubectl get serviceaccounts The output is similar to this:NAME SECRETS AGE default 1 1d You can create additional ServiceAccount objects like this:kubectl apply -f - <<EOF apiVersion: v1 kind: Servic",
+          "[Evidence source: tasks__configure-pod-container__configure-service-account.txt]\nme field of a Pod that already exists.Note:The .spec.serviceAccount field is a deprecated alias for .spec.serviceAccountName. If you want to remove the fields from a workload resource, set both fields to empty explicitly on the pod template.CleanupIf you tried creating build-robot ServiceAccount from the example above, you can clean it up by running:kubectl delete serviceaccount/build-robot Manually create an API token for a ServiceAccountSuppose you have an existing service account named \"build-robot\" as mentioned earlier.You can get a time-limited API token for that ServiceAccount using kubectl:kubectl create token build-robot The output from that command is a token that you can use to authenticate as that ServiceAccount. You can request a specific token duration using the --duration command line argument to kubectl create token (the actual duration of the issued token might be shorter, or could even be longer).FEATURE STATE: Kubernetes v1.33 [stable](enabled by default)Using kubectl",
+          "[Evidence source: tasks__configure-pod-container__configure-service-account.txt]\nem:serviceaccount:kube-system:coredns\" } Launch a Pod using service account token projectionTo provide a Pod with a token with an audience of vault and a validity duration of two hours, you could define a Pod manifest that is similar to:pods/pod-projected-svc-token.yaml apiVersion: v1 kind: Pod metadata: name: nginx spec: containers: - image: nginx name: nginx volumeMounts: - mountPath: /var/run/secrets/tokens name: vault-token serviceAccountName: build-robot volumes: - name: vault-token projected: sources: - serviceAccountToken: path: vault-token expirationSeconds: 7200 audience: vault Create the Pod:kubectl create -f https://k8s.io/examples/pods/pod-projected-svc-token.yaml The kubelet will: request and store the token on behalf of the Pod; make the token available to the Pod at a configurable file path; and refresh the token as it approaches expiration. The kubelet proactively requests rotation for the token if it is older than 80% of its total time-to-live (TTL), or if the token is",
+          "[Evidence source: tasks__configure-pod-container__configure-service-account.txt]\nith at least two nodes that are not acting as control plane hosts. If you do not already have a cluster, you can create one by using minikube or you can use one of these Kubernetes playgrounds:iximiuz LabsKillercodaKodeKloudUse the default service account to access the API serverWhen Pods contact the API server, Pods authenticate as a particular ServiceAccount (for example, default). There is always at least one ServiceAccount in each namespace.Every Kubernetes namespace contains at least one ServiceAccount: the default ServiceAccount for that namespace, named default. If you do not specify a ServiceAccount when you create a Pod, Kubernetes automatically assigns the ServiceAccount named default in that namespace.You can fetch the details for a Pod you have created. For example:kubectl get pods/<podname> -o yaml In the output, you see a field spec.serviceAccountName. Kubernetes automatically sets that value if you don't specify it when you create a Pod.An application running inside a Po"
+        ],
+        "ground_truth": "serviceAccountName, Pod, ServiceAccount",
+        "actual_sources": [
+          "tasks__configure-pod-container__configure-service-account.txt"
+        ],
+        "golden_sources": [
+          "tasks__configure-pod-container__configure-service-account.txt"
+        ],
+        "forbidden_keywords": [],
+        "forbidden_sources": [],
+        "expected_route": "rag",
+        "actual_route": "rag",
+        "faithfulness": 1,
+        "answer_relevancy": 1.0,
+        "context_precision": 1.0,
+        "context_recall": 1,
+        "scoring_backend": "llm"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "account",
+          "configure",
+          "configure-pod-container",
+          "configure-service-account",
+          "container",
+          "pod",
+          "service",
+          "task",
+          "tasks",
+          "tasks__configure-pod-container__configure-service-account"
+        ],
+        "missed": []
+      },
+      "source_precision": 1.0,
+      "forbidden_source_check": {
+        "passed": true,
+        "hits": []
+      },
+      "route_check": {
+        "passed": true,
+        "expected": "rag",
+        "actual": "rag"
+      }
+    }
+  ],
+  "skipped": [],
+  "aggregate": {
+    "context_precision": 1.0,
+    "answer_relevancy": 1.0,
+    "faithfulness": 1,
+    "context_recall": 1,
+    "forbidden_violations": 0,
+    "source_precision": 1.0,
+    "forbidden_source_violations": 0,
+    "route_violations": 0
+  },
+  "threshold_failures": {}
+}

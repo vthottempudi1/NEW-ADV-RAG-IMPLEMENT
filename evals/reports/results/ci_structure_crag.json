@@ -1,0 +1,632 @@
+{
+  "profile": "hybrid+rerank+crag",
+  "flags": {
+    "search_mode": "hybrid",
+    "enable_hyde": false,
+    "enable_rerank": true,
+    "enable_crag": true,
+    "enable_self_reflective": false,
+    "top_k": 5
+  },
+  "timestamp_utc": "2026-07-11T07:23:28.523007Z",
+  "filter": "crag",
+  "mode": "fixture",
+  "scorer": "heuristic",
+  "preflight": null,
+  "provenance": {
+    "git_commit": "fa69186a74a659f9b00454f7e13f545e5bcecba8",
+    "environment": "local",
+    "collection": "new_adv_rag_documents",
+    "true_documents": null,
+    "noisy_documents": null,
+    "total_points": null,
+    "unique_sources": null,
+    "embedding_model": "text-embedding-3-small",
+    "answer_model": "gpt-4o",
+    "grader_model": "gpt-4o-mini",
+    "ci_run_id": null
+  },
+  "rows": [
+    {
+      "id": "q-001",
+      "demonstrates_feature": "baseline",
+      "intent": "rag",
+      "question": "What is a Pod in Kubernetes?",
+      "answer": "Mock RAG answer for q-001: pod, container, namespace.",
+      "contexts": [
+        "[Evidence source: pods.html]\nFixture context for q-001 from pods.html. Question: What is a Pod in Kubernetes? Relevant terms: pod, container, namespace."
+      ],
+      "ground_truth": "pod, container, namespace",
+      "actual_sources": [
+        "pods.html"
+      ],
+      "golden_sources": [
+        "pods.html"
+      ],
+      "forbidden_keywords": [],
+      "ragas_metrics": {
+        "id": "q-001",
+        "demonstrates_feature": "baseline",
+        "intent": "rag",
+        "question": "What is a Pod in Kubernetes?",
+        "answer": "Mock RAG answer for q-001: pod, container, namespace.",
+        "contexts": [
+          "[Evidence source: pods.html]\nFixture context for q-001 from pods.html. Question: What is a Pod in Kubernetes? Relevant terms: pod, container, namespace."
+        ],
+        "ground_truth": "pod, container, namespace",
+        "actual_sources": [
+          "pods.html"
+        ],
+        "golden_sources": [
+          "pods.html"
+        ],
+        "forbidden_keywords": [],
+        "faithfulness": 0.571,
+        "answer_relevancy": 0.5,
+        "context_precision": 1.0,
+        "context_recall": 1.0,
+        "scoring_backend": "heuristic"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "pod",
+          "pods"
+        ],
+        "missed": []
+      }
+    },
+    {
+      "id": "q-002",
+      "demonstrates_feature": "baseline",
+      "intent": "rag",
+      "question": "What is a Kubernetes Deployment and what does it manage?",
+      "answer": "Mock RAG answer for q-002: deployment, replica, rolling update.",
+      "contexts": [
+        "[Evidence source: deployments.html]\nFixture context for q-002 from deployments.html. Question: What is a Kubernetes Deployment and what does it manage? Relevant terms: deployment, replica, rolling update."
+      ],
+      "ground_truth": "deployment, replica, rolling update",
+      "actual_sources": [
+        "deployments.html"
+      ],
+      "golden_sources": [
+        "deployments.html"
+      ],
+      "forbidden_keywords": [],
+      "ragas_metrics": {
+        "id": "q-002",
+        "demonstrates_feature": "baseline",
+        "intent": "rag",
+        "question": "What is a Kubernetes Deployment and what does it manage?",
+        "answer": "Mock RAG answer for q-002: deployment, replica, rolling update.",
+        "contexts": [
+          "[Evidence source: deployments.html]\nFixture context for q-002 from deployments.html. Question: What is a Kubernetes Deployment and what does it manage? Relevant terms: deployment, replica, rolling update."
+        ],
+        "ground_truth": "deployment, replica, rolling update",
+        "actual_sources": [
+          "deployments.html"
+        ],
+        "golden_sources": [
+          "deployments.html"
+        ],
+        "forbidden_keywords": [],
+        "faithfulness": 0.625,
+        "answer_relevancy": 0.25,
+        "context_precision": 1.0,
+        "context_recall": 1.0,
+        "scoring_backend": "heuristic"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "deployment",
+          "deployments"
+        ],
+        "missed": []
+      }
+    },
+    {
+      "id": "q-003",
+      "demonstrates_feature": "baseline",
+      "intent": "rag",
+      "question": "My pod keeps restarting and crashing \u2014 how do I figure out what's wrong?",
+      "answer": "Mock RAG answer for q-003: CrashLoopBackOff, logs, kubectl.",
+      "contexts": [
+        "[Evidence source: troubleshooting-pods.html]\nFixture context for q-003 from troubleshooting-pods.html. Question: My pod keeps restarting and crashing \u2014 how do I figure out what's wrong? Relevant terms: CrashLoopBackOff, logs, kubectl."
+      ],
+      "ground_truth": "CrashLoopBackOff, logs, kubectl",
+      "actual_sources": [
+        "troubleshooting-pods.html"
+      ],
+      "golden_sources": [
+        "troubleshooting-pods.html"
+      ],
+      "forbidden_keywords": [],
+      "ragas_metrics": {
+        "id": "q-003",
+        "demonstrates_feature": "baseline",
+        "intent": "rag",
+        "question": "My pod keeps restarting and crashing \u2014 how do I figure out what's wrong?",
+        "answer": "Mock RAG answer for q-003: CrashLoopBackOff, logs, kubectl.",
+        "contexts": [
+          "[Evidence source: troubleshooting-pods.html]\nFixture context for q-003 from troubleshooting-pods.html. Question: My pod keeps restarting and crashing \u2014 how do I figure out what's wrong? Relevant terms: CrashLoopBackOff, logs, kubectl."
+        ],
+        "ground_truth": "CrashLoopBackOff, logs, kubectl",
+        "actual_sources": [
+          "troubleshooting-pods.html"
+        ],
+        "golden_sources": [
+          "troubleshooting-pods.html"
+        ],
+        "forbidden_keywords": [],
+        "faithfulness": 0.571,
+        "answer_relevancy": 0.0,
+        "context_precision": 1.0,
+        "context_recall": 1.0,
+        "scoring_backend": "heuristic"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "pod",
+          "pods",
+          "troubleshooting",
+          "troubleshooting-pod",
+          "troubleshooting-pods"
+        ],
+        "missed": []
+      }
+    },
+    {
+      "id": "q-004",
+      "demonstrates_feature": "baseline",
+      "intent": "rag",
+      "question": "How do containers share resources within a Pod?",
+      "answer": "Mock RAG answer for q-004: network namespace, volumes, localhost.",
+      "contexts": [
+        "[Evidence source: pods.html]\nFixture context for q-004 from pods.html. Question: How do containers share resources within a Pod? Relevant terms: network namespace, volumes, localhost."
+      ],
+      "ground_truth": "network namespace, volumes, localhost",
+      "actual_sources": [
+        "pods.html"
+      ],
+      "golden_sources": [
+        "pods.html"
+      ],
+      "forbidden_keywords": [],
+      "ragas_metrics": {
+        "id": "q-004",
+        "demonstrates_feature": "baseline",
+        "intent": "rag",
+        "question": "How do containers share resources within a Pod?",
+        "answer": "Mock RAG answer for q-004: network namespace, volumes, localhost.",
+        "contexts": [
+          "[Evidence source: pods.html]\nFixture context for q-004 from pods.html. Question: How do containers share resources within a Pod? Relevant terms: network namespace, volumes, localhost."
+        ],
+        "ground_truth": "network namespace, volumes, localhost",
+        "actual_sources": [
+          "pods.html"
+        ],
+        "golden_sources": [
+          "pods.html"
+        ],
+        "forbidden_keywords": [],
+        "faithfulness": 0.625,
+        "answer_relevancy": 0.0,
+        "context_precision": 1.0,
+        "context_recall": 1.0,
+        "scoring_backend": "heuristic"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "pod",
+          "pods"
+        ],
+        "missed": []
+      }
+    },
+    {
+      "id": "q-017",
+      "demonstrates_feature": "crag",
+      "intent": "web_fallback",
+      "question": "What's the weather forecast for Seattle this weekend?",
+      "answer": "Mock web fallback answer for q-017: weather, Seattle.",
+      "contexts": [
+        "[Evidence source: tavily_web]\nFixture context for q-017 from tavily_web. Question: What's the weather forecast for Seattle this weekend? Relevant terms: weather, Seattle."
+      ],
+      "ground_truth": "weather, Seattle",
+      "actual_sources": [
+        "tavily_web"
+      ],
+      "golden_sources": [
+        "tavily_web"
+      ],
+      "forbidden_keywords": [],
+      "ragas_metrics": {
+        "id": "q-017",
+        "demonstrates_feature": "crag",
+        "intent": "web_fallback",
+        "question": "What's the weather forecast for Seattle this weekend?",
+        "answer": "Mock web fallback answer for q-017: weather, Seattle.",
+        "contexts": [
+          "[Evidence source: tavily_web]\nFixture context for q-017 from tavily_web. Question: What's the weather forecast for Seattle this weekend? Relevant terms: weather, Seattle."
+        ],
+        "ground_truth": "weather, Seattle",
+        "actual_sources": [
+          "tavily_web"
+        ],
+        "golden_sources": [
+          "tavily_web"
+        ],
+        "forbidden_keywords": [],
+        "faithfulness": 0.571,
+        "answer_relevancy": 0.4,
+        "context_precision": 1.0,
+        "context_recall": 1.0,
+        "scoring_backend": "heuristic"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "tavily",
+          "tavily_web",
+          "web"
+        ],
+        "missed": []
+      }
+    },
+    {
+      "id": "q-018",
+      "demonstrates_feature": "crag",
+      "intent": "web_fallback",
+      "question": "Explain the theory of quantum entanglement.",
+      "answer": "Mock web fallback answer for q-018: quantum, entanglement.",
+      "contexts": [
+        "[Evidence source: tavily_web]\nFixture context for q-018 from tavily_web. Question: Explain the theory of quantum entanglement. Relevant terms: quantum, entanglement."
+      ],
+      "ground_truth": "quantum, entanglement",
+      "actual_sources": [
+        "tavily_web"
+      ],
+      "golden_sources": [
+        "tavily_web"
+      ],
+      "forbidden_keywords": [],
+      "ragas_metrics": {
+        "id": "q-018",
+        "demonstrates_feature": "crag",
+        "intent": "web_fallback",
+        "question": "Explain the theory of quantum entanglement.",
+        "answer": "Mock web fallback answer for q-018: quantum, entanglement.",
+        "contexts": [
+          "[Evidence source: tavily_web]\nFixture context for q-018 from tavily_web. Question: Explain the theory of quantum entanglement. Relevant terms: quantum, entanglement."
+        ],
+        "ground_truth": "quantum, entanglement",
+        "actual_sources": [
+          "tavily_web"
+        ],
+        "golden_sources": [
+          "tavily_web"
+        ],
+        "forbidden_keywords": [],
+        "faithfulness": 0.571,
+        "answer_relevancy": 0.5,
+        "context_precision": 1.0,
+        "context_recall": 1.0,
+        "scoring_backend": "heuristic"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "tavily",
+          "tavily_web",
+          "web"
+        ],
+        "missed": []
+      }
+    },
+    {
+      "id": "q-019",
+      "demonstrates_feature": "crag",
+      "intent": "web_fallback",
+      "question": "What is the latest Kubernetes 1.34 release date and what new features did it ship?",
+      "answer": "Mock web fallback answer for q-019: kubernetes, 1.34.",
+      "contexts": [
+        "[Evidence source: tavily_web]\nFixture context for q-019 from tavily_web. Question: What is the latest Kubernetes 1.34 release date and what new features did it ship? Relevant terms: kubernetes, 1.34."
+      ],
+      "ground_truth": "kubernetes, 1.34",
+      "actual_sources": [
+        "tavily_web"
+      ],
+      "golden_sources": [
+        "tavily_web"
+      ],
+      "forbidden_keywords": [],
+      "ragas_metrics": {
+        "id": "q-019",
+        "demonstrates_feature": "crag",
+        "intent": "web_fallback",
+        "question": "What is the latest Kubernetes 1.34 release date and what new features did it ship?",
+        "answer": "Mock web fallback answer for q-019: kubernetes, 1.34.",
+        "contexts": [
+          "[Evidence source: tavily_web]\nFixture context for q-019 from tavily_web. Question: What is the latest Kubernetes 1.34 release date and what new features did it ship? Relevant terms: kubernetes, 1.34."
+        ],
+        "ground_truth": "kubernetes, 1.34",
+        "actual_sources": [
+          "tavily_web"
+        ],
+        "golden_sources": [
+          "tavily_web"
+        ],
+        "forbidden_keywords": [],
+        "faithfulness": 0.571,
+        "answer_relevancy": 0.222,
+        "context_precision": 1.0,
+        "context_recall": 1.0,
+        "scoring_backend": "heuristic"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "tavily",
+          "tavily_web",
+          "web"
+        ],
+        "missed": []
+      }
+    },
+    {
+      "id": "q-020",
+      "demonstrates_feature": "crag",
+      "intent": "web_fallback",
+      "question": "What are the steps to deploy ArgoCD on a fresh Kubernetes cluster?",
+      "answer": "Mock web fallback answer for q-020: argo, argocd.",
+      "contexts": [
+        "[Evidence source: tavily_web]\nFixture context for q-020 from tavily_web. Question: What are the steps to deploy ArgoCD on a fresh Kubernetes cluster? Relevant terms: argo, argocd."
+      ],
+      "ground_truth": "argo, argocd",
+      "actual_sources": [
+        "tavily_web"
+      ],
+      "golden_sources": [
+        "tavily_web"
+      ],
+      "forbidden_keywords": [],
+      "ragas_metrics": {
+        "id": "q-020",
+        "demonstrates_feature": "crag",
+        "intent": "web_fallback",
+        "question": "What are the steps to deploy ArgoCD on a fresh Kubernetes cluster?",
+        "answer": "Mock web fallback answer for q-020: argo, argocd.",
+        "contexts": [
+          "[Evidence source: tavily_web]\nFixture context for q-020 from tavily_web. Question: What are the steps to deploy ArgoCD on a fresh Kubernetes cluster? Relevant terms: argo, argocd."
+        ],
+        "ground_truth": "argo, argocd",
+        "actual_sources": [
+          "tavily_web"
+        ],
+        "golden_sources": [
+          "tavily_web"
+        ],
+        "forbidden_keywords": [],
+        "faithfulness": 0.571,
+        "answer_relevancy": 0.167,
+        "context_precision": 1.0,
+        "context_recall": 1.0,
+        "scoring_backend": "heuristic"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "tavily",
+          "tavily_web",
+          "web"
+        ],
+        "missed": []
+      }
+    },
+    {
+      "id": "q-056",
+      "demonstrates_feature": "crag",
+      "intent": "web_fallback",
+      "question": "What is the current recommended way to install Cilium on a new Kubernetes cluster?",
+      "answer": "Mock web fallback answer for q-056: Cilium, install.",
+      "contexts": [
+        "[Evidence source: tavily_web]\nFixture context for q-056 from tavily_web. Question: What is the current recommended way to install Cilium on a new Kubernetes cluster? Relevant terms: Cilium, install."
+      ],
+      "ground_truth": "Cilium, install",
+      "actual_sources": [
+        "tavily_web"
+      ],
+      "golden_sources": [
+        "tavily_web"
+      ],
+      "forbidden_keywords": [],
+      "ragas_metrics": {
+        "id": "q-056",
+        "demonstrates_feature": "crag",
+        "intent": "web_fallback",
+        "question": "What is the current recommended way to install Cilium on a new Kubernetes cluster?",
+        "answer": "Mock web fallback answer for q-056: Cilium, install.",
+        "contexts": [
+          "[Evidence source: tavily_web]\nFixture context for q-056 from tavily_web. Question: What is the current recommended way to install Cilium on a new Kubernetes cluster? Relevant terms: Cilium, install."
+        ],
+        "ground_truth": "Cilium, install",
+        "actual_sources": [
+          "tavily_web"
+        ],
+        "golden_sources": [
+          "tavily_web"
+        ],
+        "forbidden_keywords": [],
+        "faithfulness": 0.571,
+        "answer_relevancy": 0.25,
+        "context_precision": 1.0,
+        "context_recall": 1.0,
+        "scoring_backend": "heuristic"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "tavily",
+          "tavily_web",
+          "web"
+        ],
+        "missed": []
+      }
+    },
+    {
+      "id": "q-057",
+      "demonstrates_feature": "crag",
+      "intent": "web_fallback",
+      "question": "What Kubernetes versions are currently supported by Amazon EKS?",
+      "answer": "Mock web fallback answer for q-057: Kubernetes, EKS, version.",
+      "contexts": [
+        "[Evidence source: tavily_web]\nFixture context for q-057 from tavily_web. Question: What Kubernetes versions are currently supported by Amazon EKS? Relevant terms: Kubernetes, EKS, version."
+      ],
+      "ground_truth": "Kubernetes, EKS, version",
+      "actual_sources": [
+        "tavily_web"
+      ],
+      "golden_sources": [
+        "tavily_web"
+      ],
+      "forbidden_keywords": [],
+      "ragas_metrics": {
+        "id": "q-057",
+        "demonstrates_feature": "crag",
+        "intent": "web_fallback",
+        "question": "What Kubernetes versions are currently supported by Amazon EKS?",
+        "answer": "Mock web fallback answer for q-057: Kubernetes, EKS, version.",
+        "contexts": [
+          "[Evidence source: tavily_web]\nFixture context for q-057 from tavily_web. Question: What Kubernetes versions are currently supported by Amazon EKS? Relevant terms: Kubernetes, EKS, version."
+        ],
+        "ground_truth": "Kubernetes, EKS, version",
+        "actual_sources": [
+          "tavily_web"
+        ],
+        "golden_sources": [
+          "tavily_web"
+        ],
+        "forbidden_keywords": [],
+        "faithfulness": 0.625,
+        "answer_relevancy": 0.286,
+        "context_precision": 1.0,
+        "context_recall": 1.0,
+        "scoring_backend": "heuristic"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "tavily",
+          "tavily_web",
+          "web"
+        ],
+        "missed": []
+      }
+    },
+    {
+      "id": "q-058",
+      "demonstrates_feature": "crag",
+      "intent": "web_fallback",
+      "question": "What is the latest stable Argo CD release and its upgrade guidance?",
+      "answer": "Mock web fallback answer for q-058: Argo CD, release, upgrade.",
+      "contexts": [
+        "[Evidence source: tavily_web]\nFixture context for q-058 from tavily_web. Question: What is the latest stable Argo CD release and its upgrade guidance? Relevant terms: Argo CD, release, upgrade."
+      ],
+      "ground_truth": "Argo CD, release, upgrade",
+      "actual_sources": [
+        "tavily_web"
+      ],
+      "golden_sources": [
+        "tavily_web"
+      ],
+      "forbidden_keywords": [],
+      "ragas_metrics": {
+        "id": "q-058",
+        "demonstrates_feature": "crag",
+        "intent": "web_fallback",
+        "question": "What is the latest stable Argo CD release and its upgrade guidance?",
+        "answer": "Mock web fallback answer for q-058: Argo CD, release, upgrade.",
+        "contexts": [
+          "[Evidence source: tavily_web]\nFixture context for q-058 from tavily_web. Question: What is the latest stable Argo CD release and its upgrade guidance? Relevant terms: Argo CD, release, upgrade."
+        ],
+        "ground_truth": "Argo CD, release, upgrade",
+        "actual_sources": [
+          "tavily_web"
+        ],
+        "golden_sources": [
+          "tavily_web"
+        ],
+        "forbidden_keywords": [],
+        "faithfulness": 0.667,
+        "answer_relevancy": 0.5,
+        "context_precision": 1.0,
+        "context_recall": 1.0,
+        "scoring_backend": "heuristic"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "tavily",
+          "tavily_web",
+          "web"
+        ],
+        "missed": []
+      }
+    }
+  ],
+  "skipped": [],
+  "aggregate": {
+    "answer_relevancy": 0.28,
+    "faithfulness": 0.594,
+    "context_recall": 1.0,
+    "context_precision": 1.0,
+    "forbidden_violations": 0
+  }
+}

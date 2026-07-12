@@ -1,0 +1,184 @@
+{
+  "profile": "all",
+  "flags": {
+    "search_mode": "hybrid",
+    "enable_hyde": true,
+    "enable_rerank": true,
+    "enable_crag": true,
+    "enable_self_reflective": true,
+    "top_k": 5
+  },
+  "timestamp_utc": "2026-06-09T18:11:17.302594Z",
+  "filter": null,
+  "mode": "service",
+  "rows": [],
+  "skipped": [
+    {
+      "id": "q-001",
+      "reason": "service invoker is not implemented in this repo yet"
+    },
+    {
+      "id": "q-002",
+      "reason": "service invoker is not implemented in this repo yet"
+    },
+    {
+      "id": "q-003",
+      "reason": "service invoker is not implemented in this repo yet"
+    },
+    {
+      "id": "q-004",
+      "reason": "service invoker is not implemented in this repo yet"
+    },
+    {
+      "id": "q-005",
+      "reason": "service invoker is not implemented in this repo yet"
+    },
+    {
+      "id": "q-006",
+      "reason": "service invoker is not implemented in this repo yet"
+    },
+    {
+      "id": "q-007",
+      "reason": "service invoker is not implemented in this repo yet"
+    },
+    {
+      "id": "q-008",
+      "reason": "service invoker is not implemented in this repo yet"
+    },
+    {
+      "id": "q-009",
+      "reason": "service invoker is not implemented in this repo yet"
+    },
+    {
+      "id": "q-010",
+      "reason": "service invoker is not implemented in this repo yet"
+    },
+    {
+      "id": "q-011",
+      "reason": "service invoker is not implemented in this repo yet"
+    },
+    {
+      "id": "q-012",
+      "reason": "service invoker is not implemented in this repo yet"
+    },
+    {
+      "id": "q-013",
+      "reason": "service invoker is not implemented in this repo yet"
+    },
+    {
+      "id": "q-014",
+      "reason": "service invoker is not implemented in this repo yet"
+    },
+    {
+      "id": "q-015",
+      "reason": "service invoker is not implemented in this repo yet"
+    },
+    {
+      "id": "q-016",
+      "reason": "service invoker is not implemented in this repo yet"
+    },
+    {
+      "id": "q-017",
+      "reason": "service invoker is not implemented in this repo yet"
+    },
+    {
+      "id": "q-018",
+      "reason": "service invoker is not implemented in this repo yet"
+    },
+    {
+      "id": "q-019",
+      "reason": "service invoker is not implemented in this repo yet"
+    },
+    {
+      "id": "q-020",
+      "reason": "service invoker is not implemented in this repo yet"
+    },
+    {
+      "id": "q-021",
+      "reason": "service invoker is not implemented in this repo yet"
+    },
+    {
+      "id": "q-022",
+      "reason": "service invoker is not implemented in this repo yet"
+    },
+    {
+      "id": "q-023",
+      "reason": "service invoker is not implemented in this repo yet"
+    },
+    {
+      "id": "q-024",
+      "reason": "service invoker is not implemented in this repo yet"
+    },
+    {
+      "id": "q-025",
+      "reason": "intent 'sql' is not supported by the current service invoker"
+    },
+    {
+      "id": "q-026",
+      "reason": "intent 'sql' is not supported by the current service invoker"
+    },
+    {
+      "id": "q-027",
+      "reason": "intent 'sql' is not supported by the current service invoker"
+    },
+    {
+      "id": "q-028",
+      "reason": "intent 'sql' is not supported by the current service invoker"
+    },
+    {
+      "id": "q-029",
+      "reason": "intent 'hybrid' is not supported by the current service invoker"
+    },
+    {
+      "id": "q-030",
+      "reason": "intent 'hybrid' is not supported by the current service invoker"
+    },
+    {
+      "id": "q-031",
+      "reason": "intent 'hybrid' is not supported by the current service invoker"
+    },
+    {
+      "id": "q-032",
+      "reason": "intent 'hybrid' is not supported by the current service invoker"
+    },
+    {
+      "id": "q-033",
+      "reason": "service invoker is not implemented in this repo yet"
+    },
+    {
+      "id": "q-034",
+      "reason": "service invoker is not implemented in this repo yet"
+    },
+    {
+      "id": "q-035",
+      "reason": "service invoker is not implemented in this repo yet"
+    },
+    {
+      "id": "q-036",
+      "reason": "service invoker is not implemented in this repo yet"
+    },
+    {
+      "id": "q-037",
+      "reason": "intent 'sql' is not supported by the current service invoker"
+    },
+    {
+      "id": "q-038",
+      "reason": "service invoker is not implemented in this repo yet"
+    },
+    {
+      "id": "q-039",
+      "reason": "service invoker is not implemented in this repo yet"
+    },
+    {
+      "id": "q-040",
+      "reason": "service invoker is not implemented in this repo yet"
+    }
+  ],
+  "aggregate": {
+    "faithfulness": null,
+    "context_precision": null,
+    "context_recall": null,
+    "answer_relevancy": null,
+    "forbidden_violations": 0
+  }
+}

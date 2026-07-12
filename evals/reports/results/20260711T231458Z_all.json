@@ -1,0 +1,246 @@
+{
+  "profile": "all",
+  "flags": {
+    "search_mode": "hybrid",
+    "enable_hyde": true,
+    "enable_rerank": true,
+    "enable_crag": true,
+    "enable_self_reflective": true,
+    "top_k": 5
+  },
+  "timestamp_utc": "2026-07-11T23:14:58.258552Z",
+  "filter": null,
+  "mode": "http",
+  "scorer": "llm",
+  "preflight": null,
+  "provenance": {
+    "git_commit": "fa69186a74a659f9b00454f7e13f545e5bcecba8",
+    "environment": "frozen-unseen-baseline",
+    "collection": "new_adv_rag_documents",
+    "true_documents": 50,
+    "noisy_documents": 324,
+    "total_points": null,
+    "unique_sources": null,
+    "embedding_model": "text-embedding-3-small",
+    "answer_model": "gpt-4o",
+    "grader_model": "gpt-4o-mini",
+    "ci_run_id": null
+  },
+  "rows": [
+    {
+      "id": "q-133",
+      "demonstrates_feature": "clarification",
+      "intent": "clarification",
+      "question": "Can you make this bigger?",
+      "answer": "What resource should be made larger: a workload replica count, Pod resources, node pool, or volume?",
+      "contexts": [],
+      "ground_truth": "Ask whether the user means replica count, Pod CPU or memory, a node pool, persistent storage, or another resource before selecting a scaling procedure.\n",
+      "actual_sources": [],
+      "golden_sources": [],
+      "forbidden_keywords": [],
+      "forbidden_sources": [
+        ".pdf",
+        "http://",
+        "https://"
+      ],
+      "expected_route": "clarification",
+      "actual_route": "clarification",
+      "ragas_metrics": {
+        "id": "q-133",
+        "demonstrates_feature": "clarification",
+        "intent": "clarification",
+        "question": "Can you make this bigger?",
+        "answer": "What resource should be made larger: a workload replica count, Pod resources, node pool, or volume?",
+        "contexts": [],
+        "ground_truth": "Ask whether the user means replica count, Pod CPU or memory, a node pool, persistent storage, or another resource before selecting a scaling procedure.\n",
+        "actual_sources": [],
+        "golden_sources": [],
+        "forbidden_keywords": [],
+        "forbidden_sources": [
+          ".pdf",
+          "http://",
+          "https://"
+        ],
+        "expected_route": "clarification",
+        "actual_route": "clarification",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.8,
+        "context_precision": 1.0,
+        "context_recall": 1.0,
+        "scoring_backend": "llm"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 0.0,
+        "matched": [],
+        "missed": []
+      },
+      "source_precision": 1.0,
+      "forbidden_source_check": {
+        "passed": true,
+        "hits": []
+      },
+      "route_check": {
+        "passed": true,
+        "expected": "clarification",
+        "actual": "clarification"
+      }
+    },
+    {
+      "id": "q-134",
+      "demonstrates_feature": "wild",
+      "intent": "rag",
+      "question": "What changed?",
+      "answer": "The provided documents do not contain specific updates or changes as of October 2023. However, they describe key concepts related to Kubernetes network policies and deployment processes. Network policies are deny by default and can only add allow rules. They cannot block localhost access or traffic from the resident node. Changes to network policies may or may not affect existing connections, depending on the network plugin implementation [concepts__services-networking__network-policies.html]. For deployments, a rollout is triggered only when the Pod template is changed, such as updating labels or container images. Scaling does not trigger a rollout. To update a deployment, you can use commands like 'kubectl set image' or 'kubectl edit' to change the container image [concepts__workloads__controllers__deployment.txt].",
+      "contexts": [
+        "[Evidence source: concepts__services-networking__network-policies.html]\ndel for NetworkPolicies are deny by default, with only the ability to add allow rules).The ability to prevent loopback or incoming host traffic (Pods cannot currently block localhost access, nor do they have the ability to block access from their resident node).NetworkPolicy's impact on existing connectionsWhen the set of NetworkPolicies that applies to an existing connection changes - this could happen either due to a change in NetworkPolicies or if the relevant labels of the namespaces/pods selected by the policy (both subject and peers) are changed in the middle of an existing connection - it is implementation defined as to whether the change will take effect for that existing connection or not. Example: A policy is created that leads to denying a previously allowed connection, the underlying network plugin implementation is responsible for defining if that new policy will close the existing connections or not. It is recommended not to modify policies/pods/namespaces in ways that mi",
+        "[Evidence source: concepts__workloads__controllers__deployment.txt]\nymentNote:A Deployment's rollout is triggered if and only if the Deployment's Pod template (that is, .spec.template) is changed, for example if the labels or container images of the template are updated. Other updates, such as scaling the Deployment, do not trigger a rollout.Follow the steps given below to update your Deployment:Let's update the nginx Pods to use the nginx:1.16.1 image instead of the nginx:1.14.2 image.kubectl set image deployment.v1.apps/nginx-deployment nginx=nginx:1.16.1 or use the following command:kubectl set image deployment/nginx-deployment nginx=nginx:1.16.1 where deployment/nginx-deployment indicates the Deployment, nginx indicates the Container the update will take place and nginx:1.16.1 indicates the new image and its tag.The output is similar to:deployment.apps/nginx-deployment image updated Alternatively, you can edit the Deployment and change .spec.template.spec.containers[0].image from nginx:1.14.2 to nginx:1.16.1:kubectl edit deployment/nginx-deployment"
+      ],
+      "ground_truth": "The supplied corpus and question do not identify a system, deployment, incident, time range, or previous state, so the change cannot be determined. Ask for the affected resource and comparison period rather than inventing an explanation.\n",
+      "actual_sources": [
+        "concepts__services-networking__network-policies.html",
+        "concepts__workloads__controllers__deployment.txt"
+      ],
+      "golden_sources": [],
+      "forbidden_keywords": [],
+      "forbidden_sources": [
+        ".pdf",
+        "http://",
+        "https://"
+      ],
+      "expected_route": "rag",
+      "actual_route": "rag",
+      "ragas_metrics": {
+        "id": "q-134",
+        "demonstrates_feature": "wild",
+        "intent": "rag",
+        "question": "What changed?",
+        "answer": "The provided documents do not contain specific updates or changes as of October 2023. However, they describe key concepts related to Kubernetes network policies and deployment processes. Network policies are deny by default and can only add allow rules. They cannot block localhost access or traffic from the resident node. Changes to network policies may or may not affect existing connections, depending on the network plugin implementation [concepts__services-networking__network-policies.html]. For deployments, a rollout is triggered only when the Pod template is changed, such as updating labels or container images. Scaling does not trigger a rollout. To update a deployment, you can use commands like 'kubectl set image' or 'kubectl edit' to change the container image [concepts__workloads__controllers__deployment.txt].",
+        "contexts": [
+          "[Evidence source: concepts__services-networking__network-policies.html]\ndel for NetworkPolicies are deny by default, with only the ability to add allow rules).The ability to prevent loopback or incoming host traffic (Pods cannot currently block localhost access, nor do they have the ability to block access from their resident node).NetworkPolicy's impact on existing connectionsWhen the set of NetworkPolicies that applies to an existing connection changes - this could happen either due to a change in NetworkPolicies or if the relevant labels of the namespaces/pods selected by the policy (both subject and peers) are changed in the middle of an existing connection - it is implementation defined as to whether the change will take effect for that existing connection or not. Example: A policy is created that leads to denying a previously allowed connection, the underlying network plugin implementation is responsible for defining if that new policy will close the existing connections or not. It is recommended not to modify policies/pods/namespaces in ways that mi",
+          "[Evidence source: concepts__workloads__controllers__deployment.txt]\nymentNote:A Deployment's rollout is triggered if and only if the Deployment's Pod template (that is, .spec.template) is changed, for example if the labels or container images of the template are updated. Other updates, such as scaling the Deployment, do not trigger a rollout.Follow the steps given below to update your Deployment:Let's update the nginx Pods to use the nginx:1.16.1 image instead of the nginx:1.14.2 image.kubectl set image deployment.v1.apps/nginx-deployment nginx=nginx:1.16.1 or use the following command:kubectl set image deployment/nginx-deployment nginx=nginx:1.16.1 where deployment/nginx-deployment indicates the Deployment, nginx indicates the Container the update will take place and nginx:1.16.1 indicates the new image and its tag.The output is similar to:deployment.apps/nginx-deployment image updated Alternatively, you can edit the Deployment and change .spec.template.spec.containers[0].image from nginx:1.14.2 to nginx:1.16.1:kubectl edit deployment/nginx-deployment"
+        ],
+        "ground_truth": "The supplied corpus and question do not identify a system, deployment, incident, time range, or previous state, so the change cannot be determined. Ask for the affected resource and comparison period rather than inventing an explanation.\n",
+        "actual_sources": [
+          "concepts__services-networking__network-policies.html",
+          "concepts__workloads__controllers__deployment.txt"
+        ],
+        "golden_sources": [],
+        "forbidden_keywords": [],
+        "forbidden_sources": [
+          ".pdf",
+          "http://",
+          "https://"
+        ],
+        "expected_route": "rag",
+        "actual_route": "rag",
+        "faithfulness": 1,
+        "answer_relevancy": 0.5,
+        "context_precision": 1.0,
+        "context_recall": 0,
+        "scoring_backend": "llm"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 0.0,
+        "matched": [],
+        "missed": []
+      },
+      "source_precision": 0.0,
+      "forbidden_source_check": {
+        "passed": true,
+        "hits": []
+      },
+      "route_check": {
+        "passed": true,
+        "expected": "rag",
+        "actual": "rag"
+      }
+    },
+    {
+      "id": "q-136",
+      "demonstrates_feature": "wild",
+      "intent": "rag",
+      "question": "What will our cluster cost next month?",
+      "answer": "I may not have enough reliable context to answer this fully. Based on the available information:\n\nTo estimate the cost of your Kubernetes cluster for the next month, consider the following factors:\n\n1. **Node Count and Type**: The number and type of nodes (e.g., virtual machines) in your cluster, including their CPU, memory, and storage specifications, as these directly impact costs.\n\n2. **Resource Utilization**: Monitor the CPU and memory usage of your workloads. Over-provisioning resources can lead to unnecessary costs.\n\n3. **Storage Costs**: Consider the cost of persistent volumes and any additional storage services you are using.\n\n4. **Network Costs**: Include costs associated with data transfer, load balancers, and any ingress or egress traffic.\n\n5. **Managed Services**: If using a managed Kubernetes service (e.g., GKE, EKS, AKS), account for the service fees.\n\n6. **Add-ons and Integrations**: Costs for additional services like monitoring, logging, and security tools integrated with your cluster.\n\n7. **Scaling Policies**: Review your auto-scaling policies to ensure they are optimized for cost efficiency.\n\n8. **Discounts and Pricing Plans**: Check for any applicable discounts or reserved instance pricing that could reduce costs.\n\nBy analyzing these factors, you can create a more accurate cost estimate for your Kubernetes cluster.",
+      "contexts": [],
+      "ground_truth": "The indexed documents do not provide current resource inventory, utilization, cloud prices, commitments, or growth assumptions, so next month's cluster cost cannot be calculated. Request billing and capacity data instead of estimating from unrelated documents.\n",
+      "actual_sources": [],
+      "golden_sources": [],
+      "forbidden_keywords": [],
+      "forbidden_sources": [
+        ".pdf",
+        "http://",
+        "https://"
+      ],
+      "expected_route": "rag",
+      "actual_route": "rag",
+      "ragas_metrics": {
+        "id": "q-136",
+        "demonstrates_feature": "wild",
+        "intent": "rag",
+        "question": "What will our cluster cost next month?",
+        "answer": "I may not have enough reliable context to answer this fully. Based on the available information:\n\nTo estimate the cost of your Kubernetes cluster for the next month, consider the following factors:\n\n1. **Node Count and Type**: The number and type of nodes (e.g., virtual machines) in your cluster, including their CPU, memory, and storage specifications, as these directly impact costs.\n\n2. **Resource Utilization**: Monitor the CPU and memory usage of your workloads. Over-provisioning resources can lead to unnecessary costs.\n\n3. **Storage Costs**: Consider the cost of persistent volumes and any additional storage services you are using.\n\n4. **Network Costs**: Include costs associated with data transfer, load balancers, and any ingress or egress traffic.\n\n5. **Managed Services**: If using a managed Kubernetes service (e.g., GKE, EKS, AKS), account for the service fees.\n\n6. **Add-ons and Integrations**: Costs for additional services like monitoring, logging, and security tools integrated with your cluster.\n\n7. **Scaling Policies**: Review your auto-scaling policies to ensure they are optimized for cost efficiency.\n\n8. **Discounts and Pricing Plans**: Check for any applicable discounts or reserved instance pricing that could reduce costs.\n\nBy analyzing these factors, you can create a more accurate cost estimate for your Kubernetes cluster.",
+        "contexts": [],
+        "ground_truth": "The indexed documents do not provide current resource inventory, utilization, cloud prices, commitments, or growth assumptions, so next month's cluster cost cannot be calculated. Request billing and capacity data instead of estimating from unrelated documents.\n",
+        "actual_sources": [],
+        "golden_sources": [],
+        "forbidden_keywords": [],
+        "forbidden_sources": [
+          ".pdf",
+          "http://",
+          "https://"
+        ],
+        "expected_route": "rag",
+        "actual_route": "rag",
+        "faithfulness": 1,
+        "answer_relevancy": 1.0,
+        "context_precision": 0.0,
+        "context_recall": 1,
+        "scoring_backend": "llm"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 0.0,
+        "matched": [],
+        "missed": []
+      },
+      "source_precision": 1.0,
+      "forbidden_source_check": {
+        "passed": true,
+        "hits": []
+      },
+      "route_check": {
+        "passed": true,
+        "expected": "rag",
+        "actual": "rag"
+      }
+    }
+  ],
+  "skipped": [
+    {
+      "id": "q-135",
+      "reason": "error: http_eval_sql_approval_failed: status=500 detail=internal_server_error: SQLExecutionError: sql_execution_failed: operator does not exist: integer = text"
+    }
+  ],
+  "aggregate": {
+    "answer_relevancy": 0.767,
+    "faithfulness": 1.0,
+    "context_precision": 0.667,
+    "context_recall": 0.667,
+    "forbidden_violations": 0,
+    "source_precision": 0.667,
+    "forbidden_source_violations": 0,
+    "route_violations": 0
+  },
+  "threshold_failures": {}
+}

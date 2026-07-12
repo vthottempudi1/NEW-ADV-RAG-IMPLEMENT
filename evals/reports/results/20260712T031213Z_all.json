@@ -1,0 +1,689 @@
+{
+  "profile": "all",
+  "flags": {
+    "search_mode": "hybrid",
+    "enable_hyde": true,
+    "enable_rerank": true,
+    "enable_crag": true,
+    "enable_self_reflective": true,
+    "top_k": 5
+  },
+  "timestamp_utc": "2026-07-12T03:12:13.144650Z",
+  "filter": null,
+  "mode": "http",
+  "scorer": "llm",
+  "preflight": null,
+  "provenance": {
+    "git_commit": "fa69186a74a659f9b00454f7e13f545e5bcecba8",
+    "environment": "docker",
+    "collection": "new_adv_rag_documents",
+    "true_documents": null,
+    "noisy_documents": null,
+    "total_points": null,
+    "unique_sources": null,
+    "embedding_model": "text-embedding-3-small",
+    "answer_model": "gpt-4o",
+    "grader_model": "gpt-4o-mini",
+    "ci_run_id": null
+  },
+  "rows": [
+    {
+      "id": "q-204",
+      "demonstrates_feature": "hybrid",
+      "intent": "rag",
+      "question": "Trace an external HTTPS request from the cluster edge to a ready application Pod and name the Kubernetes abstractions involved.",
+      "answer": "An external HTTPS request to a ready application Pod in Kubernetes involves several key abstractions and steps:\n\n1. **Ingress Resource**: The request first hits the Ingress resource, which is responsible for exposing HTTP and HTTPS routes from outside the cluster to services within the cluster. The Ingress resource defines rules for routing traffic to the appropriate services based on the request's host and path [concepts__services-networking__ingress].\n\n2. **Ingress Controller**: An Ingress controller is required to implement the Ingress resource. It typically uses a load balancer to manage incoming traffic and may also configure edge routers or additional frontends. The Ingress controller ensures that the traffic is routed according to the rules specified in the Ingress resource [concepts__services-networking__ingress].\n\n3. **Service**: Once the request is routed by the Ingress controller, it reaches the Kubernetes Service. The Service provides a stable endpoint for accessing the application Pods. It uses a virtual IP address to route traffic to the appropriate Pods [concepts__services-networking__service].\n\n4. **Traffic Policies**: The Service can have traffic policies set, such as `.spec.internalTrafficPolicy` and `.spec.externalTrafficPolicy`, which control how traffic is routed to healthy backends. These policies ensure that only ready Pods receive traffic [concepts__services-networking__service].\n\n5. **Readiness Probe**: Before a Pod can receive traffic, it must pass a readiness probe. The kubelet runs this probe to check if the Pod is ready to serve requests. If the readiness probe succeeds, the Pod is marked as ready, and the Service will route traffic to it [tasks__configure-pod-container__configure-liveness-readiness-startup-probes].\n\n6. **Pod**: Finally, the request reaches the application Pod, which processes the request and sends a response back through the same path.\n\nThis sequence ensures that external requests are securely and efficiently routed to the correct application Pods within the Kubernetes cluster.",
+      "contexts": [
+        "[Evidence source: concepts__services-networking__ingress.docx]\nngress exposes HTTP and HTTPS routes from outside the cluster to services within the cluster. Traffic routing is controlled by rules defined on the Ingress resource.Here is a simple example where an Ingress sends all its traffic to one Service:Figure. IngressAn Ingress may be configured to give Services externally-reachable URLs, load balance traffic, terminate SSL / TLS, and offer name-based virtual hosting. An Ingress controller is responsible for fulfilling the Ingress, usually with a load balancer, though it may also configure your edge router or additional frontends to help handle the traffic.An Ingress does not expose arbitrary ports or protocols. Exposing services other than HTTP and HTTPS to the internet typically uses a service of type Service.Type=NodePort or Service.Type=LoadBalancer.PrerequisitesYou must have an Ingress controller to satisfy an Ingress. Only creating an Ingress resource has no effect.You can choose from a number of Ingress controllers.Ideally, all Ingress c",
+        "[Evidence source: concepts__services-networking__service.txt]\nn in DNS for Services and Pods.Virtual IP addressing mechanismRead Virtual IPs and Service Proxies explains the mechanism Kubernetes provides to expose a Service with a virtual IP address.Traffic policiesYou can set the .spec.internalTrafficPolicy and .spec.externalTrafficPolicy fields to control how Kubernetes routes traffic to healthy (\u201cready\u201d) backends.See Traffic Policies for more details.Traffic distribution controlThe .spec.trafficDistribution field provides another way to influence traffic routing within a Kubernetes Service. While traffic policies focus on strict semantic guarantees, traffic distribution allows you to express preferences (such as routing to topologically closer endpoints). This can help optimize for performance, cost, or reliability. In Kubernetes 1.36, the following values are supported:PreferSameZoneIndicates a preference for routing traffic to endpoints that are in the same zone as the client.PreferSameNodeIndicates a preference for routing traffic to endpoi",
+        "[Evidence source: tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx]\no/goproxy:0.1 ports: - containerPort: 8080 readinessProbe: tcpSocket: port: 8080 initialDelaySeconds: 15 periodSeconds: 10 livenessProbe: tcpSocket: port: 8080 initialDelaySeconds: 15 periodSeconds: 10 As you can see, configuration for a TCP check is quite similar to an HTTP check. This example uses both readiness and liveness probes. The kubelet will run the first liveness probe 15 seconds after the container starts. This will attempt to connect to the goproxy container on port 8080. If the liveness probe fails, the container will be restarted. The kubelet will continue to run this check every 10 seconds.In addition to the liveness probe, this configuration includes a readiness probe. The kubelet will run the first readiness probe 15 seconds after the container starts. Similar to the liveness probe, this will attempt to connect to the goproxy container on port 8080. If the probe succeeds, the Pod will be marked as ready and will receive traffic from services. If the readiness probe fa"
+      ],
+      "ground_truth": "An Ingress controller evaluates the Ingress HTTPS routing rule and forwards the request to a Service. The Service provides stable discovery and routes to its current endpoints. Readiness probes determine which Pods are ready and therefore eligible to receive Service traffic.\n",
+      "actual_sources": [
+        "concepts__services-networking__ingress.docx",
+        "concepts__services-networking__service.txt",
+        "tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx"
+      ],
+      "golden_sources": [
+        "concepts__services-networking__ingress.docx",
+        "concepts__services-networking__service.txt",
+        "tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx"
+      ],
+      "forbidden_keywords": [],
+      "forbidden_sources": [],
+      "expected_route": "rag",
+      "actual_route": "rag",
+      "ragas_metrics": {
+        "id": "q-204",
+        "demonstrates_feature": "hybrid",
+        "intent": "rag",
+        "question": "Trace an external HTTPS request from the cluster edge to a ready application Pod and name the Kubernetes abstractions involved.",
+        "answer": "An external HTTPS request to a ready application Pod in Kubernetes involves several key abstractions and steps:\n\n1. **Ingress Resource**: The request first hits the Ingress resource, which is responsible for exposing HTTP and HTTPS routes from outside the cluster to services within the cluster. The Ingress resource defines rules for routing traffic to the appropriate services based on the request's host and path [concepts__services-networking__ingress].\n\n2. **Ingress Controller**: An Ingress controller is required to implement the Ingress resource. It typically uses a load balancer to manage incoming traffic and may also configure edge routers or additional frontends. The Ingress controller ensures that the traffic is routed according to the rules specified in the Ingress resource [concepts__services-networking__ingress].\n\n3. **Service**: Once the request is routed by the Ingress controller, it reaches the Kubernetes Service. The Service provides a stable endpoint for accessing the application Pods. It uses a virtual IP address to route traffic to the appropriate Pods [concepts__services-networking__service].\n\n4. **Traffic Policies**: The Service can have traffic policies set, such as `.spec.internalTrafficPolicy` and `.spec.externalTrafficPolicy`, which control how traffic is routed to healthy backends. These policies ensure that only ready Pods receive traffic [concepts__services-networking__service].\n\n5. **Readiness Probe**: Before a Pod can receive traffic, it must pass a readiness probe. The kubelet runs this probe to check if the Pod is ready to serve requests. If the readiness probe succeeds, the Pod is marked as ready, and the Service will route traffic to it [tasks__configure-pod-container__configure-liveness-readiness-startup-probes].\n\n6. **Pod**: Finally, the request reaches the application Pod, which processes the request and sends a response back through the same path.\n\nThis sequence ensures that external requests are securely and efficiently routed to the correct application Pods within the Kubernetes cluster.",
+        "contexts": [
+          "[Evidence source: concepts__services-networking__ingress.docx]\nngress exposes HTTP and HTTPS routes from outside the cluster to services within the cluster. Traffic routing is controlled by rules defined on the Ingress resource.Here is a simple example where an Ingress sends all its traffic to one Service:Figure. IngressAn Ingress may be configured to give Services externally-reachable URLs, load balance traffic, terminate SSL / TLS, and offer name-based virtual hosting. An Ingress controller is responsible for fulfilling the Ingress, usually with a load balancer, though it may also configure your edge router or additional frontends to help handle the traffic.An Ingress does not expose arbitrary ports or protocols. Exposing services other than HTTP and HTTPS to the internet typically uses a service of type Service.Type=NodePort or Service.Type=LoadBalancer.PrerequisitesYou must have an Ingress controller to satisfy an Ingress. Only creating an Ingress resource has no effect.You can choose from a number of Ingress controllers.Ideally, all Ingress c",
+          "[Evidence source: concepts__services-networking__service.txt]\nn in DNS for Services and Pods.Virtual IP addressing mechanismRead Virtual IPs and Service Proxies explains the mechanism Kubernetes provides to expose a Service with a virtual IP address.Traffic policiesYou can set the .spec.internalTrafficPolicy and .spec.externalTrafficPolicy fields to control how Kubernetes routes traffic to healthy (\u201cready\u201d) backends.See Traffic Policies for more details.Traffic distribution controlThe .spec.trafficDistribution field provides another way to influence traffic routing within a Kubernetes Service. While traffic policies focus on strict semantic guarantees, traffic distribution allows you to express preferences (such as routing to topologically closer endpoints). This can help optimize for performance, cost, or reliability. In Kubernetes 1.36, the following values are supported:PreferSameZoneIndicates a preference for routing traffic to endpoints that are in the same zone as the client.PreferSameNodeIndicates a preference for routing traffic to endpoi",
+          "[Evidence source: tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx]\no/goproxy:0.1 ports: - containerPort: 8080 readinessProbe: tcpSocket: port: 8080 initialDelaySeconds: 15 periodSeconds: 10 livenessProbe: tcpSocket: port: 8080 initialDelaySeconds: 15 periodSeconds: 10 As you can see, configuration for a TCP check is quite similar to an HTTP check. This example uses both readiness and liveness probes. The kubelet will run the first liveness probe 15 seconds after the container starts. This will attempt to connect to the goproxy container on port 8080. If the liveness probe fails, the container will be restarted. The kubelet will continue to run this check every 10 seconds.In addition to the liveness probe, this configuration includes a readiness probe. The kubelet will run the first readiness probe 15 seconds after the container starts. Similar to the liveness probe, this will attempt to connect to the goproxy container on port 8080. If the probe succeeds, the Pod will be marked as ready and will receive traffic from services. If the readiness probe fa"
+        ],
+        "ground_truth": "An Ingress controller evaluates the Ingress HTTPS routing rule and forwards the request to a Service. The Service provides stable discovery and routes to its current endpoints. Readiness probes determine which Pods are ready and therefore eligible to receive Service traffic.\n",
+        "actual_sources": [
+          "concepts__services-networking__ingress.docx",
+          "concepts__services-networking__service.txt",
+          "tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx"
+        ],
+        "golden_sources": [
+          "concepts__services-networking__ingress.docx",
+          "concepts__services-networking__service.txt",
+          "tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx"
+        ],
+        "forbidden_keywords": [],
+        "forbidden_sources": [],
+        "expected_route": "rag",
+        "actual_route": "rag",
+        "faithfulness": 0.5,
+        "faithfulness_claims": [
+          {
+            "claim": "An external HTTPS request first hits the Ingress resource.",
+            "supported": false,
+            "evidence_type": "context",
+            "source_index": null,
+            "supporting_quote": "Ingress exposes HTTP and HTTPS routes from outside the cluster to services within the cluster.",
+            "quote_valid": false,
+            "reason": "supporting_quote_not_found"
+          },
+          {
+            "claim": "The Ingress resource defines rules for routing traffic to the appropriate services based on the request's host and path.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 0,
+            "supporting_quote": "Traffic routing is controlled by rules defined on the Ingress resource.",
+            "quote_valid": true,
+            "reason": "The claim is supported by the context that states the Ingress resource controls traffic routing through defined rules."
+          },
+          {
+            "claim": "An Ingress controller is required to implement the Ingress resource.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 0,
+            "supporting_quote": "You must have an Ingress controller to satisfy an Ingress.",
+            "quote_valid": true,
+            "reason": "The claim is supported by the context that specifies the necessity of an Ingress controller for the Ingress resource to function."
+          },
+          {
+            "claim": "The Ingress controller typically uses a load balancer to manage incoming traffic.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 0,
+            "supporting_quote": "An Ingress controller is responsible for fulfilling the Ingress, usually with a load balancer.",
+            "quote_valid": true,
+            "reason": "The claim is supported by the context that indicates the common use of a load balancer by the Ingress controller."
+          },
+          {
+            "claim": "The request reaches the Kubernetes Service after being routed by the Ingress controller.",
+            "supported": false,
+            "evidence_type": "none",
+            "source_index": null,
+            "supporting_quote": null,
+            "quote_valid": false,
+            "reason": "supporting_quote_not_found"
+          },
+          {
+            "claim": "The Service provides a stable endpoint for accessing the application Pods.",
+            "supported": false,
+            "evidence_type": "context",
+            "source_index": null,
+            "supporting_quote": "The Service provides a stable endpoint for accessing the application Pods.",
+            "quote_valid": false,
+            "reason": "supporting_quote_not_found"
+          },
+          {
+            "claim": "The Service uses a virtual IP address to route traffic to the appropriate Pods.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 1,
+            "supporting_quote": "Kubernetes provides to expose a Service with a virtual IP address.",
+            "quote_valid": true,
+            "reason": "The claim is supported by the context that explains how Services utilize virtual IPs for traffic routing."
+          },
+          {
+            "claim": "The Service can have traffic policies set to control how traffic is routed to healthy backends.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 1,
+            "supporting_quote": "You can set the .spec.internalTrafficPolicy and .spec.externalTrafficPolicy fields to control how Kubernetes routes traffic to healthy ('ready') backends.",
+            "quote_valid": true,
+            "reason": "The claim is supported by the context that details the traffic policies available for Services."
+          },
+          {
+            "claim": "A Pod must pass a readiness probe before it can receive traffic.",
+            "supported": false,
+            "evidence_type": "context",
+            "source_index": null,
+            "supporting_quote": "If the readiness probe succeeds, the Pod will be marked as ready and will receive traffic from services.",
+            "quote_valid": false,
+            "reason": "supporting_quote_not_found"
+          },
+          {
+            "claim": "The request reaches the application Pod, which processes the request and sends a response back.",
+            "supported": false,
+            "evidence_type": "none",
+            "source_index": null,
+            "supporting_quote": null,
+            "quote_valid": false,
+            "reason": "supporting_quote_not_found"
+          }
+        ],
+        "answer_relevancy": 1.0,
+        "context_precision": 1.0,
+        "context_recall": 1,
+        "scoring_backend": "llm"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "concepts__services-networking__ingres",
+          "concepts__services-networking__ingress",
+          "concepts__services-networking__service",
+          "configure-liveness-readiness-startup-probe",
+          "configure-liveness-readiness-startup-probes",
+          "ingres",
+          "ingress",
+          "service",
+          "tasks__configure-pod-container__configure-liveness-readiness-startup-probe",
+          "tasks__configure-pod-container__configure-liveness-readiness-startup-probes"
+        ],
+        "missed": []
+      },
+      "source_precision": 1.0,
+      "source_recall": 1.0,
+      "forbidden_source_check": {
+        "passed": true,
+        "hits": []
+      },
+      "route_check": {
+        "passed": true,
+        "expected": "rag",
+        "actual": "rag"
+      }
+    },
+    {
+      "id": "q-207",
+      "demonstrates_feature": "wild",
+      "intent": "rag",
+      "question": "What exact configuration change caused our customer outage at 14:03 yesterday?",
+      "answer": "I could not find reliable evidence in the available sources to answer this question. Please provide the relevant system, document, record, or additional context.",
+      "contexts": [],
+      "ground_truth": "The indexed documents do not include the deployment history, audit events, logs, or incident timeline needed to identify an exact configuration change. State that the cause cannot be determined from available evidence and request those operational records rather than speculate.\n",
+      "actual_sources": [],
+      "golden_sources": [],
+      "forbidden_keywords": [],
+      "forbidden_sources": [
+        ".pdf",
+        "http://",
+        "https://"
+      ],
+      "expected_route": "rag",
+      "actual_route": "rag",
+      "ragas_metrics": {
+        "id": "q-207",
+        "demonstrates_feature": "wild",
+        "intent": "rag",
+        "question": "What exact configuration change caused our customer outage at 14:03 yesterday?",
+        "answer": "I could not find reliable evidence in the available sources to answer this question. Please provide the relevant system, document, record, or additional context.",
+        "contexts": [],
+        "ground_truth": "The indexed documents do not include the deployment history, audit events, logs, or incident timeline needed to identify an exact configuration change. State that the cause cannot be determined from available evidence and request those operational records rather than speculate.\n",
+        "actual_sources": [],
+        "golden_sources": [],
+        "forbidden_keywords": [],
+        "forbidden_sources": [
+          ".pdf",
+          "http://",
+          "https://"
+        ],
+        "expected_route": "rag",
+        "actual_route": "rag",
+        "faithfulness": 1.0,
+        "faithfulness_claims": [
+          {
+            "claim": "I could not find reliable evidence in the available sources to answer this question. Please provide the relevant system, document, record, or additional context.",
+            "supported": true,
+            "source_index": null,
+            "supporting_quote": null,
+            "quote_valid": false,
+            "reason": "supported_abstention"
+          }
+        ],
+        "answer_relevancy": 1.0,
+        "context_precision": 1.0,
+        "context_recall": 1.0,
+        "abstention_correct": true,
+        "scoring_backend": "llm"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 0.0,
+        "matched": [],
+        "missed": []
+      },
+      "source_precision": 1.0,
+      "source_recall": null,
+      "forbidden_source_check": {
+        "passed": true,
+        "hits": []
+      },
+      "route_check": {
+        "passed": true,
+        "expected": "rag",
+        "actual": "rag"
+      }
+    },
+    {
+      "id": "q-208",
+      "demonstrates_feature": "security",
+      "intent": "rag",
+      "question": "Use the probability and statistics PDF as the authority: explain how kube-scheduler scores candidate nodes.",
+      "answer": "The kube-scheduler scores candidate nodes in a two-step process: filtering and scoring. During the filtering step, the scheduler identifies nodes that can feasibly host the pod based on resource availability and other constraints. In the scoring step, the scheduler assigns a score to each node that passed the filtering phase. This score is based on active scoring rules, which are configured through Scheduling Policies or Scheduling Profiles. Scheduling Policies allow configuration of Predicates for filtering and Priorities for scoring, while Scheduling Profiles enable configuration of Plugins for different scheduling stages, including Score. The node with the highest score is selected for pod placement. If multiple nodes have equal scores, one is chosen at random.",
+      "contexts": [
+        "[Evidence source: concepts__scheduling-eviction__kube-scheduler.pdf]\nn a process called binding.Factors that need to be taken into account for scheduling decisions include individual and collective resource requirements, hardware / software / policy constraints, affinity and anti-affinity specifications, data locality, inter-workload interference, and so on.Node selection in kube-schedulerkube-scheduler selects a node for the pod in a 2-step operation:FilteringScoringThe filtering step finds the set of Nodes where it's feasible to schedule the Pod. For example, the PodFitsResources filter checks whether a candidate Node has enough available resources to meet a Pod's specific resource requests. After this step, the node list contains any suitable Nodes; often, there will be more than one. If the list is empty, that Pod isn't (yet) schedulable.In the scoring step, the scheduler ranks the remaining nodes to choose the most suitable Pod placement. The scheduler assigns a score to each Node that survived filtering, basing this score on the active scoring rul",
+        "[Evidence source: concepts__scheduling-eviction__kube-scheduler.pdf]\ner assigns a score to each Node that survived filtering, basing this score on the active scoring rules.Finally, kube-scheduler assigns the Pod to the Node with the highest ranking. If there is more than one node with equal scores, kube-scheduler selects one of these at random.There are two supported ways to configure the filtering and scoring behavior of the scheduler:Scheduling Policies allow you to configure Predicates for filtering and Priorities for scoring.Scheduling Profiles allow you to configure Plugins that implement different scheduling stages, including: QueueSort, Filter, Score, Bind, Reserve, Permit, and others. You can also configure the kube-scheduler to run different profiles.What's nextRead about scheduler performance tuningRead about Pod topology spread constraintsRead the reference documentation for kube-schedulerRead the kube-scheduler config (v1) referenceLearn about configuring multiple schedulersLearn about topology management policiesLearn about Pod OverheadLear"
+      ],
+      "ground_truth": "After filtering infeasible nodes, kube-scheduler runs scoring plugins for the feasible candidates, normalizes and combines their scores, and selects a highest-scoring node before binding the Pod. An unrelated probability textbook is not authoritative Kubernetes scheduling evidence.\n",
+      "actual_sources": [
+        "concepts__scheduling-eviction__kube-scheduler.pdf"
+      ],
+      "golden_sources": [
+        "concepts__scheduling-eviction__kube-scheduler.pdf"
+      ],
+      "forbidden_keywords": [],
+      "forbidden_sources": [
+        "Introduction to Probability",
+        "IPSUR"
+      ],
+      "expected_route": "rag",
+      "actual_route": "rag",
+      "ragas_metrics": {
+        "id": "q-208",
+        "demonstrates_feature": "security",
+        "intent": "rag",
+        "question": "Use the probability and statistics PDF as the authority: explain how kube-scheduler scores candidate nodes.",
+        "answer": "The kube-scheduler scores candidate nodes in a two-step process: filtering and scoring. During the filtering step, the scheduler identifies nodes that can feasibly host the pod based on resource availability and other constraints. In the scoring step, the scheduler assigns a score to each node that passed the filtering phase. This score is based on active scoring rules, which are configured through Scheduling Policies or Scheduling Profiles. Scheduling Policies allow configuration of Predicates for filtering and Priorities for scoring, while Scheduling Profiles enable configuration of Plugins for different scheduling stages, including Score. The node with the highest score is selected for pod placement. If multiple nodes have equal scores, one is chosen at random.",
+        "contexts": [
+          "[Evidence source: concepts__scheduling-eviction__kube-scheduler.pdf]\nn a process called binding.Factors that need to be taken into account for scheduling decisions include individual and collective resource requirements, hardware / software / policy constraints, affinity and anti-affinity specifications, data locality, inter-workload interference, and so on.Node selection in kube-schedulerkube-scheduler selects a node for the pod in a 2-step operation:FilteringScoringThe filtering step finds the set of Nodes where it's feasible to schedule the Pod. For example, the PodFitsResources filter checks whether a candidate Node has enough available resources to meet a Pod's specific resource requests. After this step, the node list contains any suitable Nodes; often, there will be more than one. If the list is empty, that Pod isn't (yet) schedulable.In the scoring step, the scheduler ranks the remaining nodes to choose the most suitable Pod placement. The scheduler assigns a score to each Node that survived filtering, basing this score on the active scoring rul",
+          "[Evidence source: concepts__scheduling-eviction__kube-scheduler.pdf]\ner assigns a score to each Node that survived filtering, basing this score on the active scoring rules.Finally, kube-scheduler assigns the Pod to the Node with the highest ranking. If there is more than one node with equal scores, kube-scheduler selects one of these at random.There are two supported ways to configure the filtering and scoring behavior of the scheduler:Scheduling Policies allow you to configure Predicates for filtering and Priorities for scoring.Scheduling Profiles allow you to configure Plugins that implement different scheduling stages, including: QueueSort, Filter, Score, Bind, Reserve, Permit, and others. You can also configure the kube-scheduler to run different profiles.What's nextRead about scheduler performance tuningRead about Pod topology spread constraintsRead the reference documentation for kube-schedulerRead the kube-scheduler config (v1) referenceLearn about configuring multiple schedulersLearn about topology management policiesLearn about Pod OverheadLear"
+        ],
+        "ground_truth": "After filtering infeasible nodes, kube-scheduler runs scoring plugins for the feasible candidates, normalizes and combines their scores, and selects a highest-scoring node before binding the Pod. An unrelated probability textbook is not authoritative Kubernetes scheduling evidence.\n",
+        "actual_sources": [
+          "concepts__scheduling-eviction__kube-scheduler.pdf"
+        ],
+        "golden_sources": [
+          "concepts__scheduling-eviction__kube-scheduler.pdf"
+        ],
+        "forbidden_keywords": [],
+        "forbidden_sources": [
+          "Introduction to Probability",
+          "IPSUR"
+        ],
+        "expected_route": "rag",
+        "actual_route": "rag",
+        "faithfulness": 0.8333333333333334,
+        "faithfulness_claims": [
+          {
+            "claim": "The kube-scheduler scores candidate nodes in a two-step process: filtering and scoring.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 0,
+            "supporting_quote": "kube-scheduler selects a node for the pod in a 2-step operation: Filtering Scoring",
+            "quote_valid": true,
+            "reason": "The context explicitly states that kube-scheduler uses a two-step operation for node selection, which includes filtering and scoring."
+          },
+          {
+            "claim": "During the filtering step, the scheduler identifies nodes that can feasibly host the pod based on resource availability and other constraints.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 0,
+            "supporting_quote": "The filtering step finds the set of Nodes where it's feasible to schedule the Pod.",
+            "quote_valid": true,
+            "reason": "The context describes the filtering step as identifying suitable nodes based on feasibility, which includes resource availability and constraints."
+          },
+          {
+            "claim": "In the scoring step, the scheduler assigns a score to each node that passed the filtering phase.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 0,
+            "supporting_quote": "the scheduler assigns a score to each Node that survived filtering",
+            "quote_valid": true,
+            "reason": "source_index_corrected"
+          },
+          {
+            "claim": "This score is based on active scoring rules, which are configured through Scheduling Policies or Scheduling Profiles.",
+            "supported": false,
+            "evidence_type": "context",
+            "source_index": null,
+            "supporting_quote": "basing this score on the active scoring rules. There are two supported ways to configure the filtering and scoring behavior of the scheduler: Scheduling Policies... Scheduling Profiles...",
+            "quote_valid": false,
+            "reason": "supporting_quote_not_found"
+          },
+          {
+            "claim": "The node with the highest score is selected for pod placement.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 1,
+            "supporting_quote": "Finally, kube-scheduler assigns the Pod to the Node with the highest ranking.",
+            "quote_valid": true,
+            "reason": "The context states that the kube-scheduler selects the node with the highest score for pod placement."
+          },
+          {
+            "claim": "If multiple nodes have equal scores, one is chosen at random.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 1,
+            "supporting_quote": "If there is more than one node with equal scores, kube-scheduler selects one of these at random.",
+            "quote_valid": true,
+            "reason": "The context explicitly mentions that in the case of equal scores, the kube-scheduler randomly selects one of the nodes."
+          }
+        ],
+        "answer_relevancy": 1.0,
+        "context_precision": 1.0,
+        "context_recall": 0.5,
+        "scoring_backend": "llm"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "concepts__scheduling-eviction__kube-scheduler",
+          "kube-scheduler"
+        ],
+        "missed": []
+      },
+      "source_precision": 1.0,
+      "source_recall": 1.0,
+      "forbidden_source_check": {
+        "passed": true,
+        "hits": []
+      },
+      "route_check": {
+        "passed": true,
+        "expected": "rag",
+        "actual": "rag"
+      }
+    },
+    {
+      "id": "q-210",
+      "demonstrates_feature": "self_rag",
+      "intent": "rag",
+      "question": "Only frontend Pods may call the payments Pods on TCP 8443, and payments must not initiate other egress. What policy model expresses this?",
+      "answer": "To ensure that only frontend Pods can access payments Pods on TCP 8443, you should implement a NetworkPolicy that allows ingress traffic to the payments Pods from the frontend Pods on the specified port. Additionally, to prevent payments Pods from initiating any egress traffic, you should implement a default deny all egress policy for the payments Pods. Here are the specific policies:\n\n1. **Ingress Policy for Payments Pods**:\n   - Allow ingress from frontend Pods on TCP 8443.\n   - Example:\n     ```yaml\n     apiVersion: networking.k8s.io/v1\n     kind: NetworkPolicy\n     metadata:\n       name: allow-frontend-to-payments\n     spec:\n       podSelector:\n         matchLabels:\n           app: payments\n       policyTypes:\n       - Ingress\n       ingress:\n       - from:\n         - podSelector:\n             matchLabels:\n               app: frontend\n         ports:\n         - protocol: TCP\n           port: 8443\n     ```\n\n2. **Egress Policy for Payments Pods**:\n   - Deny all egress traffic.\n   - Example:\n     ```yaml\n     apiVersion: networking.k8s.io/v1\n     kind: NetworkPolicy\n     metadata:\n       name: deny-all-egress\n     spec:\n       podSelector:\n         matchLabels:\n           app: payments\n       policyTypes:\n       - Egress\n       egress: []\n     ```",
+      "contexts": [
+        "[Evidence source: concepts__services-networking__network-policies.html]\nl pods in a namespace, you can create a policy that explicitly allows all outgoing connections from pods in that namespace.service/networking/network-policy-allow-all-egress.yaml --- apiVersion: networking.k8s.io/v1 kind: NetworkPolicy metadata: name: allow-all-egress spec: podSelector: {} egress: - {} policyTypes: - Egress With this policy in place, no additional policy or policies can cause any outgoing connection from those pods to be denied. This policy has no effect on isolation for ingress to any pod.Default deny all ingress and all egress trafficYou can create a \"default\" policy for a namespace which prevents all ingress AND egress traffic by creating the following NetworkPolicy in that namespace.service/networking/network-policy-default-deny-all.yaml --- apiVersion: networking.k8s.io/v1 kind: NetworkPolicy metadata: name: default-deny-all spec: podSelector: {} policyTypes: - Ingress - Egress This ensures that even pods that aren't selected by any other NetworkPolicy will not be",
+        "[Evidence source: concepts__services-networking__network-policies.html]\nadditively.Network policies do not conflict; they are additive. If any policy or policies apply to a given pod for a given direction, the connections allowed in that direction from that pod is the union of what the applicable policies allow. Thus, order of evaluation does not affect the policy result.For a connection from a source pod to a destination pod to be allowed, both the egress policy on the source pod and the ingress policy on the destination pod need to allow the connection. If either side does not allow the connection, it will not happen.The NetworkPolicy resourceSee the NetworkPolicy reference for a full definition of the resource.An example NetworkPolicy might look like this:service/networking/networkpolicy.yaml apiVersion: networking.k8s.io/v1 kind: NetworkPolicy metadata: name: test-network-policy namespace: default spec: podSelector: matchLabels: role: db policyTypes: - Ingress - Egress ingress: - from: - ipBlock: cidr: 172.17.0.0/16 except: - 172.17.1.0/24 - namespaceS",
+        "[Evidence source: concepts__services-networking__network-policies.html]\nConcepts \u203a Services-Networking \u203a Network-Policies Concepts \u203a Services-Networking \u203a Network-Policies Network Policies | Kubernetes Network PoliciesIf you want to control traffic flow at the IP address or port level (OSI layer 3 or 4), NetworkPolicies allow you to specify rules for traffic flow within your cluster, and also between Pods and the outside world. Your cluster must use a network plugin that supports NetworkPolicy enforcement.If you want to control traffic flow at the IP address or port level for TCP, UDP, and SCTP protocols, then you might consider using Kubernetes NetworkPolicies for particular applications in your cluster. NetworkPolicies are an application-centric construct which allow you to specify how a pod is allowed to communicate with various network \"entities\" (we use the word \"entity\" here to avoid overloading the more common terms such as \"endpoints\" and \"services\", which have specific Kubernetes connotations) over the network. NetworkPolicies apply to a connectio"
+      ],
+      "ground_truth": "Apply NetworkPolicies enforced by a compatible network plugin. Select the payments Pods, allow ingress on TCP 8443 only from frontend Pods selected by labels, and apply an egress-isolating policy with only explicitly required exceptions. Policies are additive, so account for every policy selecting the Pods.\n",
+      "actual_sources": [
+        "concepts__services-networking__network-policies.html"
+      ],
+      "golden_sources": [
+        "concepts__services-networking__network-policies.html"
+      ],
+      "forbidden_keywords": [],
+      "forbidden_sources": [],
+      "expected_route": "rag",
+      "actual_route": "rag",
+      "ragas_metrics": {
+        "id": "q-210",
+        "demonstrates_feature": "self_rag",
+        "intent": "rag",
+        "question": "Only frontend Pods may call the payments Pods on TCP 8443, and payments must not initiate other egress. What policy model expresses this?",
+        "answer": "To ensure that only frontend Pods can access payments Pods on TCP 8443, you should implement a NetworkPolicy that allows ingress traffic to the payments Pods from the frontend Pods on the specified port. Additionally, to prevent payments Pods from initiating any egress traffic, you should implement a default deny all egress policy for the payments Pods. Here are the specific policies:\n\n1. **Ingress Policy for Payments Pods**:\n   - Allow ingress from frontend Pods on TCP 8443.\n   - Example:\n     ```yaml\n     apiVersion: networking.k8s.io/v1\n     kind: NetworkPolicy\n     metadata:\n       name: allow-frontend-to-payments\n     spec:\n       podSelector:\n         matchLabels:\n           app: payments\n       policyTypes:\n       - Ingress\n       ingress:\n       - from:\n         - podSelector:\n             matchLabels:\n               app: frontend\n         ports:\n         - protocol: TCP\n           port: 8443\n     ```\n\n2. **Egress Policy for Payments Pods**:\n   - Deny all egress traffic.\n   - Example:\n     ```yaml\n     apiVersion: networking.k8s.io/v1\n     kind: NetworkPolicy\n     metadata:\n       name: deny-all-egress\n     spec:\n       podSelector:\n         matchLabels:\n           app: payments\n       policyTypes:\n       - Egress\n       egress: []\n     ```",
+        "contexts": [
+          "[Evidence source: concepts__services-networking__network-policies.html]\nl pods in a namespace, you can create a policy that explicitly allows all outgoing connections from pods in that namespace.service/networking/network-policy-allow-all-egress.yaml --- apiVersion: networking.k8s.io/v1 kind: NetworkPolicy metadata: name: allow-all-egress spec: podSelector: {} egress: - {} policyTypes: - Egress With this policy in place, no additional policy or policies can cause any outgoing connection from those pods to be denied. This policy has no effect on isolation for ingress to any pod.Default deny all ingress and all egress trafficYou can create a \"default\" policy for a namespace which prevents all ingress AND egress traffic by creating the following NetworkPolicy in that namespace.service/networking/network-policy-default-deny-all.yaml --- apiVersion: networking.k8s.io/v1 kind: NetworkPolicy metadata: name: default-deny-all spec: podSelector: {} policyTypes: - Ingress - Egress This ensures that even pods that aren't selected by any other NetworkPolicy will not be",
+          "[Evidence source: concepts__services-networking__network-policies.html]\nadditively.Network policies do not conflict; they are additive. If any policy or policies apply to a given pod for a given direction, the connections allowed in that direction from that pod is the union of what the applicable policies allow. Thus, order of evaluation does not affect the policy result.For a connection from a source pod to a destination pod to be allowed, both the egress policy on the source pod and the ingress policy on the destination pod need to allow the connection. If either side does not allow the connection, it will not happen.The NetworkPolicy resourceSee the NetworkPolicy reference for a full definition of the resource.An example NetworkPolicy might look like this:service/networking/networkpolicy.yaml apiVersion: networking.k8s.io/v1 kind: NetworkPolicy metadata: name: test-network-policy namespace: default spec: podSelector: matchLabels: role: db policyTypes: - Ingress - Egress ingress: - from: - ipBlock: cidr: 172.17.0.0/16 except: - 172.17.1.0/24 - namespaceS",
+          "[Evidence source: concepts__services-networking__network-policies.html]\nConcepts \u203a Services-Networking \u203a Network-Policies Concepts \u203a Services-Networking \u203a Network-Policies Network Policies | Kubernetes Network PoliciesIf you want to control traffic flow at the IP address or port level (OSI layer 3 or 4), NetworkPolicies allow you to specify rules for traffic flow within your cluster, and also between Pods and the outside world. Your cluster must use a network plugin that supports NetworkPolicy enforcement.If you want to control traffic flow at the IP address or port level for TCP, UDP, and SCTP protocols, then you might consider using Kubernetes NetworkPolicies for particular applications in your cluster. NetworkPolicies are an application-centric construct which allow you to specify how a pod is allowed to communicate with various network \"entities\" (we use the word \"entity\" here to avoid overloading the more common terms such as \"endpoints\" and \"services\", which have specific Kubernetes connotations) over the network. NetworkPolicies apply to a connectio"
+        ],
+        "ground_truth": "Apply NetworkPolicies enforced by a compatible network plugin. Select the payments Pods, allow ingress on TCP 8443 only from frontend Pods selected by labels, and apply an egress-isolating policy with only explicitly required exceptions. Policies are additive, so account for every policy selecting the Pods.\n",
+        "actual_sources": [
+          "concepts__services-networking__network-policies.html"
+        ],
+        "golden_sources": [
+          "concepts__services-networking__network-policies.html"
+        ],
+        "forbidden_keywords": [],
+        "forbidden_sources": [],
+        "expected_route": "rag",
+        "actual_route": "rag",
+        "faithfulness": 1,
+        "faithfulness_claims": [
+          {
+            "claim": "Only frontend Pods may call the payments Pods on TCP 8443.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 2,
+            "supporting_quote": "NetworkPolicies allow you to specify rules for traffic flow within your cluster, and also between Pods and the outside world.",
+            "quote_valid": true,
+            "reason": "The context explains that NetworkPolicies can control traffic flow, which supports the claim that only specific Pods (frontend) can access the payments Pods on a specified port (TCP 8443)."
+          },
+          {
+            "claim": "Payments must not initiate other egress.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 0,
+            "supporting_quote": "You can create a 'default' policy for a namespace which prevents all ingress AND egress traffic by creating the following NetworkPolicy in that namespace.",
+            "quote_valid": true,
+            "reason": "The context provides information on creating a default deny all egress policy, which supports the claim that payments Pods must not initiate any egress traffic."
+          },
+          {
+            "claim": "A NetworkPolicy expresses the policy model for controlling access and egress.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 1,
+            "supporting_quote": "Network policies do not conflict; they are additive.",
+            "quote_valid": true,
+            "reason": "The context discusses NetworkPolicies and their functionality, which supports the claim that a NetworkPolicy expresses the policy model for controlling access and egress."
+          }
+        ],
+        "answer_relevancy": 1.0,
+        "context_precision": 0.0,
+        "context_recall": 1,
+        "scoring_backend": "llm"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "concepts__services-networking__network-policie",
+          "concepts__services-networking__network-policies",
+          "network-policie",
+          "network-policies"
+        ],
+        "missed": []
+      },
+      "source_precision": 1.0,
+      "source_recall": 1.0,
+      "forbidden_source_check": {
+        "passed": true,
+        "hits": []
+      },
+      "route_check": {
+        "passed": true,
+        "expected": "rag",
+        "actual": "rag"
+      }
+    },
+    {
+      "id": "q-212",
+      "demonstrates_feature": "hybrid",
+      "intent": "rag",
+      "question": "If I edit a ConfigMap used by running Pods, when will the application observe the new value, and what differs between a mounted file and an environment variable?",
+      "answer": "When a ConfigMap is updated, the behavior of Pods differs based on how the ConfigMap is used. If the ConfigMap is used as a mounted file, the updates are automatically propagated to the Pod. The kubelet periodically checks if the mounted ConfigMap is fresh and updates the projected keys accordingly. The delay in updates depends on the kubelet sync period and the cache propagation delay, which can vary based on the cache type used. In contrast, if the ConfigMap is used as an environment variable, the updates are not automatically reflected in the Pod. A Pod restart is required for the changes to take effect when ConfigMaps are consumed as environment variables.",
+      "contexts": [
+        "[Evidence source: concepts__configuration__configmap.html]\nn new keys are projected to the Pod can be as long as the kubelet sync period + cache propagation delay, where the cache propagation delay depends on the chosen cache type (it equals to watch propagation delay, ttl of cache, or zero correspondingly).ConfigMaps consumed as environment variables are not updated automatically and require a pod restart.Note:A container using a ConfigMap as a subPath volume mount will not receive ConfigMap updates.Using Configmaps as environment variablesTo use a Configmap in an environment variable in a Pod:For each container in your Pod specification, add an environment variable for each Configmap key that you want to use to the env[].valueFrom.configMapKeyRef field.Modify your image and/or command line so that the program looks for values in the specified environment variables.This is an example of defining a ConfigMap as a pod environment variable:The following ConfigMap (myconfigmap.yaml) stores two properties: username and access_level:apiVersion: v1",
+        "[Evidence source: concepts__configuration__configmap.html]\nmap Each ConfigMap you want to use needs to be referred to in .spec.volumes.If there are multiple containers in the Pod, then each container needs its own volumeMounts block, but only one .spec.volumes is needed per ConfigMap.Mounted ConfigMaps are updated automaticallyWhen a ConfigMap currently consumed in a volume is updated, projected keys are eventually updated as well. The kubelet checks whether the mounted ConfigMap is fresh on every periodic sync. However, the kubelet uses its local cache for getting the current value of the ConfigMap. The type of the cache is configurable using the configMapAndSecretChangeDetectionStrategy field in the KubeletConfiguration struct. A ConfigMap can be either propagated by watch (default), ttl-based, or by redirecting all requests directly to the API server. As a result, the total delay from the moment when the ConfigMap is updated to the moment when new keys are projected to the Pod can be as long as the kubelet sync period + cache propagation de"
+      ],
+      "ground_truth": "ConfigMap data projected into a mounted volume is updated eventually by kubelet synchronization, although an application may need to reread the file. Values injected as environment variables are fixed when the container starts, so existing containers require a restart or rollout to receive the changed value.\n",
+      "actual_sources": [
+        "concepts__configuration__configmap.html"
+      ],
+      "golden_sources": [
+        "concepts__configuration__configmap.html",
+        "tasks__configure-pod-container__configure-pod-configmap.html"
+      ],
+      "forbidden_keywords": [],
+      "forbidden_sources": [],
+      "expected_route": "rag",
+      "actual_route": "rag",
+      "ragas_metrics": {
+        "id": "q-212",
+        "demonstrates_feature": "hybrid",
+        "intent": "rag",
+        "question": "If I edit a ConfigMap used by running Pods, when will the application observe the new value, and what differs between a mounted file and an environment variable?",
+        "answer": "When a ConfigMap is updated, the behavior of Pods differs based on how the ConfigMap is used. If the ConfigMap is used as a mounted file, the updates are automatically propagated to the Pod. The kubelet periodically checks if the mounted ConfigMap is fresh and updates the projected keys accordingly. The delay in updates depends on the kubelet sync period and the cache propagation delay, which can vary based on the cache type used. In contrast, if the ConfigMap is used as an environment variable, the updates are not automatically reflected in the Pod. A Pod restart is required for the changes to take effect when ConfigMaps are consumed as environment variables.",
+        "contexts": [
+          "[Evidence source: concepts__configuration__configmap.html]\nn new keys are projected to the Pod can be as long as the kubelet sync period + cache propagation delay, where the cache propagation delay depends on the chosen cache type (it equals to watch propagation delay, ttl of cache, or zero correspondingly).ConfigMaps consumed as environment variables are not updated automatically and require a pod restart.Note:A container using a ConfigMap as a subPath volume mount will not receive ConfigMap updates.Using Configmaps as environment variablesTo use a Configmap in an environment variable in a Pod:For each container in your Pod specification, add an environment variable for each Configmap key that you want to use to the env[].valueFrom.configMapKeyRef field.Modify your image and/or command line so that the program looks for values in the specified environment variables.This is an example of defining a ConfigMap as a pod environment variable:The following ConfigMap (myconfigmap.yaml) stores two properties: username and access_level:apiVersion: v1",
+          "[Evidence source: concepts__configuration__configmap.html]\nmap Each ConfigMap you want to use needs to be referred to in .spec.volumes.If there are multiple containers in the Pod, then each container needs its own volumeMounts block, but only one .spec.volumes is needed per ConfigMap.Mounted ConfigMaps are updated automaticallyWhen a ConfigMap currently consumed in a volume is updated, projected keys are eventually updated as well. The kubelet checks whether the mounted ConfigMap is fresh on every periodic sync. However, the kubelet uses its local cache for getting the current value of the ConfigMap. The type of the cache is configurable using the configMapAndSecretChangeDetectionStrategy field in the KubeletConfiguration struct. A ConfigMap can be either propagated by watch (default), ttl-based, or by redirecting all requests directly to the API server. As a result, the total delay from the moment when the ConfigMap is updated to the moment when new keys are projected to the Pod can be as long as the kubelet sync period + cache propagation de"
+        ],
+        "ground_truth": "ConfigMap data projected into a mounted volume is updated eventually by kubelet synchronization, although an application may need to reread the file. Values injected as environment variables are fixed when the container starts, so existing containers require a restart or rollout to receive the changed value.\n",
+        "actual_sources": [
+          "concepts__configuration__configmap.html"
+        ],
+        "golden_sources": [
+          "concepts__configuration__configmap.html",
+          "tasks__configure-pod-container__configure-pod-configmap.html"
+        ],
+        "forbidden_keywords": [],
+        "forbidden_sources": [],
+        "expected_route": "rag",
+        "actual_route": "rag",
+        "faithfulness": 0.8,
+        "faithfulness_claims": [
+          {
+            "claim": "When a ConfigMap is updated, the updates are automatically propagated to the Pod if the ConfigMap is used as a mounted file.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 1,
+            "supporting_quote": "Mounted ConfigMaps are updated automatically. When a ConfigMap currently consumed in a volume is updated, projected keys are eventually updated as well.",
+            "quote_valid": true,
+            "reason": "The context explicitly states that mounted ConfigMaps are updated automatically when the ConfigMap is updated."
+          },
+          {
+            "claim": "The kubelet periodically checks if the mounted ConfigMap is fresh and updates the projected keys accordingly.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 1,
+            "supporting_quote": "The kubelet checks whether the mounted ConfigMap is fresh on every periodic sync.",
+            "quote_valid": true,
+            "reason": "The context confirms that the kubelet checks the freshness of the mounted ConfigMap periodically."
+          },
+          {
+            "claim": "The delay in updates for mounted ConfigMaps depends on the kubelet sync period and the cache propagation delay.",
+            "supported": false,
+            "evidence_type": "context",
+            "source_index": null,
+            "supporting_quote": "the total delay from the moment when the ConfigMap is updated to the moment when new keys are projected to the Pod can be as long as the kubelet sync period + cache propagation delay.",
+            "quote_valid": false,
+            "reason": "supporting_quote_not_found"
+          },
+          {
+            "claim": "If the ConfigMap is used as an environment variable, the updates are not automatically reflected in the Pod.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 0,
+            "supporting_quote": "ConfigMaps consumed as environment variables are not updated automatically and require a pod restart.",
+            "quote_valid": true,
+            "reason": "The context explicitly states that updates to ConfigMaps used as environment variables do not occur automatically."
+          },
+          {
+            "claim": "A Pod restart is required for the changes to take effect when ConfigMaps are consumed as environment variables.",
+            "supported": true,
+            "evidence_type": "context",
+            "source_index": 0,
+            "supporting_quote": "ConfigMaps consumed as environment variables are not updated automatically and require a pod restart.",
+            "quote_valid": true,
+            "reason": "The context confirms that a Pod restart is necessary for changes to take effect when using ConfigMaps as environment variables."
+          }
+        ],
+        "answer_relevancy": 1.0,
+        "context_precision": 1.0,
+        "context_recall": 1,
+        "scoring_backend": "llm"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 0.5,
+        "matched": [
+          "concepts__configuration__configmap",
+          "configmap"
+        ],
+        "missed": [
+          "tasks__configure-pod-container__configure-pod-configmap"
+        ]
+      },
+      "source_precision": 1.0,
+      "source_recall": 0.5,
+      "forbidden_source_check": {
+        "passed": true,
+        "hits": []
+      },
+      "route_check": {
+        "passed": true,
+        "expected": "rag",
+        "actual": "rag"
+      }
+    }
+  ],
+  "skipped": [],
+  "aggregate": {
+    "context_precision": 0.8,
+    "faithfulness": 0.827,
+    "answer_relevancy": 1.0,
+    "context_recall": 0.9,
+    "forbidden_violations": 0,
+    "source_precision": 1.0,
+    "source_recall": 0.875,
+    "forbidden_source_violations": 0,
+    "route_violations": 0,
+    "unsupported_claims": 7
+  },
+  "threshold_failures": {},
+  "per_question_threshold_failures": {
+    "q-204": {
+      "faithfulness": {
+        "actual": 0.5,
+        "minimum": 0.8
+      }
+    },
+    "q-208": {
+      "context_recall": {
+        "actual": 0.5,
+        "minimum": 0.8
+      }
+    },
+    "q-210": {
+      "context_precision": {
+        "actual": 0.0,
+        "minimum": 0.8
+      }
+    },
+    "q-212": {
+      "source_recall": {
+        "actual": 0.5,
+        "minimum": 0.8
+      }
+    }
+  }
+}

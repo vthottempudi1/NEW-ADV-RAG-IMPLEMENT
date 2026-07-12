@@ -1,0 +1,272 @@
+{
+  "profile": "all",
+  "flags": {
+    "search_mode": "hybrid",
+    "enable_hyde": true,
+    "enable_rerank": true,
+    "enable_crag": true,
+    "enable_self_reflective": true,
+    "top_k": 5
+  },
+  "timestamp_utc": "2026-07-11T21:39:52.200611Z",
+  "filter": null,
+  "mode": "http",
+  "scorer": "heuristic",
+  "preflight": null,
+  "provenance": {
+    "git_commit": "fa69186a74a659f9b00454f7e13f545e5bcecba8",
+    "environment": "local-docker",
+    "collection": "new_adv_rag_documents",
+    "true_documents": 50,
+    "noisy_documents": 324,
+    "total_points": null,
+    "unique_sources": null,
+    "embedding_model": "text-embedding-3-small",
+    "answer_model": "gpt-4o",
+    "grader_model": "gpt-4o-mini",
+    "ci_run_id": null
+  },
+  "rows": [
+    {
+      "id": "q-059",
+      "demonstrates_feature": "self_rag",
+      "intent": "rag",
+      "question": "Tell me how to secure a Kubernetes cluster.",
+      "answer": "I may not have enough reliable context to answer this fully. Based on the available information:\n\nTo secure a Kubernetes cluster effectively, follow these best practices: 1) Control access to the Kubernetes API by configuring and using TLS to encrypt data in transit within the control plane and between the control plane and its clients. 2) Implement role-based access control (RBAC) to manage permissions and restrict access to resources. 3) Regularly update and patch Kubernetes components and nodes to protect against vulnerabilities. 4) Use network policies to control traffic flow between pods. 5) Enable audit logging to monitor and review access and changes to the cluster. 6) Secure the etcd datastore by encrypting data at rest and restricting access. 7) Use namespaces to isolate resources and workloads. 8) Implement pod security policies to enforce security standards on pod configurations.",
+      "contexts": [
+        "[Evidence source: concepts__security__overview.txt]\nSecurity | Kubernetes SecurityConcepts for keeping your cloud-native workload secure.This section of the Kubernetes documentation aims to help you learn to run workloads more securely, and about the essential aspects of keeping a Kubernetes cluster secure.Kubernetes is based on a cloud-native architecture, and draws on advice from the CNCF about good practice for cloud native information security.Read Cloud Native Security and Kubernetes for the broader context about how to secure your cluster and the applications that you're running on it.Kubernetes security mechanismsKubernetes includes several APIs and security controls, as well as ways to define policies that can form part of how you manage information security.Control plane protectionA key security mechanism for any Kubernetes cluster is to control access to the Kubernetes API.Kubernetes expects you to configure and use TLS to provide data encryption in transit within the control plane, and between the control plane and its client"
+      ],
+      "ground_truth": "RBAC, least privilege, security",
+      "actual_sources": [
+        "concepts__security__overview.txt"
+      ],
+      "golden_sources": [
+        "concepts__security__overview.txt",
+        "concepts__security__rbac-good-practices.pdf"
+      ],
+      "forbidden_keywords": [],
+      "forbidden_sources": [],
+      "expected_route": "rag",
+      "actual_route": "rag",
+      "ragas_metrics": {
+        "id": "q-059",
+        "demonstrates_feature": "self_rag",
+        "intent": "rag",
+        "question": "Tell me how to secure a Kubernetes cluster.",
+        "answer": "I may not have enough reliable context to answer this fully. Based on the available information:\n\nTo secure a Kubernetes cluster effectively, follow these best practices: 1) Control access to the Kubernetes API by configuring and using TLS to encrypt data in transit within the control plane and between the control plane and its clients. 2) Implement role-based access control (RBAC) to manage permissions and restrict access to resources. 3) Regularly update and patch Kubernetes components and nodes to protect against vulnerabilities. 4) Use network policies to control traffic flow between pods. 5) Enable audit logging to monitor and review access and changes to the cluster. 6) Secure the etcd datastore by encrypting data at rest and restricting access. 7) Use namespaces to isolate resources and workloads. 8) Implement pod security policies to enforce security standards on pod configurations.",
+        "contexts": [
+          "[Evidence source: concepts__security__overview.txt]\nSecurity | Kubernetes SecurityConcepts for keeping your cloud-native workload secure.This section of the Kubernetes documentation aims to help you learn to run workloads more securely, and about the essential aspects of keeping a Kubernetes cluster secure.Kubernetes is based on a cloud-native architecture, and draws on advice from the CNCF about good practice for cloud native information security.Read Cloud Native Security and Kubernetes for the broader context about how to secure your cluster and the applications that you're running on it.Kubernetes security mechanismsKubernetes includes several APIs and security controls, as well as ways to define policies that can form part of how you manage information security.Control plane protectionA key security mechanism for any Kubernetes cluster is to control access to the Kubernetes API.Kubernetes expects you to configure and use TLS to provide data encryption in transit within the control plane, and between the control plane and its client"
+        ],
+        "ground_truth": "RBAC, least privilege, security",
+        "actual_sources": [
+          "concepts__security__overview.txt"
+        ],
+        "golden_sources": [
+          "concepts__security__overview.txt",
+          "concepts__security__rbac-good-practices.pdf"
+        ],
+        "forbidden_keywords": [],
+        "forbidden_sources": [],
+        "expected_route": "rag",
+        "actual_route": "rag",
+        "faithfulness": 0.293,
+        "answer_relevancy": 0.6,
+        "context_precision": 0.6,
+        "context_recall": 0.25,
+        "scoring_backend": "heuristic"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "concept",
+          "concepts",
+          "concepts__security__overview",
+          "overview",
+          "security"
+        ],
+        "missed": []
+      },
+      "source_precision": 1.0,
+      "forbidden_source_check": {
+        "passed": true,
+        "hits": []
+      },
+      "route_check": {
+        "passed": true,
+        "expected": "rag",
+        "actual": "rag"
+      }
+    },
+    {
+      "id": "q-060",
+      "demonstrates_feature": "self_rag",
+      "intent": "rag",
+      "question": "Explain Kubernetes storage.",
+      "answer": "I may not have enough reliable context to answer this fully. Based on the available information:\n\nKubernetes storage is managed through a system of Persistent Volumes (PVs) and Persistent Volume Claims (PVCs), which abstract the details of storage provisioning and consumption. A Persistent Volume is a piece of storage in the cluster that can be provisioned either statically by an administrator or dynamically using Storage Classes. Storage Classes define the different types of storage available in the cluster, such as quality-of-service levels or backup policies, and are used to dynamically provision PVs when a PVC is created. This system allows for flexible and scalable storage management, independent of the lifecycle of individual Pods.",
+      "contexts": [
+        "[Evidence source: concepts__storage__storage-classes.docx]\nConcepts \u203a Storage \u203a Storage-Classes Storage Classes | Kubernetes Storage ClassesThis document describes the concept of a StorageClass in Kubernetes. Familiarity with volumes and persistent volumes is suggested.A StorageClass provides a way for administrators to describe the classes of storage they offer. Different classes might map to quality-of-service levels, or to backup policies, or to arbitrary policies determined by the cluster administrators. Kubernetes itself is unopinionated about what classes represent.The Kubernetes concept of a storage class is similar to \u201cprofiles\u201d in some other storage system designs.StorageClass objectsEach StorageClass contains the fields provisioner, parameters, and reclaimPolicy, which are used when a PersistentVolume belonging to the class needs to be dynamically provisioned to satisfy a PersistentVolumeClaim (PVC).The name of a StorageClass object is significant, and is how users can request a particular class. Administrators set the name and other",
+        "[Evidence source: concepts__storage__persistent-volumes.pdf]\nConcepts \u203a Storage \u203a Persistent-Volumes Persistent Volumes | Kubernetes Persistent VolumesThis document describes persistent volumes in Kubernetes. Familiarity with volumes, StorageClasses and VolumeAttributesClasses is suggested.IntroductionManaging storage is a distinct problem from managing compute instances. The PersistentVolume subsystem provides an API for users and administrators that abstracts details of how storage is provided from how it is consumed. To do this, we introduce two new API resources: PersistentVolume and PersistentVolumeClaim.A PersistentVolume (PV) is a piece of storage in the cluster that has been provisioned by an administrator or dynamically provisioned using Storage Classes. It is a resource in the cluster just like a node is a cluster resource. PVs are volume plugins like Volumes, but have a lifecycle independent of any individual Pod that uses the PV. This API object captures the details of the implementation of the storage, be that NFS, iSCSI, or a cloud"
+      ],
+      "ground_truth": "PersistentVolume, StorageClass, claim",
+      "actual_sources": [
+        "concepts__storage__storage-classes.docx",
+        "concepts__storage__persistent-volumes.pdf"
+      ],
+      "golden_sources": [
+        "concepts__storage__persistent-volumes.pdf",
+        "concepts__storage__storage-classes.docx"
+      ],
+      "forbidden_keywords": [],
+      "forbidden_sources": [],
+      "expected_route": "rag",
+      "actual_route": "rag",
+      "ragas_metrics": {
+        "id": "q-060",
+        "demonstrates_feature": "self_rag",
+        "intent": "rag",
+        "question": "Explain Kubernetes storage.",
+        "answer": "I may not have enough reliable context to answer this fully. Based on the available information:\n\nKubernetes storage is managed through a system of Persistent Volumes (PVs) and Persistent Volume Claims (PVCs), which abstract the details of storage provisioning and consumption. A Persistent Volume is a piece of storage in the cluster that can be provisioned either statically by an administrator or dynamically using Storage Classes. Storage Classes define the different types of storage available in the cluster, such as quality-of-service levels or backup policies, and are used to dynamically provision PVs when a PVC is created. This system allows for flexible and scalable storage management, independent of the lifecycle of individual Pods.",
+        "contexts": [
+          "[Evidence source: concepts__storage__storage-classes.docx]\nConcepts \u203a Storage \u203a Storage-Classes Storage Classes | Kubernetes Storage ClassesThis document describes the concept of a StorageClass in Kubernetes. Familiarity with volumes and persistent volumes is suggested.A StorageClass provides a way for administrators to describe the classes of storage they offer. Different classes might map to quality-of-service levels, or to backup policies, or to arbitrary policies determined by the cluster administrators. Kubernetes itself is unopinionated about what classes represent.The Kubernetes concept of a storage class is similar to \u201cprofiles\u201d in some other storage system designs.StorageClass objectsEach StorageClass contains the fields provisioner, parameters, and reclaimPolicy, which are used when a PersistentVolume belonging to the class needs to be dynamically provisioned to satisfy a PersistentVolumeClaim (PVC).The name of a StorageClass object is significant, and is how users can request a particular class. Administrators set the name and other",
+          "[Evidence source: concepts__storage__persistent-volumes.pdf]\nConcepts \u203a Storage \u203a Persistent-Volumes Persistent Volumes | Kubernetes Persistent VolumesThis document describes persistent volumes in Kubernetes. Familiarity with volumes, StorageClasses and VolumeAttributesClasses is suggested.IntroductionManaging storage is a distinct problem from managing compute instances. The PersistentVolume subsystem provides an API for users and administrators that abstracts details of how storage is provided from how it is consumed. To do this, we introduce two new API resources: PersistentVolume and PersistentVolumeClaim.A PersistentVolume (PV) is a piece of storage in the cluster that has been provisioned by an administrator or dynamically provisioned using Storage Classes. It is a resource in the cluster just like a node is a cluster resource. PVs are volume plugins like Volumes, but have a lifecycle independent of any individual Pod that uses the PV. This API object captures the details of the implementation of the storage, be that NFS, iSCSI, or a cloud"
+        ],
+        "ground_truth": "PersistentVolume, StorageClass, claim",
+        "actual_sources": [
+          "concepts__storage__storage-classes.docx",
+          "concepts__storage__persistent-volumes.pdf"
+        ],
+        "golden_sources": [
+          "concepts__storage__persistent-volumes.pdf",
+          "concepts__storage__storage-classes.docx"
+        ],
+        "forbidden_keywords": [],
+        "forbidden_sources": [],
+        "expected_route": "rag",
+        "actual_route": "rag",
+        "faithfulness": 0.35,
+        "answer_relevancy": 0.667,
+        "context_precision": 0.667,
+        "context_recall": 0.667,
+        "scoring_backend": "heuristic"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "classe",
+          "classes",
+          "concept",
+          "concepts",
+          "concepts__storage__storage-classe",
+          "concepts__storage__storage-classes",
+          "storage",
+          "storage-classe",
+          "storage-classes"
+        ],
+        "missed": []
+      },
+      "source_precision": 1.0,
+      "forbidden_source_check": {
+        "passed": true,
+        "hits": []
+      },
+      "route_check": {
+        "passed": true,
+        "expected": "rag",
+        "actual": "rag"
+      }
+    },
+    {
+      "id": "q-061",
+      "demonstrates_feature": "self_rag",
+      "intent": "rag",
+      "question": "How do Kubernetes Services work?",
+      "answer": "I may not have enough reliable context to answer this fully. Based on the available information:\n\nKubernetes Services provide a stable endpoint for a set of Pods, allowing other components to communicate with them reliably. Each Service is assigned a unique IP address (clusterIP) that remains constant for the lifespan of the Service, even though the underlying Pods may change. This abstraction allows for automatic load balancing across the Pods that are part of the Service. Services solve the problem of ephemeral Pod IPs by providing a consistent way to access the Pods, ensuring that communication within the cluster is maintained even as Pods are created and destroyed to match the desired state of the cluster.",
+      "contexts": [
+        "[Evidence source: tutorials__services__connect-applications-service.docx]\n? The pods die with it, and the ReplicaSet inside the Deployment will create new ones, with different IPs. This is the problem a Service solves.A Kubernetes Service is an abstraction which defines a logical set of Pods running somewhere in your cluster, that all provide the same functionality. When created, each Service is assigned a unique IP address (also called clusterIP). This address is tied to the lifespan of the Service, and will not change while the Service is alive. Pods can be configured to talk to the Service, and know that communication to the Service will be automatically load-balanced out to some pod that is a member of the Service.You can create a Service for your 2 nginx replicas with kubectl expose:kubectl expose deployment/my-nginx service/my-nginx exposed This is equivalent to kubectl apply -f in the following yaml:service/networking/nginx-svc.yaml apiVersion: v1 kind: Service metadata: name: my-nginx labels: run: my-nginx spec: ports: - port: 80 protocol: TCP select",
+        "[Evidence source: concepts__services-networking__service.txt]\nPods are named. Kubernetes Pods are created and destroyed to match the desired state of your cluster. Pods are ephemeral resources (you should not expect that an individual Pod is reliable and durable).Each Pod gets its own IP address (Kubernetes expects network plugins to ensure this). For a given Deployment in your cluster, the set of Pods running in one moment in time could be different from the set of Pods running that application a moment later.This leads to a problem: if some set of Pods (call them \"backends\") provides functionality to other Pods (call them \"frontends\") inside your cluster, how do the frontends find out and keep track of which IP address to connect to, so that the frontend can use the backend part of the workload?Enter Services.Services in KubernetesThe Service API, part of Kubernetes, is an abstraction to help you expose groups of Pods over a network. Each Service object defines a logical set of endpoints (usually these endpoints are Pods) along with a policy a"
+      ],
+      "ground_truth": "Service, Pod, endpoint",
+      "actual_sources": [
+        "tutorials__services__connect-applications-service.docx",
+        "concepts__services-networking__service.txt"
+      ],
+      "golden_sources": [
+        "concepts__services-networking__service.txt"
+      ],
+      "forbidden_keywords": [],
+      "forbidden_sources": [],
+      "expected_route": "rag",
+      "actual_route": "rag",
+      "ragas_metrics": {
+        "id": "q-061",
+        "demonstrates_feature": "self_rag",
+        "intent": "rag",
+        "question": "How do Kubernetes Services work?",
+        "answer": "I may not have enough reliable context to answer this fully. Based on the available information:\n\nKubernetes Services provide a stable endpoint for a set of Pods, allowing other components to communicate with them reliably. Each Service is assigned a unique IP address (clusterIP) that remains constant for the lifespan of the Service, even though the underlying Pods may change. This abstraction allows for automatic load balancing across the Pods that are part of the Service. Services solve the problem of ephemeral Pod IPs by providing a consistent way to access the Pods, ensuring that communication within the cluster is maintained even as Pods are created and destroyed to match the desired state of the cluster.",
+        "contexts": [
+          "[Evidence source: tutorials__services__connect-applications-service.docx]\n? The pods die with it, and the ReplicaSet inside the Deployment will create new ones, with different IPs. This is the problem a Service solves.A Kubernetes Service is an abstraction which defines a logical set of Pods running somewhere in your cluster, that all provide the same functionality. When created, each Service is assigned a unique IP address (also called clusterIP). This address is tied to the lifespan of the Service, and will not change while the Service is alive. Pods can be configured to talk to the Service, and know that communication to the Service will be automatically load-balanced out to some pod that is a member of the Service.You can create a Service for your 2 nginx replicas with kubectl expose:kubectl expose deployment/my-nginx service/my-nginx exposed This is equivalent to kubectl apply -f in the following yaml:service/networking/nginx-svc.yaml apiVersion: v1 kind: Service metadata: name: my-nginx labels: run: my-nginx spec: ports: - port: 80 protocol: TCP select",
+          "[Evidence source: concepts__services-networking__service.txt]\nPods are named. Kubernetes Pods are created and destroyed to match the desired state of your cluster. Pods are ephemeral resources (you should not expect that an individual Pod is reliable and durable).Each Pod gets its own IP address (Kubernetes expects network plugins to ensure this). For a given Deployment in your cluster, the set of Pods running in one moment in time could be different from the set of Pods running that application a moment later.This leads to a problem: if some set of Pods (call them \"backends\") provides functionality to other Pods (call them \"frontends\") inside your cluster, how do the frontends find out and keep track of which IP address to connect to, so that the frontend can use the backend part of the workload?Enter Services.Services in KubernetesThe Service API, part of Kubernetes, is an abstraction to help you expose groups of Pods over a network. Each Service object defines a logical set of endpoints (usually these endpoints are Pods) along with a policy a"
+        ],
+        "ground_truth": "Service, Pod, endpoint",
+        "actual_sources": [
+          "tutorials__services__connect-applications-service.docx",
+          "concepts__services-networking__service.txt"
+        ],
+        "golden_sources": [
+          "concepts__services-networking__service.txt"
+        ],
+        "forbidden_keywords": [],
+        "forbidden_sources": [],
+        "expected_route": "rag",
+        "actual_route": "rag",
+        "faithfulness": 0.382,
+        "answer_relevancy": 0.5,
+        "context_precision": 0.625,
+        "context_recall": 0.667,
+        "scoring_backend": "heuristic"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "service",
+          "services"
+        ],
+        "missed": []
+      },
+      "source_precision": 1.0,
+      "forbidden_source_check": {
+        "passed": true,
+        "hits": []
+      },
+      "route_check": {
+        "passed": true,
+        "expected": "rag",
+        "actual": "rag"
+      }
+    }
+  ],
+  "skipped": [],
+  "aggregate": {
+    "context_recall": 0.528,
+    "context_precision": 0.631,
+    "answer_relevancy": 0.589,
+    "faithfulness": 0.342,
+    "forbidden_violations": 0,
+    "source_precision": 1.0,
+    "forbidden_source_violations": 0,
+    "route_violations": 0
+  },
+  "threshold_failures": {}
+}

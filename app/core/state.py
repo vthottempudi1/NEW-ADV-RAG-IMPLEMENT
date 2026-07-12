@@ -4,7 +4,13 @@ from typing import Annotated, TypedDict
 from app.models import CRAGEvaluation, ReflectionResult, RetrievedChunk
 
 
+# Learner Note: Graph state is part of the application orchestration layer.
 class GraphState(TypedDict, total=False):
+    """Represent graph state within the application orchestration layer.
+
+    Learner Note:
+        This class groups state and behavior behind a clear, testable contract.
+    """
     question: str
     user_id: str
     flags: dict
@@ -29,6 +35,7 @@ class GraphState(TypedDict, total=False):
     rag_cache_hit: bool
     raw_answer: str
     rag_answer: str
+    rag_question: str
     rag_sources: list[str]
     rag_confidence: float
     rag_metadata: dict

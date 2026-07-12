@@ -1,0 +1,361 @@
+{
+  "profile": "all",
+  "flags": {
+    "search_mode": "hybrid",
+    "enable_hyde": true,
+    "enable_rerank": true,
+    "enable_crag": true,
+    "enable_self_reflective": true,
+    "top_k": 5
+  },
+  "timestamp_utc": "2026-07-11T23:29:31.574823Z",
+  "filter": null,
+  "mode": "http",
+  "scorer": "heuristic",
+  "preflight": null,
+  "provenance": {
+    "git_commit": "fa69186a74a659f9b00454f7e13f545e5bcecba8",
+    "environment": "dev-post-fix",
+    "collection": "new_adv_rag_documents",
+    "true_documents": 50,
+    "noisy_documents": 324,
+    "total_points": null,
+    "unique_sources": null,
+    "embedding_model": "text-embedding-3-small",
+    "answer_model": "gpt-4o",
+    "grader_model": "gpt-4o-mini",
+    "ci_run_id": null
+  },
+  "rows": [
+    {
+      "id": "q-101",
+      "demonstrates_feature": "hyde",
+      "intent": "rag",
+      "question": "A container is alive, but users should not reach it until its warm-up work is complete. Which Kubernetes mechanism controls that?",
+      "answer": "Readiness Probes and Startup Probes serve different purposes in managing container accessibility during warm-up in Kubernetes. Readiness Probes are used to determine if a container is ready to accept traffic. If a Readiness Probe fails, the container is removed from the service endpoints, meaning it won't receive any traffic until it passes the probe. This ensures that traffic does not reach a container that is not ready for it. On the other hand, Startup Probes are used to indicate that a Pod has successfully initialized. They are particularly useful during the initial startup phase of a container, where it might take longer to load data or warm up caches. If a Startup Probe is specified, no other probes (like Readiness or Liveness Probes) are executed until the Startup Probe completes successfully. If the Startup Probe fails, the Pod will be restarted, similar to a Liveness Probe failure. This allows for different probe parameters at the beginning of a Pod's lifecycle compared to its steady-state operation [tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx][reference__kubernetes-api__workload-resources__pod-v1.docx].",
+      "contexts": [
+        "[Evidence source: tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx]\neness probes can be used in parallel for the same container. Using both can ensure that traffic does not reach a container that is not ready for it, and that containers are restarted when they fail.What's nextLearn more about Liveness, Readiness and Startup Probes.For the full specification of probe-related fields, see the API reference: Pod, Container, ProbeFeedbackWas this page helpful?Yes NoThanks for the feedback. If you have a specific, answerable question about how to use Kubernetes, ask it on Stack Overflow. Open an issue in the GitHub Repository if you want to report a problem or suggest an improvement.Last modified April 06, 2026 at 11:14 PM PST: remove conceptual explanation (69c3a7e993)",
+        "[Evidence source: reference__kubernetes-api__workload-resources__pod-v1.docx]\nprobesstartupProbe (Probe)StartupProbe indicates that the Pod has successfully initialized. If specified, no other probes are executed until this completes successfully. If this probe fails, the Pod will be restarted, just as if the livenessProbe failed. This can be used to provide different probe parameters at the beginning of a Pod's lifecycle, when it might take a long time to load data or warm a cache, than during steady-state operation. This cannot be updated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probesrestartPolicy (string)RestartPolicy defines the restart behavior of individual containers in a pod. This overrides the pod-level restart policy. When this field is not specified, the restart behavior is defined by the Pod's restart policy and the container type. Additionally, setting the RestartPolicy as \"Always\" for the init container will have the following effect: this init container will be continually restarted on exit until all"
+      ],
+      "ground_truth": "Use a readiness probe to keep the Pod out of Service endpoints until it can accept traffic. If startup is unusually slow, add a startup probe so liveness and readiness checks do not begin until initialization succeeds.\n",
+      "actual_sources": [
+        "tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx",
+        "reference__kubernetes-api__workload-resources__pod-v1.docx"
+      ],
+      "golden_sources": [
+        "tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx"
+      ],
+      "forbidden_keywords": [],
+      "forbidden_sources": [],
+      "expected_route": "rag",
+      "actual_route": "rag",
+      "ragas_metrics": {
+        "id": "q-101",
+        "demonstrates_feature": "hyde",
+        "intent": "rag",
+        "question": "A container is alive, but users should not reach it until its warm-up work is complete. Which Kubernetes mechanism controls that?",
+        "answer": "Readiness Probes and Startup Probes serve different purposes in managing container accessibility during warm-up in Kubernetes. Readiness Probes are used to determine if a container is ready to accept traffic. If a Readiness Probe fails, the container is removed from the service endpoints, meaning it won't receive any traffic until it passes the probe. This ensures that traffic does not reach a container that is not ready for it. On the other hand, Startup Probes are used to indicate that a Pod has successfully initialized. They are particularly useful during the initial startup phase of a container, where it might take longer to load data or warm up caches. If a Startup Probe is specified, no other probes (like Readiness or Liveness Probes) are executed until the Startup Probe completes successfully. If the Startup Probe fails, the Pod will be restarted, similar to a Liveness Probe failure. This allows for different probe parameters at the beginning of a Pod's lifecycle compared to its steady-state operation [tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx][reference__kubernetes-api__workload-resources__pod-v1.docx].",
+        "contexts": [
+          "[Evidence source: tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx]\neness probes can be used in parallel for the same container. Using both can ensure that traffic does not reach a container that is not ready for it, and that containers are restarted when they fail.What's nextLearn more about Liveness, Readiness and Startup Probes.For the full specification of probe-related fields, see the API reference: Pod, Container, ProbeFeedbackWas this page helpful?Yes NoThanks for the feedback. If you have a specific, answerable question about how to use Kubernetes, ask it on Stack Overflow. Open an issue in the GitHub Repository if you want to report a problem or suggest an improvement.Last modified April 06, 2026 at 11:14 PM PST: remove conceptual explanation (69c3a7e993)",
+          "[Evidence source: reference__kubernetes-api__workload-resources__pod-v1.docx]\nprobesstartupProbe (Probe)StartupProbe indicates that the Pod has successfully initialized. If specified, no other probes are executed until this completes successfully. If this probe fails, the Pod will be restarted, just as if the livenessProbe failed. This can be used to provide different probe parameters at the beginning of a Pod's lifecycle, when it might take a long time to load data or warm a cache, than during steady-state operation. This cannot be updated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probesrestartPolicy (string)RestartPolicy defines the restart behavior of individual containers in a pod. This overrides the pod-level restart policy. When this field is not specified, the restart behavior is defined by the Pod's restart policy and the container type. Additionally, setting the RestartPolicy as \"Always\" for the init container will have the following effect: this init container will be continually restarted on exit until all"
+        ],
+        "ground_truth": "Use a readiness probe to keep the Pod out of Service endpoints until it can accept traffic. If startup is unusually slow, add a startup probe so liveness and readiness checks do not begin until initialization succeeds.\n",
+        "actual_sources": [
+          "tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx",
+          "reference__kubernetes-api__workload-resources__pod-v1.docx"
+        ],
+        "golden_sources": [
+          "tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx"
+        ],
+        "forbidden_keywords": [],
+        "forbidden_sources": [],
+        "expected_route": "rag",
+        "actual_route": "rag",
+        "faithfulness": 0.5,
+        "answer_relevancy": 0.529,
+        "context_precision": 0.324,
+        "context_recall": 0.44,
+        "scoring_backend": "heuristic"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "configure",
+          "configure-liveness-readiness-startup-probe",
+          "configure-liveness-readiness-startup-probes",
+          "configure-pod-container",
+          "container",
+          "livenes",
+          "liveness",
+          "pod",
+          "probe",
+          "probes",
+          "readines",
+          "readiness",
+          "startup",
+          "task",
+          "tasks",
+          "tasks__configure-pod-container__configure-liveness-readiness-startup-probe",
+          "tasks__configure-pod-container__configure-liveness-readiness-startup-probes"
+        ],
+        "missed": []
+      },
+      "source_precision": 1.0,
+      "forbidden_source_check": {
+        "passed": true,
+        "hits": []
+      },
+      "route_check": {
+        "passed": true,
+        "expected": "rag",
+        "actual": "rag"
+      }
+    },
+    {
+      "id": "q-102",
+      "demonstrates_feature": "hyde",
+      "intent": "rag",
+      "question": "My application instances get new addresses whenever they are replaced. What gives callers one durable destination?",
+      "answer": "To provide a durable destination for callers, you can use a Kubernetes Service. A Service in Kubernetes provides a stable IP address and DNS name for a set of Pods, even if the individual Pods' IP addresses change. This allows your application instances to be replaced without affecting the callers, as they can continue to use the Service's IP or DNS name.",
+      "contexts": [
+        "[Evidence source: concepts__services-networking__service.txt]\ness modeFor a Service of type: LoadBalancer, a controller can set .status.loadBalancer.ingress.ipMode. The .status.loadBalancer.ingress.ipMode specifies how the load-balancer IP behaves. It may be specified only when the .status.loadBalancer.ingress.ip field is also specified.There are two possible values for .status.loadBalancer.ingress.ipMode: \"VIP\" and \"Proxy\". The default value is \"VIP\" meaning that traffic is delivered to the node with the destination set to the load-balancer's IP and port. There are two cases when setting this to \"Proxy\", depending on how the load-balancer from the cloud provider delivers the traffics:If the traffic is delivered to the node then DNATed to the pod, the destination would be set to the node's IP and node port;If the traffic is delivered directly to the pod, the destination would be set to the pod's IP and port.Service implementations may use this information to adjust traffic routing.Internal load balancerIn a mixed environment it is sometimes neces"
+      ],
+      "ground_truth": "A Kubernetes Service provides a stable virtual IP and DNS name for a changing set of Pods. Its selector and endpoints direct and load-balance traffic to the currently ready Pods even when individual Pod IP addresses change.\n",
+      "actual_sources": [
+        "concepts__services-networking__service.txt"
+      ],
+      "golden_sources": [
+        "concepts__services-networking__service.txt"
+      ],
+      "forbidden_keywords": [],
+      "forbidden_sources": [],
+      "expected_route": "rag",
+      "actual_route": "rag",
+      "ragas_metrics": {
+        "id": "q-102",
+        "demonstrates_feature": "hyde",
+        "intent": "rag",
+        "question": "My application instances get new addresses whenever they are replaced. What gives callers one durable destination?",
+        "answer": "To provide a durable destination for callers, you can use a Kubernetes Service. A Service in Kubernetes provides a stable IP address and DNS name for a set of Pods, even if the individual Pods' IP addresses change. This allows your application instances to be replaced without affecting the callers, as they can continue to use the Service's IP or DNS name.",
+        "contexts": [
+          "[Evidence source: concepts__services-networking__service.txt]\ness modeFor a Service of type: LoadBalancer, a controller can set .status.loadBalancer.ingress.ipMode. The .status.loadBalancer.ingress.ipMode specifies how the load-balancer IP behaves. It may be specified only when the .status.loadBalancer.ingress.ip field is also specified.There are two possible values for .status.loadBalancer.ingress.ipMode: \"VIP\" and \"Proxy\". The default value is \"VIP\" meaning that traffic is delivered to the node with the destination set to the load-balancer's IP and port. There are two cases when setting this to \"Proxy\", depending on how the load-balancer from the cloud provider delivers the traffics:If the traffic is delivered to the node then DNATed to the pod, the destination would be set to the node's IP and node port;If the traffic is delivered directly to the pod, the destination would be set to the pod's IP and port.Service implementations may use this information to adjust traffic routing.Internal load balancerIn a mixed environment it is sometimes neces"
+        ],
+        "ground_truth": "A Kubernetes Service provides a stable virtual IP and DNS name for a changing set of Pods. Its selector and endpoints direct and load-balance traffic to the currently ready Pods even when individual Pod IP addresses change.\n",
+        "actual_sources": [
+          "concepts__services-networking__service.txt"
+        ],
+        "golden_sources": [
+          "concepts__services-networking__service.txt"
+        ],
+        "forbidden_keywords": [],
+        "forbidden_sources": [],
+        "expected_route": "rag",
+        "actual_route": "rag",
+        "faithfulness": 0.25,
+        "answer_relevancy": 0.615,
+        "context_precision": 0.077,
+        "context_recall": 0.24,
+        "scoring_backend": "heuristic"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "concept",
+          "concepts",
+          "concepts__services-networking__service",
+          "networking",
+          "service",
+          "services",
+          "services-networking"
+        ],
+        "missed": []
+      },
+      "source_precision": 1.0,
+      "forbidden_source_check": {
+        "passed": true,
+        "hits": []
+      },
+      "route_check": {
+        "passed": true,
+        "expected": "rag",
+        "actual": "rag"
+      }
+    },
+    {
+      "id": "q-103",
+      "demonstrates_feature": "hyde",
+      "intent": "rag",
+      "question": "I need every eligible node to run exactly one copy of a log collector. Which controller fits?",
+      "answer": "To ensure that every eligible node runs exactly one copy of a log collector, you should use a DaemonSet. A DaemonSet ensures that all (or some) nodes run a copy of a Pod, which is ideal for running a logs collection daemon on every node.",
+      "contexts": [
+        "[Evidence source: concepts__workloads__controllers__daemonset.html]\nConcepts \u203a Workloads \u203a Controllers \u203a Daemonset Concepts \u203a Workloads \u203a Controllers \u203a Daemonset DaemonSet | Kubernetes DaemonSetA DaemonSet defines Pods that provide node-local facilities. These might be fundamental to the operation of your cluster, such as a networking helper tool, or be part of an add-on.A DaemonSet ensures that all (or some) Nodes run a copy of a Pod. As nodes are added to the cluster, Pods are added to them. As nodes are removed from the cluster, those Pods are garbage collected. Deleting a DaemonSet will clean up the Pods it created.Some typical uses of a DaemonSet are:running a cluster storage daemon on every noderunning a logs collection daemon on every noderunning a node monitoring daemon on every nodeIn a simple case, one DaemonSet, covering all nodes, would be used for each type of daemon. A more complex setup might use multiple DaemonSets for a single type of daemon, but with different flags and/or different memory and cpu requests for different hardware types",
+        "[Evidence source: concepts__cluster-administration__logging.pdf]\nthe logging agent is a container that has access to a directory with log files from all of the application containers on that node.Because the logging agent must run on every node, it is recommended to run the agent as a DaemonSet.Node-level logging creates only one agent per node and doesn't require any changes to the applications running on the node.Containers write to stdout and stderr, but with no agreed format. A node-level agent collects these logs and forwards them for aggregation.Using a sidecar container with the logging agentYou can use a sidecar container in one of the following ways:The sidecar container streams application logs to its own stdout.The sidecar container runs a logging agent, which is configured to pick up logs from an application container.Streaming sidecar containerBy having your sidecar containers write to their own"
+      ],
+      "ground_truth": "Use a DaemonSet. It ensures that all eligible nodes, or the nodes selected by its scheduling constraints, run a copy of the Pod and creates or removes Pods as nodes join or leave.\n",
+      "actual_sources": [
+        "concepts__workloads__controllers__daemonset.html",
+        "concepts__cluster-administration__logging.pdf"
+      ],
+      "golden_sources": [
+        "concepts__workloads__controllers__daemonset.html"
+      ],
+      "forbidden_keywords": [],
+      "forbidden_sources": [],
+      "expected_route": "rag",
+      "actual_route": "rag",
+      "ragas_metrics": {
+        "id": "q-103",
+        "demonstrates_feature": "hyde",
+        "intent": "rag",
+        "question": "I need every eligible node to run exactly one copy of a log collector. Which controller fits?",
+        "answer": "To ensure that every eligible node runs exactly one copy of a log collector, you should use a DaemonSet. A DaemonSet ensures that all (or some) nodes run a copy of a Pod, which is ideal for running a logs collection daemon on every node.",
+        "contexts": [
+          "[Evidence source: concepts__workloads__controllers__daemonset.html]\nConcepts \u203a Workloads \u203a Controllers \u203a Daemonset Concepts \u203a Workloads \u203a Controllers \u203a Daemonset DaemonSet | Kubernetes DaemonSetA DaemonSet defines Pods that provide node-local facilities. These might be fundamental to the operation of your cluster, such as a networking helper tool, or be part of an add-on.A DaemonSet ensures that all (or some) Nodes run a copy of a Pod. As nodes are added to the cluster, Pods are added to them. As nodes are removed from the cluster, those Pods are garbage collected. Deleting a DaemonSet will clean up the Pods it created.Some typical uses of a DaemonSet are:running a cluster storage daemon on every noderunning a logs collection daemon on every noderunning a node monitoring daemon on every nodeIn a simple case, one DaemonSet, covering all nodes, would be used for each type of daemon. A more complex setup might use multiple DaemonSets for a single type of daemon, but with different flags and/or different memory and cpu requests for different hardware types",
+          "[Evidence source: concepts__cluster-administration__logging.pdf]\nthe logging agent is a container that has access to a directory with log files from all of the application containers on that node.Because the logging agent must run on every node, it is recommended to run the agent as a DaemonSet.Node-level logging creates only one agent per node and doesn't require any changes to the applications running on the node.Containers write to stdout and stderr, but with no agreed format. A node-level agent collects these logs and forwards them for aggregation.Using a sidecar container with the logging agentYou can use a sidecar container in one of the following ways:The sidecar container streams application logs to its own stdout.The sidecar container runs a logging agent, which is configured to pick up logs from an application container.Streaming sidecar containerBy having your sidecar containers write to their own"
+        ],
+        "ground_truth": "Use a DaemonSet. It ensures that all eligible nodes, or the nodes selected by its scheduling constraints, run a copy of the Pod and creates or removes Pods as nodes join or leave.\n",
+        "actual_sources": [
+          "concepts__workloads__controllers__daemonset.html",
+          "concepts__cluster-administration__logging.pdf"
+        ],
+        "golden_sources": [
+          "concepts__workloads__controllers__daemonset.html"
+        ],
+        "forbidden_keywords": [],
+        "forbidden_sources": [],
+        "expected_route": "rag",
+        "actual_route": "rag",
+        "faithfulness": 0.654,
+        "answer_relevancy": 0.75,
+        "context_precision": 0.417,
+        "context_recall": 0.6,
+        "scoring_backend": "heuristic"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "concept",
+          "concepts",
+          "concepts__workloads__controllers__daemonset",
+          "controller",
+          "controllers",
+          "daemonset",
+          "workload",
+          "workloads"
+        ],
+        "missed": []
+      },
+      "source_precision": 1.0,
+      "forbidden_source_check": {
+        "passed": true,
+        "hits": []
+      },
+      "route_check": {
+        "passed": true,
+        "expected": "rag",
+        "actual": "rag"
+      }
+    },
+    {
+      "id": "q-104",
+      "demonstrates_feature": "hyde",
+      "intent": "rag",
+      "question": "A batch calculation should run to completion and be retried if its Pod fails. What should own it?",
+      "answer": "A Kubernetes Job should own the batch calculation task. Jobs are designed to run tasks to completion and will retry execution of the Pods until a specified number of them successfully terminate. This makes them suitable for tasks that need to be retried if a Pod fails.",
+      "contexts": [
+        "[Evidence source: concepts__workloads__controllers__job.pdf]\nConcepts \u203a Workloads \u203a Controllers \u203a Job Jobs | Kubernetes JobsJobs represent one-off tasks that run to completion and then stop.A Job creates one or more Pods and will continue to retry execution of the Pods until a specified number of them successfully terminate. As pods successfully complete, the Job tracks the successful completions. When a specified number of successful completions is reached, the task (ie, Job) is complete. Deleting a Job will clean up the Pods it created. Suspending a Job will delete its active Pods until the Job is resumed again.A simple case is to create one Job object in order to reliably run one Pod to completion. The Job object will start a new Pod if the first Pod fails or is deleted (for example due to a node hardware failure or a node reboot).You can also use a Job to run multiple Pods in parallel.If you want to run a Job (either a single task, or several in parallel) on a schedule, see CronJob.Running an example JobHere is an example Job config. It comp",
+        "[Evidence source: concepts__workloads__controllers__job.pdf]\nexcept it is nested and does not have an apiVersion or kind.In addition to required fields for a Pod, a pod template in a Job must specify appropriate labels (see pod selector) and an appropriate restart policy.Only a RestartPolicy equal to Never or OnFailure is allowed.Pod selectorThe .spec.selector field is optional. In almost all cases you should not specify it. See section specifying your own pod selector.Parallel execution for JobsThere are three main types of task suitable to run as a Job:Non-parallel Jobsnormally, only one Pod is started, unless the Pod fails.the Job is complete as soon as its Pod terminates successfully.Parallel Jobs with a fixed completion count:specify a non-zero positive value for .spec.completions.the Job represents the overall task, and is complete when there are .spec.completions successful Pods.when using .spec.completionMode=\"Indexed\", each Pod gets a different index in the range 0 to .spec.completions-1.Parallel Jobs with a work queue:do not specify .s"
+      ],
+      "ground_truth": "A Kubernetes Job should own the workload. A Job creates Pods for a finite task, tracks successful completions, and can retry failed Pods according to its restart and backoff policy.\n",
+      "actual_sources": [
+        "concepts__workloads__controllers__job.pdf"
+      ],
+      "golden_sources": [
+        "concepts__workloads__controllers__job.pdf"
+      ],
+      "forbidden_keywords": [],
+      "forbidden_sources": [],
+      "expected_route": "rag",
+      "actual_route": "rag",
+      "ragas_metrics": {
+        "id": "q-104",
+        "demonstrates_feature": "hyde",
+        "intent": "rag",
+        "question": "A batch calculation should run to completion and be retried if its Pod fails. What should own it?",
+        "answer": "A Kubernetes Job should own the batch calculation task. Jobs are designed to run tasks to completion and will retry execution of the Pods until a specified number of them successfully terminate. This makes them suitable for tasks that need to be retried if a Pod fails.",
+        "contexts": [
+          "[Evidence source: concepts__workloads__controllers__job.pdf]\nConcepts \u203a Workloads \u203a Controllers \u203a Job Jobs | Kubernetes JobsJobs represent one-off tasks that run to completion and then stop.A Job creates one or more Pods and will continue to retry execution of the Pods until a specified number of them successfully terminate. As pods successfully complete, the Job tracks the successful completions. When a specified number of successful completions is reached, the task (ie, Job) is complete. Deleting a Job will clean up the Pods it created. Suspending a Job will delete its active Pods until the Job is resumed again.A simple case is to create one Job object in order to reliably run one Pod to completion. The Job object will start a new Pod if the first Pod fails or is deleted (for example due to a node hardware failure or a node reboot).You can also use a Job to run multiple Pods in parallel.If you want to run a Job (either a single task, or several in parallel) on a schedule, see CronJob.Running an example JobHere is an example Job config. It comp",
+          "[Evidence source: concepts__workloads__controllers__job.pdf]\nexcept it is nested and does not have an apiVersion or kind.In addition to required fields for a Pod, a pod template in a Job must specify appropriate labels (see pod selector) and an appropriate restart policy.Only a RestartPolicy equal to Never or OnFailure is allowed.Pod selectorThe .spec.selector field is optional. In almost all cases you should not specify it. See section specifying your own pod selector.Parallel execution for JobsThere are three main types of task suitable to run as a Job:Non-parallel Jobsnormally, only one Pod is started, unless the Pod fails.the Job is complete as soon as its Pod terminates successfully.Parallel Jobs with a fixed completion count:specify a non-zero positive value for .spec.completions.the Job represents the overall task, and is complete when there are .spec.completions successful Pods.when using .spec.completionMode=\"Indexed\", each Pod gets a different index in the range 0 to .spec.completions-1.Parallel Jobs with a work queue:do not specify .s"
+        ],
+        "ground_truth": "A Kubernetes Job should own the workload. A Job creates Pods for a finite task, tracks successful completions, and can retry failed Pods according to its restart and backoff policy.\n",
+        "actual_sources": [
+          "concepts__workloads__controllers__job.pdf"
+        ],
+        "golden_sources": [
+          "concepts__workloads__controllers__job.pdf"
+        ],
+        "forbidden_keywords": [],
+        "forbidden_sources": [],
+        "expected_route": "rag",
+        "actual_route": "rag",
+        "faithfulness": 0.677,
+        "answer_relevancy": 0.909,
+        "context_precision": 0.591,
+        "context_recall": 0.75,
+        "scoring_backend": "heuristic"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "concept",
+          "concepts",
+          "concepts__workloads__controllers__job",
+          "controller",
+          "controllers",
+          "job",
+          "workload",
+          "workloads"
+        ],
+        "missed": []
+      },
+      "source_precision": 1.0,
+      "forbidden_source_check": {
+        "passed": true,
+        "hits": []
+      },
+      "route_check": {
+        "passed": true,
+        "expected": "rag",
+        "actual": "rag"
+      }
+    }
+  ],
+  "skipped": [],
+  "aggregate": {
+    "context_recall": 0.507,
+    "faithfulness": 0.52,
+    "context_precision": 0.352,
+    "answer_relevancy": 0.701,
+    "forbidden_violations": 0,
+    "source_precision": 1.0,
+    "forbidden_source_violations": 0,
+    "route_violations": 0
+  },
+  "threshold_failures": {}
+}

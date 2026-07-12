@@ -6,23 +6,35 @@ from langgraph.types import interrupt
 
 from app.core.state import GraphState
 from app.models import ChatResponse, ResponseMetadata, RetrievedChunkPreview
-from app.services.cost_service import answer_model_cost
-from app.services.rag_service import run_rag
-from app.services.router_service import classify_intent
-from app.services.sql_service import SQLService
-from app.services.llm_service import generate
-
+from app.observability.costs import answer_model_cost
+from app.rag.hybrid_question import derive_hybrid_rag_question
+from app.rag.llm_service import generate
+from app.rag.router import classify_intent
+from app.rag.service import run_rag
+from app.sql.service import SQLService
 
 sql_service = SQLService()
 checkpointer = MemorySaver()
 
 
+# Learner note: Decides route intent, which controls the next branch of the application workflow.
 def route_intent(state: GraphState) -> dict:
+    """Perform route intent for the application orchestration layer.
+
+    Learner Note:
+        This function keeps the responsibility explicit for callers, tests, and operators.
+    """
     intent = classify_intent(state["question"])
     return {"intent": intent}
 
 
+# Learner note: Produces generate sql node at a dedicated model boundary so output handling remains testable.
 def generate_sql_node(state: GraphState) -> dict:
+    """Perform generate sql node for the application orchestration layer.
+
+    Learner Note:
+        This function keeps the responsibility explicit for callers, tests, and operators.
+    """
     generated = sql_service.generate_sql(state["question"])
     return {
         "generated_sql": generated["sql"],
@@ -31,7 +43,13 @@ def generate_sql_node(state: GraphState) -> dict:
     }
 
 
+# Learner note: Encapsulates request sql approval so this responsibility can be understood, tested, and changed independently.
 def request_sql_approval(state: GraphState) -> dict:
+    """Perform request sql approval for the application orchestration layer.
+
+    Learner Note:
+        This function keeps the responsibility explicit for callers, tests, and operators.
+    """
     approval = interrupt(
         {
             "type": "sql_approval_required",
@@ -42,7 +60,13 @@ def request_sql_approval(state: GraphState) -> dict:
     return {"sql_approved": approval.get("approved", False)}
 
 
+# Learner note: Encapsulates question to count statement so this responsibility can be understood, tested, and changed independently.
 def _question_to_count_statement(question: str, value: object) -> str | None:
+    """Support the application orchestration layer by performing question to count statement.
+
+    Learner Note:
+        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    """
     cleaned = " ".join(question.strip().split())
     lower = cleaned.lower().rstrip("?")
 
@@ -64,7 +88,13 @@ def _question_to_count_statement(question: str, value: object) -> str | None:
     return None
 
 
+# Learner note: Encapsulates format sql answer so this responsibility can be understood, tested, and changed independently.
 def _format_sql_answer(question: str, rows: list[dict]) -> str:
+    """Support the application orchestration layer by performing format sql answer.
+
+    Learner Note:
+        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    """
     cleaned = " ".join(question.strip().split())
     lowered = cleaned.lower().rstrip("?")
 
@@ -110,12 +140,18 @@ def _format_sql_answer(question: str, rows: list[dict]) -> str:
     return f"The query returned {len(rows)} rows."
 
 
+# Learner note: Encapsulates build sql response so this responsibility can be understood, tested, and changed independently.
 def _build_sql_response(
     question: str,
     sql: str,
     rows: list[dict],
     cost_saved_usd: float = 0.0,
 ) -> dict:
+    """Support the application orchestration layer by performing build sql response.
+
+    Learner Note:
+        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    """
     answer = _format_sql_answer(question, rows)
     previews = [
         RetrievedChunkPreview(
@@ -150,7 +186,13 @@ def _build_sql_response(
     }
 
 
+# Learner note: Encapsulates extract runbook first steps so this responsibility can be understood, tested, and changed independently.
 def _extract_runbook_first_steps(retrieved_chunks: list[dict]) -> str | None:
+    """Support the application orchestration layer by performing extract runbook first steps.
+
+    Learner Note:
+        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    """
     for chunk in retrieved_chunks:
         text = chunk.get("text", "")
         if not isinstance(text, str):
@@ -167,12 +209,18 @@ def _extract_runbook_first_steps(retrieved_chunks: list[dict]) -> str | None:
     return None
 
 
+# Learner note: Encapsulates build operational hybrid answer so this responsibility can be understood, tested, and changed independently.
 def _build_operational_hybrid_answer(
     *,
     question: str,
     rows: list[dict],
     rag_metadata: dict,
 ) -> str | None:
+    """Support the application orchestration layer by performing build operational hybrid answer.
+
+    Learner Note:
+        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    """
     lowered = question.lower()
     if "runbook" not in lowered and "procedure" not in lowered and "policy" not in lowered:
         return None
@@ -189,16 +237,57 @@ def _build_operational_hybrid_answer(
     )
 
 
+# Learner Note: Hybrid evidence previews is part of the application orchestration layer.
+def _hybrid_evidence_previews(
+    question: str,
+    rag_metadata: dict,
+    rows: list[dict],
+) -> list[dict]:
+    """Return document chunks plus one compact SQL evidence preview.
+
+    The SQL rows remain available in ``metadata.sql_rows``.  This preview makes
+    mixed-answer provenance visible to API/UI consumers while avoiding one
+    context entry per database row, which would distort precision and payload size.
+    """
+    previews = list(rag_metadata.get("retrieved_chunks", []))
+    if rows:
+        previews.append(
+            RetrievedChunkPreview(
+                text=(
+                    "Database evidence for the quantitative part of this question: "
+                    f"{question}\nSQL Results:\n"
+                    + json.dumps(rows, indent=2, default=str)
+                ),
+                source="database query",
+                score=1.0,
+                retrieval_score=1.0,
+            ).model_dump()
+        )
+    return previews
+
+
+# Learner note: Transforms build sql execution result centrally so downstream code receives a predictable shape.
 def build_sql_execution_result(
     question: str,
     sql: str,
     rows: list[dict],
     cost_saved_usd: float = 0.0,
 ) -> dict:
+    """Perform build sql execution result for the application orchestration layer.
+
+    Learner Note:
+        This function keeps the responsibility explicit for callers, tests, and operators.
+    """
     return _build_sql_response(question, sql, rows, cost_saved_usd=cost_saved_usd)
 
 
+# Learner note: Orchestrates run sql, making this function a clear execution boundary for learners and tests.
 def run_sql(state: GraphState) -> dict:
+    """Perform run sql for the application orchestration layer.
+
+    Learner Note:
+        This function keeps the responsibility explicit for callers, tests, and operators.
+    """
     if not state.get("sql_approved"):
         return {
             "sql_rows": [],
@@ -219,7 +308,13 @@ def run_sql(state: GraphState) -> dict:
     )
 
 
+# Learner note: Orchestrates run rag node, making this function a clear execution boundary for learners and tests.
 def run_rag_node(state: GraphState) -> dict:
+    """Perform run rag node for the application orchestration layer.
+
+    Learner Note:
+        This function keeps the responsibility explicit for callers, tests, and operators.
+    """
     response = run_rag(
         state["question"],
         top_k=state["flags"].get("top_k", 5),
@@ -239,9 +334,16 @@ def run_rag_node(state: GraphState) -> dict:
     }
 
 
+# Learner note: Implements retrieve rag for hybrid, a key retrieval-quality step in the RAG pipeline.
 def retrieve_rag_for_hybrid(state: GraphState) -> dict:
+    """Perform retrieve rag for hybrid for the application orchestration layer.
+
+    Learner Note:
+        This function keeps the responsibility explicit for callers, tests, and operators.
+    """
+    rag_question = derive_hybrid_rag_question(state["question"])
     response = run_rag(
-        state["question"],
+        rag_question,
         top_k=state["flags"].get("top_k", 5),
         search_mode=state["flags"].get("search_mode", "dense"),
         enable_rerank=state["flags"].get("enable_rerank", False),
@@ -249,17 +351,26 @@ def retrieve_rag_for_hybrid(state: GraphState) -> dict:
         enable_crag=state["flags"].get("enable_crag", False),
         enable_self_reflective=state["flags"].get("enable_self_reflective", False),
     )
+    rag_metadata = response.metadata.model_dump()
+    rag_metadata["retrieval_question"] = rag_question
     return {
         "rag_answer": response.answer,
+        "rag_question": rag_question,
         "rag_sources": response.sources,
         "rag_confidence": response.confidence,
         "rag_cache_hit": response.cache_hit,
-        "rag_metadata": response.metadata.model_dump(),
+        "rag_metadata": rag_metadata,
         "cost_saved_usd": float(response.cost_saved.replace("$", "")),
     }
 
 
+# Learner note: Orchestrates run hybrid, making this function a clear execution boundary for learners and tests.
 def run_hybrid(state: GraphState) -> dict:
+    """Perform run hybrid for the application orchestration layer.
+
+    Learner Note:
+        This function keeps the responsibility explicit for callers, tests, and operators.
+    """
     if not state.get("sql_approved"):
         rag_metadata = state.get("rag_metadata", {})
         return {
@@ -276,8 +387,13 @@ def run_hybrid(state: GraphState) -> dict:
                 "reflection_iterations": rag_metadata.get("reflection_iterations", 0),
                 "reflection_score": rag_metadata.get("reflection_score"),
                 "refined_question": rag_metadata.get("refined_question"),
+                "retrieval_question": rag_metadata.get("retrieval_question"),
                 "crag_score": rag_metadata.get("crag_score"),
                 "crag_label": rag_metadata.get("crag_label"),
+                "crag_relevant_chunks": rag_metadata.get("crag_relevant_chunks"),
+                "crag_total_chunks": rag_metadata.get("crag_total_chunks"),
+                "crag_relevant_ratio": rag_metadata.get("crag_relevant_ratio"),
+                "crag_chunk_scores": rag_metadata.get("crag_chunk_scores", []),
                 "used_web_fallback": rag_metadata.get("used_web_fallback", False),
                 "sql_query": state.get("generated_sql", ""),
                 "sql_rows": [],
@@ -339,13 +455,20 @@ def run_hybrid(state: GraphState) -> dict:
         ),
         "metadata": {
             "route": "hybrid",
-            "retrieved_chunks": rag_metadata.get("retrieved_chunks", []),
+            "retrieved_chunks": _hybrid_evidence_previews(
+                state["question"], rag_metadata, rows
+            ),
             "cache_hit": False,
             "reflection_iterations": rag_metadata.get("reflection_iterations", 0),
             "reflection_score": rag_metadata.get("reflection_score"),
             "refined_question": rag_metadata.get("refined_question"),
+            "retrieval_question": rag_metadata.get("retrieval_question"),
             "crag_score": rag_metadata.get("crag_score"),
             "crag_label": rag_metadata.get("crag_label"),
+            "crag_relevant_chunks": rag_metadata.get("crag_relevant_chunks"),
+            "crag_total_chunks": rag_metadata.get("crag_total_chunks"),
+            "crag_relevant_ratio": rag_metadata.get("crag_relevant_ratio"),
+            "crag_chunk_scores": rag_metadata.get("crag_chunk_scores", []),
             "used_web_fallback": rag_metadata.get("used_web_fallback", False),
             "sql_query": sql,
             "sql_rows": rows,
@@ -353,6 +476,7 @@ def run_hybrid(state: GraphState) -> dict:
     }
 
 
+# Learner note: Transforms build hybrid execution result centrally so downstream code receives a predictable shape.
 def build_hybrid_execution_result(
     *,
     question: str,
@@ -363,6 +487,11 @@ def build_hybrid_execution_result(
     rag_metadata: dict,
     cost_saved_usd: float = 0.0,
 ) -> dict:
+    """Perform build hybrid execution result for the application orchestration layer.
+
+    Learner Note:
+        This function keeps the responsibility explicit for callers, tests, and operators.
+    """
     rag_context = "\n\n".join(
         f"[Source: {chunk['source']}]\n{chunk['text']}"
         for chunk in rag_metadata.get("retrieved_chunks", [])
@@ -404,13 +533,18 @@ def build_hybrid_execution_result(
         "cost_saved_usd": round(float(cost_saved_usd) + hybrid_answer_cost_usd, 6),
         "metadata": {
             "route": "hybrid",
-            "retrieved_chunks": rag_metadata.get("retrieved_chunks", []),
+            "retrieved_chunks": _hybrid_evidence_previews(question, rag_metadata, rows),
             "cache_hit": False,
             "reflection_iterations": rag_metadata.get("reflection_iterations", 0),
             "reflection_score": rag_metadata.get("reflection_score"),
             "refined_question": rag_metadata.get("refined_question"),
+            "retrieval_question": rag_metadata.get("retrieval_question"),
             "crag_score": rag_metadata.get("crag_score"),
             "crag_label": rag_metadata.get("crag_label"),
+            "crag_relevant_chunks": rag_metadata.get("crag_relevant_chunks"),
+            "crag_total_chunks": rag_metadata.get("crag_total_chunks"),
+            "crag_relevant_ratio": rag_metadata.get("crag_relevant_ratio"),
+            "crag_chunk_scores": rag_metadata.get("crag_chunk_scores", []),
             "used_web_fallback": rag_metadata.get("used_web_fallback", False),
             "sql_query": sql,
             "sql_rows": rows,
@@ -418,11 +552,23 @@ def build_hybrid_execution_result(
     }
 
 
+# Learner note: Encapsulates finalize so this responsibility can be understood, tested, and changed independently.
 def finalize(state: GraphState) -> dict:
+    """Perform finalize for the application orchestration layer.
+
+    Learner Note:
+        This function keeps the responsibility explicit for callers, tests, and operators.
+    """
     return {}
 
 
+# Learner note: Transforms build graph centrally so downstream code receives a predictable shape.
 def build_graph():
+    """Perform build graph for the application orchestration layer.
+
+    Learner Note:
+        This function keeps the responsibility explicit for callers, tests, and operators.
+    """
     builder = StateGraph(GraphState)
 
     builder.add_node("route_intent", route_intent)

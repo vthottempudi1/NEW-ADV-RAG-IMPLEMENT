@@ -4,7 +4,7 @@ services:
   app:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: infra/docker/backend.Dockerfile
     depends_on:
       - postgres
       - qdrant
@@ -13,13 +13,14 @@ services:
     environment:
       DATABASE_URL: postgresql://postgres:postgres@postgres:5432/adv_rag
       QDRANT_URL: http://qdrant:6333
+      QDRANT_COLLECTION: ${QDRANT_COLLECTION:-new_adv_rag_documents}
     ports:
       - "8003:8000"
 
   streamlit:
     build:
       context: .
-      dockerfile: Dockerfile.streamlit
+      dockerfile: infra/docker/streamlit.Dockerfile
     depends_on:
       - app
     ports:

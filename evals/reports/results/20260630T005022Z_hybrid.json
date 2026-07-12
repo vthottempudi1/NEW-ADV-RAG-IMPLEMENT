@@ -1,0 +1,620 @@
+{
+  "profile": "hybrid",
+  "flags": {
+    "search_mode": "hybrid",
+    "enable_hyde": false,
+    "enable_rerank": false,
+    "enable_crag": false,
+    "enable_self_reflective": false,
+    "top_k": 5
+  },
+  "timestamp_utc": "2026-06-30T00:50:22.292376Z",
+  "filter": "hybrid",
+  "mode": "service",
+  "rows": [
+    {
+      "id": "q-001",
+      "demonstrates_feature": "baseline",
+      "intent": "rag",
+      "question": "What is a Pod in Kubernetes?",
+      "answer": "A Pod in Kubernetes is the smallest deployable unit of computing that you can create and manage. It is a group of one or more containers with shared storage and network resources, and a specification for how to run the containers. Pods are designed to model an application-specific \"logical host\" and can contain application containers as well as init containers that run during startup. They provide shared resources like networking and storage for their constituent containers. Pods can run a single container or multiple containers that need to work together, and they are managed by Kubernetes rather than the containers directly. Pods are relatively ephemeral and disposable entities within a Kubernetes cluster.",
+      "contexts": [
+        "Concepts \u203a Workloads \u203a Pods Concepts \u203a Workloads \u203a Pods Pods | Kubernetes PodsPods are the smallest deployable units of computing that you can create and manage in Kubernetes.A Pod (as in a pod of whales or pea pod) is a group of one or more containers, with shared storage and network resources, and a specification for how to run the containers. A Pod's contents are always co-located and co-scheduled, and run in a shared context. A Pod models an application-specific \"logical host\": it contains one or more application containers which are relatively tightly coupled. In non-cloud contexts, applications executed on the same physical or virtual machine are analogous to cloud applications executed on the same logical host.As well as application containers, a Pod can contain init containers that run during Pod startup. You can also inject ephemeral containers for debugging a running Pod.What is a Pod?Note:You need to install a container runtime into each node in the cluster so that Pods can",
+        "s a Pod?Note:You need to install a container runtime into each node in the cluster so that Pods can run there.The shared context of a Pod is a set of Linux namespaces, cgroups, and potentially other facets of isolation - the same things that isolate a container. Within a Pod's context, the individual applications may have further sub-isolations applied.A Pod is similar to a set of containers with shared namespaces and shared filesystem volumes.Pods in a Kubernetes cluster are used in two main ways:Pods that run a single container. The \"one-container-per-Pod\" model is the most common Kubernetes use case; in this case, you can think of a Pod as a wrapper around a single container; Kubernetes manages Pods rather than managing the containers directly.Pods that run multiple containers that need to work together. A Pod can encapsulate an application composed of multiple co-located containers that are tightly coupled and need to share resources. These co-located containers form a single cohes",
+        "auto-healing.Pods natively provide two kinds of shared resources for their constituent containers: networking and storage.Working with PodsYou'll rarely create individual Pods directly in Kubernetes\u2014even singleton Pods. This is because Pods are designed as relatively ephemeral, disposable entities. When a Pod gets created (directly by you, or indirectly by a controller), the new Pod is scheduled to run on a Node in your cluster. The Pod remains on that node until the Pod finishes execution, the Pod object is deleted, the Pod is evicted for lack of resources, or the node fails.Note:Restarting a container in a Pod should not be confused with restarting a Pod. A Pod is not a process, but an environment for running container(s). A Pod persists until it is deleted.The name of a Pod must be a valid DNS subdomain value, but this can produce unexpected results for the Pod hostname. For best compatibility, the name should follow the more restrictive rules for a DNS label.Pod OSFEATURE STATE: Ku",
+        "Tutorials \u203a Kubernetes-Basics \u203a Explore \u203a Explore-Intro Viewing Pods and Nodes | Kubernetes Viewing Pods and NodesObjectivesLearn about Kubernetes Pods.Learn about Kubernetes Nodes.Troubleshoot deployed applications.Before you beginThe shell commands in this tutorial use POSIX shell syntax, which is supported by the default shells on most Linux and macOS systems (for example, bash, zsh, or sh). Windows users must use a POSIX-compatible shell such as Windows Subsystem for Linux (WSL) or Git Bash to run the commands as written. Commands that use export, $(), and similar constructs are not compatible with PowerShell or the Windows Command Prompt.Kubernetes PodsA Pod is a group of one or more application containers (such as Docker) and includes shared storage (volumes), IP address and information about how to run them.When you created a Deployment in Module 2, Kubernetes created a Pod to host your application instance. A Pod is a Kubernetes abstraction that represents a group of one or mor",
+        "Pods' PersistentVolume Claims are not deleted when the Pods, or StatefulSet are deleted. This must be done manually.Pod Name LabelWhen the StatefulSet controller creates a Pod, it adds a label, statefulset.kubernetes.io/pod-name, that is set to the name of the Pod. This label allows you to attach a Service to a specific Pod in the StatefulSet.Pod index labelFEATURE STATE: Kubernetes v1.32 [stable](enabled by default)When the StatefulSet controller creates a Pod, the new Pod is labelled with apps.kubernetes.io/pod-index. The value of this label is the ordinal index of the Pod. This label allows you to route traffic to a particular pod index, filter logs/metrics using the pod index label, and more. Note the feature gate PodIndexLabel is enabled and locked by default for this feature, in order to disable it, users will have to use server emulated version v1.31.Deployment and Scaling GuaranteesFor a StatefulSet with N replicas, when Pods are being deployed, they are created sequentially,"
+      ],
+      "ground_truth": "pod, container, namespace",
+      "actual_sources": [
+        "concepts__workloads__pods.html",
+        "tutorials__kubernetes-basics__explore__explore-intro.pdf",
+        "concepts__workloads__controllers__statefulset.docx"
+      ],
+      "golden_sources": [
+        "pods.html"
+      ],
+      "forbidden_keywords": [],
+      "ragas_metrics": {
+        "id": "q-001",
+        "demonstrates_feature": "baseline",
+        "intent": "rag",
+        "question": "What is a Pod in Kubernetes?",
+        "answer": "A Pod in Kubernetes is the smallest deployable unit of computing that you can create and manage. It is a group of one or more containers with shared storage and network resources, and a specification for how to run the containers. Pods are designed to model an application-specific \"logical host\" and can contain application containers as well as init containers that run during startup. They provide shared resources like networking and storage for their constituent containers. Pods can run a single container or multiple containers that need to work together, and they are managed by Kubernetes rather than the containers directly. Pods are relatively ephemeral and disposable entities within a Kubernetes cluster.",
+        "contexts": [
+          "Concepts \u203a Workloads \u203a Pods Concepts \u203a Workloads \u203a Pods Pods | Kubernetes PodsPods are the smallest deployable units of computing that you can create and manage in Kubernetes.A Pod (as in a pod of whales or pea pod) is a group of one or more containers, with shared storage and network resources, and a specification for how to run the containers. A Pod's contents are always co-located and co-scheduled, and run in a shared context. A Pod models an application-specific \"logical host\": it contains one or more application containers which are relatively tightly coupled. In non-cloud contexts, applications executed on the same physical or virtual machine are analogous to cloud applications executed on the same logical host.As well as application containers, a Pod can contain init containers that run during Pod startup. You can also inject ephemeral containers for debugging a running Pod.What is a Pod?Note:You need to install a container runtime into each node in the cluster so that Pods can",
+          "s a Pod?Note:You need to install a container runtime into each node in the cluster so that Pods can run there.The shared context of a Pod is a set of Linux namespaces, cgroups, and potentially other facets of isolation - the same things that isolate a container. Within a Pod's context, the individual applications may have further sub-isolations applied.A Pod is similar to a set of containers with shared namespaces and shared filesystem volumes.Pods in a Kubernetes cluster are used in two main ways:Pods that run a single container. The \"one-container-per-Pod\" model is the most common Kubernetes use case; in this case, you can think of a Pod as a wrapper around a single container; Kubernetes manages Pods rather than managing the containers directly.Pods that run multiple containers that need to work together. A Pod can encapsulate an application composed of multiple co-located containers that are tightly coupled and need to share resources. These co-located containers form a single cohes",
+          "auto-healing.Pods natively provide two kinds of shared resources for their constituent containers: networking and storage.Working with PodsYou'll rarely create individual Pods directly in Kubernetes\u2014even singleton Pods. This is because Pods are designed as relatively ephemeral, disposable entities. When a Pod gets created (directly by you, or indirectly by a controller), the new Pod is scheduled to run on a Node in your cluster. The Pod remains on that node until the Pod finishes execution, the Pod object is deleted, the Pod is evicted for lack of resources, or the node fails.Note:Restarting a container in a Pod should not be confused with restarting a Pod. A Pod is not a process, but an environment for running container(s). A Pod persists until it is deleted.The name of a Pod must be a valid DNS subdomain value, but this can produce unexpected results for the Pod hostname. For best compatibility, the name should follow the more restrictive rules for a DNS label.Pod OSFEATURE STATE: Ku",
+          "Tutorials \u203a Kubernetes-Basics \u203a Explore \u203a Explore-Intro Viewing Pods and Nodes | Kubernetes Viewing Pods and NodesObjectivesLearn about Kubernetes Pods.Learn about Kubernetes Nodes.Troubleshoot deployed applications.Before you beginThe shell commands in this tutorial use POSIX shell syntax, which is supported by the default shells on most Linux and macOS systems (for example, bash, zsh, or sh). Windows users must use a POSIX-compatible shell such as Windows Subsystem for Linux (WSL) or Git Bash to run the commands as written. Commands that use export, $(), and similar constructs are not compatible with PowerShell or the Windows Command Prompt.Kubernetes PodsA Pod is a group of one or more application containers (such as Docker) and includes shared storage (volumes), IP address and information about how to run them.When you created a Deployment in Module 2, Kubernetes created a Pod to host your application instance. A Pod is a Kubernetes abstraction that represents a group of one or mor",
+          "Pods' PersistentVolume Claims are not deleted when the Pods, or StatefulSet are deleted. This must be done manually.Pod Name LabelWhen the StatefulSet controller creates a Pod, it adds a label, statefulset.kubernetes.io/pod-name, that is set to the name of the Pod. This label allows you to attach a Service to a specific Pod in the StatefulSet.Pod index labelFEATURE STATE: Kubernetes v1.32 [stable](enabled by default)When the StatefulSet controller creates a Pod, the new Pod is labelled with apps.kubernetes.io/pod-index. The value of this label is the ordinal index of the Pod. This label allows you to route traffic to a particular pod index, filter logs/metrics using the pod index label, and more. Note the feature gate PodIndexLabel is enabled and locked by default for this feature, in order to disable it, users will have to use server emulated version v1.31.Deployment and Scaling GuaranteesFor a StatefulSet with N replicas, when Pods are being deployed, they are created sequentially,"
+        ],
+        "ground_truth": "pod, container, namespace",
+        "actual_sources": [
+          "concepts__workloads__pods.html",
+          "tutorials__kubernetes-basics__explore__explore-intro.pdf",
+          "concepts__workloads__controllers__statefulset.docx"
+        ],
+        "golden_sources": [
+          "pods.html"
+        ],
+        "forbidden_keywords": [],
+        "faithfulness": 1,
+        "answer_relevancy": 1.0,
+        "context_precision": 1.0,
+        "context_recall": 1
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "pod",
+          "pods"
+        ],
+        "missed": []
+      }
+    },
+    {
+      "id": "q-002",
+      "demonstrates_feature": "baseline",
+      "intent": "rag",
+      "question": "What is a Kubernetes Deployment and what does it manage?",
+      "answer": "A Kubernetes Deployment is a resource that manages a set of Pods to run an application workload, typically one that doesn't maintain state. It provides declarative updates for Pods and ReplicaSets. You describe a desired state in a Deployment, and the Deployment Controller changes the actual state to the desired state at a controlled rate. Deployments can create new ReplicaSets or remove existing Deployments and adopt all their resources with new Deployments.",
+      "contexts": [
+        "e Scale a Deployment Manually.Deleting a deploymentDelete the deployment by name:kubectl delete deployment nginx-deployment ReplicationControllers -- the Old WayThe preferred way to create a replicated application is to use a Deployment, which in turn uses a ReplicaSet. Before the Deployment and ReplicaSet were added to Kubernetes, replicated applications were configured using a ReplicationController.What's nextLearn more about Deployment objects.Learn how to update a Deployment without downtime.FeedbackWas this page helpful?Yes NoThanks for the feedback. If you have a specific, answerable question about how to use Kubernetes, ask it on Stack Overflow. Open an issue in the GitHub Repository if you want to report a problem or suggest an improvement.Last modified March 15, 2026 at 6:56 PM PST: Add task page: Update a Deployment Without Downtime (3610f32b0e)",
+        "anage the containers that run the applications and ensure that there is no downtime. For example, if a container goes down, another container needs to start. Wouldn't it be easier if this behavior was handled by a system?That's how Kubernetes comes to the rescue! Kubernetes provides you with a framework to run distributed systems resiliently. It takes care of scaling and failover for your application, provides deployment patterns, and more. For example: Kubernetes can easily manage a canary deployment for your system.Kubernetes provides you with:Service discovery and load balancing Kubernetes can expose a container using a DNS name or its own IP address. If traffic to a container is high, Kubernetes is able to load balance and distribute the network traffic so that the deployment is stable.Storage orchestration Kubernetes allows you to automatically mount a storage system of your choice, such as local storage, public cloud providers, and more.Automated rollouts and rollbacks You can de",
+        "Deployments | Kubernetes DeploymentsA Deployment manages a set of Pods to run an application workload, usually one that doesn't maintain state.A Deployment provides declarative updates for Pods and ReplicaSets.You describe a desired state in a Deployment, and the Deployment Controller changes the actual state to the desired state at a controlled rate. You can define Deployments to create new ReplicaSets, or to remove existing Deployments and adopt all their resources with new Deployments.Note:Do not manage ReplicaSets owned by a Deployment. Consider opening an issue in the main Kubernetes repository if your use case is not covered below.Use CaseThe following are typical use cases for Deployments:Create a Deployment to rollout a ReplicaSet. The ReplicaSet creates Pods in the background. Check the status of the rollout to see if it succeeds or not.Declare the new state of the Pods by updating the PodTemplateSpec of the Deployment. A new ReplicaSet is created, and the Deployment gradually",
+        "of a rollout for a Deployment after 10 minutes:kubectl patch deployment/nginx-deployment -p '{\"spec\":{\"progressDeadlineSeconds\":600}}' The output is similar to this:deployment.apps/nginx-deployment patched Once the deadline has been exceeded, the Deployment controller adds a DeploymentCondition with the following attributes to the Deployment's .status.conditions:type: Progressingstatus: \"False\"reason: ProgressDeadlineExceededThis condition can also fail early and is then set to status value of \"False\" due to reasons as ReplicaSetCreateError. Also, the deadline is not taken into account anymore once the Deployment rollout completes.See the Kubernetes API conventions for more information on status conditions.Note:Kubernetes takes no action on a stalled Deployment other than to report a status condition with reason: ProgressDeadlineExceeded. Higher level orchestrators can take advantage of it and act accordingly, for example, rollback the Deployment to its previous version.Note:If you pau",
+        "Using kubectl to Create a Deployment | Kubernetes Using kubectl to Create a DeploymentObjectivesLearn about application Deployments.Deploy your first app on Kubernetes with kubectl.Before you beginThe shell commands in this tutorial use POSIX shell syntax, which is supported by the default shells on most Linux and macOS systems (for example, bash, zsh, or sh). Windows users must use a POSIX-compatible shell such as Windows Subsystem for Linux (WSL) or Git Bash to run the commands as written. Commands that use export, $(), and similar constructs are not compatible with PowerShell or the Windows Command Prompt.Kubernetes DeploymentsA Deployment is responsible for creating and updating instances of your application.Note:This tutorial uses a container that requires the AMD64 architecture. If you are using minikube on a computer with a different CPU architecture, you could try using minikube with a driver that can emulate AMD64. For example, the Docker Desktop driver can do this.Once you ha"
+      ],
+      "ground_truth": "deployment, replica, rolling update",
+      "actual_sources": [
+        "tasks__run-application__run-stateless-application-deployment.docx",
+        "concepts__workloads__controllers__deployment.txt",
+        "concepts__overview__what-is-kubernetes.docx",
+        "tutorials__kubernetes-basics__deploy-app__deploy-intro.txt"
+      ],
+      "golden_sources": [
+        "deployments.html"
+      ],
+      "forbidden_keywords": [],
+      "ragas_metrics": {
+        "id": "q-002",
+        "demonstrates_feature": "baseline",
+        "intent": "rag",
+        "question": "What is a Kubernetes Deployment and what does it manage?",
+        "answer": "A Kubernetes Deployment is a resource that manages a set of Pods to run an application workload, typically one that doesn't maintain state. It provides declarative updates for Pods and ReplicaSets. You describe a desired state in a Deployment, and the Deployment Controller changes the actual state to the desired state at a controlled rate. Deployments can create new ReplicaSets or remove existing Deployments and adopt all their resources with new Deployments.",
+        "contexts": [
+          "e Scale a Deployment Manually.Deleting a deploymentDelete the deployment by name:kubectl delete deployment nginx-deployment ReplicationControllers -- the Old WayThe preferred way to create a replicated application is to use a Deployment, which in turn uses a ReplicaSet. Before the Deployment and ReplicaSet were added to Kubernetes, replicated applications were configured using a ReplicationController.What's nextLearn more about Deployment objects.Learn how to update a Deployment without downtime.FeedbackWas this page helpful?Yes NoThanks for the feedback. If you have a specific, answerable question about how to use Kubernetes, ask it on Stack Overflow. Open an issue in the GitHub Repository if you want to report a problem or suggest an improvement.Last modified March 15, 2026 at 6:56 PM PST: Add task page: Update a Deployment Without Downtime (3610f32b0e)",
+          "anage the containers that run the applications and ensure that there is no downtime. For example, if a container goes down, another container needs to start. Wouldn't it be easier if this behavior was handled by a system?That's how Kubernetes comes to the rescue! Kubernetes provides you with a framework to run distributed systems resiliently. It takes care of scaling and failover for your application, provides deployment patterns, and more. For example: Kubernetes can easily manage a canary deployment for your system.Kubernetes provides you with:Service discovery and load balancing Kubernetes can expose a container using a DNS name or its own IP address. If traffic to a container is high, Kubernetes is able to load balance and distribute the network traffic so that the deployment is stable.Storage orchestration Kubernetes allows you to automatically mount a storage system of your choice, such as local storage, public cloud providers, and more.Automated rollouts and rollbacks You can de",
+          "Deployments | Kubernetes DeploymentsA Deployment manages a set of Pods to run an application workload, usually one that doesn't maintain state.A Deployment provides declarative updates for Pods and ReplicaSets.You describe a desired state in a Deployment, and the Deployment Controller changes the actual state to the desired state at a controlled rate. You can define Deployments to create new ReplicaSets, or to remove existing Deployments and adopt all their resources with new Deployments.Note:Do not manage ReplicaSets owned by a Deployment. Consider opening an issue in the main Kubernetes repository if your use case is not covered below.Use CaseThe following are typical use cases for Deployments:Create a Deployment to rollout a ReplicaSet. The ReplicaSet creates Pods in the background. Check the status of the rollout to see if it succeeds or not.Declare the new state of the Pods by updating the PodTemplateSpec of the Deployment. A new ReplicaSet is created, and the Deployment gradually",
+          "of a rollout for a Deployment after 10 minutes:kubectl patch deployment/nginx-deployment -p '{\"spec\":{\"progressDeadlineSeconds\":600}}' The output is similar to this:deployment.apps/nginx-deployment patched Once the deadline has been exceeded, the Deployment controller adds a DeploymentCondition with the following attributes to the Deployment's .status.conditions:type: Progressingstatus: \"False\"reason: ProgressDeadlineExceededThis condition can also fail early and is then set to status value of \"False\" due to reasons as ReplicaSetCreateError. Also, the deadline is not taken into account anymore once the Deployment rollout completes.See the Kubernetes API conventions for more information on status conditions.Note:Kubernetes takes no action on a stalled Deployment other than to report a status condition with reason: ProgressDeadlineExceeded. Higher level orchestrators can take advantage of it and act accordingly, for example, rollback the Deployment to its previous version.Note:If you pau",
+          "Using kubectl to Create a Deployment | Kubernetes Using kubectl to Create a DeploymentObjectivesLearn about application Deployments.Deploy your first app on Kubernetes with kubectl.Before you beginThe shell commands in this tutorial use POSIX shell syntax, which is supported by the default shells on most Linux and macOS systems (for example, bash, zsh, or sh). Windows users must use a POSIX-compatible shell such as Windows Subsystem for Linux (WSL) or Git Bash to run the commands as written. Commands that use export, $(), and similar constructs are not compatible with PowerShell or the Windows Command Prompt.Kubernetes DeploymentsA Deployment is responsible for creating and updating instances of your application.Note:This tutorial uses a container that requires the AMD64 architecture. If you are using minikube on a computer with a different CPU architecture, you could try using minikube with a driver that can emulate AMD64. For example, the Docker Desktop driver can do this.Once you ha"
+        ],
+        "ground_truth": "deployment, replica, rolling update",
+        "actual_sources": [
+          "tasks__run-application__run-stateless-application-deployment.docx",
+          "concepts__workloads__controllers__deployment.txt",
+          "concepts__overview__what-is-kubernetes.docx",
+          "tutorials__kubernetes-basics__deploy-app__deploy-intro.txt"
+        ],
+        "golden_sources": [
+          "deployments.html"
+        ],
+        "forbidden_keywords": [],
+        "faithfulness": 1,
+        "answer_relevancy": 1.0,
+        "context_precision": 0.95,
+        "context_recall": 1
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "deployment"
+        ],
+        "missed": []
+      }
+    },
+    {
+      "id": "q-003",
+      "demonstrates_feature": "baseline",
+      "intent": "rag",
+      "question": "My pod keeps restarting and crashing \u2014 how do I figure out what's wrong?",
+      "answer": "To diagnose why your pod keeps restarting and crashing, you can follow these steps:\n\n1. **Check Pod Logs**: Use the `kubectl logs` command to view the logs of the containers in your pod. This can provide insights into any errors or issues occurring within the application. For example, you can fetch the stderr log stream using:\n   ```\n   kubectl get --raw \"/api/v1/namespaces/default/pods/<pod-name>/log?stream=Stderr\"\n   ```\n\n2. **Inspect Pod Events**: Use `kubectl describe pod <pod-name>` to get detailed information about the pod, including recent events. This can help identify issues such as resource constraints or configuration errors.\n\n3. **Review Pod Status**: Check the pod's status using `kubectl get pods` to see if it is in a \"Failed\" state, which indicates that at least one container has terminated with a failure.\n\n4. **Check Restart Policy**: Ensure that the pod's restart policy is appropriate for your use case. If the policy is set to always restart, it might mask underlying issues.\n\n5. **Resource Constraints**: Verify if the pod is being evicted due to resource constraints by checking node resource availability and pod resource requests/limits.\n\nBy following these steps, you should be able to gather enough information to diagnose the issue with your pod. If the problem persists, consider checking the application code or configuration for potential errors.",
+      "contexts": [
+        "auto-healing.Pods natively provide two kinds of shared resources for their constituent containers: networking and storage.Working with PodsYou'll rarely create individual Pods directly in Kubernetes\u2014even singleton Pods. This is because Pods are designed as relatively ephemeral, disposable entities. When a Pod gets created (directly by you, or indirectly by a controller), the new Pod is scheduled to run on a Node in your cluster. The Pod remains on that node until the Pod finishes execution, the Pod object is deleted, the Pod is evicted for lack of resources, or the node fails.Note:Restarting a container in a Pod should not be confused with restarting a Pod. A Pod is not a process, but an environment for running container(s). A Pod persists until it is deleted.The name of a Pod must be a valid DNS subdomain value, but this can produce unexpected results for the Pod hostname. For best compatibility, the name should follow the more restrictive rules for a DNS label.Pod OSFEATURE STATE: Ku",
+        "ime spent downloading images over the network, which could take a while. Running: The pod has been bound to a node, and all of the containers have been created. At least one container is still running, or is in the process of starting or restarting. Succeeded: All containers in the pod have terminated in success, and will not be restarted. Failed: All containers in the pod have terminated, and at least one container has terminated in failure. The container either exited with non-zero status or was terminated by the system. Unknown: For some reason the state of the pod could not be obtained, typically due to an error in communicating with the host of the pod.More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#pod-phasePossible enum values:\"Failed\" means that all containers in the pod have terminated, and at least one container has terminated in a failure (exited with a non-zero exit code or was stopped by the system).\"Pending\" means the pod has been accepted by t",
+        "ontroller starts a new Pod. This means that your application needs to handle the case when it is restarted in a new pod. In particular, it needs to handle temporary files, locks, incomplete output and the like caused by previous runs.By default, each pod failure is counted towards the .spec.backoffLimit limit, see pod backoff failure policy. However, you can customize handling of pod failures by setting the Job's pod failure policy.Additionally, you can choose to count the pod failures independently for each index of an Indexed Job by setting the .spec.backoffLimitPerIndex field (for more information, see backoff limit per index).Note that even if you specify .spec.parallelism = 1 and .spec.completions = 1 and .spec.template.spec.restartPolicy = \"Never\", the same program may sometimes be started twice.If you do specify .spec.parallelism and .spec.completions both greater than 1, then there may be multiple pods running at once. Therefore, your pods must also be tolerant of concurrency.I",
+        "Figure 3.2.",
+        "kind: Pod metadata: name: counter-err spec: containers: - name: count image: busybox:1.28 args: [/bin/sh, -c, 'i=0; while true; do echo \"$i: $(date)\"; echo \"$i: err\" >&2 ; i=$((i+1)); sleep 1; done'] To run this pod, use the following command:kubectl apply -f https://k8s.io/examples/debug/counter-pod-err.yaml To fetch only the stderr log stream, you can run:kubectl get --raw \"/api/v1/namespaces/default/pods/counter-err/log?stream=Stderr\" See the kubectl logs documentation for more details.How nodes handle container logsA container runtime handles and redirects any output generated to a containerized application's stdout and stderr streams. Different container runtimes implement this in different ways; however, the integration with the kubelet is standardized as the CRI logging format.By default, if a container restarts, the kubelet keeps one terminated container with its logs. If a pod is evicted from the node, all corresponding containers are also evicted, along with their logs.The ku"
+      ],
+      "ground_truth": "CrashLoopBackOff, logs, kubectl",
+      "actual_sources": [
+        "reference__kubernetes-api__workload-resources__pod-v1.docx",
+        "concepts__workloads__pods.html",
+        "concepts__workloads__controllers__job.pdf",
+        "Understanding and Improving Bloom Filter Configuration for Lazy Address-set Disambiguation (2011).pdf",
+        "concepts__cluster-administration__logging.pdf"
+      ],
+      "golden_sources": [
+        "troubleshooting-pods.html"
+      ],
+      "forbidden_keywords": [],
+      "ragas_metrics": {
+        "id": "q-003",
+        "demonstrates_feature": "baseline",
+        "intent": "rag",
+        "question": "My pod keeps restarting and crashing \u2014 how do I figure out what's wrong?",
+        "answer": "To diagnose why your pod keeps restarting and crashing, you can follow these steps:\n\n1. **Check Pod Logs**: Use the `kubectl logs` command to view the logs of the containers in your pod. This can provide insights into any errors or issues occurring within the application. For example, you can fetch the stderr log stream using:\n   ```\n   kubectl get --raw \"/api/v1/namespaces/default/pods/<pod-name>/log?stream=Stderr\"\n   ```\n\n2. **Inspect Pod Events**: Use `kubectl describe pod <pod-name>` to get detailed information about the pod, including recent events. This can help identify issues such as resource constraints or configuration errors.\n\n3. **Review Pod Status**: Check the pod's status using `kubectl get pods` to see if it is in a \"Failed\" state, which indicates that at least one container has terminated with a failure.\n\n4. **Check Restart Policy**: Ensure that the pod's restart policy is appropriate for your use case. If the policy is set to always restart, it might mask underlying issues.\n\n5. **Resource Constraints**: Verify if the pod is being evicted due to resource constraints by checking node resource availability and pod resource requests/limits.\n\nBy following these steps, you should be able to gather enough information to diagnose the issue with your pod. If the problem persists, consider checking the application code or configuration for potential errors.",
+        "contexts": [
+          "auto-healing.Pods natively provide two kinds of shared resources for their constituent containers: networking and storage.Working with PodsYou'll rarely create individual Pods directly in Kubernetes\u2014even singleton Pods. This is because Pods are designed as relatively ephemeral, disposable entities. When a Pod gets created (directly by you, or indirectly by a controller), the new Pod is scheduled to run on a Node in your cluster. The Pod remains on that node until the Pod finishes execution, the Pod object is deleted, the Pod is evicted for lack of resources, or the node fails.Note:Restarting a container in a Pod should not be confused with restarting a Pod. A Pod is not a process, but an environment for running container(s). A Pod persists until it is deleted.The name of a Pod must be a valid DNS subdomain value, but this can produce unexpected results for the Pod hostname. For best compatibility, the name should follow the more restrictive rules for a DNS label.Pod OSFEATURE STATE: Ku",
+          "ime spent downloading images over the network, which could take a while. Running: The pod has been bound to a node, and all of the containers have been created. At least one container is still running, or is in the process of starting or restarting. Succeeded: All containers in the pod have terminated in success, and will not be restarted. Failed: All containers in the pod have terminated, and at least one container has terminated in failure. The container either exited with non-zero status or was terminated by the system. Unknown: For some reason the state of the pod could not be obtained, typically due to an error in communicating with the host of the pod.More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#pod-phasePossible enum values:\"Failed\" means that all containers in the pod have terminated, and at least one container has terminated in a failure (exited with a non-zero exit code or was stopped by the system).\"Pending\" means the pod has been accepted by t",
+          "ontroller starts a new Pod. This means that your application needs to handle the case when it is restarted in a new pod. In particular, it needs to handle temporary files, locks, incomplete output and the like caused by previous runs.By default, each pod failure is counted towards the .spec.backoffLimit limit, see pod backoff failure policy. However, you can customize handling of pod failures by setting the Job's pod failure policy.Additionally, you can choose to count the pod failures independently for each index of an Indexed Job by setting the .spec.backoffLimitPerIndex field (for more information, see backoff limit per index).Note that even if you specify .spec.parallelism = 1 and .spec.completions = 1 and .spec.template.spec.restartPolicy = \"Never\", the same program may sometimes be started twice.If you do specify .spec.parallelism and .spec.completions both greater than 1, then there may be multiple pods running at once. Therefore, your pods must also be tolerant of concurrency.I",
+          "Figure 3.2.",
+          "kind: Pod metadata: name: counter-err spec: containers: - name: count image: busybox:1.28 args: [/bin/sh, -c, 'i=0; while true; do echo \"$i: $(date)\"; echo \"$i: err\" >&2 ; i=$((i+1)); sleep 1; done'] To run this pod, use the following command:kubectl apply -f https://k8s.io/examples/debug/counter-pod-err.yaml To fetch only the stderr log stream, you can run:kubectl get --raw \"/api/v1/namespaces/default/pods/counter-err/log?stream=Stderr\" See the kubectl logs documentation for more details.How nodes handle container logsA container runtime handles and redirects any output generated to a containerized application's stdout and stderr streams. Different container runtimes implement this in different ways; however, the integration with the kubelet is standardized as the CRI logging format.By default, if a container restarts, the kubelet keeps one terminated container with its logs. If a pod is evicted from the node, all corresponding containers are also evicted, along with their logs.The ku"
+        ],
+        "ground_truth": "CrashLoopBackOff, logs, kubectl",
+        "actual_sources": [
+          "reference__kubernetes-api__workload-resources__pod-v1.docx",
+          "concepts__workloads__pods.html",
+          "concepts__workloads__controllers__job.pdf",
+          "Understanding and Improving Bloom Filter Configuration for Lazy Address-set Disambiguation (2011).pdf",
+          "concepts__cluster-administration__logging.pdf"
+        ],
+        "golden_sources": [
+          "troubleshooting-pods.html"
+        ],
+        "forbidden_keywords": [],
+        "faithfulness": 1,
+        "answer_relevancy": 1.0,
+        "context_precision": 0.5888888888888889,
+        "context_recall": 1
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "pod"
+        ],
+        "missed": []
+      }
+    },
+    {
+      "id": "q-004",
+      "demonstrates_feature": "baseline",
+      "intent": "rag",
+      "question": "How do containers share resources within a Pod?",
+      "answer": "Containers within a Pod share resources by utilizing shared Linux namespaces, cgroups, and potentially other facets of isolation. They share an IP address and port space, allowing them to communicate with each other using localhost. Additionally, they can share filesystem volumes, which enables data sharing among the containers. This shared context allows the containers to function as a single cohesive unit.",
+      "contexts": [
+        "other using localhost. When containers in a Pod communicate with entities outside the Pod, they must coordinate how they use the shared network resources (such as ports). Within a Pod, containers share an IP address and port space, and can find each other via localhost. The containers in a Pod can also communicate with each other using standard inter-process communications like SystemV semaphores or POSIX shared memory. Containers in different Pods have distinct IP addresses and can not communicate by OS-level IPC without special configuration. Containers that want to interact with a container running in a different Pod can use IP networking to communicate.Containers within the Pod see the system hostname as being the same as the configured name for the Pod. There's more about this in the networking section.Pod security settingsTo set security constraints on Pods and containers, you use the securityContext field in the Pod specification. This field gives you granular control over what",
+        "s a Pod?Note:You need to install a container runtime into each node in the cluster so that Pods can run there.The shared context of a Pod is a set of Linux namespaces, cgroups, and potentially other facets of isolation - the same things that isolate a container. Within a Pod's context, the individual applications may have further sub-isolations applied.A Pod is similar to a set of containers with shared namespaces and shared filesystem volumes.Pods in a Kubernetes cluster are used in two main ways:Pods that run a single container. The \"one-container-per-Pod\" model is the most common Kubernetes use case; in this case, you can think of a Pod as a wrapper around a single container; Kubernetes manages Pods rather than managing the containers directly.Pods that run multiple containers that need to work together. A Pod can encapsulate an application composed of multiple co-located containers that are tightly coupled and need to share resources. These co-located containers form a single cohes",
+        "hat are tightly coupled and need to share resources. These co-located containers form a single cohesive unit.Grouping multiple co-located and co-managed containers in a single Pod is a relatively advanced use case. You should use this pattern only in specific instances in which your containers are tightly coupled.You don't need to run multiple containers to provide replication (for resilience or capacity); if you need multiple replicas, see Workload management.Using PodsThe following is an example of a Pod which consists of a container running the image nginx:1.14.2.pods/simple-pod.yaml apiVersion: v1 kind: Pod metadata: name: nginx spec: containers: - name: nginx image: nginx:1.14.2 ports: - containerPort: 80 To create the Pod shown above, run the following command:kubectl apply -f https://k8s.io/examples/pods/simple-pod.yaml Pods are generally not created directly and are created using workload resources. See Working with Pods for more information on how Pods are used with workload r",
+        "conds deletionTimestamp: The effects of these fields on the Pod's status are a result of the previously observed specification.Resource sharing and communicationPods enable data sharing and communication among their constituent containers.Storage in PodsA Pod can specify a set of shared storage volumes. All containers in the Pod can access the shared volumes, allowing those containers to share data. Volumes also allow persistent data in a Pod to survive in case one of the containers within needs to be restarted. See Storage for more information on how Kubernetes implements shared storage and makes it available to Pods.Pod networkingEach Pod is assigned a unique IP address for each address family. Every container in a Pod shares the network namespace, including the IP address and network ports. Inside a Pod (and only then), the containers that belong to the Pod can communicate with one another using localhost. When containers in a Pod communicate with entities outside the Pod, they must",
+        "Concepts \u203a Workloads \u203a Pods Concepts \u203a Workloads \u203a Pods Pods | Kubernetes PodsPods are the smallest deployable units of computing that you can create and manage in Kubernetes.A Pod (as in a pod of whales or pea pod) is a group of one or more containers, with shared storage and network resources, and a specification for how to run the containers. A Pod's contents are always co-located and co-scheduled, and run in a shared context. A Pod models an application-specific \"logical host\": it contains one or more application containers which are relatively tightly coupled. In non-cloud contexts, applications executed on the same physical or virtual machine are analogous to cloud applications executed on the same logical host.As well as application containers, a Pod can contain init containers that run during Pod startup. You can also inject ephemeral containers for debugging a running Pod.What is a Pod?Note:You need to install a container runtime into each node in the cluster so that Pods can"
+      ],
+      "ground_truth": "network namespace, volumes, localhost",
+      "actual_sources": [
+        "concepts__workloads__pods.html"
+      ],
+      "golden_sources": [
+        "pods.html"
+      ],
+      "forbidden_keywords": [],
+      "ragas_metrics": {
+        "id": "q-004",
+        "demonstrates_feature": "baseline",
+        "intent": "rag",
+        "question": "How do containers share resources within a Pod?",
+        "answer": "Containers within a Pod share resources by utilizing shared Linux namespaces, cgroups, and potentially other facets of isolation. They share an IP address and port space, allowing them to communicate with each other using localhost. Additionally, they can share filesystem volumes, which enables data sharing among the containers. This shared context allows the containers to function as a single cohesive unit.",
+        "contexts": [
+          "other using localhost. When containers in a Pod communicate with entities outside the Pod, they must coordinate how they use the shared network resources (such as ports). Within a Pod, containers share an IP address and port space, and can find each other via localhost. The containers in a Pod can also communicate with each other using standard inter-process communications like SystemV semaphores or POSIX shared memory. Containers in different Pods have distinct IP addresses and can not communicate by OS-level IPC without special configuration. Containers that want to interact with a container running in a different Pod can use IP networking to communicate.Containers within the Pod see the system hostname as being the same as the configured name for the Pod. There's more about this in the networking section.Pod security settingsTo set security constraints on Pods and containers, you use the securityContext field in the Pod specification. This field gives you granular control over what",
+          "s a Pod?Note:You need to install a container runtime into each node in the cluster so that Pods can run there.The shared context of a Pod is a set of Linux namespaces, cgroups, and potentially other facets of isolation - the same things that isolate a container. Within a Pod's context, the individual applications may have further sub-isolations applied.A Pod is similar to a set of containers with shared namespaces and shared filesystem volumes.Pods in a Kubernetes cluster are used in two main ways:Pods that run a single container. The \"one-container-per-Pod\" model is the most common Kubernetes use case; in this case, you can think of a Pod as a wrapper around a single container; Kubernetes manages Pods rather than managing the containers directly.Pods that run multiple containers that need to work together. A Pod can encapsulate an application composed of multiple co-located containers that are tightly coupled and need to share resources. These co-located containers form a single cohes",
+          "hat are tightly coupled and need to share resources. These co-located containers form a single cohesive unit.Grouping multiple co-located and co-managed containers in a single Pod is a relatively advanced use case. You should use this pattern only in specific instances in which your containers are tightly coupled.You don't need to run multiple containers to provide replication (for resilience or capacity); if you need multiple replicas, see Workload management.Using PodsThe following is an example of a Pod which consists of a container running the image nginx:1.14.2.pods/simple-pod.yaml apiVersion: v1 kind: Pod metadata: name: nginx spec: containers: - name: nginx image: nginx:1.14.2 ports: - containerPort: 80 To create the Pod shown above, run the following command:kubectl apply -f https://k8s.io/examples/pods/simple-pod.yaml Pods are generally not created directly and are created using workload resources. See Working with Pods for more information on how Pods are used with workload r",
+          "conds deletionTimestamp: The effects of these fields on the Pod's status are a result of the previously observed specification.Resource sharing and communicationPods enable data sharing and communication among their constituent containers.Storage in PodsA Pod can specify a set of shared storage volumes. All containers in the Pod can access the shared volumes, allowing those containers to share data. Volumes also allow persistent data in a Pod to survive in case one of the containers within needs to be restarted. See Storage for more information on how Kubernetes implements shared storage and makes it available to Pods.Pod networkingEach Pod is assigned a unique IP address for each address family. Every container in a Pod shares the network namespace, including the IP address and network ports. Inside a Pod (and only then), the containers that belong to the Pod can communicate with one another using localhost. When containers in a Pod communicate with entities outside the Pod, they must",
+          "Concepts \u203a Workloads \u203a Pods Concepts \u203a Workloads \u203a Pods Pods | Kubernetes PodsPods are the smallest deployable units of computing that you can create and manage in Kubernetes.A Pod (as in a pod of whales or pea pod) is a group of one or more containers, with shared storage and network resources, and a specification for how to run the containers. A Pod's contents are always co-located and co-scheduled, and run in a shared context. A Pod models an application-specific \"logical host\": it contains one or more application containers which are relatively tightly coupled. In non-cloud contexts, applications executed on the same physical or virtual machine are analogous to cloud applications executed on the same logical host.As well as application containers, a Pod can contain init containers that run during Pod startup. You can also inject ephemeral containers for debugging a running Pod.What is a Pod?Note:You need to install a container runtime into each node in the cluster so that Pods can"
+        ],
+        "ground_truth": "network namespace, volumes, localhost",
+        "actual_sources": [
+          "concepts__workloads__pods.html"
+        ],
+        "golden_sources": [
+          "pods.html"
+        ],
+        "forbidden_keywords": [],
+        "faithfulness": 1,
+        "answer_relevancy": 1.0,
+        "context_precision": 1.0,
+        "context_recall": 1
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "pod",
+          "pods"
+        ],
+        "missed": []
+      }
+    },
+    {
+      "id": "q-005",
+      "demonstrates_feature": "hybrid",
+      "intent": "rag",
+      "question": "What does error ErrImagePull mean and how do I fix it?",
+      "answer": "The error \"ErrImagePull\" typically occurs in Kubernetes when there is a failure in pulling a container image. This can happen due to several reasons, such as the image not being present in the specified registry, incorrect image name or tag, network issues, or authentication problems with the registry.\n\nTo fix this error, you can try the following steps:\n\n1. **Verify Image Name and Tag**: Ensure that the image name and tag specified in your Kubernetes configuration are correct.\n\n2. **Check Image Registry**: Make sure that the image is available in the specified registry and that the registry is accessible from your Kubernetes cluster.\n\n3. **Network Connectivity**: Ensure that there are no network issues preventing access to the image registry.\n\n4. **Authentication**: If the registry requires authentication, ensure that the necessary credentials are correctly configured in Kubernetes, such as using a Secret for Docker registry credentials.\n\n5. **Image Pull Policy**: Check the `imagePullPolicy` setting. If set to \"Always\", Kubernetes will always attempt to pull the image, which might not be necessary if the image is already present locally. Adjusting this setting to \"IfNotPresent\" or \"Never\" might resolve the issue if the image is already available on the nodes.\n\nIf these steps do not resolve the issue, further investigation into the specific error messages and logs from the Kubernetes events and the kubelet logs may be necessary.",
+      "contexts": [
+        "Microsoft Portable Executable and Common Object File Format Specification - 14 Revision 8.3 \u2013 February 6, 2013 \u00a9 2013 Microsoft. All rights reserved. Constant Value Description IMAGE_FILE_MACHINE_THUMB 0x1c2 ARM or Thumb (\u201cinterworking\u201d) IMAGE_FILE_MACHINE_WCEMIPSV2 0x169 MIPS little-endian WCE v2 2.3.2. Characteristics The Characteristics field contains flags that indicate attributes of the object or image file. The following flags are currently defined. Flag Value Description IMAGE_FILE_RELOCS_STRIPPED 0x0001 Image only, Windows CE, and Windows NT\u00ae and later. This indicates that the file does not contain base relocations and must therefore be loaded at its preferred base address. If the base address is not available, the loader reports an error. The default behavior of the linker is to strip base relocations from executable (EXE) files. IMAGE_FILE_EXECUTABLE_IMAGE 0x0002 Image only. This indicates that the image file is valid and can be run. If this flag is not set, it indicates a li",
+        "er will fail If the pull fails.\"IfNotPresent\" means that kubelet pulls if the image isn't present on disk. Container will fail if the image isn't present and the pull fails.\"Never\" means that kubelet never pulls an image, but only uses a local image. Container will fail if the image isn't presentEntrypointcommand ([]string)Atomic: will be replaced during a mergeEntrypoint array. Not executed within a shell. The image's ENTRYPOINT is used if this is not provided. Variable references $(VAR_NAME) are expanded using the container's environment. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. \"$$(VAR_NAME)\" will produce the string literal \"$(VAR_NAME)\". Escaped references will never be expanded, regardless of whether the variable exists or not. Cannot be updated. More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-containe",
+        "name, error, to use for error handling. Put this token in your grammar file at places where an input error might occur so that you can provide a recovery routine. If an input error occurs in a position protected by the error token, the parser executes the action for theerror token rather than the normal action. T o prevent a single error from producing many error messages, the parser remains in an error state until it successfully processes three tokens following an error. If another error occurs while the parser is in the error state, the parser discards the input token and does not produce a message. Y ou can also specify a point at which the parser should resume processing by providing an argument to the error action. For example: 4\u201328 Creating Input Language Analyzers and Parsers",
+        "anagement to default or override container images in workload controllers like Deployments and StatefulSets.imagePullPolicy (string)Image pull policy. One of Always, Never, IfNotPresent. Defaults to Always if :latest tag is specified, or IfNotPresent otherwise. Cannot be updated. More info: https://kubernetes.io/docs/concepts/containers/images#updating-imagesPossible enum values:\"Always\" means that kubelet always attempts to pull the latest image. Container will fail If the pull fails.\"IfNotPresent\" means that kubelet pulls if the image isn't present on disk. Container will fail if the image isn't present and the pull fails.\"Never\" means that kubelet never pulls an image, but only uses a local image. Container will fail if the image isn't presentEntrypointcommand ([]string)Atomic: will be replaced during a mergeEntrypoint array. Not executed within a shell. The container image's ENTRYPOINT is used if this is not provided. Variable references $(VAR_NAME) are expanded using the container",
+        "Memory Leaks \u201cPossibly Leaking\u201d messages \u2022 The \u201cPossibly Leaking\u201d messages indicate that the value reached a call that if annotated with __drv_aliasesMem would not have reported a warning. \u2022 Does the called function really \u201ckeep\u201d the value? \u2022 Yes: fix with annotation (likely will fix a lot). \u2022 No: you\u2019ve found a leak."
+      ],
+      "ground_truth": "ErrImagePull, image, registry",
+      "actual_sources": [
+        "reference__kubernetes-api__workload-resources__pod-v1.docx",
+        "Microsoft Portable Executable and Common Object File Format Specification - Revision 8.3 (6th Feb, 2013).pdf",
+        "Tru64 - Programming Support Tools (ARH9WBTE).PDF",
+        "Driver Annotations in Depth - Part 2 - Slides - 2008 (dde-t676_ddc08).pdf"
+      ],
+      "golden_sources": [
+        "troubleshooting-pods.html",
+        "images.html"
+      ],
+      "forbidden_keywords": [],
+      "ragas_metrics": {
+        "id": "q-005",
+        "demonstrates_feature": "hybrid",
+        "intent": "rag",
+        "question": "What does error ErrImagePull mean and how do I fix it?",
+        "answer": "The error \"ErrImagePull\" typically occurs in Kubernetes when there is a failure in pulling a container image. This can happen due to several reasons, such as the image not being present in the specified registry, incorrect image name or tag, network issues, or authentication problems with the registry.\n\nTo fix this error, you can try the following steps:\n\n1. **Verify Image Name and Tag**: Ensure that the image name and tag specified in your Kubernetes configuration are correct.\n\n2. **Check Image Registry**: Make sure that the image is available in the specified registry and that the registry is accessible from your Kubernetes cluster.\n\n3. **Network Connectivity**: Ensure that there are no network issues preventing access to the image registry.\n\n4. **Authentication**: If the registry requires authentication, ensure that the necessary credentials are correctly configured in Kubernetes, such as using a Secret for Docker registry credentials.\n\n5. **Image Pull Policy**: Check the `imagePullPolicy` setting. If set to \"Always\", Kubernetes will always attempt to pull the image, which might not be necessary if the image is already present locally. Adjusting this setting to \"IfNotPresent\" or \"Never\" might resolve the issue if the image is already available on the nodes.\n\nIf these steps do not resolve the issue, further investigation into the specific error messages and logs from the Kubernetes events and the kubelet logs may be necessary.",
+        "contexts": [
+          "Microsoft Portable Executable and Common Object File Format Specification - 14 Revision 8.3 \u2013 February 6, 2013 \u00a9 2013 Microsoft. All rights reserved. Constant Value Description IMAGE_FILE_MACHINE_THUMB 0x1c2 ARM or Thumb (\u201cinterworking\u201d) IMAGE_FILE_MACHINE_WCEMIPSV2 0x169 MIPS little-endian WCE v2 2.3.2. Characteristics The Characteristics field contains flags that indicate attributes of the object or image file. The following flags are currently defined. Flag Value Description IMAGE_FILE_RELOCS_STRIPPED 0x0001 Image only, Windows CE, and Windows NT\u00ae and later. This indicates that the file does not contain base relocations and must therefore be loaded at its preferred base address. If the base address is not available, the loader reports an error. The default behavior of the linker is to strip base relocations from executable (EXE) files. IMAGE_FILE_EXECUTABLE_IMAGE 0x0002 Image only. This indicates that the image file is valid and can be run. If this flag is not set, it indicates a li",
+          "er will fail If the pull fails.\"IfNotPresent\" means that kubelet pulls if the image isn't present on disk. Container will fail if the image isn't present and the pull fails.\"Never\" means that kubelet never pulls an image, but only uses a local image. Container will fail if the image isn't presentEntrypointcommand ([]string)Atomic: will be replaced during a mergeEntrypoint array. Not executed within a shell. The image's ENTRYPOINT is used if this is not provided. Variable references $(VAR_NAME) are expanded using the container's environment. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. \"$$(VAR_NAME)\" will produce the string literal \"$(VAR_NAME)\". Escaped references will never be expanded, regardless of whether the variable exists or not. Cannot be updated. More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-containe",
+          "name, error, to use for error handling. Put this token in your grammar file at places where an input error might occur so that you can provide a recovery routine. If an input error occurs in a position protected by the error token, the parser executes the action for theerror token rather than the normal action. T o prevent a single error from producing many error messages, the parser remains in an error state until it successfully processes three tokens following an error. If another error occurs while the parser is in the error state, the parser discards the input token and does not produce a message. Y ou can also specify a point at which the parser should resume processing by providing an argument to the error action. For example: 4\u201328 Creating Input Language Analyzers and Parsers",
+          "anagement to default or override container images in workload controllers like Deployments and StatefulSets.imagePullPolicy (string)Image pull policy. One of Always, Never, IfNotPresent. Defaults to Always if :latest tag is specified, or IfNotPresent otherwise. Cannot be updated. More info: https://kubernetes.io/docs/concepts/containers/images#updating-imagesPossible enum values:\"Always\" means that kubelet always attempts to pull the latest image. Container will fail If the pull fails.\"IfNotPresent\" means that kubelet pulls if the image isn't present on disk. Container will fail if the image isn't present and the pull fails.\"Never\" means that kubelet never pulls an image, but only uses a local image. Container will fail if the image isn't presentEntrypointcommand ([]string)Atomic: will be replaced during a mergeEntrypoint array. Not executed within a shell. The container image's ENTRYPOINT is used if this is not provided. Variable references $(VAR_NAME) are expanded using the container",
+          "Memory Leaks \u201cPossibly Leaking\u201d messages \u2022 The \u201cPossibly Leaking\u201d messages indicate that the value reached a call that if annotated with __drv_aliasesMem would not have reported a warning. \u2022 Does the called function really \u201ckeep\u201d the value? \u2022 Yes: fix with annotation (likely will fix a lot). \u2022 No: you\u2019ve found a leak."
+        ],
+        "ground_truth": "ErrImagePull, image, registry",
+        "actual_sources": [
+          "reference__kubernetes-api__workload-resources__pod-v1.docx",
+          "Microsoft Portable Executable and Common Object File Format Specification - Revision 8.3 (6th Feb, 2013).pdf",
+          "Tru64 - Programming Support Tools (ARH9WBTE).PDF",
+          "Driver Annotations in Depth - Part 2 - Slides - 2008 (dde-t676_ddc08).pdf"
+        ],
+        "golden_sources": [
+          "troubleshooting-pods.html",
+          "images.html"
+        ],
+        "forbidden_keywords": [],
+        "faithfulness": 1,
+        "answer_relevancy": 1.0,
+        "context_precision": 0.25,
+        "context_recall": 1
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 0.5,
+        "matched": [
+          "pod"
+        ],
+        "missed": [
+          "images"
+        ]
+      }
+    },
+    {
+      "id": "q-006",
+      "demonstrates_feature": "hybrid",
+      "intent": "rag",
+      "question": "How does a StatefulSet differ from a Deployment for stateful applications?",
+      "answer": "A StatefulSet differs from a Deployment in that it maintains a sticky identity for each of its Pods, which is crucial for managing stateful applications. While both manage Pods based on an identical container specification, StatefulSets provide guarantees about the ordering and uniqueness of these Pods. Each Pod in a StatefulSet has a persistent identifier that it maintains across any rescheduling, unlike Pods in a Deployment, which are interchangeable. This makes StatefulSets particularly useful for applications that require persistent storage or a stable, unique network identity.",
+      "contexts": [
+        "Concepts \u203a Workloads \u203a Controllers \u203a Statefulset StatefulSets | Kubernetes StatefulSetsA StatefulSet runs a group of Pods, and maintains a sticky identity for each of those Pods. This is useful for managing applications that need persistent storage or a stable, unique network identity.StatefulSet is the workload API object used to manage stateful applications.Manages the deployment and scaling of a set of Pods, and provides guarantees about the ordering and uniqueness of these Pods.Like a Deployment, a StatefulSet manages Pods that are based on an identical container spec. Unlike a Deployment, a StatefulSet maintains a sticky identity for each of its Pods. These pods are created from the same spec, but are not interchangeable: each has a persistent identifier that it maintains across any rescheduling.If you want to use storage volumes to provide persistence for your workload, you can use a StatefulSet as part of the solution. Although individual Pods in a StatefulSet are susceptible to",
+        ".Follow an example of deploying Cassandra with Stateful Sets.Follow an example of running a replicated stateful application.Learn how to scale a StatefulSet.Learn what's involved when you delete a StatefulSet.Learn how to configure a Pod to use a volume for storage.Learn how to configure a Pod to use a PersistentVolume for storage.StatefulSet is a top-level resource in the Kubernetes REST API. Read the StatefulSet object definition to understand the API for stateful sets.Read about PodDisruptionBudget and how you can use it to manage application availability during disruptions.FeedbackWas this page helpful?Yes NoThanks for the feedback. If you have a specific, answerable question about how to use Kubernetes, ask it on Stack Overflow. Open an issue in the GitHub Repository if you want to report a problem or suggest an improvement.Last modified March 16, 2026 at 12:28 PM PST: updated other reference links (281dd818cd)",
+        "Tutorials \u203a Stateful-Application \u203a Basic-Stateful-Set Tutorials \u203a Stateful-Application \u203a Basic-Stateful-Set StatefulSet Basics | Kubernetes StatefulSet BasicsThis tutorial provides an introduction to managing applications with StatefulSets. It demonstrates how to create, delete, scale, and update the Pods of StatefulSets.Before you beginBefore you begin this tutorial, you should familiarize yourself with the following Kubernetes concepts:PodsCluster DNSHeadless ServicesPersistentVolumesPersistentVolumes ProvisioningThe kubectl command line toolYou need to have a Kubernetes cluster, and the kubectl command-line tool must be configured to communicate with your cluster. It is recommended to run this tutorial on a cluster with at least two nodes that are not acting as control plane hosts. If you do not already have a cluster, you can create one by using minikube or you can use one of these Kubernetes playgrounds:iximiuz LabsKillercodaKodeKloudYou should configure kubectl to use a context t",
+        "stems. However, the administration of stateful applications and distributed systems on Kubernetes is a broad, complex topic. In order to demonstrate the basic features of a StatefulSet, and not to conflate the former topic with the latter, you will deploy a simple web application using a StatefulSet.After this tutorial, you will be familiar with the following.How to create a StatefulSetHow a StatefulSet manages its PodsHow to delete a StatefulSetHow to scale a StatefulSetHow to update a StatefulSet's PodsCreating a StatefulSetBegin by creating a StatefulSet (and the Service that it relies upon) using the example below. It is similar to the example presented in the StatefulSets concept. It creates a headless Service, nginx, to publish the IP addresses of Pods in the StatefulSet, web.application/web/web.yaml apiVersion: v1 kind: Service metadata: name: nginx labels: app: nginx spec: ports: - port: 80 name: web clusterIP: None selector: app: nginx --- apiVersion: apps/v1 kind: StatefulSet",
+        "sistentVolume Provisioner based on the requested storage class, or pre-provisioned by an admin.Deleting and/or scaling a StatefulSet down will not delete the volumes associated with the StatefulSet. This is done to ensure data safety, which is generally more valuable than an automatic purge of all related StatefulSet resources.StatefulSets currently require a Headless Service to be responsible for the network identity of the Pods. You are responsible for creating this Service.StatefulSets do not provide any guarantees on the termination of pods when a StatefulSet is deleted. To achieve ordered and graceful termination of the pods in the StatefulSet, it is possible to scale the StatefulSet down to 0 prior to deletion.When using Rolling Updates with the default Pod Management Policy (OrderedReady), it's possible to get into a broken state that requires manual intervention to repair.ComponentsThe example below demonstrates the components of a StatefulSet.apiVersion: v1 kind: Service metad"
+      ],
+      "ground_truth": "StatefulSet, stable identity, persistent",
+      "actual_sources": [
+        "concepts__workloads__controllers__statefulset.docx",
+        "tutorials__stateful-application__basic-stateful-set.html"
+      ],
+      "golden_sources": [
+        "statefulsets.html",
+        "deployments.html"
+      ],
+      "forbidden_keywords": [],
+      "ragas_metrics": {
+        "id": "q-006",
+        "demonstrates_feature": "hybrid",
+        "intent": "rag",
+        "question": "How does a StatefulSet differ from a Deployment for stateful applications?",
+        "answer": "A StatefulSet differs from a Deployment in that it maintains a sticky identity for each of its Pods, which is crucial for managing stateful applications. While both manage Pods based on an identical container specification, StatefulSets provide guarantees about the ordering and uniqueness of these Pods. Each Pod in a StatefulSet has a persistent identifier that it maintains across any rescheduling, unlike Pods in a Deployment, which are interchangeable. This makes StatefulSets particularly useful for applications that require persistent storage or a stable, unique network identity.",
+        "contexts": [
+          "Concepts \u203a Workloads \u203a Controllers \u203a Statefulset StatefulSets | Kubernetes StatefulSetsA StatefulSet runs a group of Pods, and maintains a sticky identity for each of those Pods. This is useful for managing applications that need persistent storage or a stable, unique network identity.StatefulSet is the workload API object used to manage stateful applications.Manages the deployment and scaling of a set of Pods, and provides guarantees about the ordering and uniqueness of these Pods.Like a Deployment, a StatefulSet manages Pods that are based on an identical container spec. Unlike a Deployment, a StatefulSet maintains a sticky identity for each of its Pods. These pods are created from the same spec, but are not interchangeable: each has a persistent identifier that it maintains across any rescheduling.If you want to use storage volumes to provide persistence for your workload, you can use a StatefulSet as part of the solution. Although individual Pods in a StatefulSet are susceptible to",
+          ".Follow an example of deploying Cassandra with Stateful Sets.Follow an example of running a replicated stateful application.Learn how to scale a StatefulSet.Learn what's involved when you delete a StatefulSet.Learn how to configure a Pod to use a volume for storage.Learn how to configure a Pod to use a PersistentVolume for storage.StatefulSet is a top-level resource in the Kubernetes REST API. Read the StatefulSet object definition to understand the API for stateful sets.Read about PodDisruptionBudget and how you can use it to manage application availability during disruptions.FeedbackWas this page helpful?Yes NoThanks for the feedback. If you have a specific, answerable question about how to use Kubernetes, ask it on Stack Overflow. Open an issue in the GitHub Repository if you want to report a problem or suggest an improvement.Last modified March 16, 2026 at 12:28 PM PST: updated other reference links (281dd818cd)",
+          "Tutorials \u203a Stateful-Application \u203a Basic-Stateful-Set Tutorials \u203a Stateful-Application \u203a Basic-Stateful-Set StatefulSet Basics | Kubernetes StatefulSet BasicsThis tutorial provides an introduction to managing applications with StatefulSets. It demonstrates how to create, delete, scale, and update the Pods of StatefulSets.Before you beginBefore you begin this tutorial, you should familiarize yourself with the following Kubernetes concepts:PodsCluster DNSHeadless ServicesPersistentVolumesPersistentVolumes ProvisioningThe kubectl command line toolYou need to have a Kubernetes cluster, and the kubectl command-line tool must be configured to communicate with your cluster. It is recommended to run this tutorial on a cluster with at least two nodes that are not acting as control plane hosts. If you do not already have a cluster, you can create one by using minikube or you can use one of these Kubernetes playgrounds:iximiuz LabsKillercodaKodeKloudYou should configure kubectl to use a context t",
+          "stems. However, the administration of stateful applications and distributed systems on Kubernetes is a broad, complex topic. In order to demonstrate the basic features of a StatefulSet, and not to conflate the former topic with the latter, you will deploy a simple web application using a StatefulSet.After this tutorial, you will be familiar with the following.How to create a StatefulSetHow a StatefulSet manages its PodsHow to delete a StatefulSetHow to scale a StatefulSetHow to update a StatefulSet's PodsCreating a StatefulSetBegin by creating a StatefulSet (and the Service that it relies upon) using the example below. It is similar to the example presented in the StatefulSets concept. It creates a headless Service, nginx, to publish the IP addresses of Pods in the StatefulSet, web.application/web/web.yaml apiVersion: v1 kind: Service metadata: name: nginx labels: app: nginx spec: ports: - port: 80 name: web clusterIP: None selector: app: nginx --- apiVersion: apps/v1 kind: StatefulSet",
+          "sistentVolume Provisioner based on the requested storage class, or pre-provisioned by an admin.Deleting and/or scaling a StatefulSet down will not delete the volumes associated with the StatefulSet. This is done to ensure data safety, which is generally more valuable than an automatic purge of all related StatefulSet resources.StatefulSets currently require a Headless Service to be responsible for the network identity of the Pods. You are responsible for creating this Service.StatefulSets do not provide any guarantees on the termination of pods when a StatefulSet is deleted. To achieve ordered and graceful termination of the pods in the StatefulSet, it is possible to scale the StatefulSet down to 0 prior to deletion.When using Rolling Updates with the default Pod Management Policy (OrderedReady), it's possible to get into a broken state that requires manual intervention to repair.ComponentsThe example below demonstrates the components of a StatefulSet.apiVersion: v1 kind: Service metad"
+        ],
+        "ground_truth": "StatefulSet, stable identity, persistent",
+        "actual_sources": [
+          "concepts__workloads__controllers__statefulset.docx",
+          "tutorials__stateful-application__basic-stateful-set.html"
+        ],
+        "golden_sources": [
+          "statefulsets.html",
+          "deployments.html"
+        ],
+        "forbidden_keywords": [],
+        "faithfulness": 1,
+        "answer_relevancy": 1.0,
+        "context_precision": 1.0,
+        "context_recall": 1
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 0.5,
+        "matched": [
+          "statefulset"
+        ],
+        "missed": [
+          "deployments"
+        ]
+      }
+    },
+    {
+      "id": "q-007",
+      "demonstrates_feature": "hybrid",
+      "intent": "rag",
+      "question": "Show me a Pod manifest with nodeSelector and explain when to use it",
+      "answer": "A Pod manifest with a `nodeSelector` can be used to ensure that the Pod is scheduled on nodes that have specific labels. Here is an example of a Pod manifest with a `nodeSelector`:\n\n```yaml\napiVersion: v1\nkind: Pod\nmetadata:\n  name: example-pod\nspec:\n  containers:\n  - name: example-container\n    image: nginx\n  nodeSelector:\n    disktype: ssd\n```\n\nIn this example, the `nodeSelector` specifies that the Pod should only be scheduled on nodes that have a label `disktype` with the value `ssd`.\n\n**When to use `nodeSelector`:**\n\n- Use `nodeSelector` when you want to constrain a Pod to run only on nodes with specific labels. This is useful for ensuring that Pods are scheduled on nodes with certain characteristics, such as specific hardware configurations or geographic locations.\n- It is a simple way to control Pod placement based on node labels, but it does not support complex logic or multiple conditions. For more advanced scheduling requirements, consider using `nodeAffinity` or `podAffinity`.",
+      "contexts": [
+        "ich must be true for the pod to fit on a node. Selector which must match a node's labels for the pod to be scheduled on that node. More info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/nodeName (string)NodeName indicates in which node this pod is scheduled. If empty, this pod is a candidate for scheduling by the scheduler defined in schedulerName. Once this field is set, the kubelet for this node becomes responsible for the lifecycle of this pod. This field should not be used to express a desire for the pod to be scheduled on a specific node. https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodenameaffinity (Affinity)If specified, the pod's scheduling constraintsAffinity is a group of affinity scheduling rules.affinity.nodeAffinity (NodeAffinity)Describes node affinity scheduling rules for the pod.affinity.podAffinity (PodAffinity)Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other po",
+        "r won't schedule more than maxSkew Pods to those domains. If value is nil, the constraint behaves as if MinDomains is equal to 1. Valid values are integers greater than 0. When value is not nil, WhenUnsatisfiable must be DoNotSchedule.For example, in a 3-zone cluster, MaxSkew is set to 2, MinDomains is set to 5 and pods with the same labelSelector spread as 2/2/2: | zone1 | zone2 | zone3 | | P P | P P | P P | The number of domains is less than 5(MinDomains), so \"global minimum\" is treated as 0. In this situation, new pod with the same labelSelector cannot be scheduled, because computed skew will be 3(3 - 0) if new Pod is scheduled to any of the three zones, it will violate MaxSkew.topologySpreadConstraints.nodeAffinityPolicy (string)NodeAffinityPolicy indicates how we will treat Pod's nodeAffinity/nodeSelector when calculating pod topology spread skew. Options are: - Honor: only nodes matching nodeAffinity/nodeSelector are included in the calculations. - Ignore: nodeAffinity/nodeSelect",
+        "r of a ReplicationController.matchExpressions - allows to build more sophisticated selectors by specifying key, list of values and an operator that relates the key and values.When the two are specified the result is ANDed.The .spec.selector must match the .spec.template.metadata.labels. Config with these two not matching will be rejected by the API.Running Pods on select NodesIf you specify a .spec.template.spec.nodeSelector, then the DaemonSet controller will create Pods on nodes which match that node selector. Likewise if you specify a .spec.template.spec.affinity, then DaemonSet controller will create Pods on nodes which match that node affinity. If you do not specify either, then the DaemonSet controller will create Pods on all nodes.How Daemon Pods are scheduledA DaemonSet can be used to ensure that all eligible nodes run a copy of a Pod. The DaemonSet controller creates a Pod for each eligible node and adds the spec.affinity.nodeAffinity field of the Pod to match the target host.",
+        "auto-healing.Pods natively provide two kinds of shared resources for their constituent containers: networking and storage.Working with PodsYou'll rarely create individual Pods directly in Kubernetes\u2014even singleton Pods. This is because Pods are designed as relatively ephemeral, disposable entities. When a Pod gets created (directly by you, or indirectly by a controller), the new Pod is scheduled to run on a Node in your cluster. The Pod remains on that node until the Pod finishes execution, the Pod object is deleted, the Pod is evicted for lack of resources, or the node fails.Note:Restarting a container in a Pod should not be confused with restarting a Pod. A Pod is not a process, but an environment for running container(s). A Pod persists until it is deleted.The name of a Pod must be a valid DNS subdomain value, but this can produce unexpected results for the Pod hostname. For best compatibility, the name should follow the more restrictive rules for a DNS label.Pod OSFEATURE STATE: Ku",
+        "lSelector (LabelSelector)A label query over a set of resources, in this case pods. If it's null, this PodAffinityTerm matches with no Pods.preferredDuringSchedulingIgnoredDuringExecution.podAffinityTerm.matchLabelKeys ([]string)Atomic: will be replaced during a mergeMatchLabelKeys is a set of pod label keys to select which pods will be taken into consideration. The keys are used to lookup values from the incoming pod labels, those key-value labels are merged with labelSelector as key in (value) to select the group of existing pods which pods will be taken into consideration for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming pod labels will be ignored. The default value is empty. The same key is forbidden to exist in both matchLabelKeys and labelSelector. Also, matchLabelKeys cannot be set when labelSelector isn't set.preferredDuringSchedulingIgnoredDuringExecution.podAffinityTerm.mismatchLabelKeys ([]string)Atomic: will be replaced during a mergeMismatchL"
+      ],
+      "ground_truth": "nodeSelector, label, node",
+      "actual_sources": [
+        "reference__kubernetes-api__workload-resources__pod-v1.docx",
+        "concepts__workloads__controllers__daemonset.html",
+        "concepts__workloads__pods.html"
+      ],
+      "golden_sources": [
+        "pod-v1.docx"
+      ],
+      "forbidden_keywords": [],
+      "ragas_metrics": {
+        "id": "q-007",
+        "demonstrates_feature": "hybrid",
+        "intent": "rag",
+        "question": "Show me a Pod manifest with nodeSelector and explain when to use it",
+        "answer": "A Pod manifest with a `nodeSelector` can be used to ensure that the Pod is scheduled on nodes that have specific labels. Here is an example of a Pod manifest with a `nodeSelector`:\n\n```yaml\napiVersion: v1\nkind: Pod\nmetadata:\n  name: example-pod\nspec:\n  containers:\n  - name: example-container\n    image: nginx\n  nodeSelector:\n    disktype: ssd\n```\n\nIn this example, the `nodeSelector` specifies that the Pod should only be scheduled on nodes that have a label `disktype` with the value `ssd`.\n\n**When to use `nodeSelector`:**\n\n- Use `nodeSelector` when you want to constrain a Pod to run only on nodes with specific labels. This is useful for ensuring that Pods are scheduled on nodes with certain characteristics, such as specific hardware configurations or geographic locations.\n- It is a simple way to control Pod placement based on node labels, but it does not support complex logic or multiple conditions. For more advanced scheduling requirements, consider using `nodeAffinity` or `podAffinity`.",
+        "contexts": [
+          "ich must be true for the pod to fit on a node. Selector which must match a node's labels for the pod to be scheduled on that node. More info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/nodeName (string)NodeName indicates in which node this pod is scheduled. If empty, this pod is a candidate for scheduling by the scheduler defined in schedulerName. Once this field is set, the kubelet for this node becomes responsible for the lifecycle of this pod. This field should not be used to express a desire for the pod to be scheduled on a specific node. https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodenameaffinity (Affinity)If specified, the pod's scheduling constraintsAffinity is a group of affinity scheduling rules.affinity.nodeAffinity (NodeAffinity)Describes node affinity scheduling rules for the pod.affinity.podAffinity (PodAffinity)Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other po",
+          "r won't schedule more than maxSkew Pods to those domains. If value is nil, the constraint behaves as if MinDomains is equal to 1. Valid values are integers greater than 0. When value is not nil, WhenUnsatisfiable must be DoNotSchedule.For example, in a 3-zone cluster, MaxSkew is set to 2, MinDomains is set to 5 and pods with the same labelSelector spread as 2/2/2: | zone1 | zone2 | zone3 | | P P | P P | P P | The number of domains is less than 5(MinDomains), so \"global minimum\" is treated as 0. In this situation, new pod with the same labelSelector cannot be scheduled, because computed skew will be 3(3 - 0) if new Pod is scheduled to any of the three zones, it will violate MaxSkew.topologySpreadConstraints.nodeAffinityPolicy (string)NodeAffinityPolicy indicates how we will treat Pod's nodeAffinity/nodeSelector when calculating pod topology spread skew. Options are: - Honor: only nodes matching nodeAffinity/nodeSelector are included in the calculations. - Ignore: nodeAffinity/nodeSelect",
+          "r of a ReplicationController.matchExpressions - allows to build more sophisticated selectors by specifying key, list of values and an operator that relates the key and values.When the two are specified the result is ANDed.The .spec.selector must match the .spec.template.metadata.labels. Config with these two not matching will be rejected by the API.Running Pods on select NodesIf you specify a .spec.template.spec.nodeSelector, then the DaemonSet controller will create Pods on nodes which match that node selector. Likewise if you specify a .spec.template.spec.affinity, then DaemonSet controller will create Pods on nodes which match that node affinity. If you do not specify either, then the DaemonSet controller will create Pods on all nodes.How Daemon Pods are scheduledA DaemonSet can be used to ensure that all eligible nodes run a copy of a Pod. The DaemonSet controller creates a Pod for each eligible node and adds the spec.affinity.nodeAffinity field of the Pod to match the target host.",
+          "auto-healing.Pods natively provide two kinds of shared resources for their constituent containers: networking and storage.Working with PodsYou'll rarely create individual Pods directly in Kubernetes\u2014even singleton Pods. This is because Pods are designed as relatively ephemeral, disposable entities. When a Pod gets created (directly by you, or indirectly by a controller), the new Pod is scheduled to run on a Node in your cluster. The Pod remains on that node until the Pod finishes execution, the Pod object is deleted, the Pod is evicted for lack of resources, or the node fails.Note:Restarting a container in a Pod should not be confused with restarting a Pod. A Pod is not a process, but an environment for running container(s). A Pod persists until it is deleted.The name of a Pod must be a valid DNS subdomain value, but this can produce unexpected results for the Pod hostname. For best compatibility, the name should follow the more restrictive rules for a DNS label.Pod OSFEATURE STATE: Ku",
+          "lSelector (LabelSelector)A label query over a set of resources, in this case pods. If it's null, this PodAffinityTerm matches with no Pods.preferredDuringSchedulingIgnoredDuringExecution.podAffinityTerm.matchLabelKeys ([]string)Atomic: will be replaced during a mergeMatchLabelKeys is a set of pod label keys to select which pods will be taken into consideration. The keys are used to lookup values from the incoming pod labels, those key-value labels are merged with labelSelector as key in (value) to select the group of existing pods which pods will be taken into consideration for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming pod labels will be ignored. The default value is empty. The same key is forbidden to exist in both matchLabelKeys and labelSelector. Also, matchLabelKeys cannot be set when labelSelector isn't set.preferredDuringSchedulingIgnoredDuringExecution.podAffinityTerm.mismatchLabelKeys ([]string)Atomic: will be replaced during a mergeMismatchL"
+        ],
+        "ground_truth": "nodeSelector, label, node",
+        "actual_sources": [
+          "reference__kubernetes-api__workload-resources__pod-v1.docx",
+          "concepts__workloads__controllers__daemonset.html",
+          "concepts__workloads__pods.html"
+        ],
+        "golden_sources": [
+          "pod-v1.docx"
+        ],
+        "forbidden_keywords": [],
+        "faithfulness": 1,
+        "answer_relevancy": 1.0,
+        "context_precision": 0.8333333333333333,
+        "context_recall": 1
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "pod",
+          "pod-v1",
+          "v1"
+        ],
+        "missed": []
+      }
+    },
+    {
+      "id": "q-008",
+      "demonstrates_feature": "hybrid",
+      "intent": "rag",
+      "question": "Find the runbook that mentions 'OOMKilled'",
+      "answer": "I do not have enough information to find a runbook that mentions 'OOMKilled' based on the provided context.",
+      "contexts": [
+        "Incident Response Runbook This runbook defines the standard remediation procedure for production incidents. For P1 incidents, responders must immediately acknowledge the page, join the incident bridge, identify customer impact, and assign an incident commander. The first response steps are: establish severity, confirm the affected cluster or service, review recent changes, inspect alerts and logs, and begin mitigation to reduce user impact. If a workaround is available, mitigation takes priority over root cause analysis. The incident commander coordinates communications, tracks actions, and confirms service recovery before downgrade or closure. After service stabilizes, the team records timeline, root cause, customer impact, and follow-up remediation items. MTTR improvement recommendations include faster alert triage, rollback readiness, stronger observability, and clearer ownership.",
+        "150 . C. Mohan et al. takes over, the handling of the loser transactions is similar to the way Tandem does it. That is, rollbacks are performed in parallel with new transaction processing. Page forces during restart. OLM, VLM and DB2 force all dirty pages at the end of restart. Information on Encompass and NonStop SQL is not available. Restart checkpoints. IMS, DB2, OLM and VLM take a checkpoint only at the end of restart recovery. Information on Encompass and NonStop SQL is not available. Restrictions on data. Encompass and NonStop SQL require that every record have a unique key. This unique key is used to guarantee that if an attempt is made to undo a logged action which was never applied to the nonvolatile storage version of the data, then the latter is realized and the undo fails. In other words, idempotence of operations is achieved using the unique key. IMS in effect does byte-range locking and logging and hence does not allow records to be moved around freely within a page. This",
+        "ller to respond.The kubelet sets an oom_score_adj value for each container based on the QoS for the pod.Quality of Serviceoom_score_adjGuaranteed-997BestEffort1000Burstablemin(max(2, 1000 - (1000 \u00d7 memoryRequestBytes) / machineMemoryCapacityBytes), 999)Note:The kubelet also sets an oom_score_adj value of -997 for any containers in Pods that have system-node-critical Priority.If the kubelet can't reclaim memory before a node experiences OOM, the oom_killer calculates an oom_score based on the percentage of memory it's using on the node, and then adds the oom_score_adj to get an effective oom_score for each container. It then kills the container with the highest score.This means that containers in low QoS pods that consume a large amount of memory relative to their scheduling requests are killed first.Unlike pod eviction, if a container is OOM killed, the kubelet can restart it based on its restartPolicy.Good practicesThe following sections describe good practice for eviction configurati",
+        "have failed to produce a clearly superior allocator . In fact, the best known practices for measuring allocator performance are remarkably simplistic, as are the summary statistics for measured performance. Wilson et al. (1995) provide an excellent review of the state of the art as of a decade ago. Multi-processors were not a signi\ufb01cant issue then, but otherwise the review provides a thorough summary of the issues that face modern allocators. Following are brief mentions of various issues that particularly impact jemalloc, but no attempt is made to discuss all of the issues that must be considered when designing an allocator . Allocator performance is typically measured via some combination of application execution time and average or peak application memory usage. It is not suf\ufb01cient to measure the time consumed by the allocator code in isolation. Memory layout can have a signi\ufb01cant impact on how quickly the rest of the application runs, due to the effects of CPU cache, RAM, and virt",
+        "can and should always be used in addition to the other methods described. The concept of export maps is to tell the linker explicitly which symbols to export from the generated object. Ev- ery symbol can belong to one of two classes: exported or not exported. Symbols can be listed individually, glob- expressions can be used, or the special * catch-all glob expression can be used. The latter only once. The sym- bol map \ufb01le for our example code could look like this: { global: index; local: *; }; This tells the linker that the symbol index is to be ex- ported and all others (matched by *) are local. We could have listed last and next explicitly in the local: list but it is generally advised to always use the catch-all case to mark all not explicitly mentioned symbols as local. This avoids surprises by allowing access only to the sym- bols explicitly mentions. Otherwise there would also be the problem with symbols which are matched neither by the global: nor by the local:, resulting in un"
+      ],
+      "ground_truth": "OOMKilled, memory, limit",
+      "actual_sources": [
+        "concepts__scheduling-eviction__node-pressure-eviction.docx",
+        "A Scalable Concurrent malloc Implementation for FreeBSD (jemalloc).pdf",
+        "How To Write Shared Libraries - v4.1.2 (Drepper, 2001).pdf",
+        "ARIES - A Transaction Recovery Method Supporting Fine-Granularity Locking and Partial Rollbacks Using Write-Ahead Logging (1992).pdf",
+        "incident-response-runbook.html"
+      ],
+      "golden_sources": [
+        "troubleshooting-pods.html"
+      ],
+      "forbidden_keywords": [],
+      "ragas_metrics": {
+        "id": "q-008",
+        "demonstrates_feature": "hybrid",
+        "intent": "rag",
+        "question": "Find the runbook that mentions 'OOMKilled'",
+        "answer": "I do not have enough information to find a runbook that mentions 'OOMKilled' based on the provided context.",
+        "contexts": [
+          "Incident Response Runbook This runbook defines the standard remediation procedure for production incidents. For P1 incidents, responders must immediately acknowledge the page, join the incident bridge, identify customer impact, and assign an incident commander. The first response steps are: establish severity, confirm the affected cluster or service, review recent changes, inspect alerts and logs, and begin mitigation to reduce user impact. If a workaround is available, mitigation takes priority over root cause analysis. The incident commander coordinates communications, tracks actions, and confirms service recovery before downgrade or closure. After service stabilizes, the team records timeline, root cause, customer impact, and follow-up remediation items. MTTR improvement recommendations include faster alert triage, rollback readiness, stronger observability, and clearer ownership.",
+          "150 . C. Mohan et al. takes over, the handling of the loser transactions is similar to the way Tandem does it. That is, rollbacks are performed in parallel with new transaction processing. Page forces during restart. OLM, VLM and DB2 force all dirty pages at the end of restart. Information on Encompass and NonStop SQL is not available. Restart checkpoints. IMS, DB2, OLM and VLM take a checkpoint only at the end of restart recovery. Information on Encompass and NonStop SQL is not available. Restrictions on data. Encompass and NonStop SQL require that every record have a unique key. This unique key is used to guarantee that if an attempt is made to undo a logged action which was never applied to the nonvolatile storage version of the data, then the latter is realized and the undo fails. In other words, idempotence of operations is achieved using the unique key. IMS in effect does byte-range locking and logging and hence does not allow records to be moved around freely within a page. This",
+          "ller to respond.The kubelet sets an oom_score_adj value for each container based on the QoS for the pod.Quality of Serviceoom_score_adjGuaranteed-997BestEffort1000Burstablemin(max(2, 1000 - (1000 \u00d7 memoryRequestBytes) / machineMemoryCapacityBytes), 999)Note:The kubelet also sets an oom_score_adj value of -997 for any containers in Pods that have system-node-critical Priority.If the kubelet can't reclaim memory before a node experiences OOM, the oom_killer calculates an oom_score based on the percentage of memory it's using on the node, and then adds the oom_score_adj to get an effective oom_score for each container. It then kills the container with the highest score.This means that containers in low QoS pods that consume a large amount of memory relative to their scheduling requests are killed first.Unlike pod eviction, if a container is OOM killed, the kubelet can restart it based on its restartPolicy.Good practicesThe following sections describe good practice for eviction configurati",
+          "have failed to produce a clearly superior allocator . In fact, the best known practices for measuring allocator performance are remarkably simplistic, as are the summary statistics for measured performance. Wilson et al. (1995) provide an excellent review of the state of the art as of a decade ago. Multi-processors were not a signi\ufb01cant issue then, but otherwise the review provides a thorough summary of the issues that face modern allocators. Following are brief mentions of various issues that particularly impact jemalloc, but no attempt is made to discuss all of the issues that must be considered when designing an allocator . Allocator performance is typically measured via some combination of application execution time and average or peak application memory usage. It is not suf\ufb01cient to measure the time consumed by the allocator code in isolation. Memory layout can have a signi\ufb01cant impact on how quickly the rest of the application runs, due to the effects of CPU cache, RAM, and virt",
+          "can and should always be used in addition to the other methods described. The concept of export maps is to tell the linker explicitly which symbols to export from the generated object. Ev- ery symbol can belong to one of two classes: exported or not exported. Symbols can be listed individually, glob- expressions can be used, or the special * catch-all glob expression can be used. The latter only once. The sym- bol map \ufb01le for our example code could look like this: { global: index; local: *; }; This tells the linker that the symbol index is to be ex- ported and all others (matched by *) are local. We could have listed last and next explicitly in the local: list but it is generally advised to always use the catch-all case to mark all not explicitly mentioned symbols as local. This avoids surprises by allowing access only to the sym- bols explicitly mentions. Otherwise there would also be the problem with symbols which are matched neither by the global: nor by the local:, resulting in un"
+        ],
+        "ground_truth": "OOMKilled, memory, limit",
+        "actual_sources": [
+          "concepts__scheduling-eviction__node-pressure-eviction.docx",
+          "A Scalable Concurrent malloc Implementation for FreeBSD (jemalloc).pdf",
+          "How To Write Shared Libraries - v4.1.2 (Drepper, 2001).pdf",
+          "ARIES - A Transaction Recovery Method Supporting Fine-Granularity Locking and Partial Rollbacks Using Write-Ahead Logging (1992).pdf",
+          "incident-response-runbook.html"
+        ],
+        "golden_sources": [
+          "troubleshooting-pods.html"
+        ],
+        "forbidden_keywords": [],
+        "faithfulness": 1,
+        "answer_relevancy": 0.2,
+        "context_precision": 0.3333333333333333,
+        "context_recall": 1
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 0.0,
+        "matched": [],
+        "missed": [
+          "troubleshooting-pods"
+        ]
+      }
+    },
+    {
+      "id": "q-040",
+      "demonstrates_feature": "hybrid",
+      "intent": "rag",
+      "question": "What are the security best practices for using RBAC and service accounts in Kubernetes?",
+      "answer": "The security best practices for using RBAC and service accounts in Kubernetes include:\n\n1. **Least Privilege**: Assign minimal RBAC rights to users and service accounts, granting only the permissions explicitly required for their operation.\n\n2. **Namespace-Level Permissions**: Assign permissions at the namespace level to limit the scope of access.\n\n3. **Review Default Access**: Regularly review and potentially harden the default RBAC rights provided by Kubernetes, especially for the `system:unauthenticated` group.\n\n4. **Avoid Auto-Mounting Tokens**: Disable the default auto-mounting of service account tokens by setting `automountServiceAccountToken: false` unless explicitly needed.\n\n5. **Periodic Review**: Conduct periodic reviews of the RBAC settings to identify and remove redundant entries.\n\nThese practices help ensure that access is appropriately restricted and reduce the risk of privilege escalation and security incidents.",
+      "contexts": [
+        "Concepts \u203a Security \u203a Rbac-Good-Practices Role Based Access Control Good Practices | Kubernetes Role Based Access Control Good PracticesPrinciples and practices for good RBAC design for cluster operators.Kubernetes RBAC is a key security control to ensure that cluster users and workloads have only the access to resources required to execute their roles. It is important to ensure that, when designing permissions for cluster users, the cluster administrator understands the areas where privilege escalation could occur, to reduce the risk of excessive access leading to security incidents.The good practices laid out here should be read in conjunction with the general RBAC documentation.General good practiceLeast privilegeIdeally, minimal RBAC rights should be assigned to users and service accounts. Only permissions explicitly required for their operation should be used. While each cluster will be different, some general rules that can be applied are :Assign permissions at the namespace leve",
+        "alongside untrusted or less-trusted Pods. Pay special attention to situations where less-trustworthy Pods are not meeting the Restricted Pod Security Standard.HardeningKubernetes defaults to providing access which may not be required in every cluster. Reviewing the RBAC rights provided by default can provide opportunities for security hardening. In general, changes should not be made to rights provided to system: accounts some options to harden cluster rights exist:Review bindings for the system:unauthenticated group and remove them where possible, as this gives access to anyone who can contact the API server at a network level.Avoid the default auto-mounting of service account tokens by setting automountServiceAccountToken: false. For more details, see using default service account token. Setting this value for a Pod will overwrite the service account setting, workloads which require service account tokens can still mount them.Periodic reviewIt is vital to periodically review the Kub",
+        "bernetesPod security standardsRuntimeClassesLearn the context:Cloud Native Security and KubernetesGet certified:Certified Kubernetes Security Specialist certification and official training course.Read more in this section:Pod Security StandardsPod Security AdmissionService AccountsPod Security PoliciesSecurity For Linux NodesSecurity For Windows NodesControlling Access to the Kubernetes APIRole Based Access Control Good PracticesGood practices for Kubernetes SecretsMulti-tenancyHardening Guide - Authentication MechanismsHardening Guide - Dynamic Resource AllocationHardening Guide - Scheduler ConfigurationKubernetes API Server Bypass RisksLinux kernel security constraints for Pods and containersSecurity ChecklistApplication Security ChecklistFeedbackWas this page helpful?Yes NoThanks for the feedback. If you have a specific, answerable question about how to use Kubernetes, ask it on Stack Overflow. Open an issue in the GitHub Repository if you want to report a problem or suggest an impr",
+        "Configure Service Accounts for Pods | Kubernetes Configure Service Accounts for PodsKubernetes offers two distinct ways for clients that run within your cluster, or that otherwise have a relationship to your cluster's control plane to authenticate to the API server.A service account provides an identity for processes that run in a Pod, and maps to a ServiceAccount object. When you authenticate to the API server, you identify yourself as a particular user. Kubernetes recognises the concept of a user, however, Kubernetes itself does not have a User API.This task guide is about ServiceAccounts, which do exist in the Kubernetes API. The guide shows you some ways to configure ServiceAccounts for Pods.Before you beginYou need to have a Kubernetes cluster, and the kubectl command-line tool must be configured to communicate with your cluster. It is recommended to run this tutorial on a cluster with at least two nodes that are not acting as control plane hosts. If you do not already have a clus",
+        "ervice account tokens can still mount them.Periodic reviewIt is vital to periodically review the Kubernetes RBAC settings for redundant entries and"
+      ],
+      "ground_truth": "RBAC, service account, least privilege",
+      "actual_sources": [
+        "tasks__configure-pod-container__configure-service-account.txt",
+        "concepts__security__rbac-good-practices.pdf",
+        "concepts__security__overview.txt"
+      ],
+      "golden_sources": [
+        "rbac-good-practices.pdf",
+        "configure-service-account.txt"
+      ],
+      "forbidden_keywords": [],
+      "ragas_metrics": {
+        "id": "q-040",
+        "demonstrates_feature": "hybrid",
+        "intent": "rag",
+        "question": "What are the security best practices for using RBAC and service accounts in Kubernetes?",
+        "answer": "The security best practices for using RBAC and service accounts in Kubernetes include:\n\n1. **Least Privilege**: Assign minimal RBAC rights to users and service accounts, granting only the permissions explicitly required for their operation.\n\n2. **Namespace-Level Permissions**: Assign permissions at the namespace level to limit the scope of access.\n\n3. **Review Default Access**: Regularly review and potentially harden the default RBAC rights provided by Kubernetes, especially for the `system:unauthenticated` group.\n\n4. **Avoid Auto-Mounting Tokens**: Disable the default auto-mounting of service account tokens by setting `automountServiceAccountToken: false` unless explicitly needed.\n\n5. **Periodic Review**: Conduct periodic reviews of the RBAC settings to identify and remove redundant entries.\n\nThese practices help ensure that access is appropriately restricted and reduce the risk of privilege escalation and security incidents.",
+        "contexts": [
+          "Concepts \u203a Security \u203a Rbac-Good-Practices Role Based Access Control Good Practices | Kubernetes Role Based Access Control Good PracticesPrinciples and practices for good RBAC design for cluster operators.Kubernetes RBAC is a key security control to ensure that cluster users and workloads have only the access to resources required to execute their roles. It is important to ensure that, when designing permissions for cluster users, the cluster administrator understands the areas where privilege escalation could occur, to reduce the risk of excessive access leading to security incidents.The good practices laid out here should be read in conjunction with the general RBAC documentation.General good practiceLeast privilegeIdeally, minimal RBAC rights should be assigned to users and service accounts. Only permissions explicitly required for their operation should be used. While each cluster will be different, some general rules that can be applied are :Assign permissions at the namespace leve",
+          "alongside untrusted or less-trusted Pods. Pay special attention to situations where less-trustworthy Pods are not meeting the Restricted Pod Security Standard.HardeningKubernetes defaults to providing access which may not be required in every cluster. Reviewing the RBAC rights provided by default can provide opportunities for security hardening. In general, changes should not be made to rights provided to system: accounts some options to harden cluster rights exist:Review bindings for the system:unauthenticated group and remove them where possible, as this gives access to anyone who can contact the API server at a network level.Avoid the default auto-mounting of service account tokens by setting automountServiceAccountToken: false. For more details, see using default service account token. Setting this value for a Pod will overwrite the service account setting, workloads which require service account tokens can still mount them.Periodic reviewIt is vital to periodically review the Kub",
+          "bernetesPod security standardsRuntimeClassesLearn the context:Cloud Native Security and KubernetesGet certified:Certified Kubernetes Security Specialist certification and official training course.Read more in this section:Pod Security StandardsPod Security AdmissionService AccountsPod Security PoliciesSecurity For Linux NodesSecurity For Windows NodesControlling Access to the Kubernetes APIRole Based Access Control Good PracticesGood practices for Kubernetes SecretsMulti-tenancyHardening Guide - Authentication MechanismsHardening Guide - Dynamic Resource AllocationHardening Guide - Scheduler ConfigurationKubernetes API Server Bypass RisksLinux kernel security constraints for Pods and containersSecurity ChecklistApplication Security ChecklistFeedbackWas this page helpful?Yes NoThanks for the feedback. If you have a specific, answerable question about how to use Kubernetes, ask it on Stack Overflow. Open an issue in the GitHub Repository if you want to report a problem or suggest an impr",
+          "Configure Service Accounts for Pods | Kubernetes Configure Service Accounts for PodsKubernetes offers two distinct ways for clients that run within your cluster, or that otherwise have a relationship to your cluster's control plane to authenticate to the API server.A service account provides an identity for processes that run in a Pod, and maps to a ServiceAccount object. When you authenticate to the API server, you identify yourself as a particular user. Kubernetes recognises the concept of a user, however, Kubernetes itself does not have a User API.This task guide is about ServiceAccounts, which do exist in the Kubernetes API. The guide shows you some ways to configure ServiceAccounts for Pods.Before you beginYou need to have a Kubernetes cluster, and the kubectl command-line tool must be configured to communicate with your cluster. It is recommended to run this tutorial on a cluster with at least two nodes that are not acting as control plane hosts. If you do not already have a clus",
+          "ervice account tokens can still mount them.Periodic reviewIt is vital to periodically review the Kubernetes RBAC settings for redundant entries and"
+        ],
+        "ground_truth": "RBAC, service account, least privilege",
+        "actual_sources": [
+          "tasks__configure-pod-container__configure-service-account.txt",
+          "concepts__security__rbac-good-practices.pdf",
+          "concepts__security__overview.txt"
+        ],
+        "golden_sources": [
+          "rbac-good-practices.pdf",
+          "configure-service-account.txt"
+        ],
+        "forbidden_keywords": [],
+        "faithfulness": 1,
+        "answer_relevancy": 1.0,
+        "context_precision": 1.0,
+        "context_recall": 1
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "account",
+          "configure",
+          "configure-service-account",
+          "good",
+          "practice",
+          "practices",
+          "rbac",
+          "rbac-good-practice",
+          "rbac-good-practices",
+          "service"
+        ],
+        "missed": []
+      }
+    }
+  ],
+  "skipped": [],
+  "aggregate": {
+    "faithfulness": 1,
+    "context_precision": 0.773,
+    "answer_relevancy": 0.911,
+    "context_recall": 1,
+    "forbidden_violations": 0
+  }
+}

@@ -1,0 +1,93 @@
+# Development regression extracted from the consumed sealed-v2 evaluation.
+# These cases are no longer unseen and may be used while fixing v2 findings.
+
+- id: q-303
+  question: "A newly created Pod has no node assigned yet. Which control-plane component makes that placement decision, and which node component later starts its containers?"
+  intent: rag
+  golden_sources: [concepts__overview__components.pdf, concepts__scheduling-eviction__kube-scheduler.pdf]
+  golden_answer: >
+    kube-scheduler watches for unscheduled Pods, evaluates feasible nodes, and records the selected
+    node through binding. On that node, kubelet observes the assigned Pod specification and works
+    with the container runtime to start and maintain the containers.
+  golden_answer_keywords: [kube-scheduler, binding, kubelet, container runtime]
+  demonstrates_feature: baseline
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  notes: "[sealed-v2-finding] Scheduler and kubelet source-completeness regression."
+
+- id: q-304
+  question: "Two teams use different namespaces. Which boundaries do namespaces provide, and why should they not be described as a complete security boundary by themselves?"
+  intent: rag
+  golden_sources: [tasks__administer-cluster__namespaces-walkthrough.pdf, concepts__security__rbac-good-practices.pdf]
+  golden_answer: >
+    Namespaces provide a scope for names and a subsection of the cluster to which authorization and
+    policy can be attached. They help teams share a cluster, but the namespace alone is not the
+    authorization policy: apply namespace-scoped, least-privilege RBAC such as RoleBindings and avoid
+    unnecessary cluster-wide permissions.
+  golden_answer_keywords: [namespace, RBAC, quota, security boundary]
+  demonstrates_feature: crag
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  notes: "[sealed-v2-finding] Namespace boundary and multi-source completeness regression."
+
+- id: q-308
+  question: "At cluster level, how do the Privileged, Baseline, and Restricted Pod Security Standards differ in intent?"
+  intent: rag
+  golden_sources: [tutorials__security__cluster-level-pss.pdf]
+  golden_answer: >
+    Privileged permits workloads that would warn under stricter standards. Baseline is a middle
+    ground that prevents known privilege escalations while limiting exemptions. Restricted is a
+    stricter choice for a stronger cluster risk posture and can reveal additional workload violations.
+  golden_answer_keywords: [Privileged, Baseline, Restricted, privilege escalation]
+  demonstrates_feature: rerank
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  notes: "[sealed-v2-finding] Pod Security Standards faithfulness regression."
+
+- id: q-309
+  question: "Why should an application Pod use a dedicated ServiceAccount, and how are modern short-lived API credentials delivered differently from long-lived Secret tokens?"
+  intent: rag
+  golden_sources: [tasks__configure-pod-container__configure-service-account.txt, concepts__security__rbac-good-practices.pdf]
+  golden_answer: >
+    A dedicated ServiceAccount gives the workload an explicit identity for narrowly scoped RBAC.
+    Modern clusters use TokenRequest and projected service-account token volumes for bounded,
+    rotating credentials instead of defaulting to long-lived token Secrets.
+  golden_answer_keywords: [ServiceAccount, RBAC, TokenRequest, projected token]
+  demonstrates_feature: hybrid
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  notes: "[sealed-v2-finding] Workload identity precision and faithfulness regression."
+
+- id: q-314
+  question: "A Pod remains Pending. Give an evidence-first kubectl investigation sequence that distinguishes scheduling events from container startup logs."
+  intent: rag
+  golden_sources: [reference__kubectl__cheatsheet.txt, concepts__scheduling-eviction__kube-scheduler.pdf]
+  golden_answer: >
+    Confirm status with kubectl get, then describe the Pod and inspect events for FailedScheduling
+    and unmet constraints. Inspect relevant nodes and cluster events next. Container logs are not
+    primary evidence when the Pod has never been scheduled or started.
+  golden_answer_keywords: [kubectl get, kubectl describe, events, FailedScheduling]
+  demonstrates_feature: sparse
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  notes: "[sealed-v2-finding] Pending-Pod source selection and completeness regression."
+
+- id: q-315
+  question: "Can you make it private?"
+  intent: clarification
+  golden_sources: []
+  golden_answer: >
+    Ask what resource or traffic path should become private, who should retain access, which
+    environment is affected, and whether the user wants guidance or an authorized change.
+  golden_answer_keywords: [what resource, access, environment, authorized change]
+  demonstrates_feature: clarification
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: clarification
+  forbidden_sources: [.pdf, "http://", "https://"]
+  notes: "[sealed-v2-finding] Ambiguous request must not retrieve noisy ClearCase evidence."

@@ -1,0 +1,296 @@
+{
+  "profile": "all",
+  "flags": {
+    "search_mode": "hybrid",
+    "enable_hyde": true,
+    "enable_rerank": true,
+    "enable_crag": true,
+    "enable_self_reflective": true,
+    "top_k": 5
+  },
+  "timestamp_utc": "2026-07-11T22:45:42.493767Z",
+  "filter": null,
+  "mode": "http",
+  "scorer": "llm",
+  "preflight": null,
+  "provenance": {
+    "git_commit": "fa69186a74a659f9b00454f7e13f545e5bcecba8",
+    "environment": "final-local-docker-llm",
+    "collection": "new_adv_rag_documents",
+    "true_documents": 50,
+    "noisy_documents": 324,
+    "total_points": null,
+    "unique_sources": null,
+    "embedding_model": "text-embedding-3-small",
+    "answer_model": "gpt-4o",
+    "grader_model": "gpt-4o-mini",
+    "ci_run_id": null
+  },
+  "rows": [
+    {
+      "id": "q-047",
+      "demonstrates_feature": "hybrid",
+      "intent": "rag",
+      "question": "Compare liveness, readiness, and startup probes and explain when each runs.",
+      "answer": "Liveness, readiness, and startup probes are mechanisms in Kubernetes used to monitor and manage the state of containers within a Pod. \n\n- **Liveness Probes**: These are used to determine if a container is still running. If a liveness probe fails, Kubernetes will restart the container. This is useful for applications that might get stuck in a broken state and need a restart to recover. Liveness probes run throughout the lifecycle of the container.\n\n- **Readiness Probes**: These determine if a container is ready to start accepting traffic. If a readiness probe fails, the Pod is marked as not ready, and it will not receive traffic from Kubernetes Services. Readiness probes run throughout the lifecycle of the container, similar to liveness probes, but they do not cause a container restart if they fail.\n\n- **Startup Probes**: These are used to determine if an application within a container has started successfully. They are useful for applications that take a long time to start. Startup probes run at the beginning of a container's lifecycle and can delay the execution of liveness and readiness probes until the startup probe succeeds.\n\nEach type of probe serves a distinct purpose and can be configured independently to ensure that applications are running as expected and are available to serve traffic when they are ready.",
+      "contexts": [
+        "[Evidence source: tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx]\ncases, you don't want to kill the application, but you don't want to send it requests either. Kubernetes provides readiness probes to detect and mitigate these situations. A pod with containers reporting that they are not ready does not receive traffic through Kubernetes Services.Note:Readiness probes run on the container during its whole lifecycle.Caution:The readiness and liveness probes do not depend on each other to succeed. If you want to wait before executing a readiness probe, you should use initialDelaySeconds or a startupProbe.Readiness probes are configured similarly to liveness probes. The only difference is that you use the readinessProbe field instead of the livenessProbe field.readinessProbe: exec: command: - cat - /tmp/healthy initialDelaySeconds: 5 periodSeconds: 5 Configuration for HTTP and TCP readiness probes also remains identical to liveness probes.Readiness and liveness probes can be used in parallel for the same container. Using both can ensure that traffic does",
+        "[Evidence source: tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx]\nTasks \u203a Configure-Pod-Container \u203a Configure-Liveness-Readiness-Startup-Probes Configure Liveness, Readiness and Startup Probes | Kubernetes Configure Liveness, Readiness and Startup ProbesThis page shows how to configure liveness, readiness and startup probes for containers.For more information about probes, see Liveness, Readiness and Startup Probes.Before you beginYou need to have a Kubernetes cluster, and the kubectl command-line tool must be configured to communicate with your cluster. It is recommended to run this tutorial on a cluster with at least two nodes that are not acting as control plane hosts. If you do not already have a cluster, you can create one by using minikube or you can use one of these Kubernetes playgrounds:iximiuz LabsKillercodaKodeKloudDefine a liveness commandMany applications running for long periods of time eventually transition to broken states, and cannot recover except by being restarted. Kubernetes provides liveness probes to detect and remedy such situ",
+        "[Evidence source: tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx]\no/goproxy:0.1 ports: - containerPort: 8080 readinessProbe: tcpSocket: port: 8080 initialDelaySeconds: 15 periodSeconds: 10 livenessProbe: tcpSocket: port: 8080 initialDelaySeconds: 15 periodSeconds: 10 As you can see, configuration for a TCP check is quite similar to an HTTP check. This example uses both readiness and liveness probes. The kubelet will run the first liveness probe 15 seconds after the container starts. This will attempt to connect to the goproxy container on port 8080. If the liveness probe fails, the container will be restarted. The kubelet will continue to run this check every 10 seconds.In addition to the liveness probe, this configuration includes a readiness probe. The kubelet will run the first readiness probe 15 seconds after the container starts. Similar to the liveness probe, this will attempt to connect to the goproxy container on port 8080. If the probe succeeds, the Pod will be marked as ready and will receive traffic from services. If the readiness probe fa",
+        "[Evidence source: tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx]\ns, the Pod will be marked as ready and will receive traffic from services. If the readiness probe fails, the pod will be marked unready and will not receive traffic from any services.To try the TCP liveness check, create a Pod:kubectl apply -f https://k8s.io/examples/pods/probe/tcp-liveness-readiness.yaml After 15 seconds, view Pod events to verify that liveness probes:kubectl describe pod goproxy Define a gRPC liveness probeFEATURE STATE: Kubernetes v1.27 [stable]If your application implements the gRPC Health Checking Protocol, this example shows how to configure Kubernetes to use it for application liveness checks. Similarly you can configure readiness and startup probes.Here is an example manifest:pods/probe/grpc-liveness.yaml apiVersion: v1 kind: Pod metadata: name: etcd-with-grpc spec: containers: - name: etcd image: registry.k8s.io/etcd:3.5.1-0 command: [ \"/usr/local/bin/etcd\", \"--data-dir\", \"/var/lib/etcd\", \"--listen-client-urls\", \"http://0.0.0.0:2379\", \"--advertise-client-urls\""
+      ],
+      "ground_truth": "liveness, readiness, startup",
+      "actual_sources": [
+        "tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx"
+      ],
+      "golden_sources": [
+        "tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx"
+      ],
+      "forbidden_keywords": [],
+      "forbidden_sources": [],
+      "expected_route": "rag",
+      "actual_route": "rag",
+      "ragas_metrics": {
+        "id": "q-047",
+        "demonstrates_feature": "hybrid",
+        "intent": "rag",
+        "question": "Compare liveness, readiness, and startup probes and explain when each runs.",
+        "answer": "Liveness, readiness, and startup probes are mechanisms in Kubernetes used to monitor and manage the state of containers within a Pod. \n\n- **Liveness Probes**: These are used to determine if a container is still running. If a liveness probe fails, Kubernetes will restart the container. This is useful for applications that might get stuck in a broken state and need a restart to recover. Liveness probes run throughout the lifecycle of the container.\n\n- **Readiness Probes**: These determine if a container is ready to start accepting traffic. If a readiness probe fails, the Pod is marked as not ready, and it will not receive traffic from Kubernetes Services. Readiness probes run throughout the lifecycle of the container, similar to liveness probes, but they do not cause a container restart if they fail.\n\n- **Startup Probes**: These are used to determine if an application within a container has started successfully. They are useful for applications that take a long time to start. Startup probes run at the beginning of a container's lifecycle and can delay the execution of liveness and readiness probes until the startup probe succeeds.\n\nEach type of probe serves a distinct purpose and can be configured independently to ensure that applications are running as expected and are available to serve traffic when they are ready.",
+        "contexts": [
+          "[Evidence source: tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx]\ncases, you don't want to kill the application, but you don't want to send it requests either. Kubernetes provides readiness probes to detect and mitigate these situations. A pod with containers reporting that they are not ready does not receive traffic through Kubernetes Services.Note:Readiness probes run on the container during its whole lifecycle.Caution:The readiness and liveness probes do not depend on each other to succeed. If you want to wait before executing a readiness probe, you should use initialDelaySeconds or a startupProbe.Readiness probes are configured similarly to liveness probes. The only difference is that you use the readinessProbe field instead of the livenessProbe field.readinessProbe: exec: command: - cat - /tmp/healthy initialDelaySeconds: 5 periodSeconds: 5 Configuration for HTTP and TCP readiness probes also remains identical to liveness probes.Readiness and liveness probes can be used in parallel for the same container. Using both can ensure that traffic does",
+          "[Evidence source: tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx]\nTasks \u203a Configure-Pod-Container \u203a Configure-Liveness-Readiness-Startup-Probes Configure Liveness, Readiness and Startup Probes | Kubernetes Configure Liveness, Readiness and Startup ProbesThis page shows how to configure liveness, readiness and startup probes for containers.For more information about probes, see Liveness, Readiness and Startup Probes.Before you beginYou need to have a Kubernetes cluster, and the kubectl command-line tool must be configured to communicate with your cluster. It is recommended to run this tutorial on a cluster with at least two nodes that are not acting as control plane hosts. If you do not already have a cluster, you can create one by using minikube or you can use one of these Kubernetes playgrounds:iximiuz LabsKillercodaKodeKloudDefine a liveness commandMany applications running for long periods of time eventually transition to broken states, and cannot recover except by being restarted. Kubernetes provides liveness probes to detect and remedy such situ",
+          "[Evidence source: tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx]\no/goproxy:0.1 ports: - containerPort: 8080 readinessProbe: tcpSocket: port: 8080 initialDelaySeconds: 15 periodSeconds: 10 livenessProbe: tcpSocket: port: 8080 initialDelaySeconds: 15 periodSeconds: 10 As you can see, configuration for a TCP check is quite similar to an HTTP check. This example uses both readiness and liveness probes. The kubelet will run the first liveness probe 15 seconds after the container starts. This will attempt to connect to the goproxy container on port 8080. If the liveness probe fails, the container will be restarted. The kubelet will continue to run this check every 10 seconds.In addition to the liveness probe, this configuration includes a readiness probe. The kubelet will run the first readiness probe 15 seconds after the container starts. Similar to the liveness probe, this will attempt to connect to the goproxy container on port 8080. If the probe succeeds, the Pod will be marked as ready and will receive traffic from services. If the readiness probe fa",
+          "[Evidence source: tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx]\ns, the Pod will be marked as ready and will receive traffic from services. If the readiness probe fails, the pod will be marked unready and will not receive traffic from any services.To try the TCP liveness check, create a Pod:kubectl apply -f https://k8s.io/examples/pods/probe/tcp-liveness-readiness.yaml After 15 seconds, view Pod events to verify that liveness probes:kubectl describe pod goproxy Define a gRPC liveness probeFEATURE STATE: Kubernetes v1.27 [stable]If your application implements the gRPC Health Checking Protocol, this example shows how to configure Kubernetes to use it for application liveness checks. Similarly you can configure readiness and startup probes.Here is an example manifest:pods/probe/grpc-liveness.yaml apiVersion: v1 kind: Pod metadata: name: etcd-with-grpc spec: containers: - name: etcd image: registry.k8s.io/etcd:3.5.1-0 command: [ \"/usr/local/bin/etcd\", \"--data-dir\", \"/var/lib/etcd\", \"--listen-client-urls\", \"http://0.0.0.0:2379\", \"--advertise-client-urls\""
+        ],
+        "ground_truth": "liveness, readiness, startup",
+        "actual_sources": [
+          "tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx"
+        ],
+        "golden_sources": [
+          "tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx"
+        ],
+        "forbidden_keywords": [],
+        "forbidden_sources": [],
+        "expected_route": "rag",
+        "actual_route": "rag",
+        "faithfulness": 1,
+        "answer_relevancy": 1.0,
+        "context_precision": 1.0,
+        "context_recall": 1,
+        "scoring_backend": "llm"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "configure",
+          "configure-liveness-readiness-startup-probe",
+          "configure-liveness-readiness-startup-probes",
+          "configure-pod-container",
+          "container",
+          "livenes",
+          "liveness",
+          "pod",
+          "probe",
+          "probes",
+          "readines",
+          "readiness",
+          "startup",
+          "task",
+          "tasks",
+          "tasks__configure-pod-container__configure-liveness-readiness-startup-probe",
+          "tasks__configure-pod-container__configure-liveness-readiness-startup-probes"
+        ],
+        "missed": []
+      },
+      "source_precision": 1.0,
+      "forbidden_source_check": {
+        "passed": true,
+        "hits": []
+      },
+      "route_check": {
+        "passed": true,
+        "expected": "rag",
+        "actual": "rag"
+      }
+    },
+    {
+      "id": "q-048",
+      "demonstrates_feature": "hybrid",
+      "intent": "rag",
+      "question": "When should I use a ConfigMap instead of a Secret for Pod configuration?",
+      "answer": "You should use a ConfigMap instead of a Secret when the data you are storing is non-confidential. ConfigMaps are designed to store configuration data in key-value pairs that do not require secrecy or encryption. They are useful for decoupling environment-specific configuration from your container images, making your applications more portable. If the data is sensitive, such as passwords or tokens, you should use a Secret instead, as Secrets are intended to hold confidential data.",
+      "contexts": [
+        "[Evidence source: concepts__configuration__configmap.html]\ne two key-value pairs from the ConfigMap have been set as environment variables:kubectl apply -f env-configmap.yaml kubectl logs pod/env-configmap The output is similar to this:... username: \"k8s-admin\" access_level: \"1\" ... Sometimes a Pod won't require access to all the values in a ConfigMap. For example, you could have another Pod which only uses the username value from the ConfigMap. For this use case, you can use the env.valueFrom syntax instead, which lets you select individual keys in a ConfigMap. The name of the environment variable can also be different from the key within the ConfigMap. For example:apiVersion: v1 kind: Pod metadata: name: env-configmap spec: containers: - name: envars-test-container image: nginx env: - name: CONFIGMAP_USERNAME valueFrom: configMapKeyRef: name: myconfigmap key: username In the Pod created from this manifest, you will see that the environment variable CONFIGMAP_USERNAME is set to the value of the username value from the ConfigMap. Other keys fr",
+        "[Evidence source: concepts__configuration__configmap.html]\nConcepts \u203a Configuration \u203a Configmap Concepts \u203a Configuration \u203a Configmap ConfigMaps | Kubernetes ConfigMapsA ConfigMap is an API object used to store non-confidential data in key-value pairs. Pods can consume ConfigMaps as environment variables, command-line arguments, or as configuration files in a volume.A ConfigMap allows you to decouple environment-specific configuration from your container images, so that your applications are easily portable.Caution:ConfigMap does not provide secrecy or encryption. If the data you want to store are confidential, use a Secret rather than a ConfigMap, or use additional (third party) tools to keep your data private.MotivationUse a ConfigMap for setting configuration data separately from application code.For example, imagine that you are developing an application that you can run on your own computer (for development) and in the cloud (to handle real traffic). You write the code to look in an environment variable named DATABASE_HOST. Locally, you se",
+        "[Evidence source: concepts__configuration__secret.txt]\nSecrets | Kubernetes SecretsA Secret is an object that contains a small amount of sensitive data such as a password, a token, or a key. Such information might otherwise be put in a Pod specification or in a container image. Using a Secret means that you don't need to include confidential data in your application code.Because Secrets can be created independently of the Pods that use them, there is less risk of the Secret (and its data) being exposed during the workflow of creating, viewing, and editing Pods. Kubernetes, and applications that run in your cluster, can also take additional precautions with Secrets, such as avoiding writing sensitive data to nonvolatile storage.Secrets are similar to ConfigMaps but are specifically intended to hold confidential data.Caution:Kubernetes Secrets are, by default, stored unencrypted in the API server's underlying data store (etcd). Anyone with API access can retrieve or modify a Secret, and so can anyone with access to etcd. Additionally, anyone",
+        "[Evidence source: tasks__configure-pod-container__configure-pod-configmap.html]\nurce stores configuration data as key-value pairs. The data can be consumed in pods or provide the configurations for system components such as controllers. ConfigMap is similar to Secrets, but provides a means of working with strings that don't contain sensitive information. Users and system components alike can store configuration data in ConfigMap.Note:ConfigMaps should reference properties files, not replace them. Think of the ConfigMap as representing something similar to the Linux /etc directory and its contents. For example, if you create a Kubernetes Volume from a ConfigMap, each data item in the ConfigMap is represented by an individual file in the volume.The ConfigMap's data field contains the configuration data. As shown in the example below, this can be simple (like individual properties defined using --from-literal) or complex (like configuration files or JSON blobs defined using --from-file).apiVersion: v1 kind: ConfigMap metadata: creationTimestamp: 2016-02-18T19:14:38Z"
+      ],
+      "ground_truth": "ConfigMap, Secret, confidential",
+      "actual_sources": [
+        "concepts__configuration__configmap.html",
+        "concepts__configuration__secret.txt",
+        "tasks__configure-pod-container__configure-pod-configmap.html"
+      ],
+      "golden_sources": [
+        "concepts__configuration__configmap.html",
+        "concepts__configuration__secret.txt"
+      ],
+      "forbidden_keywords": [],
+      "forbidden_sources": [],
+      "expected_route": "rag",
+      "actual_route": "rag",
+      "ragas_metrics": {
+        "id": "q-048",
+        "demonstrates_feature": "hybrid",
+        "intent": "rag",
+        "question": "When should I use a ConfigMap instead of a Secret for Pod configuration?",
+        "answer": "You should use a ConfigMap instead of a Secret when the data you are storing is non-confidential. ConfigMaps are designed to store configuration data in key-value pairs that do not require secrecy or encryption. They are useful for decoupling environment-specific configuration from your container images, making your applications more portable. If the data is sensitive, such as passwords or tokens, you should use a Secret instead, as Secrets are intended to hold confidential data.",
+        "contexts": [
+          "[Evidence source: concepts__configuration__configmap.html]\ne two key-value pairs from the ConfigMap have been set as environment variables:kubectl apply -f env-configmap.yaml kubectl logs pod/env-configmap The output is similar to this:... username: \"k8s-admin\" access_level: \"1\" ... Sometimes a Pod won't require access to all the values in a ConfigMap. For example, you could have another Pod which only uses the username value from the ConfigMap. For this use case, you can use the env.valueFrom syntax instead, which lets you select individual keys in a ConfigMap. The name of the environment variable can also be different from the key within the ConfigMap. For example:apiVersion: v1 kind: Pod metadata: name: env-configmap spec: containers: - name: envars-test-container image: nginx env: - name: CONFIGMAP_USERNAME valueFrom: configMapKeyRef: name: myconfigmap key: username In the Pod created from this manifest, you will see that the environment variable CONFIGMAP_USERNAME is set to the value of the username value from the ConfigMap. Other keys fr",
+          "[Evidence source: concepts__configuration__configmap.html]\nConcepts \u203a Configuration \u203a Configmap Concepts \u203a Configuration \u203a Configmap ConfigMaps | Kubernetes ConfigMapsA ConfigMap is an API object used to store non-confidential data in key-value pairs. Pods can consume ConfigMaps as environment variables, command-line arguments, or as configuration files in a volume.A ConfigMap allows you to decouple environment-specific configuration from your container images, so that your applications are easily portable.Caution:ConfigMap does not provide secrecy or encryption. If the data you want to store are confidential, use a Secret rather than a ConfigMap, or use additional (third party) tools to keep your data private.MotivationUse a ConfigMap for setting configuration data separately from application code.For example, imagine that you are developing an application that you can run on your own computer (for development) and in the cloud (to handle real traffic). You write the code to look in an environment variable named DATABASE_HOST. Locally, you se",
+          "[Evidence source: concepts__configuration__secret.txt]\nSecrets | Kubernetes SecretsA Secret is an object that contains a small amount of sensitive data such as a password, a token, or a key. Such information might otherwise be put in a Pod specification or in a container image. Using a Secret means that you don't need to include confidential data in your application code.Because Secrets can be created independently of the Pods that use them, there is less risk of the Secret (and its data) being exposed during the workflow of creating, viewing, and editing Pods. Kubernetes, and applications that run in your cluster, can also take additional precautions with Secrets, such as avoiding writing sensitive data to nonvolatile storage.Secrets are similar to ConfigMaps but are specifically intended to hold confidential data.Caution:Kubernetes Secrets are, by default, stored unencrypted in the API server's underlying data store (etcd). Anyone with API access can retrieve or modify a Secret, and so can anyone with access to etcd. Additionally, anyone",
+          "[Evidence source: tasks__configure-pod-container__configure-pod-configmap.html]\nurce stores configuration data as key-value pairs. The data can be consumed in pods or provide the configurations for system components such as controllers. ConfigMap is similar to Secrets, but provides a means of working with strings that don't contain sensitive information. Users and system components alike can store configuration data in ConfigMap.Note:ConfigMaps should reference properties files, not replace them. Think of the ConfigMap as representing something similar to the Linux /etc directory and its contents. For example, if you create a Kubernetes Volume from a ConfigMap, each data item in the ConfigMap is represented by an individual file in the volume.The ConfigMap's data field contains the configuration data. As shown in the example below, this can be simple (like individual properties defined using --from-literal) or complex (like configuration files or JSON blobs defined using --from-file).apiVersion: v1 kind: ConfigMap metadata: creationTimestamp: 2016-02-18T19:14:38Z"
+        ],
+        "ground_truth": "ConfigMap, Secret, confidential",
+        "actual_sources": [
+          "concepts__configuration__configmap.html",
+          "concepts__configuration__secret.txt",
+          "tasks__configure-pod-container__configure-pod-configmap.html"
+        ],
+        "golden_sources": [
+          "concepts__configuration__configmap.html",
+          "concepts__configuration__secret.txt"
+        ],
+        "forbidden_keywords": [],
+        "forbidden_sources": [],
+        "expected_route": "rag",
+        "actual_route": "rag",
+        "faithfulness": 1,
+        "answer_relevancy": 1.0,
+        "context_precision": 1.0,
+        "context_recall": 1,
+        "scoring_backend": "llm"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "concept",
+          "concepts",
+          "concepts__configuration__configmap",
+          "configmap",
+          "configuration"
+        ],
+        "missed": []
+      },
+      "source_precision": 1.0,
+      "forbidden_source_check": {
+        "passed": true,
+        "hits": []
+      },
+      "route_check": {
+        "passed": true,
+        "expected": "rag",
+        "actual": "rag"
+      }
+    },
+    {
+      "id": "q-049",
+      "demonstrates_feature": "hybrid",
+      "intent": "rag",
+      "question": "Why are StatefulSets suitable for databases that need stable identity and persistent storage?",
+      "answer": "StatefulSets are suitable for databases that need stable identity and persistent storage because they provide stable, unique network identifiers and persistent storage for each Pod. This is crucial for databases that require consistent access to the same storage volumes and network identities across Pod rescheduling. StatefulSets ensure that each Pod maintains a sticky identity, which helps in matching existing volumes to new Pods that replace any failed ones, thus maintaining data consistency and availability.",
+      "contexts": [
+        "[Evidence source: concepts__workloads__controllers__statefulset.docx]\nConcepts \u203a Workloads \u203a Controllers \u203a Statefulset StatefulSets | Kubernetes StatefulSetsA StatefulSet runs a group of Pods, and maintains a sticky identity for each of those Pods. This is useful for managing applications that need persistent storage or a stable, unique network identity.StatefulSet is the workload API object used to manage stateful applications.Manages the deployment and scaling of a set of Pods, and provides guarantees about the ordering and uniqueness of these Pods.Like a Deployment, a StatefulSet manages Pods that are based on an identical container spec. Unlike a Deployment, a StatefulSet maintains a sticky identity for each of its Pods. These pods are created from the same spec, but are not interchangeable: each has a persistent identifier that it maintains across any rescheduling.If you want to use storage volumes to provide persistence for your workload, you can use a StatefulSet as part of the solution. Although individual Pods in a StatefulSet are susceptible to",
+        "[Evidence source: concepts__workloads__controllers__statefulset.docx]\na StatefulSet as part of the solution. Although individual Pods in a StatefulSet are susceptible to failure, the persistent Pod identifiers make it easier to match existing volumes to the new Pods that replace any that have failed.Using StatefulSetsStatefulSets are valuable for applications that require one or more of the following:Stable, unique network identifiers.Stable, persistent storage.Ordered, graceful deployment and scaling.Ordered, automated rolling updates.In the above, stable is synonymous with persistence across Pod (re)scheduling. If an application doesn't require any stable identifiers or ordered deployment, deletion, or scaling, you should deploy your application using a workload object that provides a set of stateless replicas. Deployment or ReplicaSet may be better suited to your stateless needs.LimitationsThe storage for a given Pod must either be provisioned by a PersistentVolume Provisioner based on the requested storage class, or pre-provisioned by an admin.Delet"
+      ],
+      "ground_truth": "StatefulSet, persistent, identity",
+      "actual_sources": [
+        "concepts__workloads__controllers__statefulset.docx"
+      ],
+      "golden_sources": [
+        "concepts__workloads__controllers__statefulset.docx",
+        "concepts__storage__persistent-volumes.pdf"
+      ],
+      "forbidden_keywords": [],
+      "forbidden_sources": [],
+      "expected_route": "rag",
+      "actual_route": "rag",
+      "ragas_metrics": {
+        "id": "q-049",
+        "demonstrates_feature": "hybrid",
+        "intent": "rag",
+        "question": "Why are StatefulSets suitable for databases that need stable identity and persistent storage?",
+        "answer": "StatefulSets are suitable for databases that need stable identity and persistent storage because they provide stable, unique network identifiers and persistent storage for each Pod. This is crucial for databases that require consistent access to the same storage volumes and network identities across Pod rescheduling. StatefulSets ensure that each Pod maintains a sticky identity, which helps in matching existing volumes to new Pods that replace any failed ones, thus maintaining data consistency and availability.",
+        "contexts": [
+          "[Evidence source: concepts__workloads__controllers__statefulset.docx]\nConcepts \u203a Workloads \u203a Controllers \u203a Statefulset StatefulSets | Kubernetes StatefulSetsA StatefulSet runs a group of Pods, and maintains a sticky identity for each of those Pods. This is useful for managing applications that need persistent storage or a stable, unique network identity.StatefulSet is the workload API object used to manage stateful applications.Manages the deployment and scaling of a set of Pods, and provides guarantees about the ordering and uniqueness of these Pods.Like a Deployment, a StatefulSet manages Pods that are based on an identical container spec. Unlike a Deployment, a StatefulSet maintains a sticky identity for each of its Pods. These pods are created from the same spec, but are not interchangeable: each has a persistent identifier that it maintains across any rescheduling.If you want to use storage volumes to provide persistence for your workload, you can use a StatefulSet as part of the solution. Although individual Pods in a StatefulSet are susceptible to",
+          "[Evidence source: concepts__workloads__controllers__statefulset.docx]\na StatefulSet as part of the solution. Although individual Pods in a StatefulSet are susceptible to failure, the persistent Pod identifiers make it easier to match existing volumes to the new Pods that replace any that have failed.Using StatefulSetsStatefulSets are valuable for applications that require one or more of the following:Stable, unique network identifiers.Stable, persistent storage.Ordered, graceful deployment and scaling.Ordered, automated rolling updates.In the above, stable is synonymous with persistence across Pod (re)scheduling. If an application doesn't require any stable identifiers or ordered deployment, deletion, or scaling, you should deploy your application using a workload object that provides a set of stateless replicas. Deployment or ReplicaSet may be better suited to your stateless needs.LimitationsThe storage for a given Pod must either be provisioned by a PersistentVolume Provisioner based on the requested storage class, or pre-provisioned by an admin.Delet"
+        ],
+        "ground_truth": "StatefulSet, persistent, identity",
+        "actual_sources": [
+          "concepts__workloads__controllers__statefulset.docx"
+        ],
+        "golden_sources": [
+          "concepts__workloads__controllers__statefulset.docx",
+          "concepts__storage__persistent-volumes.pdf"
+        ],
+        "forbidden_keywords": [],
+        "forbidden_sources": [],
+        "expected_route": "rag",
+        "actual_route": "rag",
+        "faithfulness": 1,
+        "answer_relevancy": 1.0,
+        "context_precision": 1.0,
+        "context_recall": 1,
+        "scoring_backend": "llm"
+      },
+      "forbidden_check": {
+        "passed": true,
+        "hits": []
+      },
+      "source_overlap": {
+        "overlap_pct": 1.0,
+        "matched": [
+          "concept",
+          "concepts",
+          "concepts__workloads__controllers__statefulset",
+          "controller",
+          "controllers",
+          "statefulset",
+          "workload",
+          "workloads"
+        ],
+        "missed": []
+      },
+      "source_precision": 1.0,
+      "forbidden_source_check": {
+        "passed": true,
+        "hits": []
+      },
+      "route_check": {
+        "passed": true,
+        "expected": "rag",
+        "actual": "rag"
+      }
+    }
+  ],
+  "skipped": [],
+  "aggregate": {
+    "context_precision": 1.0,
+    "answer_relevancy": 1.0,
+    "context_recall": 1,
+    "faithfulness": 1,
+    "forbidden_violations": 0,
+    "source_precision": 1.0,
+    "forbidden_source_violations": 0,
+    "route_violations": 0
+  },
+  "threshold_failures": {}
+}
