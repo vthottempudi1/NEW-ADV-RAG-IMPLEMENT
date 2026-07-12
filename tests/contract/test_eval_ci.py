@@ -1,4 +1,5 @@
 import hashlib
+import json
 from collections import Counter
 from pathlib import Path
 from types import SimpleNamespace
@@ -77,7 +78,7 @@ def test_heuristic_ragas_scoring_returns_metric_keys():
     ))
 
 
-# Learner note: Verifies every retrieval family has exactly three new hardening questions with valid local sources.
+# Learner note: Verifies every retrieval family has exactly three hardening questions whose sources exist in the tracked corpus manifest.
 def test_retrieval_hardening_questions_cover_three_per_family():
     """Verify that retrieval hardening questions cover three per family.
 
@@ -102,7 +103,10 @@ def test_retrieval_hardening_questions_cover_three_per_family():
         "self_rag": 3,
     }
 
-    corpus_names = {path.name for path in Path("seed/docs/true_data").iterdir()}
+    manifest = json.loads(
+        Path("seed/manifests/aws_successful_corpus.json").read_text(encoding="utf-8")
+    )
+    corpus_names = set(manifest["resolved"])
     for golden in hardening:
         for source in golden.golden_sources:
             if source != "tavily_web":
