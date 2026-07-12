@@ -1,0 +1,185 @@
+# Sealed v4 holdout. Created after sealed-v3 findings and before their development fixes are evaluated.
+# Do not execute or edit during development.
+
+- id: q-501
+  question: "A Deployment rollout is paused after the new ReplicaSet appears. What work stops while paused, and what can an operator still change before resuming?"
+  intent: rag
+  golden_sources: [concepts__workloads__controllers__deployment.txt]
+  golden_answer: >
+    Pausing stops the Deployment controller from progressing the rollout into additional revisions
+    while changes are accumulated. The operator can update the Pod template or related Deployment
+    settings, then resume so the controller rolls the collected changes forward as one revision.
+  golden_answer_keywords: [Deployment, paused, Pod template, resume]
+  demonstrates_feature: dense
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  notes: "[sealed-v4] Paused rollout lifecycle."
+
+- id: q-502
+  question: "A labeled node joins a cluster and matches an existing DaemonSet. What reconciliation behavior should occur without manually creating a Pod?"
+  intent: rag
+  golden_sources: [concepts__workloads__controllers__daemonset.html]
+  golden_answer: >
+    The DaemonSet controller continuously evaluates eligible nodes. When the new node matches the
+    DaemonSet placement constraints, the controller creates the corresponding Pod for that node; if
+    eligibility later changes, it reconciles the node-level Pod accordingly.
+  golden_answer_keywords: [DaemonSet, eligible node, controller, Pod]
+  demonstrates_feature: hyde
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  notes: "[sealed-v4] Controller reconciliation on node arrival."
+
+- id: q-503
+  question: "For a Job with several completions and parallel workers, distinguish desired completions from parallelism."
+  intent: rag
+  golden_sources: [concepts__workloads__controllers__job.pdf]
+  golden_answer: >
+    Completions specifies how many successful Pod completions the Job requires. Parallelism limits
+    how many Pods may run concurrently toward that goal. Increasing parallelism changes concurrency,
+    not the total successful work required for completion.
+  golden_answer_keywords: [Job, completions, parallelism, successful]
+  demonstrates_feature: sparse
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  notes: "[sealed-v4] Batch completion versus concurrency semantics."
+
+- id: q-504
+  question: "A container reads configuration from environment variables populated by a ConfigMap. Why does editing the ConfigMap not update that running process?"
+  intent: rag
+  golden_sources: [concepts__configuration__configmap.html, tasks__configure-pod-container__configure-pod-configmap.html]
+  golden_answer: >
+    Environment variables are established when the container starts and are not dynamically
+    rewritten when the ConfigMap changes. The workload must replace or restart Pods to create new
+    containers with the updated environment, unlike projected volume data that is refreshed eventually.
+  golden_answer_keywords: [environment variables, container starts, restart, projected volume]
+  demonstrates_feature: hybrid
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  notes: "[sealed-v4] Runtime environment snapshot behavior."
+
+- id: q-505
+  question: "A namespace LimitRange defines minimum and maximum container memory. What happens when a new container requests memory outside those bounds?"
+  intent: rag
+  golden_sources: [concepts__policy__limit-range.html]
+  golden_answer: >
+    LimitRange admission evaluates the container resource request against the namespace constraints.
+    A request below the minimum or above the maximum is rejected rather than admitted with an
+    out-of-policy value; defaults apply only when the relevant values are omitted.
+  golden_answer_keywords: [LimitRange, admission, minimum, rejected]
+  demonstrates_feature: crag
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  notes: "[sealed-v4] Admission enforcement of per-container bounds."
+
+- id: q-506
+  question: "When a Service has no selector, who supplies its backend endpoints and what automatic behavior is absent?"
+  intent: rag
+  golden_sources: [concepts__services-networking__service.txt]
+  golden_answer: >
+    Without a selector, the control plane does not automatically derive EndpointSlices from matching
+    Pods. An operator or another controller must create and maintain endpoint data that identifies
+    the intended backends, while clients can continue using the Service identity.
+  golden_answer_keywords: [Service, no selector, EndpointSlice, operator]
+  demonstrates_feature: rerank
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  notes: "[sealed-v4] Manually managed Service backends."
+
+- id: q-507
+  question: "A claim requests a larger volume. Which prerequisites determine whether in-place expansion is allowed, and why should the PersistentVolume not be edited directly?"
+  intent: rag
+  golden_sources: [concepts__storage__storage-classes.docx, concepts__storage__persistent-volumes.pdf]
+  golden_answer: >
+    Expansion requires a supporting volume driver and a StorageClass configured to allow volume
+    expansion. The request is made by increasing the PersistentVolumeClaim size so Kubernetes and
+    the driver coordinate the change; directly editing PersistentVolume capacity can prevent the
+    controller from performing the intended resize workflow.
+  golden_answer_keywords: [allowVolumeExpansion, PersistentVolumeClaim, driver, resize]
+  demonstrates_feature: hybrid
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  notes: "[sealed-v4] Storage expansion control path."
+
+- id: q-508
+  question: "An ingress NetworkPolicy allows a request into an isolated Pod. Must a separate ingress rule also allow the reply packets?"
+  intent: rag
+  golden_sources: [concepts__services-networking__network-policies.html]
+  golden_answer: >
+    Reply traffic for an allowed connection is implicitly allowed for the isolated Pod; a separate
+    ingress rule is not required solely for that reply. The original connection must still satisfy
+    the applicable source egress and destination ingress policies.
+  golden_answer_keywords: [reply traffic, implicitly allowed, ingress, egress]
+  demonstrates_feature: security
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  notes: "[sealed-v4] Stateful reply handling in NetworkPolicy."
+
+- id: q-509
+  question: "Compare a node-level logging agent with a per-Pod sidecar for forwarding application logs. What operational tradeoff separates them?"
+  intent: rag
+  golden_sources: [concepts__cluster-administration__logging.pdf]
+  golden_answer: >
+    A node-level agent runs on each node and collects logs from many workloads with low per-Pod
+    configuration overhead. A sidecar runs alongside a workload and can transform or forward its
+    logs independently, but consumes resources for every Pod and adds workload-specific complexity.
+  golden_answer_keywords: [node-level agent, sidecar, logs, per-Pod]
+  demonstrates_feature: self_rag
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  notes: "[sealed-v4] Cluster logging architecture tradeoff."
+
+- id: q-510
+  question: "A P1 page was acknowledged, but nobody has taken incident command. What coordination action is still required?"
+  intent: rag
+  golden_sources: [incident-response-runbook.html, oncall-escalation-policy.html]
+  golden_answer: >
+    Acknowledgement alone does not establish incident coordination. Join or establish the incident
+    bridge, assign an incident commander, confirm impact and ownership, and continue the escalation
+    path if required roles are not engaged.
+  golden_answer_keywords: [incident commander, bridge, impact, escalation]
+  demonstrates_feature: rerank
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  notes: "[sealed-v4] Acknowledgement versus incident-command ownership."
+
+- id: q-511
+  question: "Can you revoke it?"
+  intent: clarification
+  golden_sources: []
+  golden_answer: >
+    Ask what credential, token, certificate, permission, or access grant should be revoked, which
+    environment and dependents are affected, and whether the user wants instructions or authorization
+    for an actual change. Do not retrieve an unrelated document or claim an action occurred.
+  golden_answer_keywords: [what credential, environment, dependents, authorization]
+  demonstrates_feature: clarification
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: clarification
+  forbidden_sources: [.pdf, "http://", "https://"]
+  notes: "[sealed-v4] Ambiguous revocation action."
+
+- id: q-512
+  question: "Which production node currently has the highest memory pressure, and what process caused it during the last ten minutes?"
+  intent: rag
+  golden_sources: []
+  golden_answer: >
+    The indexed documentation has no live node metrics, process telemetry, or ten-minute operational
+    timeline. State that the node and process cannot be determined and request current monitoring,
+    node metrics, events, and process-level telemetry rather than guessing.
+  golden_answer_keywords: [cannot determine, live metrics, process telemetry, monitoring]
+  demonstrates_feature: wild
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  forbidden_sources: [.pdf, "http://", "https://"]
+  notes: "[sealed-v4] Live operational ranking requires abstention."

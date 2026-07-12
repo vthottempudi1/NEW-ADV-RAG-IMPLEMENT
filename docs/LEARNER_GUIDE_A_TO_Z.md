@@ -1612,7 +1612,10 @@ Latest verified production evaluation (`2026-07-08`):
 | Context recall | `0.868` |
 | Forbidden-keyword violations | `0` |
 
-These are the aggregate results from [evals/reports/results/20260708_http_all_verified.json](evals/reports/results/20260708_http_all_verified.json), the newest complete LLM-scored evaluation of the deployed HTTPS system after the HTTPS setup stabilized. The active Qdrant corpus contained `50` true documents and `324` noisy documents, a noise-to-truth ratio of about `6.5:1`. The run completed `39` of `40` cases across baseline, hybrid, rerank, HyDE, CRAG, self-RAG, SQL, combined RAG + SQL, and adversarial/wild-question coverage. One case (`q-032`) was skipped after an HTTP `504`, so the report must not be presented as a 40/40 result. The corpus counts describe the confirmed deployment state during the run; they are not currently embedded in the result JSON itself.
+Historical HTTPS evaluation and the latest v2 corpus results are summarized in
+[`evals/reports/EVALUATION_SUMMARY_20260712.md`](../evals/reports/EVALUATION_SUMMARY_20260712.md).
+Raw JSON reports are retained locally or as access-controlled CI artifacts because they can contain
+answers, retrieved context, and source names; they are not committed to Git.
 
 The older values (`0.598` baseline, `0.600` hybrid, `0.614` hybrid SQL, and `0.585` CRAG) came from small fixture-mode CI smoke checks using a heuristic scorer. They remain useful as fast regression gates, but they are not the best evidence of live answer quality and should not be compared directly with the production LLM-scored run.
 

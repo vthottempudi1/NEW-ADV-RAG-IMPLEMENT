@@ -85,6 +85,11 @@ _AMBIGUOUS_ACTIONS: tuple[tuple[re.Pattern[str], str, str], ...] = (
         "What resource or traffic path should become private, who should retain access, and which environment is affected?",
     ),
     (
+        re.compile(r"\b(?:rotate|revoke)\s+(?:it|this|that)\b", re.IGNORECASE),
+        "credential_action",
+        "What credential, Secret, certificate, key, or access grant should be changed, which environment is affected, and do you want instructions or an authorized action?",
+    ),
+    (
         re.compile(
             r"\b(?:roll\s*back|rollback|roll\s+(?:it|this|that)\s+back|revert)\b",
             re.IGNORECASE,

@@ -141,6 +141,8 @@ jobs:
           --mode fixture
           --scorer heuristic
           --strict
+          --min-source-precision 1.0
+          --min-source-recall 1.0
           --output "${{ matrix.output }}"
 
       - name: Upload eval artifact

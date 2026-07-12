@@ -6,6 +6,7 @@ __pycache__/
 .cache/
 .pytest_cache/
 Eval/results/*.json
+evals/reports/results/*.json
 seed/docs/
 
 .idea/

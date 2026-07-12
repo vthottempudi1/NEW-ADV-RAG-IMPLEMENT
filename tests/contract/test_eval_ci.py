@@ -10,7 +10,11 @@ from evals.runners.invokers import FixtureInvoker, HttpServiceInvoker
 from evals.runners.post_checks import source_overlap, source_precision
 from evals.runners.ragas_adapter import _score_context_recall
 from evals.runners.ragas_adapter import run as run_ragas
-from evals.runners.run import _evaluation_provenance, _per_question_threshold_failures
+from evals.runners.run import (
+    _aggregate_threshold_failures,
+    _evaluation_provenance,
+    _per_question_threshold_failures,
+)
 
 
 # Learner note: Verifies test fixture invoker supports hybrid and sql goldens so future changes cannot silently break this expected behavior.
@@ -770,6 +774,16 @@ def test_per_question_thresholds_expose_failure_hidden_by_average():
     }
 
 
+def test_aggregate_thresholds_skip_not_applicable_metrics():
+    """Source-less clarification must not fail because source recall is undefined."""
+    failures = _aggregate_threshold_failures(
+        {"faithfulness": 1.0, "source_recall": None},
+        {"faithfulness": 0.8, "source_recall": 0.8},
+    )
+
+    assert failures == {}
+
+
 # Learner Note: The frozen challenge set must retain full answers and an untouched holdout.
 def test_challenge_regression_dataset_is_complete_and_partitioned():
     """Verify the consumed challenge regression retains its complete contracts."""
@@ -843,6 +857,40 @@ def test_sealed_v3_holdout_contract_and_checksum_are_immutable():
             "evals/datasets/challenge_regression_suite.yaml",
             "evals/datasets/regression_suite.yaml",
             "evals/datasets/sealed_v2_holdout.yaml",
+        )
+        for golden in load_goldens(dataset)
+    }
+    assert not prior_questions.intersection(golden.question for golden in goldens)
+
+
+def test_consumed_v3_regression_matches_the_sealed_v3_questions():
+    """Keep every consumed v3 case available for development regression."""
+    sealed = load_goldens("evals/datasets/sealed_v3_holdout.yaml")
+    regression = load_goldens("evals/datasets/sealed_v3_findings_regression.yaml")
+
+    assert [item.id for item in regression] == [item.id for item in sealed]
+    assert [item.question for item in regression] == [item.question for item in sealed]
+
+
+def test_sealed_v4_holdout_contract_and_checksum_are_immutable():
+    """Validate sealed v4 structurally without executing any question."""
+    path = Path("evals/datasets/sealed_v4_holdout.yaml")
+    expected_hash = "673b7b6d542eb3e353f8a8fe5edaaf07e7dc4140c938c3d79bdefacc7422f4b5"
+    goldens = load_goldens(path)
+
+    assert hashlib.sha256(path.read_bytes()).hexdigest() == expected_hash
+    assert len(goldens) == 12
+    assert [golden.id for golden in goldens] == [f"q-{value:03d}" for value in range(501, 513)]
+    assert all(golden.golden_answer for golden in goldens)
+    assert all("[sealed-v4]" in golden.notes for golden in goldens)
+
+    prior_questions = {
+        golden.question
+        for dataset in (
+            "evals/datasets/challenge_regression_suite.yaml",
+            "evals/datasets/regression_suite.yaml",
+            "evals/datasets/sealed_v2_holdout.yaml",
+            "evals/datasets/sealed_v3_holdout.yaml",
         )
         for golden in load_goldens(dataset)
     }

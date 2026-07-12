@@ -181,6 +181,21 @@ def _per_question_threshold_failures(
     return failures
 
 
+def _aggregate_threshold_failures(
+    values: dict,
+    thresholds: dict[str, float | None],
+) -> dict[str, dict[str, float]]:
+    """Return aggregate failures while skipping metrics that are not applicable."""
+    return {
+        metric: {"actual": float(values[metric]), "minimum": float(minimum)}
+        for metric, minimum in thresholds.items()
+        if minimum is not None
+        and metric in values
+        and values[metric] is not None
+        and float(values[metric]) < minimum
+    }
+
+
 # Learner note: Orchestrates main, making this function a clear execution boundary for learners and tests.
 def main() -> None:
     """Perform main for the evaluation and quality-gate framework.
@@ -426,18 +441,7 @@ def main() -> None:
             "source_precision": args.min_source_precision,
             "source_recall": args.min_source_recall,
         }
-        threshold_failures = {
-            metric: {
-                "actual": payload["aggregate"].get(metric),
-                "minimum": minimum,
-            }
-            for metric, minimum in thresholds.items()
-            if minimum is not None
-            and (
-                payload["aggregate"].get(metric) is None
-                or payload["aggregate"][metric] < minimum
-            )
-        }
+        threshold_failures = _aggregate_threshold_failures(payload["aggregate"], thresholds)
         payload["threshold_failures"] = threshold_failures
         per_question_failures = _per_question_threshold_failures(rows, thresholds)
         payload["per_question_threshold_failures"] = per_question_failures

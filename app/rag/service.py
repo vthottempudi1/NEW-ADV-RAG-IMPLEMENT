@@ -18,7 +18,7 @@ from app.rag.system_prompt import build_system_prompt
 from app.rag.vector_store import hybrid_search, search, sparse_search
 from app.security.spotlighting import build_spotlighted_context
 
-RAG_CACHE_SCHEMA_VERSION = 45
+RAG_CACHE_SCHEMA_VERSION = 46
 _TROUBLESHOOTING_HINTS = {
     "error",
     "fix",

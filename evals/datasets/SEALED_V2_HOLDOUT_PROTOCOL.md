@@ -1,7 +1,7 @@
 # Sealed v2 Holdout Protocol
 
 > Status: consumed on 2026-07-12. The immutable result is
-> `evals/reports/results/20260712T161937Z_all.json`. This dataset must not be presented as unseen
+> the local raw report timestamp `20260712T161937Z`. This dataset must not be presented as unseen
 > again. Development reproductions belong in `sealed_v2_findings_regression.yaml`.
 
 ## Scope

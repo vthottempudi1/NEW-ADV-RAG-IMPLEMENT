@@ -1,13 +1,18 @@
 # Sealed v3 Holdout Protocol
 
+> Status: consumed against `new_adv_rag_documents_v2` on 2026-07-12. The valid immutable result is
+> the local raw report timestamp `20260712T191224Z`; curated results are in
+> `evals/reports/EVALUATION_SUMMARY_20260712.md`. Use
+> `sealed_v3_findings_regression.yaml` for future development; never present v3 as unseen again.
+
 `sealed_v3_holdout.yaml` is the next one-time generalization test. It was created after sealed v2
 was consumed and before fixes based on the v2 findings. It must not be executed during development.
 
 ## Development inputs
 
 - Use `sealed_v2_findings_regression.yaml` to reproduce and fix v2 findings.
-- Preserve `sealed_v2_holdout.yaml`, its checksum, and result
-  `evals/reports/results/20260712T161937Z_all.json` as historical evidence.
+- Preserve `sealed_v2_holdout.yaml`, its checksum, and its access-controlled raw result as
+  historical evidence.
 - Do not alter v3 questions, sources, answers, or thresholds after calculating its checksum.
 
 ## Release procedure

@@ -1,0 +1,186 @@
+# Consumed sealed-v3 dataset copied into the development regression lifecycle.
+# The immutable one-time result is 20260712T191224Z_all.json. This copy is not unseen.
+
+- id: q-401
+  question: "A database replica is rescheduled after its Pod is replaced. Which StatefulSet guarantees preserve its network identity and storage association across that replacement?"
+  intent: rag
+  golden_sources: [concepts__workloads__controllers__statefulset.docx, tutorials__stateful-application__basic-stateful-set.html]
+  golden_answer: >
+    A StatefulSet gives each replica a stable ordinal and network identity and uses stable volume
+    claim templates so replacement Pods can reattach the storage associated with that identity.
+    A headless Service supports the stable DNS identity; deleting a Pod does not mean creating an
+    interchangeable identity as it would for a stateless replica.
+  golden_answer_keywords: [StatefulSet, ordinal, stable network identity, volume claim]
+  demonstrates_feature: hybrid
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  notes: "[sealed-v3] Stateful identity and storage synthesis."
+
+- id: q-402
+  question: "A batch Pod repeatedly exits unsuccessfully. Explain how a Job decides whether to retry and when it is considered failed."
+  intent: rag
+  golden_sources: [concepts__workloads__controllers__job.pdf]
+  golden_answer: >
+    A Job supervises Pods until the requested successful completions are reached. Failed Pods may be
+    retried according to the Job restart and backoff behavior. When failures exceed the configured
+    backoff limit, the Job is marked failed instead of retrying indefinitely.
+  golden_answer_keywords: [Job, retry, backoff limit, failed]
+  demonstrates_feature: dense
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  notes: "[sealed-v3] Job failure and retry lifecycle."
+
+- id: q-403
+  question: "During a rolling Deployment update, how do availability and surge settings limit old and new Pods while the rollout progresses?"
+  intent: rag
+  golden_sources: [concepts__workloads__controllers__deployment.txt]
+  golden_answer: >
+    RollingUpdate uses maxUnavailable to limit how many desired replicas may be unavailable and
+    maxSurge to limit how many extra Pods may exist above the desired replica count. The controller
+    scales new and old ReplicaSets within those bounds until the new revision replaces the old one.
+  golden_answer_keywords: [RollingUpdate, maxUnavailable, maxSurge, ReplicaSet]
+  demonstrates_feature: sparse
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  notes: "[sealed-v3] Deployment rollout capacity constraints."
+
+- id: q-404
+  question: "A slow-starting container is killed before initialization finishes, but it must also stop receiving traffic when temporarily unhealthy. Which probes solve the two different problems?"
+  intent: rag
+  golden_sources: [tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx]
+  golden_answer: >
+    A startup probe protects slow initialization by preventing liveness and readiness checks from
+    taking effect until startup succeeds. After startup, readiness controls whether the Pod receives
+    Service traffic, while liveness determines whether kubelet should restart an unhealthy container.
+  golden_answer_keywords: [startup probe, readiness, Service traffic, liveness]
+  demonstrates_feature: self_rag
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  notes: "[sealed-v3] Probe responsibilities across startup and temporary unavailability."
+
+- id: q-405
+  question: "A Service selector still matches a Pod, but the Pod fails readiness. Explain what remains stable and what changes in traffic delivery."
+  intent: rag
+  golden_sources: [concepts__services-networking__service.txt, tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx]
+  golden_answer: >
+    The Service identity and virtual endpoint remain stable. Readiness affects whether the matching
+    Pod is considered an eligible backend endpoint, so normal Service traffic stops being sent to
+    that Pod until it becomes ready again, without changing the Service address.
+  golden_answer_keywords: [Service, stable, readiness, endpoint]
+  demonstrates_feature: hybrid
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  notes: "[sealed-v3] Stable Service identity versus dynamic backend eligibility."
+
+- id: q-406
+  question: "Why can making a Secret immutable reduce cluster load, and what operational tradeoff follows when its data must change?"
+  intent: rag
+  golden_sources: [concepts__configuration__secret.txt]
+  golden_answer: >
+    Immutable Secrets can reduce kubelet watch activity for large numbers of mounted Secrets and
+    protect against accidental mutation. Their data cannot be edited in place; changing it requires
+    creating a replacement Secret and updating or recreating workloads to reference the replacement.
+  golden_answer_keywords: [immutable Secret, kubelet, watch, replacement]
+  demonstrates_feature: rerank
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  notes: "[sealed-v3] Immutable configuration performance and lifecycle tradeoff."
+
+- id: q-407
+  question: "A namespace permits only a fixed number of Pods and also caps requested memory. Which admission control objects enforce these constraints, and at what scope?"
+  intent: rag
+  golden_sources: [concepts__policy__resource-quotas.txt, tasks__administer-cluster__manage-resources__quota-memory-cpu-namespace.txt]
+  golden_answer: >
+    ResourceQuota applies namespace-wide aggregate limits. It can restrict object counts such as the
+    number of Pods and aggregate compute requests such as requested memory. Admission rejects a new
+    object when accepting it would exceed the applicable namespace quota.
+  golden_answer_keywords: [ResourceQuota, namespace, Pod count, requested memory]
+  demonstrates_feature: crag
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  notes: "[sealed-v3] Object-count and compute quota synthesis."
+
+- id: q-408
+  question: "A PersistentVolumeClaim requests a StorageClass that has delayed binding. Why might binding wait until a Pod exists, and what scheduling information becomes available then?"
+  intent: rag
+  golden_sources: [concepts__storage__storage-classes.docx, concepts__storage__persistent-volumes.pdf]
+  golden_answer: >
+    WaitForFirstConsumer delays provisioning or binding until a Pod uses the claim. At that point the
+    scheduler has workload placement constraints such as topology, node selectors, affinity, and
+    resource requirements, allowing storage to be provisioned in a location compatible with the Pod.
+  golden_answer_keywords: [WaitForFirstConsumer, binding, topology, scheduler]
+  demonstrates_feature: hyde
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  notes: "[sealed-v3] Delayed volume binding and topology-aware scheduling."
+
+- id: q-409
+  question: "Why must both source egress and destination ingress policies allow a connection when both Pods are isolated?"
+  intent: rag
+  golden_sources: [concepts__services-networking__network-policies.html]
+  golden_answer: >
+    NetworkPolicy evaluates allowed traffic independently for the source's egress direction and the
+    destination's ingress direction. If both Pods are isolated, the connection succeeds only when
+    the union of applicable egress policies allows it and the union of applicable ingress policies
+    also allows it; permission on only one side is insufficient.
+  golden_answer_keywords: [egress, ingress, both, additive]
+  demonstrates_feature: security
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  notes: "[sealed-v3] Bidirectional policy authorization semantics."
+
+- id: q-410
+  question: "An incident mitigation restored service, but the underlying cause is unknown. What response work should continue after recovery according to the operational runbook?"
+  intent: rag
+  golden_sources: [incident-response-runbook.html]
+  golden_answer: >
+    Confirm recovery and continue monitoring, preserve the incident timeline and evidence, document
+    the mitigation and unresolved cause, communicate status, and assign follow-up investigation and
+    corrective actions. Service restoration does not replace root-cause analysis and post-incident work.
+  golden_answer_keywords: [recovery, monitoring, evidence, follow-up]
+  demonstrates_feature: rerank
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  notes: "[sealed-v3] Post-mitigation incident responsibilities."
+
+- id: q-411
+  question: "Can you rotate it now?"
+  intent: clarification
+  golden_sources: []
+  golden_answer: >
+    Ask what credential, Secret, certificate, key, or resource should be rotated, which environment
+    and dependents are affected, and whether the user wants instructions or authorization for an
+    actual change. Do not retrieve an unrelated document or claim the rotation was performed.
+  golden_answer_keywords: [what credential, environment, dependents, authorization]
+  demonstrates_feature: clarification
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: clarification
+  forbidden_sources: [.pdf, "http://", "https://"]
+  notes: "[sealed-v3] Ambiguous action requires clarification without noisy retrieval."
+
+- id: q-412
+  question: "What is the current value of the production API server's authorization-mode flag, and who last changed it?"
+  intent: rag
+  golden_sources: []
+  golden_answer: >
+    The indexed documentation does not contain the live API server configuration or an attributable
+    change record. State that neither the current value nor the actor can be determined and request
+    the deployment configuration, audit logs, or version-controlled infrastructure history.
+  golden_answer_keywords: [cannot determine, live configuration, audit logs, change history]
+  demonstrates_feature: wild
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  forbidden_sources: [.pdf, "http://", "https://"]
+  notes: "[sealed-v3] Live-state attribution requires evidence-aware abstention."
