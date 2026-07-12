@@ -1,7 +1,8 @@
 # Sealed v4 Holdout Protocol
 
-`sealed_v4_holdout.yaml` contains 12 new one-time generalization questions created after sealed v3
-was consumed. Do not run or edit v4 during development against `sealed_v3_findings_regression.yaml`.
+`sealed_v4_holdout.yaml` contains 12 one-time generalization questions created after sealed v3 was
+consumed. V4 was consumed by the first valid run `20260712T202101Z_all.json`; do not rerun or edit
+it. Its actionable findings live in `sealed_v4_findings_regression.yaml`.
 
 ## Seal
 

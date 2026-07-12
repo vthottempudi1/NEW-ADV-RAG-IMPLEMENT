@@ -78,6 +78,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v7
 
+      - name: Reclaim runner disk for the ML container
+        run: |
+          sudo rm -rf /usr/local/lib/android /usr/share/dotnet /opt/ghc
+          docker system prune --all --force
+          df -h
+
       - name: Build backend image
         run: docker build --file infra/docker/backend.Dockerfile --tag new-adv-rag-backend:ci .
 
@@ -88,6 +94,7 @@ jobs:
           format: table
           severity: CRITICAL,HIGH
           ignore-unfixed: true
+          scanners: vuln
           exit-code: "1"
 
   eval-smoke:

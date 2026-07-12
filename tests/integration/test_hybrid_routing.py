@@ -3,6 +3,7 @@ from app.rag.hybrid_question import derive_hybrid_rag_question
 from app.rag.router import classify_intent
 
 
+# Learner Note: Test descriptive which questions do not false positive as sql is part of the automated regression suite.
 def test_descriptive_which_questions_do_not_false_positive_as_sql():
     """Verify ordinary users and employee wording cannot trigger database execution."""
     assert classify_intent(
@@ -40,6 +41,7 @@ def test_hybrid_question_decomposition_covers_operational_guidance_cases():
         assert expected in derive_hybrid_rag_question(question).lower()
 
 
+# Learner Note: Test non incident policy question is not rewritten as on call escalation is part of the automated regression suite.
 def test_non_incident_policy_question_is_not_rewritten_as_on_call_escalation():
     """Domain policies such as NetworkPolicy must retain their original retrieval intent."""
     question = (

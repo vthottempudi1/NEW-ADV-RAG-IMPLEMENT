@@ -231,6 +231,7 @@ class IngestionService:
             and metadata.get("ingestion_version") == ingestion_version
         )
 
+    # Learner Note: Embed and upsert chunks is part of the document ingestion pipeline.
     def _embed_and_upsert_chunks(self, chunks: list[RetrievedChunk]) -> None:
         """Embed and persist bounded batches so large documents cannot exhaust memory."""
         for start in range(0, len(chunks), _INGESTION_BATCH_SIZE):

@@ -16,6 +16,13 @@ Production credentials are supplied through AWS Secrets Manager. Local `.env` fi
 
 ## Operator responsibilities
 
+### Secret-scanning exception
+
+Gitleaks continues to scan Git history with its default rules. A repository-level allowlist applies
+only to the retired `evals/reports/results/*.json` path because historical reports quoted public
+Kubernetes examples containing placeholder tokens and passwords. Raw reports are no longer tracked.
+No application, deployment, environment, task-definition, or documentation path is exempted.
+
 - Rotate all default and demo credentials before deployment.
 - Restrict IAM, database, Qdrant, Redis, and S3 access to least privilege.
 - Review dependency, secret, and container scan findings before release.

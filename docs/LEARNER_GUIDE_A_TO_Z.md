@@ -1949,6 +1949,27 @@ This project already proves:
 
 ---
 
+### 37.1 July 12 Retrieval and Evaluation Closure
+
+The active v2 corpus contains 49 authoritative and 316 noisy sources. Sentence-aware chunking
+replaced arbitrary character cuts, metadata and ingestion-version controls made the collection
+auditable, and blue/green re-ingestion preserved rollback safety.
+
+The main regression scored 0.939 faithfulness, 1.000 context precision, 0.983 context recall,
+0.983 answer relevancy, 0.958 source precision, and 1.000 source recall. Sealed v3 exposed one
+real ambiguous follow-up defect; it was converted to a generalized clarification regression.
+Sealed v4 was then consumed once: it produced 0.907 faithfulness, 1.000 context precision and
+recall, 0.958 answer relevancy, 1.000 source precision, and 0.950 source recall. Three strict
+per-question findings moved into regression. Sealed v5 is checksummed for the next one-time
+measurement and must remain untouched during those fixes.
+
+CI now uses reproducible ID-based source gates at 1.000. LLM judging remains a release or nightly
+signal because repeated runs can vary. Raw reports are not committed; the curated summary records
+the stable evidence. Final local checks passed Ruff and all 167 automated tests after the v4
+regression safeguards were added.
+
+---
+
 ## 38. Final Learning Summary
 
 If you remember only a few things from this project, remember these:

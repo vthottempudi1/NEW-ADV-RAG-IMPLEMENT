@@ -106,6 +106,7 @@ def _overlap_score(left: str, right: str) -> float:
     return len(left_tokens & right_tokens) / max(len(left_tokens), 1)
 
 
+# Learner Note: Is evidence abstention is part of the evaluation and quality-gate framework.
 def _is_evidence_abstention(answer: str) -> bool:
     """Return whether an answer explicitly refuses to speculate without evidence."""
     lowered = answer.lower()
@@ -143,6 +144,7 @@ def _evaluate_faithfulness(
         for index, context in enumerate(contexts[:5])
     )
 
+    # Learner Note: Locate compact exact span is part of the evaluation and quality-gate framework.
     def locate_compact_exact_span(claim: str) -> tuple[str, int] | None:
         """Locate a short verbatim window containing most significant claim terms."""
         stopwords = {
@@ -169,6 +171,7 @@ def _evaluate_faithfulness(
                         return quote, source_index
         return None
 
+    # Learner Note: Repair exact context quotes is part of the evaluation and quality-gate framework.
     def repair_exact_context_quotes(claim: str) -> list[tuple[str, int]]:
         """Return separately validated verbatim passages for a supported compound claim."""
         repair_prompt = f"""Find the minimum exact, continuous quote or quotes that together support
@@ -204,6 +207,7 @@ Context:
         except (json.JSONDecodeError, TypeError, AttributeError):
             return []
 
+    # Learner Note: Validate combined evidence is part of the evaluation and quality-gate framework.
     def validate_combined_evidence(claim: str) -> tuple[str, str, int] | None:
         """Validate an applied claim using one question premise and one context rule."""
         combined_prompt = f"""Determine whether the claim applies a rule from context to a scenario
@@ -244,6 +248,7 @@ Context:
             pass
         return None
 
+    # Learner Note: Validate multi context evidence is part of the evaluation and quality-gate framework.
     def validate_multi_context_evidence(claim: str) -> list[tuple[str, int]]:
         """Validate a synthesis conclusion using exact quotes from distinct contexts."""
         synthesis_prompt = f"""Determine whether the claim is a necessary synthesis of facts from
@@ -422,6 +427,7 @@ JSON array:"""
     return statistics.mean([int(item["supported"]) for item in audits]) if audits else 0.0, audits
 
 
+# Learner Note: Score faithfulness is part of the evaluation and quality-gate framework.
 def _score_faithfulness(answer: str, contexts: list[str]) -> float:
     """Support the evaluation and quality-gate framework by performing score faithfulness.
 
@@ -453,6 +459,7 @@ Score:"""
         return 0.0
 
 
+# Learner Note: Underlying domain question is part of the evaluation and quality-gate framework.
 def _underlying_domain_question(question: str) -> str:
     """Remove an adversarial source preference while preserving the actual domain request."""
     prefix, separator, remainder = question.partition(":")
@@ -467,6 +474,7 @@ def _underlying_domain_question(question: str) -> str:
     return question
 
 
+# Learner Note: Score clarification relevancy is part of the evaluation and quality-gate framework.
 def _score_clarification_relevancy(question: str, answer: str, reference: str) -> float:
     """Score whether an ambiguous request receives the necessary clarifying question."""
     prompt = f"""Rate the clarification response on a scale from 0.0 to 1.0.

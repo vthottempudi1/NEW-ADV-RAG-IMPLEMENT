@@ -503,3 +503,32 @@ A concise explanation is:
 That account is stronger than presenting a single perfect score because it shows
 debugging discipline, evaluation integrity, rollback behavior, and production
 migration awareness.
+
+## Phase 13: V2 Validation, Sealed Holdouts, and CI Closure (July 12, 2026)
+
+The v2 collection completed with 49 authoritative and 316 noisy sources. Validation used
+`new_adv_rag_documents_v2`, `text-embedding-3-small`, `gpt-4o` for answers, and `gpt-4o-mini`
+for judging. The source audit found 366 unique source names, no payloads missing `source`, and no
+duplicate chunk text within an audited source.
+
+The main 12-question regression reached faithfulness 0.939, context precision 1.000, context
+recall 0.983, answer relevancy 0.983, source precision 0.958, and source recall 1.000. The one-time
+sealed-v3 run reached 0.942, 1.000, 1.000, 0.950, 0.833, and 0.800 respectively. Its lower source
+metrics exposed an ambiguous follow-up and golden contracts that sometimes demanded more sources
+than a minimum sufficient answer needed.
+
+The genuine `Can you rotate it now?` defect became a development regression. Generalized
+rotate/revoke language now asks for clarification when its object cannot be resolved. The consumed
+v3 regression subsequently reached faithfulness 0.876, perfect context and answer-relevancy
+aggregates, source precision 0.958, and source recall 0.800. These are strong regression results,
+not a claim of universal perfection.
+
+Evaluation governance now requires deterministic source precision and recall of 1.000 in PR CI,
+keeps LLM judging for nightly or release runs, moves sealed findings into named regressions, and
+retains raw JSON locally or as controlled CI artifacts. Sealed v4 was later consumed once and
+reached faithfulness 0.907, context precision/recall 1.000, answer relevancy 0.958, source precision
+1.000, and source recall 0.950. Its three strict per-question findings became a named development
+regression, and a new checksummed sealed v5 remains the next unseen, one-time release measurement.
+
+Final local verification passed all five deterministic CI partitions, Ruff, Git whitespace
+validation, and 167 automated tests after the sealed-v4 regression safeguards.

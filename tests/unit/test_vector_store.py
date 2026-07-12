@@ -2,13 +2,16 @@ from app.models import RetrievedChunk
 from app.rag import vector_store
 
 
+# Learner Note: Test upsert persists chunk audit metadata is part of the automated regression suite.
 def test_upsert_persists_chunk_audit_metadata(monkeypatch):
     """Qdrant payloads must retain v2 document and chunk provenance."""
     captured = {}
 
+    # Learner Note: Client is part of the automated regression suite.
     class _Client:
         """Capture Qdrant upsert arguments without making a network request."""
 
+        # Learner Note: Upsert is part of the automated regression suite.
         def upsert(self, *, collection_name, points):
             """Store the collection name and points for payload assertions."""
             captured["collection"] = collection_name

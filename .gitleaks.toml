@@ -1,0 +1,6 @@
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Retired raw evaluation artifacts contain quoted public documentation examples"
+paths = ['''^evals/reports/results/.*\.json$''']

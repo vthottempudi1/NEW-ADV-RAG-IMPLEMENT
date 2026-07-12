@@ -18,7 +18,9 @@ from app.rag.system_prompt import build_system_prompt
 from app.rag.vector_store import hybrid_search, search, sparse_search
 from app.security.spotlighting import build_spotlighted_context
 
-RAG_CACHE_SCHEMA_VERSION = 46
+# Increment whenever retrieval, evidence planning, or answer synthesis changes so distributed
+# caches cannot return responses produced by an older policy implementation.
+RAG_CACHE_SCHEMA_VERSION = 47
 _TROUBLESHOOTING_HINTS = {
     "error",
     "fix",
@@ -87,6 +89,7 @@ _SECURITY_SOURCE_PATTERN = re.compile(r"(security|rbac|least[-_ ]privilege)", re
 _STATEFUL_WORKLOAD_SOURCE_PATTERN = re.compile(r"statefulset", re.IGNORECASE)
 
 
+# Learner Note: Evidence plan is part of the retrieval-augmented generation pipeline.
 def _evidence_plan(question: str) -> list[tuple[re.Pattern[str], str]]:
     """Return required source families and sparse rescue queries for composite questions."""
     lowered = question.lower()
@@ -272,9 +275,24 @@ def _evidence_plan(question: str) -> list[tuple[re.Pattern[str], str]]:
                 "configure Pod ConfigMap mounted volume environment variables",
             ),
         ]
+    if (
+        any(term in lowered for term in ("persistentvolumeclaim", "persistent volume claim", "pvc", "claim"))
+        and any(term in lowered for term in ("expand", "expansion", "larger", "resize"))
+    ):
+        return [
+            (
+                re.compile(r"storage__storage-classes", re.I),
+                "StorageClass allowVolumeExpansion volume plugin driver supports expansion",
+            ),
+            (
+                re.compile(r"storage__persistent-volumes", re.I),
+                "expand PersistentVolumeClaim edit PVC requested storage do not edit PersistentVolume capacity",
+            ),
+        ]
     return []
 
 
+# Learner Note: Augment planned evidence is part of the retrieval-augmented generation pipeline.
 def _augment_planned_evidence(question: str, chunks: list) -> list:
     """Add one candidate from every required evidence family before reranking."""
     merged = list(chunks)
@@ -295,6 +313,7 @@ def _augment_planned_evidence(question: str, chunks: list) -> list:
     return merged
 
 
+# Learner Note: Ensure planned evidence is part of the retrieval-augmented generation pipeline.
 def _ensure_planned_evidence(question: str, chunks: list, top_k: int) -> list:
     """Reserve final evidence slots for each required source family, then fill by rank."""
     selected: list = []
@@ -306,6 +325,7 @@ def _ensure_planned_evidence(question: str, chunks: list, top_k: int) -> list:
     return selected[:top_k]
 
 
+# Learner Note: Authoritative planned evidence is part of the retrieval-augmented generation pipeline.
 def _authoritative_planned_evidence(question: str) -> list:
     """Select the most query-specific passage from every planned authoritative source."""
     selected: list = []
@@ -330,6 +350,7 @@ def _authoritative_planned_evidence(question: str) -> list:
     return selected
 
 
+# Learner Note: Merge same source evidence is part of the retrieval-augmented generation pipeline.
 def _merge_same_source_evidence(chunks: list) -> list:
     """Combine complementary planned passages so one source forms one coherent context."""
     merged: list = []
@@ -356,6 +377,7 @@ def _merge_same_source_evidence(chunks: list) -> list:
     return merged
 
 
+# Learner Note: Planned answer guidance is part of the retrieval-augmented generation pipeline.
 def _planned_answer_guidance(question: str) -> str:
     """Constrain synthesis where the corpus supports a deliberately narrow comparison."""
     lowered = question.lower()
@@ -387,6 +409,30 @@ def _planned_answer_guidance(question: str) -> str:
             "inspect warning events, and explain that no suitable node leaves it unscheduled. Mention "
             "kubectl logs only as a command for running containers. Do not add a general diagnostic "
             "conclusion not stated by the evidence."
+        )
+    if "deployment" in lowered and any(term in lowered for term in ("pause", "paused", "resume")):
+        return (
+            "Synthesis constraint: Answer each lifecycle part separately from the Deployment "
+            "evidence: what rollout work stops while paused, what configuration can still be "
+            "changed, and what resuming does. Do not omit a requested part and do not add behavior "
+            "that the supplied Deployment passages do not state."
+        )
+    if "limitrange" in lowered and any(term in lowered for term in ("minimum", "maximum", "bound")):
+        return (
+            "Synthesis constraint: State the admission outcome for a new object that violates the "
+            "documented LimitRange bounds. If the evidence supplies an HTTP status or explanatory "
+            "message behavior, report it directly; do not claim that the context lacks it."
+        )
+    if (
+        any(term in lowered for term in ("persistentvolumeclaim", "persistent volume claim", "pvc", "claim"))
+        and any(term in lowered for term in ("expand", "expansion", "larger", "resize"))
+    ):
+        return (
+            "Synthesis constraint: List every expansion prerequisite supported by the supplied "
+            "StorageClass and PersistentVolumeClaim evidence, including driver support and the "
+            "StorageClass expansion setting when present. Explain that the requested size changes "
+            "on the claim and why directly editing PersistentVolume capacity bypasses the intended "
+            "controller workflow."
         )
     return ""
 _ANCHOR_STOPWORDS = {

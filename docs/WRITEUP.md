@@ -753,3 +753,29 @@ source precision 1.00. A final source-policy pass removed the extra StatefulSet 
 durable-Service paraphrase and strengthened grounded generation against requests for unrelated
 sources. The original `q-129` through `q-140` results remain the recorded holdout
 baseline and were not used to design the fixes.
+
+## 16. Evaluation Integrity and V2 Release Evidence (July 12, 2026)
+
+The hardening work concluded with a blue/green v2 Qdrant collection containing 49 authoritative
+and 316 noisy sources. Sentence-aware chunking, collection/version-aware deduplication,
+manifest-driven ingestion, richer payload metadata, and resumable large-document processing were
+validated before Docker evaluation moved to `new_adv_rag_documents_v2`.
+
+The main regression reached faithfulness 0.939, context precision 1.000, context recall 0.983,
+answer relevancy 0.983, source precision 0.958, and source recall 1.000. Sealed v3 was then used
+once as an unbiased measurement. Its real ambiguity finding produced a generalized clarification
+regression for unresolved rotate/revoke requests rather than a question-specific rule.
+
+The final controls are as important as the scores:
+
+- exact source precision and recall are deterministic CI gates at 1.000;
+- LLM judging is reserved for nightly and release runs because it is probabilistic;
+- strict gates operate per question and in aggregate;
+- consumed holdouts become regression suites;
+- sealed v4 was consumed once and its three actionable findings became a regression suite;
+- sealed v5 is checksummed as the next one-time unseen measurement;
+- raw reports are excluded from Git and replaced by a curated summary.
+
+Final validation passed all five CI fixture partitions, Ruff, whitespace checks, and 167 Pytest
+tests after the sealed-v4 regression safeguards. Detailed metrics and provenance are in
+`evals/reports/EVALUATION_SUMMARY_20260712.md`.

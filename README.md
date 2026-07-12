@@ -312,6 +312,18 @@ python -m evals.runners.run `
 
 Provenance fields deliberately exclude credentials and API keys.
 
+Current evaluation governance:
+
+- PR CI uses deterministic fixtures and requires source precision/recall of `1.000`;
+- LLM-judged metrics run during nightly or release validation;
+- strict thresholds are checked per question and in aggregate;
+- consumed holdouts move into regression and checksummed sealed sets run once;
+- raw JSON stays local or in access-controlled CI artifacts;
+- versioned evidence is in [the curated July 12 evaluation summary](evals/reports/EVALUATION_SUMMARY_20260712.md).
+
+The latest complete local validation passed Ruff, all five deterministic CI evaluation
+partitions, and 167 automated tests after the sealed-v4 regression safeguards.
+
 ## Project Structure
 
 ```text

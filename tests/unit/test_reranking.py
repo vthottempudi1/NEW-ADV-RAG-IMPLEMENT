@@ -8,6 +8,7 @@ def test_reranker_reuses_cross_encoder_within_worker(monkeypatch):
     """Verify that repeated Reranker construction loads transformer weights once."""
     created: list[str] = []
 
+    # Learner Note: Fake loader is part of the automated regression suite.
     def _fake_loader(model_name: str):
         """Record model construction and return a deterministic fake encoder."""
         created.append(model_name)

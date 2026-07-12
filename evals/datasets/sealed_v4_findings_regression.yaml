@@ -1,0 +1,48 @@
+# Development regression extracted from the consumed sealed-v4 one-time result.
+# The immutable first valid report is 20260712T202101Z_all.json. This file is not unseen.
+
+- id: q-501
+  question: "A Deployment rollout is paused after the new ReplicaSet appears. What work stops while paused, and what can an operator still change before resuming?"
+  intent: rag
+  golden_sources: [concepts__workloads__controllers__deployment.txt]
+  golden_answer: >
+    Pausing stops the Deployment controller from progressing the rollout into additional revisions
+    while changes are accumulated. The operator can update the Pod template or related Deployment
+    settings, then resume so the controller rolls the collected changes forward as one revision.
+  golden_answer_keywords: [Deployment, paused, Pod template, resume]
+  demonstrates_feature: dense
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  notes: "[consumed-sealed-v4] Complete all parts of a paused rollout lifecycle answer."
+
+- id: q-505
+  question: "A namespace LimitRange defines minimum and maximum container memory. What happens when a new container requests memory outside those bounds?"
+  intent: rag
+  golden_sources: [concepts__policy__limit-range.html]
+  golden_answer: >
+    LimitRange admission evaluates the container resource request against the namespace constraints.
+    A request below the minimum or above the maximum is rejected rather than admitted with an
+    out-of-policy value; defaults apply only when the relevant values are omitted.
+  golden_answer_keywords: [LimitRange, admission, minimum, rejected]
+  demonstrates_feature: crag
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  notes: "[consumed-sealed-v4] Use directly retrieved admission evidence instead of false abstention."
+
+- id: q-507
+  question: "A claim requests a larger volume. Which prerequisites determine whether in-place expansion is allowed, and why should the PersistentVolume not be edited directly?"
+  intent: rag
+  golden_sources: [concepts__storage__storage-classes.docx, concepts__storage__persistent-volumes.pdf]
+  golden_answer: >
+    Expansion requires a supporting volume driver and a StorageClass configured to allow volume
+    expansion. The request is made by increasing the PersistentVolumeClaim size so Kubernetes and
+    the driver coordinate the change; directly editing PersistentVolume capacity can prevent the
+    controller from performing the intended resize workflow.
+  golden_answer_keywords: [allowVolumeExpansion, PersistentVolumeClaim, driver, resize]
+  demonstrates_feature: hybrid
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  notes: "[consumed-sealed-v4] Reserve complementary policy and resize-workflow evidence."

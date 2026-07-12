@@ -86,6 +86,7 @@ def source_overlap(actual: list[str], golden: list[str]) -> dict:
     }
 
 
+# Learner Note: Source recall is part of the evaluation and quality-gate framework.
 def source_recall(actual: list[str], golden: list[str]) -> float | None:
     """Return exact expected-source coverage, or ``None`` when no source is expected."""
     if not golden:

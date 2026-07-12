@@ -21,6 +21,7 @@ from app.rag.service import (
 )
 
 
+# Learner Note: Test network policy plan requests complementary same source passages is part of the automated regression suite.
 def test_network_policy_plan_requests_complementary_same_source_passages():
     """Composite policy answers need rules, additivity, and enforcement evidence."""
     plan = _evidence_plan(
@@ -30,6 +31,7 @@ def test_network_policy_plan_requests_complementary_same_source_passages():
     assert all(pattern.search("concepts__services-networking__network-policies.html") for pattern, _ in plan)
 
 
+# Learner Note: Test https request plan covers service identity and ready routing is part of the automated regression suite.
 def test_https_request_plan_covers_service_identity_and_ready_routing():
     """HTTPS tracing needs both stable Service identity and ready-backend routing evidence."""
     plan = _evidence_plan(
@@ -44,6 +46,7 @@ def test_https_request_plan_covers_service_identity_and_ready_routing():
     assert any("healthy ready backend" in query for query in service_queries)
 
 
+# Learner Note: Test daemonset plan covers node ownership and gpu placement is part of the automated regression suite.
 def test_daemonset_plan_covers_node_ownership_and_gpu_placement():
     """A restricted node-wide agent needs evidence for ownership and placement."""
     plan = _evidence_plan(
@@ -56,6 +59,7 @@ def test_daemonset_plan_covers_node_ownership_and_gpu_placement():
     assert any("nodeSelector" in query for _, query in plan)
 
 
+# Learner Note: Test secret plan requests pod credential usage evidence is part of the automated regression suite.
 def test_secret_plan_requests_pod_credential_usage_evidence():
     """Secret evidence should describe Pod credential use, not merely Secret types."""
     plan = _evidence_plan(
@@ -68,6 +72,7 @@ def test_secret_plan_requests_pod_credential_usage_evidence():
     ]
 
 
+# Learner Note: Test sealed v2 finding plans cover required authoritative evidence is part of the automated regression suite.
 def test_sealed_v2_finding_plans_cover_required_authoritative_evidence():
     """Generalized evidence plans reproduce each consumed sealed-v2 retrieval finding."""
     cases = {
@@ -82,6 +87,7 @@ def test_sealed_v2_finding_plans_cover_required_authoritative_evidence():
         assert len(_evidence_plan(question)) == expected_count
 
 
+# Learner Note: Test challenge regression plans cover oom and serviceaccount evidence is part of the automated regression suite.
 def test_challenge_regression_plans_cover_oom_and_serviceaccount_evidence():
     """Adversarial source requests and rationale questions retain authoritative evidence."""
     oom_plan = _evidence_plan(
@@ -97,6 +103,7 @@ def test_challenge_regression_plans_cover_oom_and_serviceaccount_evidence():
     assert any(pattern.search("rbac-good-practices.pdf") for pattern, _ in identity_plan)
 
 
+# Learner Note: Test narrow security comparisons receive grounded synthesis guidance is part of the automated regression suite.
 def test_narrow_security_comparisons_receive_grounded_synthesis_guidance():
     """Correct evidence must not be expanded into undocumented security claims."""
     namespace_guidance = _planned_answer_guidance(
@@ -110,6 +117,7 @@ def test_narrow_security_comparisons_receive_grounded_synthesis_guidance():
     assert "Do not invent profile definitions" in pss_guidance
 
 
+# Learner Note: Test authoritative plan preserves distinct chunks from same source is part of the automated regression suite.
 def test_authoritative_plan_preserves_distinct_chunks_from_same_source(monkeypatch):
     """Multiple evidence requirements in one document must not collapse to one passage."""
     chunks = [
@@ -139,6 +147,7 @@ def test_authoritative_plan_preserves_distinct_chunks_from_same_source(monkeypat
     assert len({chunk.text for chunk in selected}) == 3
 
 
+# Learner Note: Test planned passages from one source merge without losing evidence is part of the automated regression suite.
 def test_planned_passages_from_one_source_merge_without_losing_evidence():
     """Fragmented authoritative passages should count as one coherent source context."""
     chunks = [
@@ -155,6 +164,7 @@ def test_planned_passages_from_one_source_merge_without_losing_evidence():
     assert merged[0].score == 0.6
 
 
+# Learner Note: Test composite identity plan reserves all required source families is part of the automated regression suite.
 def test_composite_identity_plan_reserves_all_required_source_families():
     """Verify Secret, ServiceAccount, and RBAC evidence all survive final top-k selection."""
     chunks = [

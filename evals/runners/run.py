@@ -153,6 +153,7 @@ def _local_corpus_preflight(goldens) -> dict | None:
     }
 
 
+# Learner Note: Per question threshold failures is part of the evaluation and quality-gate framework.
 def _per_question_threshold_failures(
     rows: list[dict],
     thresholds: dict[str, float | None],
@@ -181,6 +182,7 @@ def _per_question_threshold_failures(
     return failures
 
 
+# Learner Note: Aggregate threshold failures is part of the evaluation and quality-gate framework.
 def _aggregate_threshold_failures(
     values: dict,
     thresholds: dict[str, float | None],

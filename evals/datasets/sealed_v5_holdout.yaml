@@ -1,0 +1,186 @@
+# Sealed v5 holdout. Created after sealed-v4 was consumed and before v4 findings were evaluated.
+# Do not execute, inspect retrieval output for, or edit this dataset during development.
+
+- id: q-601
+  question: "A high-priority Pod cannot schedule because every suitable node is occupied. Under what conditions can preemption help, and what does nomination of a node mean before the Pod actually runs?"
+  intent: rag
+  golden_sources: [concepts__scheduling-eviction__pod-priority-preemption.html]
+  golden_answer: >
+    Preemption can help when removing lower-priority Pods from a suitable node would make the
+    pending higher-priority Pod schedulable. A nominated node is the scheduler's intended target
+    while victims terminate and resources become available; nomination does not mean the Pod is
+    already bound or running, and the decision can change before scheduling completes.
+  golden_answer_keywords: [preemption, lower-priority Pods, nominated node, scheduler]
+  demonstrates_feature: dense
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  notes: "[sealed-v5] Priority, victim removal, and node nomination lifecycle."
+
+- id: q-602
+  question: "Why does mounting an immutable Secret reduce watch-related work, and how must an operator deliver a later credential change?"
+  intent: rag
+  golden_sources: [concepts__configuration__secret.txt]
+  golden_answer: >
+    Marking the Secret immutable lets kubelets stop maintaining watches for changes to that Secret
+    and prevents accidental mutation. Because its data cannot be changed in place, the operator
+    creates a replacement Secret and updates or recreates the consuming workloads to use it.
+  golden_answer_keywords: [immutable Secret, kubelet, watch, replacement]
+  demonstrates_feature: hyde
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  notes: "[sealed-v5] Immutable Secret performance and replacement workflow."
+
+- id: q-603
+  question: "A namespace reaches its aggregate requested-memory quota even though one new Pod's container limits are individually valid. Which object rejects the admission and why is a LimitRange not the deciding control?"
+  intent: rag
+  golden_sources: [concepts__policy__resource-quotas.txt, concepts__policy__limit-range.html]
+  golden_answer: >
+    ResourceQuota rejects the request because the namespace-wide sum of requested memory would
+    exceed its aggregate quota. LimitRange validates per-object or per-container defaults, minima,
+    maxima, and ratios; individually valid container values do not override the namespace total.
+  golden_answer_keywords: [ResourceQuota, namespace-wide, requested memory, LimitRange]
+  demonstrates_feature: hybrid
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  notes: "[sealed-v5] Aggregate quota versus per-object range enforcement."
+
+- id: q-604
+  question: "An Ingress object exists, but no Ingress controller is installed. What behavior should the team expect, and which component must implement the routing rules?"
+  intent: rag
+  golden_sources: [concepts__services-networking__ingress.docx]
+  golden_answer: >
+    Creating an Ingress resource alone has no routing effect. An Ingress controller must watch the
+    resource and configure the actual proxy or load-balancing data plane that implements its HTTP
+    and HTTPS routing rules.
+  golden_answer_keywords: [Ingress resource, no effect, Ingress controller, routing]
+  demonstrates_feature: sparse
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  notes: "[sealed-v5] Declarative Ingress resource versus implementing controller."
+
+- id: q-605
+  question: "A readiness probe fails while the liveness probe continues to succeed. What should happen to Service traffic and to the container process?"
+  intent: rag
+  golden_sources: [tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx]
+  golden_answer: >
+    The failed readiness probe removes the Pod from normal Service endpoint traffic until it becomes
+    ready again. Because liveness still succeeds, kubelet does not restart the container solely for
+    that readiness failure; the process continues running.
+  golden_answer_keywords: [readiness, Service traffic, liveness, restart]
+  demonstrates_feature: rerank
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  notes: "[sealed-v5] Temporary traffic removal without process restart."
+
+- id: q-606
+  question: "A Pod uses a dedicated ServiceAccount but still receives excessive permissions. Which additional authorization configuration controls those rights, and what principle should shape it?"
+  intent: rag
+  golden_sources: [tasks__configure-pod-container__configure-service-account.txt, concepts__security__rbac-good-practices.pdf]
+  golden_answer: >
+    Selecting a dedicated ServiceAccount establishes the workload identity but does not itself
+    define minimal authorization. RBAC Roles or ClusterRoles and their bindings grant its effective
+    rights, which should be limited to the least privileges required by the workload.
+  golden_answer_keywords: [ServiceAccount, RBAC, binding, least privilege]
+  demonstrates_feature: security
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  notes: "[sealed-v5] Workload identity versus authorization scope."
+
+- id: q-607
+  question: "The control plane reports a newly created Pod with no assigned node. Which component makes the placement decision, and what node-side component later ensures its containers run?"
+  intent: rag
+  golden_sources: [concepts__scheduling-eviction__kube-scheduler.pdf, concepts__overview__components.pdf]
+  golden_answer: >
+    The kube-scheduler selects a suitable node for an unscheduled Pod and records the placement.
+    After assignment, the kubelet on that node works with the container runtime to ensure the Pod's
+    containers are running and healthy as specified.
+  golden_answer_keywords: [kube-scheduler, suitable node, kubelet, container runtime]
+  demonstrates_feature: hybrid
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  notes: "[sealed-v5] Control-plane placement versus node execution responsibility."
+
+- id: q-608
+  question: "A ConfigMap-backed projected volume eventually reflects a changed key, but an application still reads the old value. What delivery delay and application behavior can explain this?"
+  intent: rag
+  golden_sources: [concepts__configuration__configmap.html, tasks__configure-pod-container__configure-pod-configmap.html]
+  golden_answer: >
+    Projected ConfigMap data is refreshed asynchronously according to kubelet synchronization and
+    cache propagation behavior, so an update is not instantaneous. Even after the file changes, an
+    application that loaded the value only at startup or does not reread the file can continue using
+    its old in-memory value.
+  golden_answer_keywords: [projected volume, kubelet, propagation, reread]
+  demonstrates_feature: crag
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  notes: "[sealed-v5] Projected-data propagation versus application reload behavior."
+
+- id: q-609
+  question: "A StatefulSet Pod is deleted but its claim still exists. Why is retaining that claim useful, and what identity lets the replacement Pod reconnect to the intended storage?"
+  intent: rag
+  golden_sources: [concepts__workloads__controllers__statefulset.docx, tutorials__stateful-application__basic-stateful-set.html]
+  golden_answer: >
+    Retaining the claim preserves state independently of the Pod lifecycle. The StatefulSet's stable
+    ordinal identity and volume claim template associate the replacement Pod with the claim for that
+    replica, allowing it to reattach the intended persistent storage.
+  golden_answer_keywords: [claim, stable ordinal, replacement Pod, persistent storage]
+  demonstrates_feature: self_rag
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  notes: "[sealed-v5] Stable replica identity and retained storage."
+
+- id: q-610
+  question: "An on-call engineer joined the incident bridge but the P1 page remains unacknowledged. Which immediate obligation is still unmet, and why is bridge presence not equivalent to acknowledgement?"
+  intent: rag
+  golden_sources: [oncall-escalation-policy.html, incident-response-runbook.html]
+  golden_answer: >
+    The designated on-call responder must acknowledge the P1 page within the policy window so the
+    paging system records ownership and stops or advances escalation correctly. Joining a bridge
+    supports coordination, but it does not record acknowledgement or satisfy the paging obligation.
+  golden_answer_keywords: [acknowledge, P1 page, escalation, bridge]
+  demonstrates_feature: rerank
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  notes: "[sealed-v5] Paging acknowledgement versus bridge participation."
+
+- id: q-611
+  question: "Could you restore the previous one for me?"
+  intent: clarification
+  golden_sources: []
+  golden_answer: >
+    Ask what workload, configuration, data object, credential, or release should be restored, which
+    environment and previous version the user means, and whether the user wants instructions or
+    authorization for an actual change. Do not guess a target or claim a restoration occurred.
+  golden_answer_keywords: [what workload, environment, previous version, authorization]
+  demonstrates_feature: clarification
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: clarification
+  forbidden_sources: [.pdf, "http://", "https://"]
+  notes: "[sealed-v5] Ambiguous restoration target and action."
+
+- id: q-612
+  question: "Which Pod is failing readiness in production right now, and what exact probe output did it return during the last five minutes?"
+  intent: rag
+  golden_sources: []
+  golden_answer: >
+    The indexed documentation contains no live production Pod state or five-minute probe telemetry,
+    so the Pod and exact output cannot be determined. Request current cluster events, Pod status,
+    probe results, and monitoring data rather than inventing an answer.
+  golden_answer_keywords: [cannot determine, live production, probe telemetry, monitoring]
+  demonstrates_feature: wild
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  forbidden_sources: [.pdf, "http://", "https://"]
+  notes: "[sealed-v5] Current probe state requires live telemetry and abstention."

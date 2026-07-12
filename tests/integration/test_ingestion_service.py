@@ -8,6 +8,7 @@ from app.ingestion.service import IngestionService
 from app.models import RetrievedChunk
 
 
+# Learner Note: Test long text chunks end and restart on sentence boundaries is part of the automated regression suite.
 def test_long_text_chunks_end_and_restart_on_sentence_boundaries():
     """Evidence chunks must preserve complete sentences around overlap boundaries."""
     sentences = [f"Sentence {index} contains reliable Kubernetes evidence." for index in range(80)]
@@ -26,6 +27,7 @@ def test_long_text_chunks_end_and_restart_on_sentence_boundaries():
     assert all(len(chunk["text"]) <= 1000 for chunk in chunks)
 
 
+# Learner Note: Test large document embeddings are processed in bounded batches is part of the automated regression suite.
 def test_large_document_embeddings_are_processed_in_bounded_batches(monkeypatch):
     """Large documents must never build one unbounded embedding/upsert request."""
     embedded_batch_sizes = []

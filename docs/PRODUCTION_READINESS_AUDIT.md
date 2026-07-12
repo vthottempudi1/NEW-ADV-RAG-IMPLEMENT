@@ -1,17 +1,31 @@
 # Production Readiness Audit
 
-Date: July 11, 2026
+Date: July 12, 2026
 
 ## Verdict
 
 The repository is a strong production-minded portfolio system, but it is not honest to call
 any RAG system perfect or fully production-certified from a single evaluation run. The local
 build is functional and substantially better protected against ambiguous and noisy retrieval.
-AWS still runs the previously validated release until the new image completes release review.
+AWS still runs the previously validated release until a new image completes release review.
 
 ## Verified Gates
 
-- 105 unit, integration, contract, and frontend-component tests passed.
+- 167 unit, integration, contract, and frontend-component tests passed after the evaluator,
+  clarification, sealed-v4 regression, sealed-v5 contract, and CI changes.
+- All five deterministic CI evaluation partitions passed with exact source precision and source
+  recall gates set to 1.000.
+- Ruff and Git whitespace validation passed.
+- The v2 evaluation corpus contains 49 authoritative and 316 noisy sources and uses
+  sentence-aware, metadata-rich chunks.
+- The main regression reached faithfulness 0.939, context precision 1.000, context recall 0.983,
+  answer relevancy 0.983, source precision 0.958, and source recall 1.000.
+- Sealed v4 was consumed once with 0.907 faithfulness, perfect context precision/recall, 0.958
+  answer relevancy, 1.000 source precision, and 0.950 source recall. Its three strict findings moved
+  into regression, and sealed v5 remains checksummed for the next one-time measurement.
+
+- At the earlier ambiguity-hardening checkpoint, 105 unit, integration, contract, and
+  frontend-component tests passed.
 - Ruff passed across application, evaluation, test, and UI code.
 - Ten unseen ambiguous questions produced clarification with no sources or chunks.
 - Six live Docker presets passed, including RAG, SQL, hybrid, HyDE, CRAG, and SRAG paths.

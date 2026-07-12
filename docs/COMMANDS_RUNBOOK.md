@@ -523,6 +523,9 @@ Cheap deterministic CI smoke:
     --filter hybrid `
     --mode fixture `
     --scorer heuristic `
+    --strict `
+    --min-source-precision 1.0 `
+    --min-source-recall 1.0 `
     --output evals/reports/results/manual_fixture_hybrid.json
 ```
 
@@ -560,6 +563,18 @@ Deployed AWS evaluation:
 
 LLM evaluation uses paid API calls. Do not confuse fixture heuristic metrics with
 production LLM-judge metrics.
+
+Holdout lifecycle:
+
+1. Freeze code, collection, models, cache schema, and dataset checksum.
+2. Run a sealed holdout once with the documented strict thresholds.
+3. Preserve the first valid result in the curated summary.
+4. Move discovered cases into a development regression dataset.
+5. Use a new sealed dataset for the next unbiased measurement.
+
+Do not commit `evals/reports/results/*.json`. Raw reports remain local or are uploaded as
+access-controlled CI artifacts; update `evals/reports/EVALUATION_SUMMARY_20260712.md` with curated
+metrics and provenance.
 
 ## 14. Load Tests
 

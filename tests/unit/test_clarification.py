@@ -45,6 +45,7 @@ def test_specific_kubernetes_action_does_not_require_clarification(question):
     assert detect_clarification_need(question) is None
 
 
+# Learner Note: Test additional underspecified requests require clarification is part of the automated regression suite.
 @pytest.mark.parametrize(
     "question",
     [

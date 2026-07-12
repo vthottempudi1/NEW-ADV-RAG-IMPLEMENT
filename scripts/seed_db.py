@@ -113,6 +113,7 @@ def _select_corpus(
     return true_files, noisy_files
 
 
+# Learner Note: Select manifest corpus is part of the operational tooling layer.
 def _select_manifest_corpus(
     manifest_path: Path,
     *,

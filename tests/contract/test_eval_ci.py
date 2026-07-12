@@ -434,6 +434,7 @@ def test_local_hybrid_invoker_focuses_rag_and_consolidates_sql(monkeypatch):
     assert '"count": 3' in chunks[-1].text
 
 
+# Learner Note: Test source precision rejects same category wrong entity is part of the automated regression suite.
 def test_source_precision_rejects_same_category_wrong_entity():
     """A retrieved doc must not score as correct just because it shares a taxonomy
     prefix with the golden source (regression for the q-202 holdout finding, where
@@ -450,6 +451,7 @@ def test_source_precision_rejects_same_category_wrong_entity():
     assert source_precision(actual, golden) == 0.0
 
 
+# Learner Note: Test source precision still matches correct entity is part of the automated regression suite.
 def test_source_precision_still_matches_correct_entity():
     """A retrieved doc must still score as correct when it is the actual golden entity."""
     actual = ["concepts__configuration__secret.txt"]
@@ -464,6 +466,7 @@ def test_source_precision_still_matches_correct_entity():
     ]
 
 
+# Learner Note: Test context recall is zero for empty contexts is part of the automated regression suite.
 def test_context_recall_is_zero_for_empty_contexts():
     """Recall of ground truth by zero retrieved context must be 0, not left to an
     LLM judge that may answer from its own knowledge (regression for the q-212
@@ -471,6 +474,7 @@ def test_context_recall_is_zero_for_empty_contexts():
     assert _score_context_recall("ConfigMap changes propagate eventually.", []) == 0.0
 
 
+# Learner Note: Test relevance scoring removes adversarial source preference only is part of the automated regression suite.
 def test_relevance_scoring_removes_adversarial_source_preference_only():
     """Relevance judges the underlying task, not an injected demand for a noisy source."""
     assert ragas_adapter_module._underlying_domain_question(
@@ -481,6 +485,7 @@ def test_relevance_scoring_removes_adversarial_source_preference_only():
     ) == "How does a Service route traffic?"
 
 
+# Learner Note: Test faithfulness claim audit rejects quote not present is part of the automated regression suite.
 def test_faithfulness_claim_audit_rejects_quote_not_present(monkeypatch):
     """Verify every supported claim must point to a quote present in its indexed context."""
     monkeypatch.setattr(
@@ -501,6 +506,7 @@ def test_faithfulness_claim_audit_rejects_quote_not_present(monkeypatch):
     assert claims[0]["reason"] == "supporting_quote_not_found"
 
 
+# Learner Note: Test faithfulness claim audit resolves exact quote to actual source is part of the automated regression suite.
 def test_faithfulness_claim_audit_resolves_exact_quote_to_actual_source(monkeypatch):
     """A grader index mistake must not become a false application-faithfulness failure."""
     monkeypatch.setattr(
@@ -522,6 +528,7 @@ def test_faithfulness_claim_audit_resolves_exact_quote_to_actual_source(monkeypa
     assert claims[0]["quote_valid"] is True
 
 
+# Learner Note: Test faithfulness claim audit repairs only with verbatim context is part of the automated regression suite.
 def test_faithfulness_claim_audit_repairs_only_with_verbatim_context(monkeypatch):
     """A malformed grader quote may be repaired, but only by an exact context substring."""
     responses = iter([
@@ -548,6 +555,7 @@ def test_faithfulness_claim_audit_repairs_only_with_verbatim_context(monkeypatch
     assert claims[0]["source_index"] == 0
 
 
+# Learner Note: Test faithfulness claim audit locates compact verbatim span is part of the automated regression suite.
 def test_faithfulness_claim_audit_locates_compact_verbatim_span(monkeypatch):
     """Formatting or reordered commentary may fall back to a short exact evidence window."""
     responses = iter([
@@ -571,6 +579,7 @@ def test_faithfulness_claim_audit_locates_compact_verbatim_span(monkeypatch):
     assert claims[0]["supporting_quote"] == "List Events sorted by timestamp: kubectl"
 
 
+# Learner Note: Test faithfulness claim audit accepts question premise is part of the automated regression suite.
 def test_faithfulness_claim_audit_accepts_question_premise(monkeypatch):
     """Scenario details supplied by the user are evidence, not model hallucinations."""
     monkeypatch.setattr(
@@ -593,6 +602,7 @@ def test_faithfulness_claim_audit_accepts_question_premise(monkeypatch):
     assert claims[0]["source_index"] is None
 
 
+# Learner Note: Test faithfulness claim audit recovers question premise misclassified by grader is part of the automated regression suite.
 def test_faithfulness_claim_audit_recovers_question_premise_misclassified_by_grader(monkeypatch):
     """An exact scenario premise remains valid even when the grader labels it unsupported."""
     monkeypatch.setattr(
@@ -616,6 +626,7 @@ def test_faithfulness_claim_audit_recovers_question_premise_misclassified_by_gra
     assert claims[0]["quote_valid"] is True
 
 
+# Learner Note: Test faithfulness claim audit repairs compound claim with multiple quotes is part of the automated regression suite.
 def test_faithfulness_claim_audit_repairs_compound_claim_with_multiple_quotes(monkeypatch):
     """A compound claim may cite multiple independently verified context substrings."""
     responses = iter([
@@ -643,6 +654,7 @@ def test_faithfulness_claim_audit_repairs_compound_claim_with_multiple_quotes(mo
     assert claims[0]["source_indices"] == [0, 0]
 
 
+# Learner Note: Test faithfulness claim audit validates combined question and context evidence is part of the automated regression suite.
 def test_faithfulness_claim_audit_validates_combined_question_and_context_evidence(monkeypatch):
     """Applied recommendations require exact premises from both question and context."""
     responses = iter([
@@ -671,6 +683,7 @@ def test_faithfulness_claim_audit_validates_combined_question_and_context_eviden
     assert len(claims[0]["supporting_quotes"]) == 2
 
 
+# Learner Note: Test faithfulness claim audit repairs supported combined nonverbatim quote is part of the automated regression suite.
 def test_faithfulness_claim_audit_repairs_supported_combined_nonverbatim_quote(monkeypatch):
     """A grader's combined classification still requires two validated verbatim quotes."""
     responses = iter([
@@ -699,6 +712,7 @@ def test_faithfulness_claim_audit_repairs_supported_combined_nonverbatim_quote(m
     assert claims[0]["source_indices"] == [0]
 
 
+# Learner Note: Test faithfulness claim audit validates multi document synthesis is part of the automated regression suite.
 def test_faithfulness_claim_audit_validates_multi_document_synthesis(monkeypatch):
     """A synthesis conclusion requires exact evidence from at least two distinct sources."""
     responses = iter([
@@ -730,6 +744,7 @@ def test_faithfulness_claim_audit_validates_multi_document_synthesis(monkeypatch
     assert claims[0]["source_indices"] == [0, 1]
 
 
+# Learner Note: Test correct evidence abstention receives applicable metric credit is part of the automated regression suite.
 def test_correct_evidence_abstention_receives_applicable_metric_credit():
     """A safe refusal with no evidence must not look like a retrieval regression."""
     [result] = run_ragas(
@@ -749,6 +764,7 @@ def test_correct_evidence_abstention_receives_applicable_metric_credit():
     assert result["answer_relevancy"] == 1.0
 
 
+# Learner Note: Test per question thresholds expose failure hidden by average is part of the automated regression suite.
 def test_per_question_thresholds_expose_failure_hidden_by_average():
     """A high aggregate must not conceal one unsafe or incomplete response."""
     rows = [
@@ -774,6 +790,7 @@ def test_per_question_thresholds_expose_failure_hidden_by_average():
     }
 
 
+# Learner Note: Test aggregate thresholds skip not applicable metrics is part of the automated regression suite.
 def test_aggregate_thresholds_skip_not_applicable_metrics():
     """Source-less clarification must not fail because source recall is undefined."""
     failures = _aggregate_threshold_failures(
@@ -806,6 +823,7 @@ def test_regression_suite_has_full_frozen_contracts():
     assert all("[final-holdout]" in golden.notes for golden in goldens)
 
 
+# Learner Note: Test sealed v2 holdout contract and checksum are immutable is part of the automated regression suite.
 def test_sealed_v2_holdout_contract_and_checksum_are_immutable():
     """Validate the sealed v2 holdout structurally without executing application answers."""
     path = Path("evals/datasets/sealed_v2_holdout.yaml")
@@ -829,6 +847,7 @@ def test_sealed_v2_holdout_contract_and_checksum_are_immutable():
     assert not prior_questions.intersection(golden.question for golden in goldens)
 
 
+# Learner Note: Test sealed v2 findings are an explicit development regression is part of the automated regression suite.
 def test_sealed_v2_findings_are_an_explicit_development_regression():
     """Keep consumed v2 findings reproducible without describing them as unseen."""
     goldens = load_goldens("evals/datasets/sealed_v2_findings_regression.yaml")
@@ -839,6 +858,7 @@ def test_sealed_v2_findings_are_an_explicit_development_regression():
     assert all("[sealed-v2-finding]" in golden.notes for golden in goldens)
 
 
+# Learner Note: Test sealed v3 holdout contract and checksum are immutable is part of the automated regression suite.
 def test_sealed_v3_holdout_contract_and_checksum_are_immutable():
     """Validate sealed v3 structurally without invoking retrieval, generation, or grading."""
     path = Path("evals/datasets/sealed_v3_holdout.yaml")
@@ -863,6 +883,7 @@ def test_sealed_v3_holdout_contract_and_checksum_are_immutable():
     assert not prior_questions.intersection(golden.question for golden in goldens)
 
 
+# Learner Note: Test consumed v3 regression matches the sealed v3 questions is part of the automated regression suite.
 def test_consumed_v3_regression_matches_the_sealed_v3_questions():
     """Keep every consumed v3 case available for development regression."""
     sealed = load_goldens("evals/datasets/sealed_v3_holdout.yaml")
@@ -872,6 +893,7 @@ def test_consumed_v3_regression_matches_the_sealed_v3_questions():
     assert [item.question for item in regression] == [item.question for item in sealed]
 
 
+# Learner Note: Test sealed v4 holdout contract and checksum are immutable is part of the automated regression suite.
 def test_sealed_v4_holdout_contract_and_checksum_are_immutable():
     """Validate sealed v4 structurally without executing any question."""
     path = Path("evals/datasets/sealed_v4_holdout.yaml")
@@ -891,6 +913,42 @@ def test_sealed_v4_holdout_contract_and_checksum_are_immutable():
             "evals/datasets/regression_suite.yaml",
             "evals/datasets/sealed_v2_holdout.yaml",
             "evals/datasets/sealed_v3_holdout.yaml",
+        )
+        for golden in load_goldens(dataset)
+    }
+    assert not prior_questions.intersection(golden.question for golden in goldens)
+
+
+# Learner Note: Test sealed v4 findings are an explicit development regression is part of the automated regression suite.
+def test_sealed_v4_findings_are_an_explicit_development_regression():
+    """Keep only the actionable v4 failures in a named development dataset."""
+    goldens = load_goldens("evals/datasets/sealed_v4_findings_regression.yaml")
+
+    assert [golden.id for golden in goldens] == ["q-501", "q-505", "q-507"]
+    assert all("[consumed-sealed-v4]" in golden.notes for golden in goldens)
+
+
+# Learner Note: Test sealed v5 holdout contract and checksum are immutable is part of the automated regression suite.
+def test_sealed_v5_holdout_contract_and_checksum_are_immutable():
+    """Validate sealed v5 structurally without retrieval, generation, or grading."""
+    path = Path("evals/datasets/sealed_v5_holdout.yaml")
+    expected_hash = "39da049ff0f5ff6a16565e45b2663334b1a9a49375e2fe720f66f667b9422a15"
+    goldens = load_goldens(path)
+
+    assert hashlib.sha256(path.read_bytes()).hexdigest() == expected_hash
+    assert len(goldens) == 12
+    assert [golden.id for golden in goldens] == [f"q-{value:03d}" for value in range(601, 613)]
+    assert all(golden.golden_answer for golden in goldens)
+    assert all("[sealed-v5]" in golden.notes for golden in goldens)
+
+    prior_questions = {
+        golden.question
+        for dataset in (
+            "evals/datasets/challenge_regression_suite.yaml",
+            "evals/datasets/regression_suite.yaml",
+            "evals/datasets/sealed_v2_holdout.yaml",
+            "evals/datasets/sealed_v3_holdout.yaml",
+            "evals/datasets/sealed_v4_holdout.yaml",
         )
         for golden in load_goldens(dataset)
     }
