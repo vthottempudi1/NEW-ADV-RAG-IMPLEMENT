@@ -23,6 +23,8 @@ services:
       dockerfile: infra/docker/streamlit.Dockerfile
     depends_on:
       - app
+    environment:
+      API_BASE_URL: http://app:8000
     ports:
       - "8501:8501"
 

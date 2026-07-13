@@ -2,29 +2,34 @@
 
 # New Advanced RAG Implement
 
-Production-minded enterprise RAG backend with hybrid retrieval, SQL routing, human-in-the-loop SQL approval, `sqlglot`-based SQL safety, AWS deployment, evaluation workflows, and GitHub Actions CI.
+Production-minded enterprise RAG platform with advanced retrieval, governed Text-to-SQL, 9-layer guardrails, five active cache tiers, S3 document storage, AWS deployment, and evaluation-driven quality gates.
 
 ![Python](https://img.shields.io/badge/python-3.12-blue)
 ![FastAPI](https://img.shields.io/badge/FastAPI-backend-009688)
 ![Qdrant](https://img.shields.io/badge/Qdrant-vector_search-DC244C)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-structured_data-4169E1)
+![S3](https://img.shields.io/badge/Amazon_S3-document_storage-569A31)
+![Redis](https://img.shields.io/badge/Upstash_Redis-5_cache_tiers-00E9A3)
 ![LangGraph](https://img.shields.io/badge/LangGraph-orchestration-1C3C3C)
+![Security](https://img.shields.io/badge/Security-9_layer_guardrails-7A1FA2)
 ![CI](https://img.shields.io/badge/CI-GitHub_Actions-success)
 
-**Enterprise RAG + Text-to-SQL + Hybrid Routing + Guardrails + HITL**
+**Enterprise RAG + Text-to-SQL + Hybrid Routing + 9-Layer Guardrails + HITL + 5-Tier Cache**
 
 </div>
 
-Built with FastAPI, PostgreSQL, Qdrant, Upstash Redis with in-memory fallback, LangGraph, OpenAI, Docker, Pytest, ECS Fargate, Route 53, ACM, and CloudWatch.
+Built with FastAPI, PostgreSQL, Qdrant Cloud, Upstash Redis with in-memory fallback, Amazon S3 document storage, LangGraph, OpenAI, Docker, Pytest, ECS Fargate, Route 53, ACM, and CloudWatch.
 
-Operational policies: [Security](SECURITY.md) · [Data handling](docs/DATA_HANDLING.md) · [Reliability and recovery](docs/RELIABILITY.md) · [AWS deployment](AWS_DEPLOYMENT.md)
+Operational policies: [Security](docs/SECURITY.md) · [Data handling](docs/DATA_HANDLING.md) · [Reliability and recovery](docs/RELIABILITY.md) · [AWS deployment](docs/AWS_DEPLOYMENT.md)
 
 This repository is designed to demonstrate the kind of engineering depth hiring managers usually look for in strong GenAI backend projects:
 
 - advanced retrieval beyond basic vector search
 - safer SQL generation with explicit approval flow
-- security and guardrails as a layered system
-- operational visibility through admin endpoints and caching
+- nine explicit security and guardrail checkpoints
+- five active cache tiers with cache-hit and saved-cost telemetry
+- S3-backed source-document storage separated from Qdrant-derived vectors
+- operational visibility through admin endpoints, CloudWatch, and alarms
 - evaluation and CI, not just demo-time prompting
 
 ## Why This Project Stands Out
@@ -37,8 +42,9 @@ This project goes further by combining:
 - structured SQL question answering
 - hybrid SQL + RAG responses
 - duplicate-safe ingestion
-- multi-tier caching
-- guardrails and operational controls
+- five active query-time cache tiers
+- nine-layer guardrails and operational controls
+- local/S3 document storage behind one storage interface
 - evaluation-driven retrieval tuning
 - CI validation for both tests and eval-smoke runs
 
@@ -104,7 +110,7 @@ The deployed application also supports two operator-facing modes:
    Dense, sparse, hybrid, HyDE, CRAG, SRAG, reranking
 
 5. Data layer
-   PostgreSQL for structured data and users, Qdrant for vectors, Redis-style cache for query-time acceleration
+   PostgreSQL for structured data and users, Qdrant for vectors, S3 for source documents, and Redis-style cache for query-time acceleration
 
 6. Evaluation and CI layer
    Pytest, fixture-based eval-smoke runs, GitHub Actions
@@ -153,6 +159,13 @@ Retrieval Layer           SQL Layer
                  |
                  v
             Final Response
+
+Data and operations:
+  |-- PostgreSQL: users, incidents, and structured records
+  |-- Qdrant Cloud: embeddings, chunks, and retrieval metadata
+  |-- Amazon S3: uploaded source-document storage
+  |-- Upstash Redis: five active query-time cache tiers
+  |-- CloudWatch: logs, dashboards, metrics, and alarms
 ```
 
 ## Retrieval Features
@@ -306,8 +319,8 @@ python -m evals.runners.run `
   --scorer llm `
   --api-base "https://api.example.com" `
   --environment production `
-  --true-documents 50 `
-  --noisy-documents 324
+  --true-documents 49 `
+  --noisy-documents 314
 ```
 
 Provenance fields deliberately exclude credentials and API keys.
@@ -319,12 +332,15 @@ Current evaluation governance:
 - strict thresholds are checked per question and in aggregate;
 - consumed holdouts move into regression and checksummed sealed sets run once;
 - raw JSON stays local or in access-controlled CI artifacts;
-- versioned evidence is in [the curated July 12 evaluation summary](evals/reports/EVALUATION_SUMMARY_20260712.md).
+- commands and dataset lifecycle are in the [Enterprise RAG Evaluation Guide](evals/datasets/EVALUATION_GUIDE.md);
+- versioned evidence is in [the Cloud-v2 release evaluation summary](evals/reports/EVALUATION_SUMMARY_20260712.md).
 
-The latest complete local validation passed Ruff, all five deterministic CI evaluation
-partitions, and 172 automated tests. The consumed sealed-v5 findings regression passed strict gates
-with 0.975 faithfulness, 1.000 context precision, 0.979 context recall, 1.000 answer relevancy, and
-1.000 source precision/recall.
+The finalized Cloud-v2 release uses 34,420 chunks across 363 sources: all 49 authoritative sources
+and 314 noisy distractors. The 40-question challenge achieved 0.965 faithfulness, 0.992 context
+precision, 0.976 context recall, 0.978 answer relevancy, 0.975 source precision, and 0.944 source
+recall. The 12-question regression achieved 0.963 faithfulness and perfect source precision/recall.
+Both recorded zero forbidden-answer, forbidden-source, and route violations. Complete local
+verification passed Ruff, compilation, documentation checks, whitespace validation, and 178 tests.
 
 ## Project Structure
 

@@ -23,10 +23,13 @@ if hasattr(sys.stdout, "reconfigure"):
 if hasattr(sys.stderr, "reconfigure"):
     sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 
-app.include_router(admin_router)
-app.include_router(auth_router)
-app.include_router(documents_router)
-app.include_router(query_router)
+# Legacy aliases remain callable by the deployed Streamlit client and older API consumers, but
+# they are hidden from OpenAPI so Swagger presents one canonical versioned API instead of duplicate
+# Admin, Auth, Documents, and Query operations.
+app.include_router(admin_router, include_in_schema=False)
+app.include_router(auth_router, include_in_schema=False)
+app.include_router(documents_router, include_in_schema=False)
+app.include_router(query_router, include_in_schema=False)
 
 # Enterprise clients can migrate to an explicitly versioned URL while the legacy
 # routes remain available for the currently deployed frontend and API consumers.

@@ -20,6 +20,19 @@ def test_versioned_auth_alias_matches_legacy_contract():
     assert versioned.status_code == legacy.status_code
 
 
+# Learner Note: Swagger should document only canonical versioned routes while aliases stay callable.
+def test_openapi_hides_legacy_route_aliases():
+    """Prevent duplicate Admin, Auth, Documents, and Query operations in generated API docs."""
+    paths = client.get("/openapi.json").json()["paths"]
+
+    assert "/api/v1/auth/login" in paths
+    assert "/api/v1/query" in paths
+    assert "/api/v1/admin/health" in paths
+    assert "/auth/login" not in paths
+    assert "/query" not in paths
+    assert "/admin/health" not in paths
+
+
 # Learner note: Verifies test login requires valid json shape so future changes cannot silently break this expected behavior.
 def test_login_requires_valid_json_shape():
     """Verify that login requires valid json shape.

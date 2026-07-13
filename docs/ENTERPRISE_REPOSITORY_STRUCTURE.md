@@ -2,6 +2,9 @@
 
 The repository is organized by deployable boundary, business capability, and test layer.
 
+This is the canonical July 2026 layout. New code should extend these boundaries instead of
+reintroducing retired compatibility paths.
+
 ```text
 app/
   api/v1/          Versioned HTTP endpoints
@@ -23,9 +26,9 @@ tests/
   e2e/             Browser/deployed journeys
   fixtures/        Shared non-secret test assets
 evals/
-  datasets/        Golden questions and schemas
+  datasets/        Development, regression, holdout, and schema assets
   runners/         Invokers, profiles, scoring, and CLI
-  reports/         Reporting code and retained result artifacts
+  reports/         Curated summaries; raw JSON stays ignored/controlled
 ui/streamlit/      Independent frontend application
 infra/
   docker/          Container build definitions
@@ -37,11 +40,13 @@ loadtests/         k6 performance and resilience tests
 docs/              Architecture, operations, security, and compliance docs
 ```
 
-## Compatibility Policy
+## Canonical Import Policy
 
-The old `app.services`, `app.api.<endpoint>`, and uppercase `Eval` paths remain as
-thin import bridges for one migration window. New code and CI use only canonical
-paths. This avoids breaking existing consumers while preventing new architectural debt.
+Evaluation code lives under lowercase `evals`, and versioned HTTP endpoints live
+under `app.api.v1`. Retired uppercase `Eval` and unversioned `app.api.<endpoint>`
+bridges must not be restored; keeping one canonical path prevents case-sensitive
+deployment failures and duplicate-looking modules. The separate `app.services`
+bridges remain temporarily for service-layer migration compatibility.
 
 ## Dependency Direction
 
@@ -49,3 +54,13 @@ API and UI layers may call domain packages. Domain packages may depend on core
 models, security utilities, storage ports, and observability helpers. Storage and
 security packages must not import API or UI code. Evaluation code may invoke public
 service boundaries but is never imported by production request handling.
+
+## Maturity Boundaries
+
+- `infra/terraform` is an import-first boundary, not yet the authoritative deployment path.
+- `db/migrations` contains ordered SQL, not a complete Alembic upgrade/downgrade history.
+- `tests/e2e` has frontend-component coverage; full Playwright browser journeys remain future work.
+- `app/observability` provides request/cost telemetry; distributed tracing remains a gap.
+- Raw evaluation reports are operational artifacts; only curated summaries belong in Git.
+
+Directory names must not be interpreted as proof that these remaining capabilities are complete.

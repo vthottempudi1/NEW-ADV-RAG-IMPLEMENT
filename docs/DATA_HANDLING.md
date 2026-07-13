@@ -1,5 +1,7 @@
 # Data Handling Policy
 
+**Reviewed:** July 13, 2026 for the Qdrant Cloud-v2 release
+
 ## Scope
 
 This policy covers documents uploaded for retrieval, generated embeddings, query text, SQL results, evaluation artifacts, logs, and cached responses.
@@ -28,10 +30,22 @@ The demo corpus must contain only public or intentionally synthetic data. Produc
 - Request IDs may be logged for correlation.
 - Evaluation output may contain questions, answers, retrieved context, and source names. Store it as confidential unless the corpus is demonstrably public.
 - Production evaluation artifacts should record environment and corpus counts, but never credentials or secret ARNs.
+- Raw evaluation JSON is excluded from Git and should be retained only as an access-controlled,
+  time-limited artifact. Curated summaries may be versioned after data and secret review.
 
 ## Retention and deletion
 
 This portfolio deployment does not promise a regulatory retention period. Before handling real enterprise data, configure explicit lifecycle rules for S3, CloudWatch Logs, PostgreSQL backups, Qdrant snapshots, Redis TTLs, and evaluation artifacts. A deletion request must remove the original object, derived chunks and embeddings, cached answers, and retained evaluation traces where applicable.
+
+Deletion must be verified across S3, Qdrant, Redis, PostgreSQL metadata, logs, backups, and
+evaluation artifacts. Removing only the uploaded object is incomplete deletion.
+
+## Required production controls
+
+- Enable S3 encryption, versioning, lifecycle rules, access logging, and least-privilege IAM.
+- Apply tenant and ACL metadata consistently to storage keys, vectors, caches, SQL, and audit records.
+- Define tested procedures for access requests, deletion, legal hold, and key rotation.
+- Test Qdrant and RDS/S3 restoration; a configured backup is not proven until restored.
 
 ## Prohibited data
 

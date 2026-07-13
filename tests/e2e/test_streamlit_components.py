@@ -13,6 +13,14 @@ def _render_payload(payload):
     _render_answer_card(payload)
 
 
+# Learner Note: Render dependency health in isolation to protect the sidebar status contract.
+def _render_dependency_health(payload):
+    """Import and render the dependency health component inside an AppTest context."""
+    from ui.streamlit.app import _render_health_card
+
+    _render_health_card(payload)
+
+
 # Learner Note: Every presentation preset must map to a supported backend request shape.
 def test_frontend_presets_have_complete_retrieval_configuration():
     """Verify that all hiring-demo presets define every required query control."""
@@ -31,6 +39,30 @@ def test_frontend_presets_have_complete_retrieval_configuration():
     for preset in USE_CASES.values():
         assert required <= preset.keys()
         assert preset["question"].strip()
+
+
+# Learner Note: The Ping Backend result must show each infrastructure dependency under the button.
+def test_frontend_renders_dependency_connectivity():
+    """Verify PostgreSQL, Qdrant, Redis, and S3 connectivity badges render together."""
+    payload = {
+        "status": "degraded",
+        "active_collection": "new_adv_rag_documents_v2",
+        "dependencies": {
+            "postgres": {"status": "connected", "latency_ms": 12.0},
+            "qdrant": {"status": "connected", "latency_ms": 24.0},
+            "redis": {"status": "unavailable", "latency_ms": 40.0},
+            "s3": {"status": "connected", "latency_ms": 18.0},
+        },
+    }
+
+    app = AppTest.from_function(_render_dependency_health, args=(payload,)).run()
+
+    assert not app.exception
+    rendered = " ".join(item.value for item in app.markdown)
+    assert "postgres: connected" in rendered
+    assert "qdrant: connected" in rendered
+    assert "redis: unavailable" in rendered
+    assert "s3: connected" in rendered
 
 
 # Learner Note: Clarification must render as a successful no-source UI state.

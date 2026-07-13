@@ -1,7 +1,12 @@
+import asyncio
+import logging
 import os
 import sys
+import time
+from collections.abc import Callable
 from typing import Any, Literal
 
+import psycopg2
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 
@@ -15,8 +20,62 @@ from app.middleware.auth import User, require_admin
 from app.middleware.rate_limiter import get_rate_limit_count
 from app.rag.vector_store import get_client
 from app.security.token_budget import clear_budget_usage, get_budget_usage
+from app.storage.s3_storage import S3Storage
 
 router = APIRouter(prefix="/admin", tags=["admin"])
+logger = logging.getLogger(__name__)
+
+
+# Learner Note: The PostgreSQL probe verifies the structured-data dependency without reading data.
+def _probe_postgres() -> None:
+    """Execute a bounded, read-only PostgreSQL connectivity check."""
+    with psycopg2.connect(settings.database_url, connect_timeout=3) as connection:
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT 1")
+            cursor.fetchone()
+
+
+# Learner Note: The Qdrant probe confirms that the configured release collection is available.
+def _probe_qdrant() -> None:
+    """Verify that Qdrant can return metadata for the configured collection."""
+    get_client().get_collection(settings.qdrant_collection)
+
+
+# Learner Note: Redis is optional for correctness but its availability affects cache performance.
+def _probe_redis() -> None:
+    """Verify that the configured distributed Redis cache responds to PING."""
+    client = query_cache._redis_client
+    if client is None:
+        raise RuntimeError("redis client unavailable")
+    client.ping()
+
+
+# Learner Note: The S3 probe checks bucket access without listing or downloading private objects.
+def _probe_s3() -> None:
+    """Verify access to the configured S3 document-storage bucket."""
+    storage = S3Storage()
+    storage.client.head_bucket(Bucket=storage.bucket)
+
+
+# Learner Note: Every dependency probe has the same safe status and latency response contract.
+async def _run_dependency_probe(
+    name: str,
+    probe: Callable[[], None],
+    *,
+    timeout_seconds: float = 4.0,
+) -> tuple[str, dict[str, Any]]:
+    """Run one blocking dependency probe in a worker thread with a strict timeout."""
+    started_at = time.perf_counter()
+    try:
+        await asyncio.wait_for(asyncio.to_thread(probe), timeout=timeout_seconds)
+        status = "connected"
+    except Exception as exc:
+        status = "unavailable"
+        logger.warning("dependency_probe_failed dependency=%s error=%s", name, type(exc).__name__)
+    return name, {
+        "status": status,
+        "latency_ms": round((time.perf_counter() - started_at) * 1000, 2),
+    }
 
 
 # Learner Note: Cache clear request is part of the versioned HTTP API boundary.
@@ -42,23 +101,34 @@ async def health_check(user: User = Depends(require_admin)) -> dict[str, Any]:
     Learner Note:
         The async boundary prevents request handling from blocking unrelated work.
     """
-    qdrant_ok = False
-    qdrant_collection = None
-
-    try:
-        client = get_client()
-        collections = client.get_collections().collections
-        qdrant_ok = True
-        qdrant_collection = settings.qdrant_collection if any(
-            c.name == settings.qdrant_collection for c in collections
-        ) else None
-    except Exception as exc:
-        qdrant_collection = {"error": str(exc)}
+    probes = {
+        "postgres": _probe_postgres,
+        "qdrant": _probe_qdrant,
+        "redis": _probe_redis,
+        "s3": _probe_s3,
+    }
+    dependencies = dict(
+        await asyncio.gather(
+            *(_run_dependency_probe(name, probe) for name, probe in probes.items())
+        )
+    )
+    critical_connected = all(
+        dependencies[name]["status"] == "connected"
+        for name in ("postgres", "qdrant")
+    )
+    all_connected = all(
+        result["status"] == "connected" for result in dependencies.values()
+    )
+    overall_status = "ok" if all_connected else "degraded" if critical_connected else "unhealthy"
 
     return {
-        "status": "ok" if qdrant_ok else "degraded",
-        "qdrant": qdrant_ok,
-        "active_collection": qdrant_collection,
+        "status": overall_status,
+        "dependencies": dependencies,
+        "active_collection": (
+            settings.qdrant_collection
+            if dependencies["qdrant"]["status"] == "connected"
+            else None
+        ),
     }
 
 

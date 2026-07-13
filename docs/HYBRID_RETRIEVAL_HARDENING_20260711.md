@@ -1,5 +1,10 @@
 # Hybrid Retrieval Hardening - 2026-07-11
 
+> **Historical note updated July 13, 2026:** This document records the original hybrid-route fix.
+> The production-candidate release now uses Cloud-v2 sentence-aware chunks, semantic evidence-family
+> planning, and `RAG_CACHE_SCHEMA_VERSION = 52`. Schema 15 and the local scores below are historical
+> checkpoints, not current release evidence.
+
 ## Changes
 
 - Split mixed SQL + RAG questions into a focused document-retrieval question before retrieval.
@@ -75,4 +80,23 @@ The new-question heuristic scores are useful for regression comparison within th
 - Local Qdrant: green, `1,179` points
 - Local PostgreSQL: seeded for the mixed-route evaluation
 
-These changes are verified locally and are not yet deployed to AWS.
+## Final Release Status
+
+The original mixed-query decomposition remains part of the current implementation. Later work added
+clarification for underspecified questions, exact source gates, CRAG evidence preservation,
+authoritative alternatives, claim-level faithfulness checks, and cache-schema invalidation.
+
+Final Qdrant Cloud-v2 evidence:
+
+| Metric | 40-question challenge | 12-question regression |
+|---|---:|---:|
+| Faithfulness | 0.965 | 0.963 |
+| Context precision | 0.992 | 0.965 |
+| Context recall | 0.976 | 0.986 |
+| Answer relevancy | 0.978 | 0.983 |
+| Source precision | 0.975 | 1.000 |
+| Source recall | 0.944 | 1.000 |
+
+Both complete runs recorded zero route, forbidden-answer, and forbidden-source violations. See the
+[release evaluation summary](../evals/reports/EVALUATION_SUMMARY_20260712.md) for provenance and the
+two documented residual cases.

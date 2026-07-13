@@ -4,7 +4,7 @@ import ast
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-PYTHON_ROOTS = ("app", "evals", "Eval", "scripts", "tests", "ui")
+PYTHON_ROOTS = ("app", "evals", "scripts", "tests", "ui")
 
 
 # Learner Note: Guard the production-oriented directory boundaries against regression.

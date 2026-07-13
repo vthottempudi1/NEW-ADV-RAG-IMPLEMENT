@@ -34,7 +34,7 @@ jobs:
         run: pip install ".[dev]"
 
       - name: Lint application, evaluation, UI, scripts, and tests
-        run: ruff check app evals Eval scripts ui tests
+        run: ruff check app evals scripts ui tests
 
       - name: Enforce complete learner documentation
         run: python scripts/add_learner_docs.py && git diff --exit-code

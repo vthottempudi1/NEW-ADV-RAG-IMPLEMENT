@@ -1,5 +1,7 @@
 # Reliability, SLO, Backup, and Recovery Policy
 
+**Reviewed:** July 13, 2026 for the Qdrant Cloud-v2/schema-52 release
+
 ## Service objectives
 
 These are initial portfolio targets, not contractual guarantees.
@@ -13,7 +15,9 @@ These are initial portfolio targets, not contractual guarantees.
 | Server error rate | Under 1% over 15 minutes | ALB HTTP 5xx count divided by request count |
 | Evaluation completion | 100% infrastructure completion | Completed cases divided by scheduled cases |
 
-The July 2026 validation established good availability and warm-RAG latency, but mixed-flow latency and one evaluation `504` did not meet all objectives. These remain known improvement areas.
+Earlier July validation established good availability and warm-RAG latency. The final Cloud-v2
+evaluation established strong quality, but it is not a sustained capacity or SLO test. Mixed-flow
+latency, concurrency, soak behavior, and dependency recovery remain release gates.
 
 ## Alert policy
 
@@ -39,7 +43,7 @@ CloudWatch alarms cover ALB 5xx responses and response time, ECS CPU and memory,
 1. Identify the failed dependency and freeze writes if corruption is suspected.
 2. Restore PostgreSQL to a new instance or point in time.
 3. Restore source documents from S3 and Qdrant from a snapshot, or rebuild embeddings from sources.
-4. deploy the last known-good immutable backend and UI images.
+4. Deploy the last known-good immutable backend and UI images.
 5. Clear Redis caches to prevent stale or cross-version responses.
 6. Run health checks, authentication smoke tests, RAG evaluation smoke, and SQL approval smoke tests.
 7. Re-enable traffic and record actual RTO and data loss.
@@ -47,3 +51,12 @@ CloudWatch alarms cover ALB 5xx responses and response time, ECS CPU and memory,
 ## Multi-AZ and disaster recovery
 
 ECS and ALB can span multiple availability zones, but the repository does not yet prove a complete Multi-AZ database and vector-store design. A higher-assurance deployment should use Multi-AZ RDS, redundant ECS tasks across subnets, a managed Qdrant plan with backups, and a tested regional recovery procedure.
+
+## Release evidence requirements
+
+- Record commit, image digest, ECS task revision, Qdrant collection, cache schema, and dataset checksum.
+- Validate RAG, SQL approval, hybrid, clarification, upload/S3, presets, and follow-ups.
+- Run cache-hit/miss load paths with realistic identities so expected 429s are not capacity failures.
+- Confirm alarm delivery to an owned channel, not merely alarm definitions.
+- Demonstrate application-image and Qdrant-collection rollback.
+- Record actual RTO/RPO after restoration; targets alone are not evidence.

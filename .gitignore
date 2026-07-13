@@ -5,9 +5,11 @@ __pycache__/
 .env
 .cache/
 .pytest_cache/
-Eval/results/*.json
 evals/reports/results/*.json
 seed/docs/
+
+# Private/local documentation drafts and generated exports; never commit this folder.
+/docs/local/
 
 .idea/
 .vscode/

@@ -471,6 +471,14 @@ def _underlying_domain_question(question: str) -> str:
         and any(term in lowered_prefix for term in ("use", "authority", "not"))
     ):
         return remainder.strip()
+    source_override = re.search(
+        r"\buse\b.+?\bto\s+(explain|describe|show|tell)\s+(.+)$",
+        question,
+        flags=re.IGNORECASE,
+    )
+    if source_override:
+        verb, domain_request = source_override.groups()
+        return f"{verb.capitalize()} {domain_request.strip()}"
     return question
 
 

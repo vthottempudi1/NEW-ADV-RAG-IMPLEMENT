@@ -1,5 +1,9 @@
 # Evaluation and Retrieval Hardening Case Study
 
+> **Release update — July 13, 2026:** The narrative preserves failed and intermediate experiments,
+> but its final status is now the audited Qdrant Cloud-v2/schema-52 release described in Phase 14.
+> Intermediate scores must not be presented as current production evidence.
+
 ## Purpose
 
 This document records the full July 2026 evaluation-hardening effort for the
@@ -438,7 +442,7 @@ The test count changed as new regression cases were added. A higher test count i
 not itself the quality claim; the important point is that each discovered bug
 received a targeted regression test.
 
-## Current Honest Status
+## Current Honest Status at the Local-v2 Checkpoint
 
 Completed:
 
@@ -457,18 +461,19 @@ Completed:
 - collection-aware and ingestion-version-aware deduplication;
 - resumable local v2 ingestion.
 
-Still required before claiming final production quality:
+At that checkpoint, the following work was still required and was subsequently completed for the
+Cloud-v2 release:
 
-- finish local v2 ingestion;
-- audit v2 source, authority-tier, and metadata counts;
-- point Docker backend at v2;
-- rerun the untouched holdout without tuning against its answers;
-- run the full challenge dataset;
-- test frontend presets and new follow-up questions;
-- inspect claim-audit failures manually;
-- compare latency and embedding/storage cost;
-- repeat the blue/green process in Qdrant Cloud;
-- deploy and verify AWS before switching production traffic.
+- complete and audit v2 ingestion;
+- validate Docker and Cloud-v2 retrieval;
+- run regression, consumed holdout findings, and a complete challenge set;
+- inspect source, context, and claim-level failures;
+- test presets, follow-ups, and deployment paths;
+- rebuild the corpus in Qdrant Cloud using blue/green collection handling.
+
+The current remaining production gaps are operational rather than unfinished ingestion: automated
+IaC promotion, Alembic migrations, distributed tracing, tenant isolation, restore drills, sustained
+load evidence, and full browser automation. See `PRODUCTION_READINESS_AUDIT.md`.
 
 ## Engineering Lessons
 
@@ -536,3 +541,35 @@ Final local verification passed all five deterministic CI partitions, Ruff, Git 
 validation, and 172 automated tests after the sealed-v5 regression safeguards. The schema-48 v5
 regression passed all strict gates with faithfulness 0.975, context precision 1.000, context recall
 0.979, answer relevancy 1.000, and source precision/recall 1.000.
+
+## Phase 14: Qdrant Cloud-v2 and Schema-52 Release Closure (July 13, 2026)
+
+The sentence-aware corpus was rebuilt in Qdrant Cloud. The final audit recorded 34,420 points across
+363 sources: all 49 authoritative documents and 314 noisy distractors, with zero missing `source`
+payloads and zero duplicate chunks within a source. Two large noisy PDFs failed; their partial data
+was removed rather than weakening or misreporting the authoritative corpus.
+
+Schemas 49–52 generalized retrieval with semantic evidence-family plans, authoritative alternatives,
+CRAG evidence preservation, bounded correction of false evidence denial, and narrow synthesis only
+when complete source families are present. The cache schema advanced to 52 so old retrieval and
+synthesis decisions could not contaminate release evidence.
+
+Final complete results:
+
+| Metric | Challenge (40) | Regression (12) |
+|---|---:|---:|
+| Faithfulness | 0.965 | 0.963 |
+| Context precision | 0.992 | 0.965 |
+| Context recall | 0.976 | 0.986 |
+| Answer relevancy | 0.978 | 0.983 |
+| Source precision | 0.975 | 1.000 |
+| Source recall | 0.944 | 1.000 |
+
+Both runs recorded zero route, forbidden-answer, and forbidden-source violations. Final repository
+verification passed Ruff, compilation, documentation enforcement, whitespace validation, and 178
+tests. Two residual cases remain documented: `q-106` source specificity for memory-pressure
+eviction and `q-126` secondary-source completeness for rolling updates.
+
+The release conclusion is deliberately bounded: retrieval and evaluation are strong for the tested
+corpus and question distribution, while new domains and product changes require new development
+questions and, when justified, a genuinely new sealed holdout.

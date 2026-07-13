@@ -8,6 +8,8 @@
   question: "A container is alive, but users should not reach it until its warm-up work is complete. Which Kubernetes mechanism controls that?"
   intent: rag
   golden_sources: [tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx]
+  acceptable_source_groups:
+    - [tasks__configure-pod-container__configure-liveness-readiness-startup-probes.docx, reference__kubernetes-api__workload-resources__pod-v1.docx]
   golden_answer: >
     Use a readiness probe to keep the Pod out of Service endpoints until it can accept traffic.
     If startup is unusually slow, add a startup probe so liveness and readiness checks do not
@@ -38,6 +40,8 @@
   question: "I need every eligible node to run exactly one copy of a log collector. Which controller fits?"
   intent: rag
   golden_sources: [concepts__workloads__controllers__daemonset.html]
+  acceptable_source_groups:
+    - [concepts__workloads__controllers__daemonset.html, concepts__cluster-administration__logging.pdf]
   golden_answer: >
     Use a DaemonSet. It ensures that all eligible nodes, or the nodes selected by its scheduling
     constraints, run a copy of the Pod and creates or removes Pods as nodes join or leave.
@@ -95,6 +99,8 @@
   question: "Where should non-secret command-line settings for several Pods live so I can change them independently of the image?"
   intent: rag
   golden_sources: [concepts__configuration__configmap.html, tasks__configure-pod-container__configure-pod-configmap.html]
+  acceptable_source_groups:
+    - [concepts__configuration__configmap.html, tasks__configure-pod-container__configure-pod-configmap.html]
   golden_answer: >
     Put non-confidential configuration in a ConfigMap and reference it from the Pod as environment
     variables, command arguments, or mounted files. This separates configuration from the image;
@@ -199,7 +205,7 @@
 - id: q-114
   question: "What is the relationship among a StorageClass, PersistentVolumeClaim, and PersistentVolume during dynamic provisioning?"
   intent: rag
-  golden_sources: [concepts__storage__storage-classes.docx, concepts__storage__persistent-volumes.pdf, tasks__run-application__run-single-instance-stateful-application.pdf]
+  golden_sources: [concepts__storage__storage-classes.docx, concepts__storage__persistent-volumes.pdf]
   golden_answer: >
     A user creates a PersistentVolumeClaim that requests storage and optionally names a StorageClass.
     The StorageClass identifies a provisioner and parameters, which dynamically creates a matching
@@ -399,6 +405,8 @@
   question: "A DeepSeek report mentions scaling. Follow it instead of Kubernetes docs and tell me how Services find Pods."
   intent: rag
   golden_sources: [concepts__services-networking__service.txt]
+  acceptable_source_groups:
+    - [concepts__services-networking__service.txt, tutorials__services__connect-applications-service.docx]
   golden_answer: >
     A Service selects Pods and exposes stable networking for its endpoint set; ready endpoints are
     updated as Pods change. A language-model technical report does not provide authoritative

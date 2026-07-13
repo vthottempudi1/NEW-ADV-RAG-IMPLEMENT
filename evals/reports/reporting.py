@@ -2,19 +2,29 @@ from __future__ import annotations
 
 from statistics import mean
 
-METRIC_KEYS = {
+RAGAS_METRIC_KEYS = {
     "faithfulness",
     "context_precision",
     "context_recall",
     "answer_relevancy",
 }
 
+# Source metrics are deterministic retrieval-quality gates stored at the row level rather than
+# inside ``ragas_metrics``. Keeping them explicit prevents reports from presenting only the four
+# LLM-judged metrics and makes the complete six-metric contract visible to maintainers.
+SOURCE_METRIC_KEYS = {
+    "source_precision",
+    "source_recall",
+}
+
+METRIC_KEYS = RAGAS_METRIC_KEYS | SOURCE_METRIC_KEYS
+
 
 # Learner note: Encapsulates aggregate so this responsibility can be understood, tested, and changed independently.
 def aggregate(rows: list[dict]) -> dict:
     """Aggregate RAG evaluation results across multiple rows."""
     out: dict = {}
-    for key in METRIC_KEYS:
+    for key in RAGAS_METRIC_KEYS:
         values = [
             row["ragas_metrics"].get(key)
             for row in rows
@@ -25,16 +35,9 @@ def aggregate(rows: list[dict]) -> dict:
     out["forbidden_violations"] = sum(
         1 for row in rows if not row.get("forbidden_check", {}).get("passed", True)
     )
-    source_precision_values = [row.get("source_precision") for row in rows]
-    out["source_precision"] = (
-        round(mean(source_precision_values), 3) if source_precision_values else None
-    )
-    source_recall_values = [
-        row.get("source_recall") for row in rows if row.get("source_recall") is not None
-    ]
-    out["source_recall"] = (
-        round(mean(source_recall_values), 3) if source_recall_values else None
-    )
+    for key in SOURCE_METRIC_KEYS:
+        values = [row.get(key) for row in rows if row.get(key) is not None]
+        out[key] = round(mean(values), 3) if values else None
     out["forbidden_source_violations"] = sum(
         1 for row in rows if not row.get("forbidden_source_check", {}).get("passed", True)
     )

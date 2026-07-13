@@ -7,7 +7,7 @@ import httpx
 import jwt
 import streamlit as st
 
-DEFAULT_API_BASE = os.getenv("API_BASE_URL", "http://localhost:8004")
+DEFAULT_API_BASE = os.getenv("API_BASE_URL", "http://localhost:8003")
 
 USE_CASES: dict[str, dict[str, Any]] = {
     "Hybrid Default": {
@@ -458,6 +458,19 @@ def _render_health_card(payload: dict[str, Any]) -> None:
         unsafe_allow_html=True,
     )
     st.sidebar.caption(f"collection: {active_collection}")
+    dependencies = payload.get("dependencies") or {}
+    if dependencies:
+        st.sidebar.caption("Dependency connectivity")
+        for name in ("postgres", "qdrant", "redis", "s3"):
+            result = dependencies.get(name, {})
+            dependency_status = str(result.get("status", "unknown"))
+            latency = result.get("latency_ms")
+            color = "green" if dependency_status == "connected" else "yellow"
+            latency_label = f" · {latency:.0f} ms" if isinstance(latency, (int, float)) else ""
+            st.sidebar.markdown(
+                _badge(f"{name}: {dependency_status}{latency_label}", color),
+                unsafe_allow_html=True,
+            )
 
 
 # Learner note: Encapsulates load backend health so this responsibility can be understood, tested, and changed independently.
@@ -570,13 +583,24 @@ def _render_sidebar() -> None:
     st.sidebar.caption(f"Swagger: {docs_base}/docs")
 
     if st.sidebar.button("Ping Backend", use_container_width=True):
-        status, data = _request("GET", "/health")
+        dependency_access = bool(
+            st.session_state.get("token") and st.session_state.get("is_admin")
+        )
+        health_path = "/admin/health" if dependency_access else "/health"
+        status, data = _request("GET", health_path, timeout=8.0)
         if status == 200 and isinstance(data, dict):
             st.session_state["backend_health"] = data
-            _render_health_card(data)
-            st.sidebar.success("Backend reachable")
+            st.sidebar.success(
+                "Dependencies checked" if dependency_access else "Backend reachable"
+            )
         else:
             st.sidebar.error(f"Health failed: {_error_text(data)}")
+
+    health_payload = st.session_state.get("backend_health")
+    if isinstance(health_payload, dict):
+        _render_health_card(health_payload)
+        if not (st.session_state.get("token") and st.session_state.get("is_admin")):
+            st.sidebar.caption("Log in as an admin to check PostgreSQL, Qdrant, Redis, and S3.")
 
     st.sidebar.markdown("---")
     st.sidebar.markdown("### Session")
