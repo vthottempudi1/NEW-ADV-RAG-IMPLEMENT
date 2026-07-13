@@ -37,6 +37,7 @@ def test_admin_dependency_health_marks_redis_failure_degraded(monkeypatch):
     monkeypatch.setattr(admin_api, "_probe_qdrant", lambda: None)
     monkeypatch.setattr(admin_api, "_probe_s3", lambda: None)
 
+    # Learner Note: Fail redis is part of the automated regression suite.
     def fail_redis() -> None:
         """Simulate an unavailable optional distributed cache."""
         raise RuntimeError("test failure")
