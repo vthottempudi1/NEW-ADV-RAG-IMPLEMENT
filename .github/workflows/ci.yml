@@ -88,13 +88,14 @@ jobs:
         run: docker build --file infra/docker/backend.Dockerfile --tag new-adv-rag-backend:ci .
 
       - name: Scan backend image
-        uses: aquasecurity/trivy-action@0.35.0
+        uses: aquasecurity/trivy-action@0.36.0
         with:
           image-ref: new-adv-rag-backend:ci
           format: table
           severity: CRITICAL,HIGH
           ignore-unfixed: true
           scanners: vuln
+          timeout: 15m0s
           exit-code: "1"
 
   eval-smoke:
