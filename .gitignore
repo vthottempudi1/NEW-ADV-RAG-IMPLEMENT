@@ -41,4 +41,3 @@ seed/docs/
 
 # Local-only documentation and Markdown reference files.
 /docs/
-*.md
