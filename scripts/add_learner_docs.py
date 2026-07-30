@@ -101,7 +101,9 @@ def _document_file(path: Path) -> tuple[int, int]:
         definition_line = min(decorator_lines or [node.lineno]) - 1
         indent = " " * node.col_offset
 
-        if not _has_nearby_note(lines, definition_line):
+        if not ast.get_docstring(node, clean=False) and not _has_nearby_note(
+            lines, definition_line
+        ):
             readable = _words(getattr(node, "name", "definition"))
             note = f"{indent}# Note: {readable.capitalize()} is part of {_domain(path)}.\n"
             insertions.setdefault(definition_line, []).append(note)
