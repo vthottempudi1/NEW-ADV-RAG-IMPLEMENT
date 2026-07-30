@@ -21,3 +21,5 @@ WRITEUP.md
 auth_test.json
 login_test.json
 query_rag_policy.json
+docs/
+*.md

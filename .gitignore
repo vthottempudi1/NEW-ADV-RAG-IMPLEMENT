@@ -38,3 +38,7 @@ seed/docs/
 /loadtests/results/*.docx
 /loadtests/results/~$*
 /loadtests/results/*.tmp
+
+# Local-only documentation and Markdown reference files.
+/docs/
+*.md

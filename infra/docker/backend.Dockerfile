@@ -16,7 +16,6 @@ RUN --mount=type=cache,target=/root/.cache/pip \
     pip install -r requirements.runtime.txt
 
 COPY pyproject.toml ./pyproject.toml
-COPY README.md ./README.md
 COPY app ./app
 
 EXPOSE 8000
