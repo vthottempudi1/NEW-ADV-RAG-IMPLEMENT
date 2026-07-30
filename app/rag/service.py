@@ -20,7 +20,7 @@ from app.security.spotlighting import build_spotlighted_context
 
 # Increment whenever retrieval, evidence planning, or answer synthesis changes so distributed
 # caches cannot return responses produced by an older policy implementation.
-RAG_CACHE_SCHEMA_VERSION = 56
+RAG_CACHE_SCHEMA_VERSION = 57
 _TROUBLESHOOTING_HINTS = {
     "error",
     "fix",
@@ -1928,6 +1928,9 @@ def _run_rag_impl(
         RetrievedChunkPreview(
             text=chunk.text,
             source=chunk.source,
+            authority_tier=str(
+                (chunk.metadata or {}).get("authority_tier") or "unclassified"
+            ),
             score=chunk.score,
             retrieval_score=chunk.retrieval_score,
             rerank_score=chunk.rerank_score,

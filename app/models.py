@@ -56,6 +56,7 @@ class RetrievedChunkPreview(BaseModel):
     """API-safe evidence metadata exposed for source and score inspection."""
     text: str
     source: str
+    authority_tier: str = "unclassified"
     score: float = 0.0
     retrieval_score: float | None = None
     rerank_score: float | None = None

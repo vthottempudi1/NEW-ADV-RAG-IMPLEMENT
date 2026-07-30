@@ -134,6 +134,7 @@ def test_frontend_renders_chunk_scores_and_crag_ratio():
                 {
                     "text": "Use kubectl scale deployment.",
                     "source": "tutorials__kubernetes-basics__scale__scale-intro.html",
+                    "authority_tier": "true",
                     "score": 0.92,
                     "retrieval_score": 0.88,
                     "rerank_score": 6.4,
@@ -162,4 +163,5 @@ def test_frontend_renders_chunk_scores_and_crag_ratio():
     assert any("CRAG Relevant Graded Chunks" in item.value for item in app.markdown)
     assert any("CRAG Chunks Graded" in item.value for item in app.markdown)
     assert any("Final Answer Chunks" in item.value for item in app.markdown)
+    assert any("authority=true" in item.value for item in app.caption)
     assert any("rerank=6.4" in item.value for item in app.caption)

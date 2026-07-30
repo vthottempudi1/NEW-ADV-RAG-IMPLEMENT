@@ -862,6 +862,9 @@ def _render_answer_card(payload: dict[str, Any]) -> None:
                 with st.container(border=True):
                     st.markdown(f"**{idx}. {chunk.get('source', '?')}**")
                     score_parts = []
+                    authority_tier = chunk.get("authority_tier")
+                    if authority_tier:
+                        score_parts.append(f"authority={authority_tier}")
                     if chunk.get("score") is not None:
                         score_parts.append(f"score={chunk.get('score')}")
                     if chunk.get("retrieval_score") is not None:
