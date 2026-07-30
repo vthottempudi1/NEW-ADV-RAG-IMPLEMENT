@@ -21,6 +21,23 @@ def _render_dependency_health(payload):
     _render_health_card(payload)
 
 
+# Render the hero banner in isolation to protect its capability labels.
+def _render_hero_banner():
+    """Import and render the hero banner inside an AppTest execution context."""
+    from ui.streamlit.app import _render_hero
+
+    _render_hero()
+
+
+# The banner must advertise the complete layered cache capability.
+def test_frontend_hero_advertises_five_tier_cache():
+    """Verify that the hero banner displays the five-tier cache label."""
+    app = AppTest.from_function(_render_hero_banner).run()
+
+    assert not app.exception
+    assert any("5-Tier Cache" in item.value for item in app.markdown)
+
+
 # Every presentation preset must map to a supported backend request shape.
 def test_frontend_presets_have_complete_retrieval_configuration():
     """Verify that all hiring-demo presets define every required query control."""
@@ -142,4 +159,7 @@ def test_frontend_renders_chunk_scores_and_crag_ratio():
 
     assert not app.exception
     assert any("CRAG Relevant Ratio" in item.value for item in app.markdown)
+    assert any("CRAG Relevant Graded Chunks" in item.value for item in app.markdown)
+    assert any("CRAG Chunks Graded" in item.value for item in app.markdown)
+    assert any("Final Answer Chunks" in item.value for item in app.markdown)
     assert any("rerank=6.4" in item.value for item in app.caption)

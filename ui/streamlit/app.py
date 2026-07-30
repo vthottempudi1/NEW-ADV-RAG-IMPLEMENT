@@ -651,6 +651,7 @@ def _render_hero() -> None:
                     <span class="pill">Text-to-SQL + HITL</span>
                     <span class="pill">sqlglot Safety</span>
                     <span class="pill">9-Layer Guardrails</span>
+                    <span class="pill">5-Tier Cache</span>
                 </div>
             </div>
         </div>
@@ -784,6 +785,7 @@ def _render_metadata_summary(payload: dict[str, Any]) -> None:
         Keeping this helper focused makes the surrounding workflow easier to test and maintain.
     """
     meta = payload.get("metadata", {}) or {}
+    final_answer_chunks = len(meta.get("retrieved_chunks") or [])
     summary_items = [
         ("Reflection Score", meta.get("reflection_score")),
         ("Reflection Iterations", meta.get("reflection_iterations")),
@@ -791,9 +793,10 @@ def _render_metadata_summary(payload: dict[str, Any]) -> None:
         ("Retrieval Question", meta.get("retrieval_question")),
         ("CRAG Score", meta.get("crag_score")),
         ("CRAG Label", meta.get("crag_label")),
-        ("CRAG Relevant Chunks", meta.get("crag_relevant_chunks")),
-        ("CRAG Total Chunks", meta.get("crag_total_chunks")),
+        ("CRAG Relevant Graded Chunks", meta.get("crag_relevant_chunks")),
+        ("CRAG Chunks Graded", meta.get("crag_total_chunks")),
         ("CRAG Relevant Ratio", meta.get("crag_relevant_ratio")),
+        ("Final Answer Chunks", final_answer_chunks),
         ("Needs Clarification", meta.get("needs_clarification")),
         ("Clarification Type", meta.get("clarification_type")),
         ("Web Fallback", meta.get("used_web_fallback")),
@@ -886,6 +889,7 @@ def _render_answer_card(payload: dict[str, Any]) -> None:
             "crag_relevant_chunks": meta.get("crag_relevant_chunks"),
             "crag_total_chunks": meta.get("crag_total_chunks"),
             "crag_relevant_ratio": meta.get("crag_relevant_ratio"),
+            "final_answer_chunks": len(chunks),
             "crag_chunk_scores": meta.get("crag_chunk_scores", []),
             "needs_clarification": meta.get("needs_clarification"),
             "clarification_question": meta.get("clarification_question"),
