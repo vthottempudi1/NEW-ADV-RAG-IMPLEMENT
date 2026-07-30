@@ -1,0 +1,32 @@
+- id: q-705
+  question: "What happens if it is not acknowledged in time?"
+  intent: rag
+  conversation_context:
+    - question: "What does the P1 escalation policy require?"
+      answer: >
+        The primary on-call engineer must acknowledge the P1 page within
+        five minutes.
+      sources:
+        - oncall-escalation-policy.html
+  golden_sources:
+    - oncall-escalation-policy.html
+  acceptable_source_groups:
+    - - oncall-escalation-policy.html
+  golden_answer: >
+    If the P1 page is not acknowledged within five minutes, it escalates to
+    the secondary on-call engineer. If it remains unowned after ten minutes,
+    it escalates to the engineering manager and incident commander.
+  golden_answer_keywords:
+    - secondary on-call engineer
+    - five minutes
+    - engineering manager
+    - incident commander
+  demonstrates_feature: conversation
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  forbidden_sources:
+    - AMD - Open-Source Register Reference for AMD Family 17h Processors - Models 00h-2Fh - Rev 3.03 July 2018 (56255_3_03).PDF
+  notes: >
+    [consumed-live-conversation] A pronoun-only follow-up lost the prior P1
+    escalation-policy subject and retrieved an explicitly noisy AMD manual.

@@ -518,3 +518,31 @@ def test_authority_filter_does_not_return_empty_when_metadata_is_missing():
     ]
 
     assert _prefer_authoritative_chunks(chunks) == chunks
+
+
+def test_authority_filter_rejects_explicitly_noisy_only_candidates():
+    """Return no evidence instead of answering from a known noisy document."""
+    chunks = [
+        RetrievedChunk(
+            text="Processor register acknowledgement behavior.",
+            source="AMD-processor-register-reference.pdf",
+            metadata={"authority_tier": "noisy"},
+        )
+    ]
+
+    assert _prefer_authoritative_chunks(chunks) == []
+
+
+def test_authority_filter_prefers_unclassified_legacy_over_explicit_noise():
+    """Retain legacy unclassified evidence while removing explicit corpus noise."""
+    legacy = RetrievedChunk(
+        text="Legacy escalation policy evidence.",
+        source="legacy-escalation-policy.html",
+    )
+    noisy = RetrievedChunk(
+        text="Processor register acknowledgement behavior.",
+        source="AMD-processor-register-reference.pdf",
+        metadata={"authority_tier": "noisy"},
+    )
+
+    assert _prefer_authoritative_chunks([noisy, legacy]) == [legacy]

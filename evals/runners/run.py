@@ -349,8 +349,12 @@ def main() -> None:
         skipped: list[dict] = []
 
         for g in goldens:
+            case_flags = {
+                **flags,
+                "conversation_context": g.conversation_context,
+            }
             try:
-                resp, chunks = invoker.invoke(g.question, flags, g.intent)
+                resp, chunks = invoker.invoke(g.question, case_flags, g.intent)
             except SkippedIntent as e:
                 skipped.append({"id": g.id, "reason": str(e)})
                 continue

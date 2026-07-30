@@ -1064,3 +1064,18 @@ def test_hyde_authority_regression_contract():
         golden.forbidden_sources
         for golden in goldens
     )
+
+
+def test_conversation_authority_regression_contract():
+    """Preserve the consumed live P1 follow-up failure as an eval contract."""
+    goldens = load_goldens(
+        "evals/datasets/conversation_authority_regression.yaml"
+    )
+
+    assert [golden.id for golden in goldens] == ["q-705"]
+    golden = goldens[0]
+    assert golden.demonstrates_feature == "conversation"
+    assert golden.expected_route == "rag"
+    assert golden.conversation_context
+    assert golden.golden_sources == ["oncall-escalation-policy.html"]
+    assert any("AMD" in source for source in golden.forbidden_sources)

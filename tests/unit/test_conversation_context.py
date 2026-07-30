@@ -128,3 +128,26 @@ def test_operational_after_that_follow_up_stays_on_runbook():
         "According to the On-Call Escalation Policy, what escalation steps "
         "are required when incident mitigation fails?"
     )
+
+
+def test_p1_acknowledgement_follow_up_keeps_escalation_policy_context():
+    """Resolve a pronoun follow-up to the prior P1 escalation-policy subject."""
+    rewritten, subject = rewrite_follow_up_question(
+        "What happens if it is not acknowledged in time?",
+        [
+            {
+                "question": "What does the P1 escalation policy require?",
+                "answer": (
+                    "The primary on-call engineer must acknowledge the P1 page "
+                    "within five minutes."
+                ),
+                "sources": ["oncall-escalation-policy.html"],
+            }
+        ],
+    )
+
+    assert subject == "On-Call Escalation Policy"
+    assert rewritten == (
+        "According to the On-Call Escalation Policy for P1 incidents, "
+        "What happens if it is not acknowledged in time?"
+    )

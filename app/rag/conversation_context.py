@@ -34,9 +34,28 @@ _FOLLOW_UP_MARKERS = (
     "what should we do first",
     "what is the first step",
     "how does that help",
+    "what happens if",
     "after that",
 )
 _SUBJECT_PATTERN = re.compile(r"\b(" + "|".join(re.escape(item) for item in _KNOWN_SUBJECTS) + r")s?\b", re.IGNORECASE)
+_SUBJECT_ALIASES = (
+    (
+        re.compile(
+            r"\b(?:p[0-4]\s+)?(?:on[- ]call\s+)?escalation policy\b",
+            re.IGNORECASE,
+        ),
+        "On-Call Escalation Policy",
+    ),
+    (
+        re.compile(r"\bincident(?: response)? runbook\b", re.IGNORECASE),
+        "Incident Response Runbook",
+    ),
+)
+_SEVERITY_PATTERN = re.compile(r"\bP[0-4]\b", re.IGNORECASE)
+_CONTEXT_PRONOUN_PATTERN = re.compile(
+    r"\b(it|that|this|they|them|those)\b",
+    re.IGNORECASE,
+)
 
 
 def _normalize_subject(subject: str) -> str:
@@ -56,6 +75,9 @@ def _extract_subjects(text: str) -> list[str]:
     if not text:
         return []
     seen: list[str] = []
+    for pattern, subject in _SUBJECT_ALIASES:
+        if pattern.search(text) and subject not in seen:
+            seen.append(subject)
     for match in _SUBJECT_PATTERN.findall(text):
         subject = _normalize_subject(match)
         if subject not in seen:
@@ -68,7 +90,25 @@ def _looks_like_follow_up(question: str) -> bool:
     "which one", "the same", "what does it say") that signal it depends on
     context from a prior conversation turn."""
     lowered = question.lower()
-    return any(marker in lowered for marker in _FOLLOW_UP_MARKERS)
+    return any(marker in lowered for marker in _FOLLOW_UP_MARKERS) or bool(
+        _CONTEXT_PRONOUN_PATTERN.search(question)
+    )
+
+
+def _last_turn_severity(conversation_context: Iterable[dict] | None) -> str | None:
+    """Return the most recent P0-P4 severity mentioned in conversation history."""
+    turns = list(conversation_context or [])
+    if not turns:
+        return None
+    last_turn = turns[-1] or {}
+    combined = " ".join(
+        (
+            str(last_turn.get("question", "") or ""),
+            str(last_turn.get("answer", "") or ""),
+        )
+    )
+    match = _SEVERITY_PATTERN.search(combined)
+    return match.group(0).upper() if match else None
 
 
 def _last_turn_subjects(conversation_context: Iterable[dict] | None) -> tuple[list[str], list[str]]:
@@ -181,5 +221,10 @@ def rewrite_follow_up_question(question: str, conversation_context: Iterable[dic
         if needle in rewritten:
             rewritten = rewritten.replace(needle, replacement, 1)
             return rewritten, subject
+
+    if _CONTEXT_PRONOUN_PATTERN.search(cleaned):
+        severity = _last_turn_severity(conversation_context)
+        qualifier = f" for {severity} incidents" if severity else ""
+        return f"According to the {subject}{qualifier}, {cleaned}", subject
 
     return cleaned, subject

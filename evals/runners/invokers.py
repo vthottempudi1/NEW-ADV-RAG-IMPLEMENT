@@ -9,6 +9,7 @@ import httpx
 
 from app.config import settings
 from app.models import ChatResponse, RetrievedChunk
+from app.rag.conversation_context import rewrite_follow_up_question
 from app.rag.hybrid_question import derive_hybrid_rag_question
 from evals.datasets.schema import Golden
 
@@ -68,6 +69,11 @@ class ServiceInvoker(Invoker):
             )
         if intent == "web_fallback" and not settings.tavily_api_key:
             raise SkippedIntent("tavily_unset: TAVILY_API_KEY not configured")
+
+        question, _ = rewrite_follow_up_question(
+            question,
+            flags.get("conversation_context"),
+        )
 
         if intent == "sql":
             return self._invoke_sql(question)
@@ -254,6 +260,7 @@ class HttpServiceInvoker(Invoker):
             "enable_self_reflective": bool(
                 flags.get("enable_self_reflective", False)
             ),
+            "conversation_context": flags.get("conversation_context", []),
         }
 
         response = self._client.post(

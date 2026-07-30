@@ -348,6 +348,59 @@ def test_query_rewrites_follow_up_before_graph(monkeypatch):
     assert body["metadata"]["resolved_follow_up_subject"] == "Secret"
 
 
+def test_query_rewrites_p1_acknowledgement_follow_up_before_graph(monkeypatch):
+    """Send a self-contained P1 policy query to retrieval for a pronoun follow-up."""
+    token = _login()
+    captured: dict = {}
+
+    monkeypatch.setattr(query_api, "is_allowed_user", lambda *args, **kwargs: (True, 0, 0))
+    monkeypatch.setattr(query_api, "check_budget", lambda *args, **kwargs: (True, 99999))
+    monkeypatch.setattr(query_api, "consume_budget", lambda *args, **kwargs: None)
+    monkeypatch.setattr(query_api, "classify_intent", lambda question: "rag")
+
+    def _invoke(payload, config=None):
+        """Capture the resolved graph question without running retrieval."""
+        captured["payload"] = payload
+        return {
+            "final_answer": "The page escalates to the secondary on-call engineer.",
+            "sources": ["oncall-escalation-policy.html"],
+            "confidence": 0.9,
+            "cache_hit": False,
+            "metadata": {"route": "rag", "retrieved_chunks": []},
+        }
+
+    monkeypatch.setattr(query_api.graph, "invoke", _invoke)
+
+    response = client.post(
+        "/query",
+        headers={"Authorization": f"Bearer {token}"},
+        json={
+            "question": "What happens if it is not acknowledged in time?",
+            "search_mode": "auto",
+            "conversation_context": [
+                {
+                    "question": "What does the P1 escalation policy require?",
+                    "answer": (
+                        "The primary on-call engineer must acknowledge the page "
+                        "within five minutes."
+                    ),
+                    "sources": ["oncall-escalation-policy.html"],
+                }
+            ],
+        },
+    )
+
+    assert response.status_code == 200
+    expected = (
+        "According to the On-Call Escalation Policy for P1 incidents, "
+        "What happens if it is not acknowledged in time?"
+    )
+    assert captured["payload"]["question"] == expected
+    body = response.json()
+    assert body["metadata"]["resolved_question"] == expected
+    assert body["metadata"]["resolved_follow_up_subject"] == "On-Call Escalation Policy"
+
+
 # Verifies test query sql uses approved cache without reapproval so future changes cannot silently break this expected behavior.
 def test_query_sql_uses_approved_cache_without_reapproval(monkeypatch):
     """Verify that query sql uses approved cache without reapproval.

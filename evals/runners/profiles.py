@@ -1,6 +1,14 @@
 from __future__ import annotations
 
 PROFILES: dict[str, dict] = {
+    "auto": {
+        "search_mode": "auto",
+        "enable_hyde": False,
+        "enable_rerank": False,
+        "enable_crag": False,
+        "enable_self_reflective": False,
+        "top_k": 5,
+    },
     "naive":{
         "search_mode": "dense",
         "enable_hyde": False,

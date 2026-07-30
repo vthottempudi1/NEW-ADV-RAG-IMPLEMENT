@@ -21,9 +21,10 @@ FEATURE = Literal[
     "security",
     "wild",
     "clarification",
+    "conversation",
 ]
 
-OPTIONAL_DEMO_ONLY_FEATURES = {"dense", "sparse", "security"}
+OPTIONAL_DEMO_ONLY_FEATURES = {"conversation", "dense", "sparse", "security"}
 
 
 # Note: Golden is part of the evaluation and quality-gate framework.
@@ -47,6 +48,10 @@ class Golden(BaseModel):
     forbidden_keywords: list[str] = Field(default_factory=list)
     forbidden_sources: list[str] = Field(default_factory=list)
     expected_route: str | None = None
+    conversation_context: list[dict[str, object]] = Field(
+        default_factory=list,
+        max_length=3,
+    )
 
     # Note: Evaluates check expected with feature as a guardrail before later pipeline stages proceed.
     @model_validator(mode="after")

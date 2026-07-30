@@ -20,7 +20,7 @@ from app.security.spotlighting import build_spotlighted_context
 
 # Increment whenever retrieval, evidence planning, or answer synthesis changes so distributed
 # caches cannot return responses produced by an older policy implementation.
-RAG_CACHE_SCHEMA_VERSION = 53
+RAG_CACHE_SCHEMA_VERSION = 54
 _TROUBLESHOOTING_HINTS = {
     "error",
     "fix",
@@ -1344,7 +1344,7 @@ _ALLOWED_AUTHORITY_TIERS = {"true", "uploaded"}
 
 
 def _prefer_authoritative_chunks(chunks: list) -> list:
-    """Prefer authoritative and uploaded chunks over seeded noisy documents."""
+    """Prefer trusted chunks and never return an explicitly noisy-only result set."""
     if not chunks:
         return chunks
 
@@ -1356,9 +1356,17 @@ def _prefer_authoritative_chunks(chunks: list) -> list:
         ).lower()
         in _ALLOWED_AUTHORITY_TIERS
     ]
+    unclassified = [
+        chunk
+        for chunk in chunks
+        if not str(
+            (getattr(chunk, "metadata", {}) or {}).get("authority_tier", "")
+        ).strip()
+    ]
 
-    # Preserve compatibility with legacy collections lacking authority metadata.
-    return authoritative or chunks
+    # Preserve compatibility with legacy collections lacking authority metadata,
+    # but fail closed when every candidate is explicitly marked as corpus noise.
+    return authoritative or unclassified
 
 def _drop_non_kubernetes_corpus_noise(question: str, chunks: list) -> list:
     """For questions that mention "kubernetes" or name a known Kubernetes entity, drop
@@ -1822,6 +1830,7 @@ def _run_rag_impl(
         chunks = _trim_troubleshooting_noise(chunks, question)
     chunks = _normalize_temp_sources(chunks)
     chunks = _prefer_operational_sources(question, chunks)
+    chunks = _prefer_authoritative_chunks(chunks)
     chunks = _prefer_security_sources(question, chunks)
     chunks = _prefer_implicit_stateful_sources(question, chunks)
     chunks = _drop_non_kubernetes_corpus_noise(question, chunks)

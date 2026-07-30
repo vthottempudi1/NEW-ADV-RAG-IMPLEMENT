@@ -107,19 +107,28 @@ jobs:
         include:
           - profile: naive
             filter: baseline
+            questions: evals/datasets/seed_questions.yaml
             output: evals/reports/results/ci_baseline.json
           - profile: hybrid
             filter: hybrid
+            questions: evals/datasets/seed_questions.yaml
             output: evals/reports/results/ci_hybrid.json
           - profile: hybrid
             filter: hybrid_rag_sql
+            questions: evals/datasets/seed_questions.yaml
             output: evals/reports/results/ci_hybrid_sql.json
           - profile: hybrid+rerank+crag
             filter: crag
+            questions: evals/datasets/seed_questions.yaml
             output: evals/reports/results/ci_crag.json
           - profile: naive
             filter: clarification
+            questions: evals/datasets/seed_questions.yaml
             output: evals/reports/results/ci_clarification.json
+          - profile: auto
+            filter: conversation
+            questions: evals/datasets/conversation_authority_regression.yaml
+            output: evals/reports/results/ci_conversation.json
     env:
       OPENAI_API_KEY: test-key
       TAVILY_API_KEY: test-key
@@ -145,6 +154,7 @@ jobs:
         run: >
           python -m evals.runners.run
           --profile "${{ matrix.profile }}"
+          --questions "${{ matrix.questions }}"
           --filter "${{ matrix.filter }}"
           --mode fixture
           --scorer heuristic
