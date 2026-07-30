@@ -251,6 +251,7 @@ class Reranker:
                 RetrievedChunk(
                     text=chunk.text,
                     source=chunk.source,
+                    metadata=dict(chunk.metadata or {}),
                     score=float(blended_score),
                     retrieval_score=chunk.retrieval_score,
                     rerank_score=rerank_scores[idx],

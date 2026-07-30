@@ -90,6 +90,11 @@ def _get_sparse_index() -> SparseVectorIndex:
                     {
                         "text": point.payload.get("text", ""),
                         "source": point.payload.get("source", ""),
+                        "metadata": {
+                            key: value
+                            for key, value in point.payload.items()
+                            if key not in {"text", "source"}
+                        },
                     }
                 )
             if offset is None:
@@ -438,6 +443,7 @@ def sparse_search(query: str, top_k: int = 5) -> list[RetrievedChunk]:
             RetrievedChunk(
                 text=doc["text"],
                 source=doc["source"],
+                metadata=dict(doc.get("metadata") or {}),
                 score=score,
                 retrieval_score=score,
             )
@@ -537,6 +543,7 @@ def hybrid_search(
         RetrievedChunk(
             text=chunks[key].text,
             source=chunks[key].source,
+            metadata=dict(chunks[key].metadata or {}),
             score=float(scores[key]),
             retrieval_score=float(scores[key]),
         )

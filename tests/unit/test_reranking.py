@@ -60,6 +60,7 @@ def test_reranker_preserves_strong_lexical_match_when_model_is_misleading():
                 "The primary on-call engineer must acknowledge within 5 minutes."
             ),
             source="oncall-escalation-policy.html",
+            metadata={"authority_tier": "true"},
             score=0.48,
             retrieval_score=0.48,
         ),
@@ -78,6 +79,7 @@ def test_reranker_preserves_strong_lexical_match_when_model_is_misleading():
     )
 
     assert reranked[0].source == "oncall-escalation-policy.html"
+    assert reranked[0].metadata["authority_tier"] == "true"
     assert reranked[0].score > reranked[1].score
 
 

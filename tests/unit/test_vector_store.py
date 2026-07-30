@@ -68,6 +68,7 @@ def test_hybrid_search_boosts_sparse_troubleshooting_hits(monkeypatch):
             RetrievedChunk(
                 text="Troubleshooting Pods: ErrImagePull means the image could not be pulled from the registry.",
                 source="troubleshooting-pods.html",
+                metadata={"authority_tier": "true"},
                 score=0.2,
                 retrieval_score=0.2,
             )
@@ -81,6 +82,7 @@ def test_hybrid_search_boosts_sparse_troubleshooting_hits(monkeypatch):
     )
 
     assert ranked[0].source == "troubleshooting-pods.html"
+    assert ranked[0].metadata["authority_tier"] == "true"
 
 
 # Note: Verifies test hybrid search boosts runbook sources for operational queries so future changes cannot silently break this expected behavior.

@@ -20,7 +20,7 @@ from app.security.spotlighting import build_spotlighted_context
 
 # Increment whenever retrieval, evidence planning, or answer synthesis changes so distributed
 # caches cannot return responses produced by an older policy implementation.
-RAG_CACHE_SCHEMA_VERSION = 57
+RAG_CACHE_SCHEMA_VERSION = 58
 _TROUBLESHOOTING_HINTS = {
     "error",
     "fix",

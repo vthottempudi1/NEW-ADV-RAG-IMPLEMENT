@@ -59,6 +59,7 @@ class SparseVectorIndex:
                 RetrievedChunk(
                     text=doc["text"],
                     source=doc["source"],
+                    metadata=dict(doc.get("metadata") or {}),
                     score=score,
                     retrieval_score=score,
                 )
@@ -89,12 +90,14 @@ def fuse_rrf(
                 meta[key] = {
                     "text": chunk.text,
                     "source": chunk.source,
+                    "metadata": dict(chunk.metadata or {}),
                 }
 
     return [
         RetrievedChunk(
             text=text,
             source=meta[text]["source"],
+            metadata=dict(meta[text].get("metadata") or {}),
             score=float(score),
             retrieval_score=float(score),
         )
