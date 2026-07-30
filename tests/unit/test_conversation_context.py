@@ -151,3 +151,28 @@ def test_p1_acknowledgement_follow_up_keeps_escalation_policy_context():
         "According to the On-Call Escalation Policy for P1 incidents, "
         "What happens if it is not acknowledged in time?"
     )
+
+
+def test_workaround_follow_up_keeps_incident_runbook_context():
+    """Resolve an implicit operational continuation without requiring a pronoun."""
+    rewritten, subject = rewrite_follow_up_question(
+        "What should the team do if a workaround is available?",
+        [
+            {
+                "question": (
+                    "What are the first response steps in the incident response runbook?"
+                ),
+                "answer": (
+                    "Establish severity, confirm the affected service, inspect alerts "
+                    "and logs, and begin mitigation."
+                ),
+                "sources": ["incident-response-runbook.html"],
+            }
+        ],
+    )
+
+    assert subject == "Incident Response Runbook"
+    assert rewritten == (
+        "According to the Incident Response Runbook, "
+        "What should the team do if a workaround is available?"
+    )

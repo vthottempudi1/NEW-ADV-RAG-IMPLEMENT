@@ -32,9 +32,11 @@ _FOLLOW_UP_MARKERS = (
     "is it actually",
     "what does it say",
     "what should we do first",
+    "what should the team do",
     "what is the first step",
     "how does that help",
     "what happens if",
+    "what happens after",
     "after that",
 )
 _SUBJECT_PATTERN = re.compile(r"\b(" + "|".join(re.escape(item) for item in _KNOWN_SUBJECTS) + r")s?\b", re.IGNORECASE)
@@ -136,7 +138,16 @@ def _resolve_follow_up_subject(question: str, conversation_context: Iterable[dic
     Returns None if the reference cannot be resolved to a single subject.
     """
     prior_question_subjects, prior_answer_subjects = _last_turn_subjects(conversation_context)
-    available = prior_answer_subjects or prior_question_subjects
+    explicit_operational_subjects = [
+        subject
+        for subject in prior_question_subjects
+        if subject in {"Incident Response Runbook", "On-Call Escalation Policy"}
+    ]
+    available = (
+        explicit_operational_subjects
+        or prior_answer_subjects
+        or prior_question_subjects
+    )
     lowered = question.lower()
 
     if not available:
@@ -221,6 +232,13 @@ def rewrite_follow_up_question(question: str, conversation_context: Iterable[dic
         if needle in rewritten:
             rewritten = rewritten.replace(needle, replacement, 1)
             return rewritten, subject
+
+    if subject in {"Incident Response Runbook", "On-Call Escalation Policy"} and lowered.startswith(
+        ("what should", "what happens", "what does the team")
+    ):
+        severity = _last_turn_severity(conversation_context)
+        qualifier = f" for {severity} incidents" if severity else ""
+        return f"According to the {subject}{qualifier}, {cleaned}", subject
 
     if _CONTEXT_PRONOUN_PATTERN.search(cleaned):
         severity = _last_turn_severity(conversation_context)

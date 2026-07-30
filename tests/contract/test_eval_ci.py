@@ -1072,10 +1072,13 @@ def test_conversation_authority_regression_contract():
         "evals/datasets/conversation_authority_regression.yaml"
     )
 
-    assert [golden.id for golden in goldens] == ["q-705"]
-    golden = goldens[0]
-    assert golden.demonstrates_feature == "conversation"
-    assert golden.expected_route == "rag"
-    assert golden.conversation_context
-    assert golden.golden_sources == ["oncall-escalation-policy.html"]
-    assert any("AMD" in source for source in golden.forbidden_sources)
+    assert [golden.id for golden in goldens] == ["q-705", "q-706"]
+    assert all(golden.demonstrates_feature == "conversation" for golden in goldens)
+    assert all(golden.expected_route == "rag" for golden in goldens)
+    assert all(golden.conversation_context for golden in goldens)
+    assert goldens[0].golden_sources == ["oncall-escalation-policy.html"]
+    assert goldens[1].golden_sources == ["incident-response-runbook.html"]
+    assert all(
+        any("AMD" in source for source in golden.forbidden_sources)
+        for golden in goldens
+    )

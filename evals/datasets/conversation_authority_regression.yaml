@@ -30,3 +30,35 @@
   notes: >
     [consumed-live-conversation] A pronoun-only follow-up lost the prior P1
     escalation-policy subject and retrieved an explicitly noisy AMD manual.
+
+- id: q-706
+  question: "What should the team do if a workaround is available?"
+  intent: rag
+  conversation_context:
+    - question: "What are the first response steps in the incident response runbook?"
+      answer: >
+        Establish severity, confirm the affected service, inspect alerts and
+        logs, and begin mitigation.
+      sources:
+        - incident-response-runbook.html
+  golden_sources:
+    - incident-response-runbook.html
+  acceptable_source_groups:
+    - - incident-response-runbook.html
+  golden_answer: >
+    If a workaround is available, mitigation takes priority over root cause
+    analysis so responders can reduce user impact.
+  golden_answer_keywords:
+    - workaround
+    - mitigation
+    - root cause analysis
+    - user impact
+  demonstrates_feature: conversation
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  forbidden_sources:
+    - AMD - Open-Source Register Reference for AMD Family 17h Processors - Models 00h-2Fh - Rev 3.03 July 2018 (56255_3_03).PDF
+  notes: >
+    [consumed-live-conversation] An implicit operational continuation without
+    a pronoun lost the runbook subject and CRAG rejected all five candidates.
