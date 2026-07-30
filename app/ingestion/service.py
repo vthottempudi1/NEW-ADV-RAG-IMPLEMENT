@@ -18,35 +18,30 @@ from app.storage.storage_backend import get_storage_backend
 _INGESTION_BATCH_SIZE = 64
 
 
-# Learner Note: Ingestion service is part of the document ingestion pipeline.
 class IngestionService:
-    # Learner note: Initializes this component so its dependencies and runtime state are explicit.
-    """Represent ingestion service within the document ingestion pipeline.
+    """Coordinates the end-to-end document ingestion pipeline.
 
-    Learner Note:
-        This class groups state and behavior behind a clear, testable contract.
+    Handles content-hash based deduplication, persisting raw document bytes
+    to the configured storage backend, running documents through the chunker,
+    embedding and upserting chunks into Qdrant, and recording per-document
+    metadata in the document cache so repeat ingestion of the same content
+    can be skipped.
     """
-    def __init__(self):
-        """Initialize init dependencies and runtime state.
 
-        Learner Note:
-            Explicit initialization keeps object construction predictable and testable.
-        """
+    def __init__(self):
+        """Wire up the document cache, document processor, and storage backend."""
         self.doc_cache = DocCacheService()
         self.processor = DocumentProcessor()
         self.storage = get_storage_backend()
 
-    # Learner note: Encapsulates storage key so this responsibility can be understood, tested, and changed independently.
     def _storage_key(self, content_hash: str, filename: str) -> str:
-        """Support the document ingestion pipeline by performing storage key.
+        """Build the storage path for a document from its content hash and filename.
 
-        Learner Note:
-            Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+        Falls back to "uploaded.bin" if `filename` has no usable name component.
         """
         safe_name = Path(filename).name or "uploaded.bin"
         return f"documents/{content_hash}/{safe_name}"
 
-    # Learner note: Encapsulates normalize chunk sources so this responsibility can be understood, tested, and changed independently.
     def _normalize_chunk_sources(
         self,
         chunks_meta: list[dict],
@@ -54,10 +49,11 @@ class IngestionService:
         filename: str,
         source_path: str,
     ) -> list[dict]:
-        """Support the document ingestion pipeline by performing normalize chunk sources.
+        """Return copies of `chunks_meta` with source fields overwritten to `filename`/`source_path`.
 
-        Learner Note:
-            Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+        Ensures every chunk produced for a document reports the same
+        `source`, `source_name`, and `source_path`, regardless of what the
+        underlying document processor populated.
         """
         normalized: list[dict] = []
         for item in chunks_meta:
@@ -68,7 +64,6 @@ class IngestionService:
             normalized.append(updated)
         return normalized
 
-    # Learner note: Handles ingest file as an isolated ingestion step so failures are easier to diagnose.
     def ingest_file(
         self,
         file_path: str,
@@ -77,10 +72,23 @@ class IngestionService:
         authority_tier: str = "uploaded",
         ingestion_version: str = "v2",
     ) -> dict:
-        """Perform ingest file for the document ingestion pipeline.
+        """Ingest a document from a local file path into the RAG pipeline.
 
-        Learner Note:
-            This function keeps the responsibility explicit for callers, tests, and operators.
+        Reads the file's bytes, computes a content hash, and always persists
+        a copy to the configured storage backend under a hash-based key. If
+        the document was already indexed under the same `ingestion_version`
+        and `force_reindex` is False, returns early with status "skipped"
+        and the previously cached metadata instead of reprocessing.
+
+        Otherwise, chunks the document, normalizes each chunk's source
+        fields to the original filename, builds `RetrievedChunk` models
+        tagged with `content_hash`/`authority_tier`, embeds and upserts them
+        into Qdrant in batches, and records the resulting metadata (chunk
+        count, page count, storage location, etc.) in the document cache.
+
+        Returns a dict with "status" ("indexed" or "skipped"),
+        "content_hash", "chunks_indexed", and "metadata" (plus "reason" and
+        storage details when skipped).
         """
         path = Path(file_path)
         content_hash = self.doc_cache.compute_file_hash(path)
@@ -139,7 +147,6 @@ class IngestionService:
             "metadata": metadata,
         }
 
-    # Learner note: Handles ingest bytes as an isolated ingestion step so failures are easier to diagnose.
     def ingest_bytes(
         self,
         filename: str,
@@ -147,10 +154,20 @@ class IngestionService:
         *,
         force_reindex: bool = False,
     ) -> dict:
-        """Perform ingest bytes for the document ingestion pipeline.
+        """Ingest a document supplied as raw bytes (e.g., an uploaded file).
 
-        Learner Note:
-            This function keeps the responsibility explicit for callers, tests, and operators.
+        Computes the content hash directly from `content`; if not
+        `force_reindex` and a document with that hash is already indexed at
+        ingestion version "v2", returns early with status "skipped" and the
+        cached metadata. Otherwise persists the bytes to the storage
+        backend, writes them to a temporary file (the document processor
+        requires a file path), runs the same chunk/embed/upsert flow as
+        `ingest_file` with `authority_tier="uploaded"` and
+        `ingestion_version="v2"`, and always removes the temporary file in a
+        `finally` block regardless of success or failure.
+
+        Returns a dict with "status" ("indexed" or "skipped"),
+        "content_hash", "chunks_indexed", and "metadata".
         """
         content_hash = self.doc_cache.compute_content_hash(content)
 
@@ -216,12 +233,13 @@ class IngestionService:
             except Exception:
                 pass
 
-    # Learner note: Encapsulates already indexed so this responsibility can be understood, tested, and changed independently.
     def _already_indexed(self, content_hash: str, ingestion_version: str) -> bool:
-        """Support the document ingestion pipeline by performing already indexed.
+        """Return True if `content_hash` has cached metadata matching the current collection and version.
 
-        Learner Note:
-            Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+        Used to decide whether ingestion can be skipped: requires cached
+        metadata to exist, its `collection_name` to match the currently
+        configured Qdrant collection, and its `ingestion_version` to match
+        the requested one.
         """
         metadata = self.doc_cache.get_metadata(content_hash)
         if not metadata:
@@ -231,9 +249,15 @@ class IngestionService:
             and metadata.get("ingestion_version") == ingestion_version
         )
 
-    # Learner Note: Embed and upsert chunks is part of the document ingestion pipeline.
     def _embed_and_upsert_chunks(self, chunks: list[RetrievedChunk]) -> None:
-        """Embed and persist bounded batches so large documents cannot exhaust memory."""
+        """Embed and upsert `chunks` into the vector store in fixed-size batches.
+
+        Batches of `_INGESTION_BATCH_SIZE` chunks are embedded (bypassing
+        the embedding cache) and upserted one batch at a time, with the
+        embeddings list explicitly deleted and garbage collection forced
+        after each batch, so ingesting large documents does not exhaust
+        memory.
+        """
         for start in range(0, len(chunks), _INGESTION_BATCH_SIZE):
             batch = chunks[start:start + _INGESTION_BATCH_SIZE]
             embeddings = embed_texts(
@@ -244,7 +268,6 @@ class IngestionService:
             del embeddings
             gc.collect()
 
-    # Learner note: Encapsulates build chunk models so this responsibility can be understood, tested, and changed independently.
     def _build_chunk_models(
         self,
         chunks_meta: list[dict],
@@ -253,10 +276,13 @@ class IngestionService:
         authority_tier: str,
         ingestion_version: str,
     ) -> list[RetrievedChunk]:
-        """Support the document ingestion pipeline by performing build chunk models.
+        """Convert raw chunk metadata dicts into `RetrievedChunk` models.
 
-        Learner Note:
-            Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+        Drops any chunk with empty/missing text, then builds a
+        `RetrievedChunk` for each remaining item with a `metadata` dict
+        carrying `document_id`/`content_hash`, `authority_tier`, a 0-based
+        `chunk_index`, the `total_chunks` count, `page_number`,
+        `source_path`, and `ingestion_version`.
         """
         populated = [item for item in chunks_meta if item.get("text")]
         total_chunks = len(populated)
@@ -278,12 +304,10 @@ class IngestionService:
             for chunk_index, item in enumerate(populated)
         ]
 
-    # Learner note: Encapsulates page count so this responsibility can be understood, tested, and changed independently.
     def _page_count(self, chunks_meta: list[dict]) -> int:
-        """Support the document ingestion pipeline by performing page count.
+        """Return the number of distinct page numbers present across `chunks_meta`.
 
-        Learner Note:
-            Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+        Chunks with no recorded `page_number` are ignored.
         """
         pages = {
             item.get("page_number")

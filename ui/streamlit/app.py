@@ -73,11 +73,11 @@ USE_CASES: dict[str, dict[str, Any]] = {
 }
 
 
-# Learner note: Encapsulates init state so this responsibility can be understood, tested, and changed independently.
+# Note: Encapsulates init state so this responsibility can be understood, tested, and changed independently.
 def _init_state() -> None:
     """Support the Streamlit presentation layer by performing init state.
 
-    Learner Note:
+    Note:
         Keeping this helper focused makes the surrounding workflow easier to test and maintain.
     """
     st.session_state.setdefault("api_base", DEFAULT_API_BASE)
@@ -102,11 +102,11 @@ def _init_state() -> None:
     st.session_state.setdefault("backend_health", None)
 
 
-# Learner note: Encapsulates inject styles so this responsibility can be understood, tested, and changed independently.
+# Note: Encapsulates inject styles so this responsibility can be understood, tested, and changed independently.
 def _inject_styles() -> None:
     """Support the Streamlit presentation layer by performing inject styles.
 
-    Learner Note:
+    Note:
         Keeping this helper focused makes the surrounding workflow easier to test and maintain.
     """
     st.markdown(
@@ -273,11 +273,11 @@ def _inject_styles() -> None:
     )
 
 
-# Learner note: Encapsulates auth headers so this responsibility can be understood, tested, and changed independently.
+# Note: Encapsulates auth headers so this responsibility can be understood, tested, and changed independently.
 def _auth_headers() -> dict[str, str]:
     """Support the Streamlit presentation layer by performing auth headers.
 
-    Learner Note:
+    Note:
         Keeping this helper focused makes the surrounding workflow easier to test and maintain.
     """
     token = st.session_state.get("token", "")
@@ -286,11 +286,11 @@ def _auth_headers() -> dict[str, str]:
     return {"Authorization": f"Bearer {token}"}
 
 
-# Learner note: Encapsulates decode token so this responsibility can be understood, tested, and changed independently.
+# Note: Encapsulates decode token so this responsibility can be understood, tested, and changed independently.
 def _decode_token(token: str) -> dict[str, Any]:
     """Support the Streamlit presentation layer by performing decode token.
 
-    Learner Note:
+    Note:
         Keeping this helper focused makes the surrounding workflow easier to test and maintain.
     """
     try:
@@ -305,11 +305,11 @@ def _decode_token(token: str) -> dict[str, Any]:
         return {}
 
 
-# Learner note: Encapsulates handle login token so this responsibility can be understood, tested, and changed independently.
+# Note: Encapsulates handle login token so this responsibility can be understood, tested, and changed independently.
 def _handle_login_token(token: str, username: str) -> None:
     """Support the Streamlit presentation layer by performing handle login token.
 
-    Learner Note:
+    Note:
         Keeping this helper focused makes the surrounding workflow easier to test and maintain.
     """
     payload = _decode_token(token)
@@ -318,11 +318,11 @@ def _handle_login_token(token: str, username: str) -> None:
     st.session_state["is_admin"] = bool(payload.get("is_admin", False))
 
 
-# Learner note: Encapsulates clear auth so this responsibility can be understood, tested, and changed independently.
+# Note: Encapsulates clear auth so this responsibility can be understood, tested, and changed independently.
 def _clear_auth() -> None:
     """Support the Streamlit presentation layer by performing clear auth.
 
-    Learner Note:
+    Note:
         Keeping this helper focused makes the surrounding workflow easier to test and maintain.
     """
     st.session_state["token"] = ""
@@ -331,7 +331,7 @@ def _clear_auth() -> None:
     st.session_state["pending_sql"] = None
 
 
-# Learner note: Encapsulates request so this responsibility can be understood, tested, and changed independently.
+# Note: Encapsulates request so this responsibility can be understood, tested, and changed independently.
 def _request(
     method: str,
     path: str,
@@ -342,7 +342,7 @@ def _request(
 ) -> tuple[int, Any]:
     """Support the Streamlit presentation layer by performing request.
 
-    Learner Note:
+    Note:
         Keeping this helper focused makes the surrounding workflow easier to test and maintain.
     """
     url = st.session_state["api_base"].rstrip("/") + path
@@ -366,11 +366,11 @@ def _request(
         return response.status_code, response.text
 
 
-# Learner note: Encapsulates error text so this responsibility can be understood, tested, and changed independently.
+# Note: Encapsulates error text so this responsibility can be understood, tested, and changed independently.
 def _error_text(payload: Any) -> str:
     """Support the Streamlit presentation layer by performing error text.
 
-    Learner Note:
+    Note:
         Keeping this helper focused makes the surrounding workflow easier to test and maintain.
     """
     if isinstance(payload, dict):
@@ -405,11 +405,11 @@ def _error_text(payload: Any) -> str:
     return str(payload)
 
 
-# Learner note: Encapsulates badge so this responsibility can be understood, tested, and changed independently.
+# Note: Encapsulates badge so this responsibility can be understood, tested, and changed independently.
 def _badge(label: str, kind: str = "blue") -> str:
     """Support the Streamlit presentation layer by performing badge.
 
-    Learner Note:
+    Note:
         Keeping this helper focused makes the surrounding workflow easier to test and maintain.
     """
     palette = {
@@ -426,11 +426,11 @@ def _badge(label: str, kind: str = "blue") -> str:
     )
 
 
-# Learner note: Encapsulates render surface header so this responsibility can be understood, tested, and changed independently.
+# Note: Encapsulates render surface header so this responsibility can be understood, tested, and changed independently.
 def _render_surface_header(title: str, caption: str) -> None:
     """Support the Streamlit presentation layer by performing render surface header.
 
-    Learner Note:
+    Note:
         Keeping this helper focused makes the surrounding workflow easier to test and maintain.
     """
     st.markdown(
@@ -444,11 +444,11 @@ def _render_surface_header(title: str, caption: str) -> None:
     )
 
 
-# Learner note: Encapsulates render health card so this responsibility can be understood, tested, and changed independently.
+# Note: Encapsulates render health card so this responsibility can be understood, tested, and changed independently.
 def _render_health_card(payload: dict[str, Any]) -> None:
     """Support the Streamlit presentation layer by performing render health card.
 
-    Learner Note:
+    Note:
         Keeping this helper focused makes the surrounding workflow easier to test and maintain.
     """
     status = payload.get("status", "unknown")
@@ -473,11 +473,11 @@ def _render_health_card(payload: dict[str, Any]) -> None:
             )
 
 
-# Learner note: Encapsulates load backend health so this responsibility can be understood, tested, and changed independently.
+# Note: Encapsulates load backend health so this responsibility can be understood, tested, and changed independently.
 def _load_backend_health(force: bool = False) -> dict[str, Any] | None:
     """Support the Streamlit presentation layer by performing load backend health.
 
-    Learner Note:
+    Note:
         Keeping this helper focused makes the surrounding workflow easier to test and maintain.
     """
     cached = st.session_state.get("backend_health")
@@ -497,11 +497,11 @@ def _load_backend_health(force: bool = False) -> dict[str, Any] | None:
     return st.session_state["backend_health"]
 
 
-# Learner note: Encapsulates environment label so this responsibility can be understood, tested, and changed independently.
+# Note: Encapsulates environment label so this responsibility can be understood, tested, and changed independently.
 def _environment_label(api_base: str) -> str:
     """Support the Streamlit presentation layer by performing environment label.
 
-    Learner Note:
+    Note:
         Keeping this helper focused makes the surrounding workflow easier to test and maintain.
     """
     lowered = api_base.lower()
@@ -512,11 +512,11 @@ def _environment_label(api_base: str) -> str:
     return "Custom"
 
 
-# Learner note: Encapsulates display source label so this responsibility can be understood, tested, and changed independently.
+# Note: Encapsulates display source label so this responsibility can be understood, tested, and changed independently.
 def _display_source_label(source: str) -> tuple[str, str]:
     """Support the Streamlit presentation layer by performing display source label.
 
-    Learner Note:
+    Note:
         Keeping this helper focused makes the surrounding workflow easier to test and maintain.
     """
     raw = str(source or "")
@@ -531,11 +531,11 @@ def _display_source_label(source: str) -> tuple[str, str]:
     return compact, "Corpus"
 
 
-# Learner note: Encapsulates render deployment info so this responsibility can be understood, tested, and changed independently.
+# Note: Encapsulates render deployment info so this responsibility can be understood, tested, and changed independently.
 def _render_deployment_info() -> None:
     """Support the Streamlit presentation layer by performing render deployment info.
 
-    Learner Note:
+    Note:
         Keeping this helper focused makes the surrounding workflow easier to test and maintain.
     """
     health = _load_backend_health()
@@ -567,11 +567,11 @@ def _render_deployment_info() -> None:
     )
 
 
-# Learner note: Encapsulates render sidebar so this responsibility can be understood, tested, and changed independently.
+# Note: Encapsulates render sidebar so this responsibility can be understood, tested, and changed independently.
 def _render_sidebar() -> None:
     """Support the Streamlit presentation layer by performing render sidebar.
 
-    Learner Note:
+    Note:
         Keeping this helper focused makes the surrounding workflow easier to test and maintain.
     """
     st.sidebar.markdown("## Control Panel")
@@ -627,11 +627,11 @@ def _render_sidebar() -> None:
             )
 
 
-# Learner note: Encapsulates render hero so this responsibility can be understood, tested, and changed independently.
+# Note: Encapsulates render hero so this responsibility can be understood, tested, and changed independently.
 def _render_hero() -> None:
     """Support the Streamlit presentation layer by performing render hero.
 
-    Learner Note:
+    Note:
         Keeping this helper focused makes the surrounding workflow easier to test and maintain.
     """
     st.markdown(
@@ -659,11 +659,11 @@ def _render_hero() -> None:
     )
 
 
-# Learner note: Encapsulates render auth so this responsibility can be understood, tested, and changed independently.
+# Note: Encapsulates render auth so this responsibility can be understood, tested, and changed independently.
 def _render_auth() -> None:
     """Support the Streamlit presentation layer by performing render auth.
 
-    Learner Note:
+    Note:
         Keeping this helper focused makes the surrounding workflow easier to test and maintain.
     """
     st.markdown("### Authentication")
@@ -708,11 +708,11 @@ def _render_auth() -> None:
                 st.error(f"Registration failed: {_error_text(data)}")
 
 
-# Learner note: Encapsulates render metrics row so this responsibility can be understood, tested, and changed independently.
+# Note: Encapsulates render metrics row so this responsibility can be understood, tested, and changed independently.
 def _render_metrics_row(payload: dict[str, Any]) -> None:
     """Support the Streamlit presentation layer by performing render metrics row.
 
-    Learner Note:
+    Note:
         Keeping this helper focused makes the surrounding workflow easier to test and maintain.
     """
     meta = payload.get("metadata", {}) or {}
@@ -760,11 +760,11 @@ def _render_metrics_row(payload: dict[str, Any]) -> None:
     )
 
 
-# Learner note: Encapsulates format meta value so this responsibility can be understood, tested, and changed independently.
+# Note: Encapsulates format meta value so this responsibility can be understood, tested, and changed independently.
 def _format_meta_value(value: Any) -> str:
     """Support the Streamlit presentation layer by performing format meta value.
 
-    Learner Note:
+    Note:
         Keeping this helper focused makes the surrounding workflow easier to test and maintain.
     """
     if value is None:
@@ -776,11 +776,11 @@ def _format_meta_value(value: Any) -> str:
     return str(value)
 
 
-# Learner note: Encapsulates render metadata summary so this responsibility can be understood, tested, and changed independently.
+# Note: Encapsulates render metadata summary so this responsibility can be understood, tested, and changed independently.
 def _render_metadata_summary(payload: dict[str, Any]) -> None:
     """Support the Streamlit presentation layer by performing render metadata summary.
 
-    Learner Note:
+    Note:
         Keeping this helper focused makes the surrounding workflow easier to test and maintain.
     """
     meta = payload.get("metadata", {}) or {}
@@ -821,11 +821,11 @@ def _render_metadata_summary(payload: dict[str, Any]) -> None:
     )
 
 
-# Learner note: Encapsulates render answer card so this responsibility can be understood, tested, and changed independently.
+# Note: Encapsulates render answer card so this responsibility can be understood, tested, and changed independently.
 def _render_answer_card(payload: dict[str, Any]) -> None:
     """Support the Streamlit presentation layer by performing render answer card.
 
-    Learner Note:
+    Note:
         Keeping this helper focused makes the surrounding workflow easier to test and maintain.
     """
     meta = payload.get("metadata", {}) or {}
@@ -898,11 +898,11 @@ def _render_answer_card(payload: dict[str, Any]) -> None:
         st.json(payload)
 
 
-# Learner note: Encapsulates record query history so this responsibility can be understood, tested, and changed independently.
+# Note: Encapsulates record query history so this responsibility can be understood, tested, and changed independently.
 def _record_query_history(question: str, payload: dict[str, Any]) -> None:
     """Support the Streamlit presentation layer by performing record query history.
 
-    Learner Note:
+    Note:
         Keeping this helper focused makes the surrounding workflow easier to test and maintain.
     """
     meta = payload.get("metadata", {}) or {}
@@ -930,11 +930,11 @@ def _record_query_history(question: str, payload: dict[str, Any]) -> None:
         st.session_state["conversation_context"] = context_turns[-3:]
 
 
-# Learner note: Encapsulates submit sql approval so this responsibility can be understood, tested, and changed independently.
+# Note: Encapsulates submit sql approval so this responsibility can be understood, tested, and changed independently.
 def _submit_sql_approval(approved: bool) -> None:
     """Support the Streamlit presentation layer by performing submit sql approval.
 
-    Learner Note:
+    Note:
         Keeping this helper focused makes the surrounding workflow easier to test and maintain.
     """
     pending = st.session_state.get("pending_sql")
@@ -967,11 +967,11 @@ def _submit_sql_approval(approved: bool) -> None:
         st.error(f"SQL approval failed ({status}): {_error_text(data)}")
 
 
-# Learner note: Encapsulates render pending sql panel so this responsibility can be understood, tested, and changed independently.
+# Note: Encapsulates render pending sql panel so this responsibility can be understood, tested, and changed independently.
 def _render_pending_sql_panel(response: dict[str, Any]) -> None:
     """Support the Streamlit presentation layer by performing render pending sql panel.
 
-    Learner Note:
+    Note:
         Keeping this helper focused makes the surrounding workflow easier to test and maintain.
     """
     pending = response["pending_sql"]
@@ -988,11 +988,11 @@ def _render_pending_sql_panel(response: dict[str, Any]) -> None:
         st.json(response)
 
 
-# Learner note: Encapsulates render query tab so this responsibility can be understood, tested, and changed independently.
+# Note: Encapsulates render query tab so this responsibility can be understood, tested, and changed independently.
 def _render_query_tab() -> None:
     """Support the Streamlit presentation layer by performing render query tab.
 
-    Learner Note:
+    Note:
         Keeping this helper focused makes the surrounding workflow easier to test and maintain.
     """
     chosen = st.selectbox(
@@ -1182,11 +1182,11 @@ def _render_query_tab() -> None:
             _render_answer_card(response)
 
 
-# Learner note: Encapsulates render upload tab so this responsibility can be understood, tested, and changed independently.
+# Note: Encapsulates render upload tab so this responsibility can be understood, tested, and changed independently.
 def _render_upload_tab() -> None:
     """Support the Streamlit presentation layer by performing render upload tab.
 
-    Learner Note:
+    Note:
         Keeping this helper focused makes the surrounding workflow easier to test and maintain.
     """
     st.markdown("### Document Upload")
@@ -1210,11 +1210,11 @@ def _render_upload_tab() -> None:
             st.error(f"Upload failed ({status}): {_error_text(data)}")
 
 
-# Learner note: Encapsulates render history tab so this responsibility can be understood, tested, and changed independently.
+# Note: Encapsulates render history tab so this responsibility can be understood, tested, and changed independently.
 def _render_history_tab() -> None:
     """Support the Streamlit presentation layer by performing render history tab.
 
-    Learner Note:
+    Note:
         Keeping this helper focused makes the surrounding workflow easier to test and maintain.
     """
     st.markdown("### Query History")
@@ -1233,11 +1233,11 @@ def _render_history_tab() -> None:
             )
 
 
-# Learner note: Encapsulates admin action request so this responsibility can be understood, tested, and changed independently.
+# Note: Encapsulates admin action request so this responsibility can be understood, tested, and changed independently.
 def _admin_action_request(action: str, username: str) -> tuple[int, Any]:
     """Support the Streamlit presentation layer by performing admin action request.
 
-    Learner Note:
+    Note:
         Keeping this helper focused makes the surrounding workflow easier to test and maintain.
     """
     if action == "health":
@@ -1253,11 +1253,11 @@ def _admin_action_request(action: str, username: str) -> tuple[int, Any]:
     return _request("GET", f"/admin/rate-limits/{username}")
 
 
-# Learner note: Encapsulates render admin tab so this responsibility can be understood, tested, and changed independently.
+# Note: Encapsulates render admin tab so this responsibility can be understood, tested, and changed independently.
 def _render_admin_tab() -> None:
     """Support the Streamlit presentation layer by performing render admin tab.
 
-    Learner Note:
+    Note:
         Keeping this helper focused makes the surrounding workflow easier to test and maintain.
     """
     st.markdown("### Admin Console")
@@ -1311,11 +1311,11 @@ def _render_admin_tab() -> None:
             st.info("Choose an action and run it to inspect backend state.")
 
 
-# Learner note: Orchestrates main, making this function a clear execution boundary for learners and tests.
+# Note: Orchestrates main, making this function a clear execution boundary for learners and tests.
 def main() -> None:
     """Perform main for the Streamlit presentation layer.
 
-    Learner Note:
+    Note:
         This function keeps the responsibility explicit for callers, tests, and operators.
     """
     st.set_page_config(

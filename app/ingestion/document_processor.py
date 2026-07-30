@@ -12,19 +12,24 @@ _CHUNK_SIZE = 1000
 _CHUNK_OVERLAP = 100
 
 
-# Learner Note: Document processor is part of the document ingestion pipeline.
 class DocumentProcessor:
-    # Learner note: Handles process document as an isolated ingestion step so failures are easier to diagnose.
-    """Represent document processor within the document ingestion pipeline.
+    """Convert a source document on disk into a list of ingestion-ready text chunks.
 
-    Learner Note:
-        This class groups state and behavior behind a clear, testable contract.
+    Dispatches to format-specific extraction logic (plain text/HTML, PDF, DOCX)
+    based on file extension, with Docling used both as the catch-all converter
+    for unrecognized formats and as a fallback when a format-specific extractor
+    fails. Every extraction path funnels through ``_chunk_text`` (or Docling's
+    own chunker) so callers always get back a flat list of chunk dicts with
+    ``text``, ``source``, ``source_name``, ``source_path``, and ``page_number``.
     """
-    def process_document(self, file_path: str) -> list[dict]:
-        """Perform process document for the document ingestion pipeline.
 
-        Learner Note:
-            This function keeps the responsibility explicit for callers, tests, and operators.
+    def process_document(self, file_path: str) -> list[dict]:
+        """Extract and chunk ``file_path`` based on its extension.
+
+        Routes plain text/markdown/HTML files to ``_process_plain``, PDFs to
+        ``_process_pdf_pypdf``, DOCX files to ``_process_docx_python_docx``,
+        and any other extension to ``_process_docling``. Returns a list of
+        chunk dicts.
         """
         suffix = Path(file_path).suffix.lower()
 
@@ -39,12 +44,12 @@ class DocumentProcessor:
 
         return self._process_docling(file_path)
 
-    # Learner note: Encapsulates process plain so this responsibility can be understood, tested, and changed independently.
     def _process_plain(self, file_path: str) -> list[dict]:
-        """Support the document ingestion pipeline by performing process plain.
+        """Read a plain text/markdown/HTML file and split it into chunks.
 
-        Learner Note:
-            Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+        Strips HTML tags and entities when the extension is ``.html``/``.htm``,
+        normalizes whitespace, and returns ``[]`` if nothing remains. Page
+        numbers are not applicable here, so ``page_number`` is always ``None``.
         """
         path = Path(file_path)
         source_name = path.name
@@ -66,12 +71,13 @@ class DocumentProcessor:
             page_number=None,
         )
 
-    # Learner note: Encapsulates process docling so this responsibility can be understood, tested, and changed independently.
     def _process_docling(self, file_path: str) -> list[dict]:
-        """Support the document ingestion pipeline by performing process docling.
+        """Convert and chunk a document using Docling's ``DocumentConverter``/``HybridChunker``.
 
-        Learner Note:
-            Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+        Acts as the catch-all handler for formats without a dedicated extractor,
+        and as the fallback for DOCX/PDF extraction failures. Page numbers are
+        pulled from chunk provenance metadata when available. If Docling raises
+        or yields no chunks, falls back to ``_process_pdf_pypdf``.
         """
         path = Path(file_path)
         source_name = path.name
@@ -115,12 +121,12 @@ class DocumentProcessor:
 
         return self._process_pdf_pypdf(file_path)
 
-    # Learner note: Encapsulates process docx python docx so this responsibility can be understood, tested, and changed independently.
     def _process_docx_python_docx(self, file_path: str) -> list[dict]:
-        """Support the document ingestion pipeline by performing process docx python docx.
+        """Extract and chunk a ``.docx`` file's paragraph text using python-docx.
 
-        Learner Note:
-            Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+        Joins all paragraph text, normalizes whitespace, and chunks the result.
+        Falls back to ``_process_docling`` if python-docx is unavailable or
+        extraction raises.
         """
         path = Path(file_path)
         source_name = path.name
@@ -144,12 +150,12 @@ class DocumentProcessor:
         except Exception:
             return self._process_docling(file_path)
 
-    # Learner note: Encapsulates process pdf pypdf so this responsibility can be understood, tested, and changed independently.
     def _process_pdf_pypdf(self, file_path: str) -> list[dict]:
-        """Support the document ingestion pipeline by performing process pdf pypdf.
+        """Extract text per page with pypdf and chunk each page independently.
 
-        Learner Note:
-            Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+        Chunking page-by-page (rather than concatenating the whole document
+        first) keeps ``page_number`` accurate on every resulting chunk. Pages
+        with no extractable text are skipped.
         """
         path = Path(file_path)
         source_name = path.name
@@ -171,7 +177,6 @@ class DocumentProcessor:
 
         return chunks
 
-    # Learner note: Encapsulates chunk text so this responsibility can be understood, tested, and changed independently.
     def _chunk_text(
         self,
         text: str,
@@ -179,10 +184,18 @@ class DocumentProcessor:
         source_path: str,
         page_number: int | None,
     ) -> list[dict]:
-        """Support the document ingestion pipeline by performing chunk text.
+        """Split ``text`` into overlapping chunks of roughly ``_CHUNK_SIZE`` characters.
 
-        Learner Note:
-            Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+        For each window, prefers to end the chunk at the last sentence boundary
+        found within the final ~35% of the window (``_CHUNK_SIZE * 0.65`` to the
+        hard end); if no sentence boundary exists, falls back to the last word
+        boundary; if neither exists, cuts at the hard limit. The next chunk then
+        backs up by ``_CHUNK_OVERLAP`` characters (again snapping forward to the
+        nearest sentence boundary within that overlap window when possible) so
+        consecutive chunks share trailing/leading context. Empty chunks are
+        dropped. Returns a list of dicts with ``text``, ``source``,
+        ``source_name``, ``source_path``, and ``page_number`` (as passed in,
+        unchanged per chunk).
         """
         chunks: list[dict] = []
         start = 0
@@ -229,11 +242,6 @@ class DocumentProcessor:
 
         return chunks
 
-    # Learner note: Encapsulates normalize whitespace so this responsibility can be understood, tested, and changed independently.
     def _normalize_whitespace(self, text: str) -> str:
-        """Support the document ingestion pipeline by performing normalize whitespace.
-
-        Learner Note:
-            Keeping this helper focused makes the surrounding workflow easier to test and maintain.
-        """
+        """Collapse any run of whitespace to a single space and trim the ends."""
         return re.sub(r"\s+", " ", text).strip()

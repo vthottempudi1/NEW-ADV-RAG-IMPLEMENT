@@ -10,17 +10,17 @@ from app.sql.service import SQLExecutionError
 client = TestClient(app)
 
 
-# Learner note: Supports login as reusable test setup so scenarios stay deterministic and readable.
+# Supports login as reusable test setup so scenarios stay deterministic and readable.
 def _login() -> str:
     """Support the automated regression suite by performing login.
 
-    Learner Note:
+    Note:
         Keeping this helper focused makes the surrounding workflow easier to test and maintain.
     """
     return create_access_token("testuser@example.com", is_admin=True)
 
 
-# Learner Note: Ambiguous requests must return clarification without invoking retrieval or SQL.
+# Ambiguous requests must return clarification without invoking retrieval or SQL.
 def test_query_ambiguity_returns_clarification_before_graph(monkeypatch):
     """Verify that an underspecified action returns no chunks, sources, or model cost."""
     token = _login()
@@ -49,32 +49,32 @@ def test_query_ambiguity_returns_clarification_before_graph(monkeypatch):
     assert body["cost_saved"] == "$0.00"
 
 
-# Learner note: Supports fake pending sql store as reusable test setup so scenarios stay deterministic and readable.
+# Supports fake pending sql store as reusable test setup so scenarios stay deterministic and readable.
 @pytest.fixture(autouse=True)
 def _fake_pending_sql_store(monkeypatch):
     """Support the automated regression suite by performing fake pending sql store.
 
-    Learner Note:
+    Note:
         Keeping this helper focused makes the surrounding workflow easier to test and maintain.
     """
     entries: dict[str, dict] = {}
 
-    # Learner note: Supports save pending as reusable test setup so scenarios stay deterministic and readable.
+    # Supports save pending as reusable test setup so scenarios stay deterministic and readable.
     def _save_pending(**kwargs):
         """Support the automated regression suite by performing save pending.
 
-        Learner Note:
+        Note:
             Keeping this helper focused makes the surrounding workflow easier to test and maintain.
         """
         entry = dict(kwargs)
         entry["status"] = "pending"
         entries[kwargs["query_id"]] = entry
 
-    # Learner note: Supports get pending as reusable test setup so scenarios stay deterministic and readable.
+    # Supports get pending as reusable test setup so scenarios stay deterministic and readable.
     def _get_pending(query_id: str):
         """Support the automated regression suite by performing get pending.
 
-        Learner Note:
+        Note:
             Keeping this helper focused makes the surrounding workflow easier to test and maintain.
         """
         entry = entries.get(query_id)
@@ -82,11 +82,11 @@ def _fake_pending_sql_store(monkeypatch):
             return None
         return dict(entry)
 
-    # Learner note: Supports resolve as reusable test setup so scenarios stay deterministic and readable.
+    # Supports resolve as reusable test setup so scenarios stay deterministic and readable.
     def _resolve(query_id: str, *, status: str):
         """Support the automated regression suite by performing resolve.
 
-        Learner Note:
+        Note:
             Keeping this helper focused makes the surrounding workflow easier to test and maintain.
         """
         entry = entries.get(query_id)
@@ -99,11 +99,11 @@ def _fake_pending_sql_store(monkeypatch):
     return entries
 
 
-# Learner note: Verifies test query blocked without token so future changes cannot silently break this expected behavior.
+# Verifies test query blocked without token so future changes cannot silently break this expected behavior.
 def test_query_blocked_without_token():
     """Verify that query blocked without token.
 
-    Learner Note:
+    Note:
         This regression test protects an expected production behavior from silent changes.
     """
     response = client.post(
@@ -121,11 +121,11 @@ def test_query_blocked_without_token():
     assert response.status_code == 403 or response.status_code == 401
 
 
-# Learner note: Verifies test query unsafe input returns 400 so future changes cannot silently break this expected behavior.
+# Verifies test query unsafe input returns 400 so future changes cannot silently break this expected behavior.
 def test_query_unsafe_input_returns_400():
     """Verify that query unsafe input returns 400.
 
-    Learner Note:
+    Note:
         This regression test protects an expected production behavior from silent changes.
     """
     token = _login()
@@ -150,11 +150,11 @@ def test_query_unsafe_input_returns_400():
     assert body["request_id"]
 
 
-# Learner note: Verifies test query hybrid returns combined response so future changes cannot silently break this expected behavior.
+# Verifies test query hybrid returns combined response so future changes cannot silently break this expected behavior.
 def test_query_hybrid_returns_combined_response(monkeypatch):
     """Verify that query hybrid returns combined response.
 
-    Learner Note:
+    Note:
         This regression test protects an expected production behavior from silent changes.
     """
     token = _login()
@@ -216,11 +216,11 @@ def test_query_hybrid_returns_combined_response(monkeypatch):
     assert body["metadata"]["reflection_iterations"] == 1
 
 
-# Learner note: Verifies test query auto resolves strategy before graph so future changes cannot silently break this expected behavior.
+# Verifies test query auto resolves strategy before graph so future changes cannot silently break this expected behavior.
 def test_query_auto_resolves_strategy_before_graph(monkeypatch):
     """Verify that query auto resolves strategy before graph.
 
-    Learner Note:
+    Note:
         This regression test protects an expected production behavior from silent changes.
     """
     token = _login()
@@ -231,11 +231,11 @@ def test_query_auto_resolves_strategy_before_graph(monkeypatch):
     monkeypatch.setattr(query_api, "consume_budget", lambda *args, **kwargs: None)
     monkeypatch.setattr(query_api, "classify_intent", lambda question: "rag")
 
-    # Learner note: Supports invoke as reusable test setup so scenarios stay deterministic and readable.
+    # Note: Supports invoke as reusable test setup so scenarios stay deterministic and readable.
     def _invoke(payload, config=None):
         """Support the automated regression suite by performing invoke.
 
-        Learner Note:
+        Note:
             Keeping this helper focused makes the surrounding workflow easier to test and maintain.
         """
         captured["payload"] = payload
@@ -286,11 +286,11 @@ def test_query_auto_resolves_strategy_before_graph(monkeypatch):
     assert body["metadata"]["auto_enabled"] is True
 
 
-# Learner note: Verifies test query rewrites follow up before graph so future changes cannot silently break this expected behavior.
+# Verifies test query rewrites follow up before graph so future changes cannot silently break this expected behavior.
 def test_query_rewrites_follow_up_before_graph(monkeypatch):
     """Verify that query rewrites follow up before graph.
 
-    Learner Note:
+    Note:
         This regression test protects an expected production behavior from silent changes.
     """
     token = _login()
@@ -301,11 +301,11 @@ def test_query_rewrites_follow_up_before_graph(monkeypatch):
     monkeypatch.setattr(query_api, "consume_budget", lambda *args, **kwargs: None)
     monkeypatch.setattr(query_api, "classify_intent", lambda question: "rag")
 
-    # Learner note: Supports invoke as reusable test setup so scenarios stay deterministic and readable.
+    # Note: Supports invoke as reusable test setup so scenarios stay deterministic and readable.
     def _invoke(payload, config=None):
         """Support the automated regression suite by performing invoke.
 
-        Learner Note:
+        Note:
             Keeping this helper focused makes the surrounding workflow easier to test and maintain.
         """
         captured["payload"] = payload
@@ -348,11 +348,11 @@ def test_query_rewrites_follow_up_before_graph(monkeypatch):
     assert body["metadata"]["resolved_follow_up_subject"] == "Secret"
 
 
-# Learner note: Verifies test query sql uses approved cache without reapproval so future changes cannot silently break this expected behavior.
+# Verifies test query sql uses approved cache without reapproval so future changes cannot silently break this expected behavior.
 def test_query_sql_uses_approved_cache_without_reapproval(monkeypatch):
     """Verify that query sql uses approved cache without reapproval.
 
-    Learner Note:
+    Note:
         This regression test protects an expected production behavior from silent changes.
     """
     token = _login()
@@ -384,11 +384,11 @@ def test_query_sql_uses_approved_cache_without_reapproval(monkeypatch):
         },
     )
 
-    # Learner note: Supports should not run as reusable test setup so scenarios stay deterministic and readable.
+    # Supports should not run as reusable test setup so scenarios stay deterministic and readable.
     def _should_not_run(*args, **kwargs):
         """Support the automated regression suite by performing should not run.
 
-        Learner Note:
+        Note:
             Keeping this helper focused makes the surrounding workflow easier to test and maintain.
         """
         raise AssertionError("graph.invoke should not run when approved SQL cache hits")
@@ -420,11 +420,11 @@ def test_query_sql_uses_approved_cache_without_reapproval(monkeypatch):
     assert body["metadata"]["cache_hit"] is True
 
 
-# Learner note: Verifies test query hybrid uses approved cache without reapproval so future changes cannot silently break this expected behavior.
+# Verifies test query hybrid uses approved cache without reapproval so future changes cannot silently break this expected behavior.
 def test_query_hybrid_uses_approved_cache_without_reapproval(monkeypatch):
     """Verify that query hybrid uses approved cache without reapproval.
 
-    Learner Note:
+    Note:
         This regression test protects an expected production behavior from silent changes.
     """
     token = _login()
@@ -434,11 +434,11 @@ def test_query_hybrid_uses_approved_cache_without_reapproval(monkeypatch):
     monkeypatch.setattr(query_api, "consume_budget", lambda *args, **kwargs: None)
     monkeypatch.setattr(query_api, "classify_intent", lambda question: "hybrid")
 
-    # Learner note: Supports get cached as reusable test setup so scenarios stay deterministic and readable.
+    # Note: Supports get cached as reusable test setup so scenarios stay deterministic and readable.
     def _get_cached(route, question, cache_context=None):
         """Support the automated regression suite by performing get cached.
 
-        Learner Note:
+        Note:
             Keeping this helper focused makes the surrounding workflow easier to test and maintain.
         """
         assert route == "hybrid"
@@ -471,11 +471,11 @@ def test_query_hybrid_uses_approved_cache_without_reapproval(monkeypatch):
 
     monkeypatch.setattr(query_api.query_cache, "get_approved_answer", _get_cached)
 
-    # Learner note: Supports should not run as reusable test setup so scenarios stay deterministic and readable.
+    # Supports should not run as reusable test setup so scenarios stay deterministic and readable.
     def _should_not_run(*args, **kwargs):
         """Support the automated regression suite by performing should not run.
 
-        Learner Note:
+        Note:
             Keeping this helper focused makes the surrounding workflow easier to test and maintain.
         """
         raise AssertionError("graph.invoke should not run when approved hybrid cache hits")
@@ -506,11 +506,11 @@ def test_query_hybrid_uses_approved_cache_without_reapproval(monkeypatch):
     assert body["metadata"]["cache_hit"] is True
 
 
-# Learner note: Verifies test query sql returns pending approval so future changes cannot silently break this expected behavior.
+# Verifies test query sql returns pending approval so future changes cannot silently break this expected behavior.
 def test_query_sql_returns_pending_approval(monkeypatch):
     """Verify that query sql returns pending approval.
 
-    Learner Note:
+    Note:
         This regression test protects an expected production behavior from silent changes.
     """
     token = _login()
@@ -561,11 +561,11 @@ def test_query_sql_returns_pending_approval(monkeypatch):
     assert body["pending_sql"]["query_id"]
 
 
-# Learner note: Verifies test query sql execute resumes approved query so future changes cannot silently break this expected behavior.
+# Verifies test query sql execute resumes approved query so future changes cannot silently break this expected behavior.
 def test_query_sql_execute_resumes_approved_query(monkeypatch):
     """Verify that query sql execute resumes approved query.
 
-    Learner Note:
+    Note:
         This regression test protects an expected production behavior from silent changes.
     """
     token = _login()
@@ -609,11 +609,11 @@ def test_query_sql_execute_resumes_approved_query(monkeypatch):
     assert body["metadata"]["route"] == "sql"
 
 
-# Learner note: Verifies test query sql execute stored result persists internal cost to approved cache so future changes cannot silently break this expected behavior.
+# Verifies test query sql execute stored result persists internal cost to approved cache so future changes cannot silently break this expected behavior.
 def test_query_sql_execute_stored_result_persists_internal_cost_to_approved_cache(monkeypatch):
     """Verify that query sql execute stored result persists internal cost to approved cache.
 
-    Learner Note:
+    Note:
         This regression test protects an expected production behavior from silent changes.
     """
     token = _login()
@@ -670,11 +670,11 @@ def test_query_sql_execute_stored_result_persists_internal_cost_to_approved_cach
     assert captured["payload"]["infra_cost_saved_usd"] == 0.00008
 
 
-# Learner note: Verifies test query sql execute graph resume persists internal cost to approved cache so future changes cannot silently break this expected behavior.
+# Verifies test query sql execute graph resume persists internal cost to approved cache so future changes cannot silently break this expected behavior.
 def test_query_sql_execute_graph_resume_persists_internal_cost_to_approved_cache(monkeypatch):
     """Verify that query sql execute graph resume persists internal cost to approved cache.
 
-    Learner Note:
+    Note:
         This regression test protects an expected production behavior from silent changes.
     """
     token = _login()
@@ -753,11 +753,11 @@ def test_query_sql_execute_graph_resume_persists_internal_cost_to_approved_cache
     assert captured["cache_context"]["search_mode"] == "hybrid"
 
 
-# Learner note: Verifies test query sql execute returns explicit error so future changes cannot silently break this expected behavior.
+# Verifies test query sql execute returns explicit error so future changes cannot silently break this expected behavior.
 def test_query_sql_execute_returns_explicit_error(monkeypatch):
     """Verify that query sql execute returns explicit error.
 
-    Learner Note:
+    Note:
         This regression test protects an expected production behavior from silent changes.
     """
     token = _login()
@@ -777,11 +777,11 @@ def test_query_sql_execute_returns_explicit_error(monkeypatch):
         ),
     )
 
-    # Learner note: Supports raise as reusable test setup so scenarios stay deterministic and readable.
+    # Note: Supports raise as reusable test setup so scenarios stay deterministic and readable.
     def _raise(*args, **kwargs):
         """Support the automated regression suite by performing raise.
 
-        Learner Note:
+        Note:
             Keeping this helper focused makes the surrounding workflow easier to test and maintain.
         """
         raise SQLExecutionError(
@@ -804,11 +804,11 @@ def test_query_sql_execute_returns_explicit_error(monkeypatch):
     )
 
 
-# Learner note: Verifies test query sql execute returns explicit missing context so future changes cannot silently break this expected behavior.
+# Verifies test query sql execute returns explicit missing context so future changes cannot silently break this expected behavior.
 def test_query_sql_execute_returns_explicit_missing_context(monkeypatch):
     """Verify that query sql execute returns explicit missing context.
 
-    Learner Note:
+    Note:
         This regression test protects an expected production behavior from silent changes.
     """
     token = _login()
@@ -838,11 +838,11 @@ def test_query_sql_execute_returns_explicit_missing_context(monkeypatch):
     assert "sql_approval_context_missing" in response.json()["detail"]
 
 
-# Learner note: Verifies test query hybrid returns hybrid sql pending so future changes cannot silently break this expected behavior.
+# Verifies test query hybrid returns hybrid sql pending so future changes cannot silently break this expected behavior.
 def test_query_hybrid_returns_hybrid_sql_pending(monkeypatch):
     """Verify that query hybrid returns hybrid sql pending.
 
-    Learner Note:
+    Note:
         This regression test protects an expected production behavior from silent changes.
     """
     token = _login()

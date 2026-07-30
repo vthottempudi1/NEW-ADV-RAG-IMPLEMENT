@@ -44,11 +44,6 @@ Return a JSON object with exactly these fields:
 """
 
 
-# Learner note: Transforms build system prompt centrally so downstream code receives a predictable shape.
 def build_system_prompt() -> str:
-    """Perform build system prompt for the retrieval-augmented generation pipeline.
-
-    Learner Note:
-        This function keeps the responsibility explicit for callers, tests, and operators.
-    """
+    """Return the hardened system prompt used for every LLM answer-generation call."""
     return HARDENED_SYSTEM_PROMPT

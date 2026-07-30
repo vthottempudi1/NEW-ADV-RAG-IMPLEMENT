@@ -31,62 +31,33 @@ _FORBIDDEN_SQL_NODES = (
 )
 
 
-# Learner Note: S q l service error is part of the governed structured-query pipeline.
 class SQLServiceError(Exception):
-    # Learner note: Initializes this component so its dependencies and runtime state are explicit.
-    """Represent s q l service error within the governed structured-query pipeline.
+    """Base exception for the natural-language-to-SQL pipeline. Carries a `public_detail` message safe to surface to API callers and an HTTP `status_code` to report."""
 
-    Learner Note:
-        This class groups state and behavior behind a clear, testable contract.
-    """
     def __init__(self, public_detail: str, status_code: int = 500):
-        """Initialize init dependencies and runtime state.
-
-        Learner Note:
-            Explicit initialization keeps object construction predictable and testable.
-        """
+        """Store the caller-facing error detail and HTTP status code, then initialize the base Exception with `public_detail` as its message."""
         super().__init__(public_detail)
         self.public_detail = public_detail
         self.status_code = status_code
 
 
-# Learner Note: S q l generation error is part of the governed structured-query pipeline.
 class SQLGenerationError(SQLServiceError):
-    """Represent s q l generation error within the governed structured-query pipeline.
-
-    Learner Note:
-        This class groups state and behavior behind a clear, testable contract.
-    """
+    """Raised when the LLM fails to produce a valid, safe SQL statement for a question (e.g. invalid JSON, empty SQL, or unsafe/incorrectly time-anchored output after retries)."""
     pass
 
 
-# Learner Note: S q l execution error is part of the governed structured-query pipeline.
 class SQLExecutionError(SQLServiceError):
-    """Represent s q l execution error within the governed structured-query pipeline.
-
-    Learner Note:
-        This class groups state and behavior behind a clear, testable contract.
-    """
+    """Raised when executing a validated SQL statement against the database fails or its result set exceeds the configured row limit."""
     pass
 
 
-# Learner Note: S q l validation error is part of the governed structured-query pipeline.
 class SQLValidationError(SQLServiceError):
-    """Represent s q l validation error within the governed structured-query pipeline.
-
-    Learner Note:
-        This class groups state and behavior behind a clear, testable contract.
-    """
+    """Raised when a SQL statement fails the SELECT-only safety check before execution."""
     pass
 
 
-# Learner note: Encapsulates serialize value so this responsibility can be understood, tested, and changed independently.
 def _serialize_value(value: Any) -> Any:
-    """Support the governed structured-query pipeline by performing serialize value.
-
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
-    """
+    """Convert a single database column value into a JSON-serializable form: dates/times/timedeltas to ISO strings (timedeltas via str()), Decimal to float, UUID to string, and bytes to a UTF-8 string (replacing undecodable bytes). Other types pass through unchanged."""
     if isinstance(value, datetime.datetime):
         return value.isoformat()
     if isinstance(value, datetime.date):
@@ -104,23 +75,13 @@ def _serialize_value(value: Any) -> Any:
     return value
 
 
-# Learner note: Encapsulates serialize row so this responsibility can be understood, tested, and changed independently.
 def _serialize_row(row: dict[str, Any]) -> dict[str, Any]:
-    """Support the governed structured-query pipeline by performing serialize row.
-
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
-    """
+    """Apply `_serialize_value` to every value in a result row, returning a JSON-serializable dict."""
     return {key: _serialize_value(value) for key, value in row.items()}
 
 
-# Learner note: Encapsulates first error line so this responsibility can be understood, tested, and changed independently.
 def _first_error_line(message: str) -> str:
-    """Support the governed structured-query pipeline by performing first error line.
-
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
-    """
+    """Collapse a (possibly multi-line) error message into a single space-joined line, dropping blank lines and surrounding whitespace on each line."""
     return " ".join(line.strip() for line in message.splitlines() if line.strip())
 
 
@@ -141,13 +102,8 @@ _RELATIVE_TIME_PATTERNS = (
 )
 
 
-# Learner note: Encapsulates db error detail so this responsibility can be understood, tested, and changed independently.
 def _db_error_detail(exc: psycopg2.Error) -> str:
-    """Support the governed structured-query pipeline by performing db error detail.
-
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
-    """
+    """Extract the most useful single-line detail message from a psycopg2 error, preferring the driver's structured `diag.message_primary`, then falling back to `pgerror`, then `str(exc)`."""
     primary = getattr(getattr(exc, "diag", None), "message_primary", None)
     if primary:
         return primary.strip()
@@ -156,13 +112,8 @@ def _db_error_detail(exc: psycopg2.Error) -> str:
     return _first_error_line(str(exc))
 
 
-# Learner note: Encapsulates map db error so this responsibility can be understood, tested, and changed independently.
 def _map_db_error(exc: psycopg2.Error) -> SQLExecutionError:
-    """Support the governed structured-query pipeline by performing map db error.
-
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
-    """
+    """Translate a raw psycopg2 exception into a `SQLExecutionError` with an appropriate public message and HTTP status: 422 for missing table/column or SQL syntax errors, 503 for connection/operational failures, and 500 as a generic fallback."""
     detail = _db_error_detail(exc)
 
     if isinstance(exc, pg_errors.UndefinedTable):
@@ -192,12 +143,16 @@ def _map_db_error(exc: psycopg2.Error) -> SQLExecutionError:
     )
 
 
-# Learner note: Evaluates is select only as a guardrail before later pipeline stages proceed.
 def is_select_only(sql: str) -> bool:
-    """Perform is select only for the governed structured-query pipeline.
+    """Validate that `sql` is a single, safe, read-only statement.
 
-    Learner Note:
-        This function keeps the responsibility explicit for callers, tests, and operators.
+    Parses `sql` with sqlglot (postgres dialect) and returns False if: the text is
+    blank, parsing fails, more than one statement is present, the parsed statement
+    is not a query (``exp.Query``), or the statement's AST contains any forbidden
+    node type (DDL/DML such as ALTER, CREATE, DELETE, DROP, INSERT, UPDATE, MERGE,
+    GRANT/REVOKE, COPY, or generic commands). This is the core SQL-injection/DML
+    guardrail used before both caching and executing model-generated SQL — only
+    genuine SELECT-shaped queries return True.
     """
     cleaned = sql.strip()
     if not cleaned:
@@ -222,30 +177,16 @@ def is_select_only(sql: str) -> bool:
     return True
 
 
-# Learner Note: S q l service is part of the governed structured-query pipeline.
 class SQLService:
-    # Learner note: Initializes this component so its dependencies and runtime state are explicit.
-    """Represent s q l service within the governed structured-query pipeline.
+    """Natural-language-to-SQL service: turns a user question into a safe, schema-aware SQL SELECT statement (via heuristics or an LLM), validates it, executes it against the operational Postgres database, and serializes/caches the results."""
 
-    Learner Note:
-        This class groups state and behavior behind a clear, testable contract.
-    """
     def __init__(self):
-        """Initialize init dependencies and runtime state.
-
-        Learner Note:
-            Explicit initialization keeps object construction predictable and testable.
-        """
+        """Initialize the service with no cached schema context; the schema is introspected lazily on first use."""
         self._schema_context: str | None = None
 
-    # Learner note: Encapsulates prepare sql question so this responsibility can be understood, tested, and changed independently.
     @staticmethod
     def _prepare_sql_question(question: str) -> str:
-        """Support the governed structured-query pipeline by performing prepare sql question.
-
-        Learner Note:
-            Keeping this helper focused makes the surrounding workflow easier to test and maintain.
-        """
+        """Strip a trailing runbook/policy clause from a hybrid question (e.g. "...and what does our runbook say") so only the database-answerable portion is sent for SQL generation. If no known connector phrase is found, just trims whitespace and a trailing '?'."""
         lowered = question.lower()
         connectors = (
             " and what does our ",
@@ -263,13 +204,16 @@ class SQLService:
                 return question[:index].strip().rstrip("?")
         return question.strip().rstrip("?")
 
-    # Learner note: Encapsulates cluster lookup sql so this responsibility can be understood, tested, and changed independently.
     @staticmethod
     def _cluster_lookup_sql(raw_cluster_ref: str) -> tuple[str, str]:
-        """Support the governed structured-query pipeline by performing cluster lookup sql.
+        """Build a SQL lookup against the `clusters` table for a shorthand cluster reference (e.g. "prod-us-east-1").
 
-        Learner Note:
-            Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+        Attempts to infer an environment (production/staging/development) from a
+        `prod-`/`stage-`/`dev-` prefix and a cloud region (e.g. `us-east-1`) via
+        regex, and if either is found, builds a strict WHERE clause matching
+        environment/region plus a normalized name substring match. Otherwise falls
+        back to a normalized-name equality/substring match ordered by match quality.
+        Returns a tuple of (sql, human-readable explanation of the matching strategy used).
         """
         reference = raw_cluster_ref.strip().lower()
         env = None
@@ -319,14 +263,9 @@ class SQLService:
         )
         return sql, "Lookup against the clusters table using normalized cluster-name matching."
 
-    # Learner note: Encapsulates heuristic sql so this responsibility can be understood, tested, and changed independently.
     @classmethod
     def _heuristic_sql(cls, question: str) -> dict[str, str] | None:
-        """Support the governed structured-query pipeline by performing heuristic sql.
-
-        Learner Note:
-            Keeping this helper focused makes the surrounding workflow easier to test and maintain.
-        """
+        """Match a normalized question against a fixed set of known, hand-verified question phrasings (e.g. "how many p1 incidents were resolved in the last quarter") and return a pre-written {sql, explanation} dict if matched, bypassing the LLM entirely. Also handles the "show me details for cluster <ref>" pattern via `_cluster_lookup_sql`. Returns None if no heuristic matches, in which case the caller must fall back to LLM-based generation."""
         normalized = cls._prepare_sql_question(question)
         lowered = normalized.lower()
 
@@ -426,46 +365,26 @@ class SQLService:
 
         return None
 
-    # Learner note: Encapsulates question uses relative time so this responsibility can be understood, tested, and changed independently.
     @staticmethod
     def _question_uses_relative_time(question: str) -> bool:
-        """Support the governed structured-query pipeline by performing question uses relative time.
-
-        Learner Note:
-            Keeping this helper focused makes the surrounding workflow easier to test and maintain.
-        """
+        """Return True if `question` contains a relative-time phrase (e.g. "today", "last quarter", "past 30 days") per `_RELATIVE_TIME_PATTERNS`, used to enforce that generated SQL anchors such phrases to CURRENT_DATE/NOW() rather than the dataset's max date."""
         lowered = question.lower()
         return any(re.search(pattern, lowered) for pattern in _RELATIVE_TIME_PATTERNS)
 
-    # Learner note: Encapsulates sql uses dataset max anchor so this responsibility can be understood, tested, and changed independently.
     @staticmethod
     def _sql_uses_dataset_max_anchor(sql: str) -> bool:
-        """Support the governed structured-query pipeline by performing sql uses dataset max anchor.
-
-        Learner Note:
-            Keeping this helper focused makes the surrounding workflow easier to test and maintain.
-        """
+        """Return True if `sql` looks like it anchors a time filter to the dataset's own MAX(date) value combined with an INTERVAL — an incorrect pattern for relative-time questions, which should anchor to CURRENT_DATE/NOW() instead."""
         lowered = sql.lower()
         return "max(" in lowered and "interval" in lowered
 
-    # Learner note: Encapsulates sql uses runtime time anchor so this responsibility can be understood, tested, and changed independently.
     @staticmethod
     def _sql_uses_runtime_time_anchor(sql: str) -> bool:
-        """Support the governed structured-query pipeline by performing sql uses runtime time anchor.
-
-        Learner Note:
-            Keeping this helper focused makes the surrounding workflow easier to test and maintain.
-        """
+        """Return True if `sql` references CURRENT_DATE, CURRENT_TIMESTAMP, or NOW(), indicating it is anchored to the actual runtime clock rather than data-derived dates."""
         lowered = sql.lower()
         return any(token in lowered for token in ("current_date", "current_timestamp", "now()"))
 
-    # Learner note: Encapsulates build schema context so this responsibility can be understood, tested, and changed independently.
     def _build_schema_context(self) -> str:
-        """Support the governed structured-query pipeline by performing build schema context.
-
-        Learner Note:
-            Keeping this helper focused makes the surrounding workflow easier to test and maintain.
-        """
+        """Introspect and cache (on `self._schema_context`) a human-readable description of the public schema's tables and columns, queried from `information_schema.columns`, for use as LLM context when generating SQL. Subsequent calls return the cached value without re-querying the database."""
         if self._schema_context is not None:
             return self._schema_context
 
@@ -494,12 +413,27 @@ class SQLService:
         self._schema_context = "\n".join(lines)
         return self._schema_context
 
-    # Learner note: Produces generate sql at a dedicated model boundary so output handling remains testable.
     def generate_sql(self, question: str) -> dict:
-        """Perform generate sql for the governed structured-query pipeline.
+        """Generate a safe SQL SELECT statement for a natural-language `question`.
 
-        Learner Note:
-            This function keeps the responsibility explicit for callers, tests, and operators.
+        Resolution order: (1) return a cached generation if `question` was seen
+        before; (2) match a known hand-verified question against `_heuristic_sql`
+        and cache/return it with zero cost; (3) otherwise call the configured SQL
+        LLM with the introspected database schema as context, requesting a JSON
+        response with `sql`/`explanation` keys.
+
+        The LLM path retries once (2 attempts total) whenever the response is not
+        valid JSON, the SQL is empty, or — for questions using relative-time
+        language ("last quarter", "this month", etc.) — the SQL anchors to a
+        dataset MAX(date) instead of CURRENT_DATE/NOW(), or doesn't anchor to
+        runtime time at all. After the final attempt, an unrecoverable failure of
+        any of these kinds raises `SQLGenerationError` (status 422 or 500). Before
+        returning, the generated SQL is also required to pass `is_select_only`;
+        otherwise a `SQLGenerationError` (422) is raised.
+
+        Returns a dict with `sql`, `explanation`, and `generation_cost_usd` (0.0
+        for cached/heuristic results). Successful LLM-generated SQL is cached via
+        `query_cache.set_sql_generation`.
         """
         cached = query_cache.get_sql_generation(question)
         if cached is not None:
@@ -641,12 +575,21 @@ class SQLService:
         query_cache.set_sql_generation(question, payload["sql"])
         return payload
 
-    # Learner note: Orchestrates execute sql, making this function a clear execution boundary for learners and tests.
     def execute_sql(self, sql: str) -> list[dict]:
-        """Perform execute sql for the governed structured-query pipeline.
+        """Validate and execute `sql` against the operational Postgres database, returning JSON-serialized result rows.
 
-        Learner Note:
-            This function keeps the responsibility explicit for callers, tests, and operators.
+        Raises `SQLValidationError` (422) if `sql` does not pass `is_select_only`.
+        Checks the result cache first; if a cached result exceeds
+        `settings.sql_max_result_rows` it raises `SQLExecutionError` (422) — this
+        guards against previously-cached oversized results as well as fresh ones.
+        On a cache miss, opens a fresh psycopg2 connection, executes the query,
+        fetches up to `sql_max_result_rows + 1` rows (the extra row is used purely
+        to detect overflow), and raises `SQLExecutionError` (422) if the limit is
+        exceeded. Database errors are translated via `_map_db_error` into a
+        `SQLExecutionError` with an appropriate status code. On success, rows are
+        serialized via `_serialize_row`, cached via `query_cache.set_sql_result`,
+        and returned as a list of dicts. The connection/cursor are always closed
+        in a `finally` block.
         """
         if not is_select_only(sql):
             raise SQLValidationError(

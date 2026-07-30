@@ -39,13 +39,9 @@ _FOLLOW_UP_MARKERS = (
 _SUBJECT_PATTERN = re.compile(r"\b(" + "|".join(re.escape(item) for item in _KNOWN_SUBJECTS) + r")s?\b", re.IGNORECASE)
 
 
-# Learner note: Encapsulates normalize subject so this responsibility can be understood, tested, and changed independently.
 def _normalize_subject(subject: str) -> str:
-    """Support the retrieval-augmented generation pipeline by performing normalize subject.
-
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
-    """
+    """Map a matched subject string (any case, singular or plural) to its canonical
+    form from _KNOWN_SUBJECTS. Returns the input unchanged if no known subject matches."""
     lowered = subject.lower()
     for item in _KNOWN_SUBJECTS:
         if item.lower() == lowered or f"{item.lower()}s" == lowered:
@@ -53,13 +49,10 @@ def _normalize_subject(subject: str) -> str:
     return subject
 
 
-# Learner note: Encapsulates extract subjects so this responsibility can be understood, tested, and changed independently.
 def _extract_subjects(text: str) -> list[str]:
-    """Support the retrieval-augmented generation pipeline by performing extract subjects.
-
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
-    """
+    """Find every known Kubernetes/ops subject mentioned in text and return their
+    canonical names in first-seen order, de-duplicated. Returns an empty list for
+    falsy input."""
     if not text:
         return []
     seen: list[str] = []
@@ -70,23 +63,19 @@ def _extract_subjects(text: str) -> list[str]:
     return seen
 
 
-# Learner note: Encapsulates looks like follow up so this responsibility can be understood, tested, and changed independently.
 def _looks_like_follow_up(question: str) -> bool:
-    """Support the retrieval-augmented generation pipeline by performing looks like follow up.
-
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
-    """
+    """Return True if question contains any of the known follow-up phrases (e.g.
+    "which one", "the same", "what does it say") that signal it depends on
+    context from a prior conversation turn."""
     lowered = question.lower()
     return any(marker in lowered for marker in _FOLLOW_UP_MARKERS)
 
 
-# Learner note: Encapsulates last turn subjects so this responsibility can be understood, tested, and changed independently.
 def _last_turn_subjects(conversation_context: Iterable[dict] | None) -> tuple[list[str], list[str]]:
-    """Support the retrieval-augmented generation pipeline by performing last turn subjects.
+    """Extract known subjects mentioned in the most recent conversation turn.
 
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    Returns a (subjects_from_prior_question, subjects_from_prior_answer) pair.
+    Both lists are empty if there is no conversation history.
     """
     turns = list(conversation_context or [])
     if not turns:
@@ -97,12 +86,14 @@ def _last_turn_subjects(conversation_context: Iterable[dict] | None) -> tuple[li
     return _extract_subjects(prior_question), _extract_subjects(prior_answer)
 
 
-# Learner note: Encapsulates resolve follow up subject so this responsibility can be understood, tested, and changed independently.
 def _resolve_follow_up_subject(question: str, conversation_context: Iterable[dict] | None) -> str | None:
-    """Support the retrieval-augmented generation pipeline by performing resolve follow up subject.
+    """Infer which prior-turn subject a follow-up question ("that one", "it") refers to.
 
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    Checks, in order: an explicit "non-sensitive"/"confidential" hint resolved
+    against ConfigMap/Secret subjects seen in the prior turn; whether exactly one
+    candidate subject is available (unambiguous); and phrases like "same object"
+    or "if I mounted/exposed it" that imply the single most recent subject.
+    Returns None if the reference cannot be resolved to a single subject.
     """
     prior_question_subjects, prior_answer_subjects = _last_turn_subjects(conversation_context)
     available = prior_answer_subjects or prior_question_subjects
@@ -127,12 +118,20 @@ def _resolve_follow_up_subject(question: str, conversation_context: Iterable[dic
     return None
 
 
-# Learner note: Encapsulates rewrite follow up question so this responsibility can be understood, tested, and changed independently.
 def rewrite_follow_up_question(question: str, conversation_context: Iterable[dict] | None = None) -> tuple[str, str | None]:
-    """Perform rewrite follow up question for the retrieval-augmented generation pipeline.
+    """Rewrite an ambiguous follow-up question into a self-contained one using conversation history.
 
-    Learner Note:
-        This function keeps the responsibility explicit for callers, tests, and operators.
+    If the question doesn't look like a follow-up (per _looks_like_follow_up), it
+    is returned unchanged with a None subject. Otherwise this resolves which
+    subject ("that", "it", "which one") the question refers to from the prior
+    turn and substitutes it into known phrase patterns (e.g. "What does it say"
+    -> "What does the Secret say"). A special case detects "after that ...
+    mitigation fail[s]" and rewrites straight to an escalation-policy question
+    regardless of the generic replacement table. If no known phrase matches but a
+    subject was resolved, the original question is returned paired with that
+    subject so callers can still use it for retrieval context.
+
+    Returns a (question_text, resolved_subject_or_None) tuple.
     """
     cleaned = " ".join((question or "").split())
     if not cleaned or not _looks_like_follow_up(cleaned):

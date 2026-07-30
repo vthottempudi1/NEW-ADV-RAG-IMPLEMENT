@@ -12,7 +12,7 @@ from pathlib import Path
 from qdrant_client import QdrantClient
 
 
-# Learner Note: Main is part of the operational tooling layer.
+# Main is part of the operational tooling layer.
 def main() -> None:
     """Scroll one collection and write source-level counts and fingerprints."""
     parser = argparse.ArgumentParser(description=__doc__)

@@ -7,13 +7,9 @@ from app.config import settings
 from app.middleware.auth import create_access_token, hash_password, verify_password
 
 
-# Learner Note: Auth request is part of the versioned HTTP API boundary.
 class AuthRequest(BaseModel):
-    """Represent auth request within the versioned HTTP API boundary.
+    """Request body for register/login: a plaintext username and password pair."""
 
-    Learner Note:
-        This class groups state and behavior behind a clear, testable contract.
-    """
     username: str
     password: str
 
@@ -21,13 +17,8 @@ class AuthRequest(BaseModel):
 router = APIRouter(tags=["auth"])
 
 
-# Learner note: Encapsulates get db connection so this responsibility can be understood, tested, and changed independently.
 def _get_db_connection():
-    """Support the versioned HTTP API boundary by performing get db connection.
-
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
-    """
+    """Open a new psycopg2 connection to the configured database, raising HTTP 503 if the database is unreachable."""
     try:
         return psycopg2.connect(settings.database_url)
     except psycopg2.OperationalError as exc:
@@ -37,13 +28,13 @@ def _get_db_connection():
         ) from exc
 
 
-# Learner note: Encapsulates register so this responsibility can be understood, tested, and changed independently.
 @router.post("/auth/register", status_code=status.HTTP_201_CREATED)
 async def register(body: AuthRequest) -> dict:
-    """Handle register asynchronously within the versioned HTTP API boundary.
+    """Create a new non-admin user with a bcrypt-hashed password and return a signed access token.
 
-    Learner Note:
-        The async boundary prevents request handling from blocking unrelated work.
+    Raises HTTP 400 if the username is already taken, or HTTP 500 on other database
+    errors. The transaction is rolled back on any failure and the connection is
+    always closed.
     """
     username = body.username
     password = body.password
@@ -78,13 +69,13 @@ async def register(body: AuthRequest) -> dict:
     return {"token": token}
 
 
-# Learner note: Encapsulates login so this responsibility can be understood, tested, and changed independently.
 @router.post("/auth/login")
 async def login(body: AuthRequest) -> dict:
-    """Handle login asynchronously within the versioned HTTP API boundary.
+    """Verify credentials against the stored password hash and return a signed access token.
 
-    Learner Note:
-        The async boundary prevents request handling from blocking unrelated work.
+    Raises HTTP 401 if the username doesn't exist or the password doesn't match,
+    and HTTP 500 on database errors. The returned token embeds the user's
+    admin flag from the database.
     """
     conn = _get_db_connection()
     cur = conn.cursor()

@@ -17,23 +17,20 @@ sql_service = SQLService()
 checkpointer = MemorySaver()
 
 
-# Learner note: Decides route intent, which controls the next branch of the application workflow.
 def route_intent(state: GraphState) -> dict:
-    """Perform route intent for the application orchestration layer.
+    """Classify the incoming question and set ``intent`` to 'sql', 'rag', or 'hybrid'.
 
-    Learner Note:
-        This function keeps the responsibility explicit for callers, tests, and operators.
+    This is the graph's entry node; the conditional edge out of it uses the
+    returned intent to pick the next branch.
     """
     intent = classify_intent(state["question"])
     return {"intent": intent}
 
 
-# Learner note: Produces generate sql node at a dedicated model boundary so output handling remains testable.
 def generate_sql_node(state: GraphState) -> dict:
-    """Perform generate sql node for the application orchestration layer.
+    """Generate a SQL query for the question via the LLM and stash it in state for approval.
 
-    Learner Note:
-        This function keeps the responsibility explicit for callers, tests, and operators.
+    Shared by the 'sql' and 'hybrid' branches; runs before ``request_sql_approval``.
     """
     generated = sql_service.generate_sql(state["question"])
     return {
@@ -43,12 +40,12 @@ def generate_sql_node(state: GraphState) -> dict:
     }
 
 
-# Learner note: Encapsulates request sql approval so this responsibility can be understood, tested, and changed independently.
 def request_sql_approval(state: GraphState) -> dict:
-    """Perform request sql approval for the application orchestration layer.
+    """Pause the graph and wait for a human to approve or reject the generated SQL.
 
-    Learner Note:
-        This function keeps the responsibility explicit for callers, tests, and operators.
+    Uses LangGraph's ``interrupt`` to suspend execution; the caller receives a
+    'pending_sql' block and must resume the run (via POST /query/sql/execute)
+    with an approval decision before the graph continues.
     """
     approval = interrupt(
         {
@@ -60,12 +57,10 @@ def request_sql_approval(state: GraphState) -> dict:
     return {"sql_approved": approval.get("approved", False)}
 
 
-# Learner note: Encapsulates question to count statement so this responsibility can be understood, tested, and changed independently.
 def _question_to_count_statement(question: str, value: object) -> str | None:
-    """Support the application orchestration layer by performing question to count statement.
+    """Turn a "how many.../count of..." style question plus a scalar SQL result into a sentence.
 
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    Returns None if the question doesn't match a recognized counting phrasing.
     """
     cleaned = " ".join(question.strip().split())
     lower = cleaned.lower().rstrip("?")
@@ -88,12 +83,12 @@ def _question_to_count_statement(question: str, value: object) -> str | None:
     return None
 
 
-# Learner note: Encapsulates format sql answer so this responsibility can be understood, tested, and changed independently.
 def _format_sql_answer(question: str, rows: list[dict]) -> str:
-    """Support the application orchestration layer by performing format sql answer.
+    """Render SQL result rows as a natural-language answer, using question phrasing as a hint.
 
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    Handles the empty-result case, single-scalar results (e.g. counts), known
+    single-row question patterns (e.g. "most-paged on-call engineer"), small
+    single-column result sets, and falls back to a generic row-count summary.
     """
     cleaned = " ".join(question.strip().split())
     lowered = cleaned.lower().rstrip("?")
@@ -140,17 +135,16 @@ def _format_sql_answer(question: str, rows: list[dict]) -> str:
     return f"The query returned {len(rows)} rows."
 
 
-# Learner note: Encapsulates build sql response so this responsibility can be understood, tested, and changed independently.
 def _build_sql_response(
     question: str,
     sql: str,
     rows: list[dict],
     cost_saved_usd: float = 0.0,
 ) -> dict:
-    """Support the application orchestration layer by performing build sql response.
+    """Assemble the SQL-only branch's GraphState update: answer, sources, and metadata.
 
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    Wraps the formatted answer and up to 5 row previews in a ``ChatResponse``/
+    ``ResponseMetadata`` pair, then flattens it back into a plain dict.
     """
     answer = _format_sql_answer(question, rows)
     previews = [
@@ -186,12 +180,11 @@ def _build_sql_response(
     }
 
 
-# Learner note: Encapsulates extract runbook first steps so this responsibility can be understood, tested, and changed independently.
 def _extract_runbook_first_steps(retrieved_chunks: list[dict]) -> str | None:
-    """Support the application orchestration layer by performing extract runbook first steps.
+    """Pull the sentence following "the first response steps are:" out of retrieved chunk text.
 
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    Scans chunks in order and returns the first match; returns None if no
+    chunk contains that marker phrase.
     """
     for chunk in retrieved_chunks:
         text = chunk.get("text", "")
@@ -209,17 +202,17 @@ def _extract_runbook_first_steps(retrieved_chunks: list[dict]) -> str | None:
     return None
 
 
-# Learner note: Encapsulates build operational hybrid answer so this responsibility can be understood, tested, and changed independently.
 def _build_operational_hybrid_answer(
     *,
     question: str,
     rows: list[dict],
     rag_metadata: dict,
 ) -> str | None:
-    """Support the application orchestration layer by performing build operational hybrid answer.
+    """Build a deterministic runbook-style answer, bypassing the LLM, when possible.
 
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    Only applies when the question mentions a runbook/procedure/policy and a
+    matching first-response step was found in the retrieved chunks; otherwise
+    returns None so the caller falls back to the LLM-generated answer.
     """
     lowered = question.lower()
     if "runbook" not in lowered and "procedure" not in lowered and "policy" not in lowered:
@@ -237,7 +230,6 @@ def _build_operational_hybrid_answer(
     )
 
 
-# Learner Note: Hybrid evidence previews is part of the application orchestration layer.
 def _hybrid_evidence_previews(
     question: str,
     rag_metadata: dict,
@@ -266,27 +258,21 @@ def _hybrid_evidence_previews(
     return previews
 
 
-# Learner note: Transforms build sql execution result centrally so downstream code receives a predictable shape.
 def build_sql_execution_result(
     question: str,
     sql: str,
     rows: list[dict],
     cost_saved_usd: float = 0.0,
 ) -> dict:
-    """Perform build sql execution result for the application orchestration layer.
-
-    Learner Note:
-        This function keeps the responsibility explicit for callers, tests, and operators.
-    """
+    """Public wrapper around ``_build_sql_response`` for callers outside this module."""
     return _build_sql_response(question, sql, rows, cost_saved_usd=cost_saved_usd)
 
 
-# Learner note: Orchestrates run sql, making this function a clear execution boundary for learners and tests.
 def run_sql(state: GraphState) -> dict:
-    """Perform run sql for the application orchestration layer.
+    """Execute the operator-approved SQL and build the SQL-only branch's final response.
 
-    Learner Note:
-        This function keeps the responsibility explicit for callers, tests, and operators.
+    If ``sql_approved`` is falsy (the operator rejected it), short-circuits
+    with a rejection message instead of running the query.
     """
     if not state.get("sql_approved"):
         return {
@@ -308,12 +294,11 @@ def run_sql(state: GraphState) -> dict:
     )
 
 
-# Learner note: Orchestrates run rag node, making this function a clear execution boundary for learners and tests.
 def run_rag_node(state: GraphState) -> dict:
-    """Perform run rag node for the application orchestration layer.
+    """Run the RAG-only branch: retrieve and answer purely from the vector store.
 
-    Learner Note:
-        This function keeps the responsibility explicit for callers, tests, and operators.
+    Delegates to ``run_rag`` with the retrieval flags carried in
+    ``state["flags"]`` and flattens the response into a GraphState update.
     """
     response = run_rag(
         state["question"],
@@ -334,12 +319,13 @@ def run_rag_node(state: GraphState) -> dict:
     }
 
 
-# Learner note: Implements retrieve rag for hybrid, a key retrieval-quality step in the RAG pipeline.
 def retrieve_rag_for_hybrid(state: GraphState) -> dict:
-    """Perform retrieve rag for hybrid for the application orchestration layer.
+    """Run the RAG retrieval half of the hybrid branch and stash results in state.
 
-    Learner Note:
-        This function keeps the responsibility explicit for callers, tests, and operators.
+    Rewrites the question for document retrieval via
+    ``derive_hybrid_rag_question`` first, since the raw question may be phrased
+    for SQL. Runs before ``generate_sql_node`` so both retrieval results
+    (RAG chunks here, SQL rows later) are available when ``run_hybrid`` merges them.
     """
     rag_question = derive_hybrid_rag_question(state["question"])
     response = run_rag(
@@ -364,12 +350,13 @@ def retrieve_rag_for_hybrid(state: GraphState) -> dict:
     }
 
 
-# Learner note: Orchestrates run hybrid, making this function a clear execution boundary for learners and tests.
 def run_hybrid(state: GraphState) -> dict:
-    """Perform run hybrid for the application orchestration layer.
+    """Merge RAG document context and approved SQL results into one LLM-generated answer.
 
-    Learner Note:
-        This function keeps the responsibility explicit for callers, tests, and operators.
+    Reads RAG results stashed by ``retrieve_rag_for_hybrid`` and the generated
+    SQL from state, executes the SQL, then prompts the LLM with both contexts
+    together. If ``sql_approved`` is falsy, short-circuits and returns the
+    RAG-only answer with a rejection note instead of calling the LLM again.
     """
     if not state.get("sql_approved"):
         rag_metadata = state.get("rag_metadata", {})
@@ -476,7 +463,6 @@ def run_hybrid(state: GraphState) -> dict:
     }
 
 
-# Learner note: Transforms build hybrid execution result centrally so downstream code receives a predictable shape.
 def build_hybrid_execution_result(
     *,
     question: str,
@@ -487,10 +473,11 @@ def build_hybrid_execution_result(
     rag_metadata: dict,
     cost_saved_usd: float = 0.0,
 ) -> dict:
-    """Perform build hybrid execution result for the application orchestration layer.
+    """Merge already-retrieved RAG context and already-fetched SQL rows into one answer.
 
-    Learner Note:
-        This function keeps the responsibility explicit for callers, tests, and operators.
+    Standalone counterpart to ``run_hybrid`` for callers (e.g. the SQL-approval
+    API route) that already have RAG results and executed rows in hand and
+    just need the LLM merge step and response shaping, without touching GraphState.
     """
     rag_context = "\n\n".join(
         f"[Source: {chunk['source']}]\n{chunk['text']}"
@@ -552,23 +539,106 @@ def build_hybrid_execution_result(
     }
 
 
-# Learner note: Encapsulates finalize so this responsibility can be understood, tested, and changed independently.
 def finalize(state: GraphState) -> dict:
-    """Perform finalize for the application orchestration layer.
+    """Terminal node shared by all three branches; currently a no-op pass-through to END.
 
-    Learner Note:
-        This function keeps the responsibility explicit for callers, tests, and operators.
+    Kept as an explicit graph node so output validation, citation formatting,
+    or other shared post-processing can be added here later without changing
+    the graph topology.
     """
     return {}
 
 
-# Learner note: Transforms build graph centrally so downstream code receives a predictable shape.
 def build_graph():
-    """Perform build graph for the application orchestration layer.
+    """Build and compile the LangGraph StateGraph that orchestrates all three retrieval
+    pipelines: RAG-only, SQL-only, and Hybrid (SQL + RAG combined).
 
-    Learner Note:
-        This function keeps the responsibility explicit for callers, tests, and operators.
+    This is the central orchestration factory for the entire query execution layer.
+    It is called once at module load time; the compiled graph instance is assigned
+    to the module-level `graph` variable and reused for every incoming request.
+
+    Graph Topology (node → edge relationships):
+    ─────────────────────────────────────────────────────────────────────────────
+    START
+      └─► route_intent               ← reads 'intent' from GraphState
+
+          ├─[intent == 'rag']──────► run_rag
+          │                               └─► finalize ──► END
+          │
+          ├─[intent == 'sql']──────► generate_sql_node
+          │                               └─► request_sql_approval  ← HITL interrupt
+          │                                       └─[intent == 'sql']─► run_sql
+          │                                                               └─► finalize ──► END
+          │
+          └─[intent == 'hybrid']───► retrieve_rag_for_hybrid
+                                          └─► generate_sql_node
+                                                  └─► request_sql_approval  ← HITL interrupt
+                                                          └─[intent == 'hybrid']─► run_hybrid
+                                                                                      └─► finalize ──► END
+
+    Node Responsibilities:
+        route_intent            — reads the pre-classified 'intent' field from GraphState
+                                  ('sql', 'rag', or 'hybrid') and branches accordingly;
+                                  intent was set upstream by classify_intent() after the
+                                  9-layer guardrail stack completed.
+
+        generate_sql_node       — calls the LLM with RDS PostgreSQL schema context to
+                                  generate a natural-language-to-SQL query; output is
+                                  validated by sqlglot AST before proceeding.
+
+        request_sql_approval    — LangGraph interrupt checkpoint; pauses graph execution
+                                  and returns a 'pending_sql' block to the caller.
+                                  Execution resumes only after the operator explicitly
+                                  approves via POST /query/sql/execute. Shared by both
+                                  'sql' and 'hybrid' branches.
+
+        run_sql                 — executes the approved SQL query against RDS PostgreSQL
+                                  and stores structured results in GraphState.
+
+        run_rag                 — executes the full RAG pipeline against Qdrant Cloud:
+                                  dense, sparse, hybrid, HyDE, CRAG, or SRAG depending
+                                  on the retrieval mode set in the incoming request.
+
+        retrieve_rag_for_hybrid — RAG retrieval step for the hybrid branch only; fetches
+                                  Qdrant document chunks and stores them in GraphState
+                                  before handing off to generate_sql_node so both
+                                  retrieval results are available at merge time.
+
+        run_hybrid              — merges Qdrant document context (from
+                                  retrieve_rag_for_hybrid) and SQL structured results
+                                  (from run_sql) into a single unified LLM generation.
+
+        finalize                — post-processing node shared by all three branches;
+                                  applies output validation (layer 9 of the guardrail
+                                  stack), formats citations, and writes the completed
+                                  answer into GraphState before returning to the caller.
+
+    Checkpointer:
+        The graph is compiled with a checkpointer, which enables LangGraph to persist
+        GraphState between the request_sql_approval interrupt and the subsequent
+        /query/sql/execute resume call. Without the checkpointer, the Human-in-the-Loop
+        SQL approval flow cannot function across separate HTTP requests.
+
+    Returns:
+        CompiledGraph: A LangGraph compiled StateGraph instance bound to the module-level
+                       checkpointer. This object is thread-safe and intended to be reused
+                       across all requests for the lifetime of the FastAPI process on
+                       ECS Fargate.
+
+    Usage:
+        This function is not called directly by API routes. The module-level assignment
+        `graph = build_graph()` runs at import time, and API handlers reference `graph`
+        directly to invoke `.ainvoke()` or `.astream()`.
+
+    Example flow for a hybrid question:
+        "How many P1 incidents breached SLA last month and what is our escalation policy?"
+
+        START → route_intent → retrieve_rag_for_hybrid → generate_sql_node
+              → request_sql_approval [PAUSED — awaiting operator approval]
+              → run_hybrid → finalize → END
     """
+
+  
     builder = StateGraph(GraphState)
 
     builder.add_node("route_intent", route_intent)

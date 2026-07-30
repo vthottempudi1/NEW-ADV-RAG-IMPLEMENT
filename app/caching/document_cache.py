@@ -11,38 +11,24 @@ from app.storage.storage_backend import StorageBackend, get_storage_backend
 logger = logging.getLogger(__name__)
 
 
-# Learner Note: Doc cache service is part of the distributed caching layer.
 class DocCacheService:
-    # Learner note: Initializes this component so its dependencies and runtime state are explicit.
-    """Represent doc cache service within the distributed caching layer.
+    """Content-addressed cache for document metadata, keyed by a SHA-256 hash of document bytes.
 
-    Learner Note:
-        This class groups state and behavior behind a clear, testable contract.
+    Stores/retrieves a JSON metadata blob per content hash through a pluggable
+    StorageBackend (e.g. local disk or S3), so repeated ingestion of identical
+    document content can skip reprocessing.
     """
-    def __init__(self, backend: StorageBackend | None = None):
-        """Initialize init dependencies and runtime state.
 
-        Learner Note:
-            Explicit initialization keeps object construction predictable and testable.
-        """
+    def __init__(self, backend: StorageBackend | None = None):
+        """Use the given StorageBackend, or fall back to the process-wide default backend."""
         self.backend = backend or get_storage_backend()
 
-    # Learner note: Encapsulates compute content hash so this responsibility can be understood, tested, and changed independently.
     def compute_content_hash(self, content: bytes) -> str:
-        """Perform compute content hash for the distributed caching layer.
-
-        Learner Note:
-            This function keeps the responsibility explicit for callers, tests, and operators.
-        """
+        """Return the hex SHA-256 digest of `content`, used as the cache key."""
         return hashlib.sha256(content).hexdigest()
 
-    # Learner note: Encapsulates compute file hash so this responsibility can be understood, tested, and changed independently.
     def compute_file_hash(self, file_path: str | Path, chunk_size: int = 8192) -> str:
-        """Perform compute file hash for the distributed caching layer.
-
-        Learner Note:
-            This function keeps the responsibility explicit for callers, tests, and operators.
-        """
+        """Return the hex SHA-256 digest of a file's contents, reading it in `chunk_size`-byte chunks to bound memory use."""
         digest = hashlib.sha256()
         path = Path(file_path)
 
@@ -55,31 +41,16 @@ class DocCacheService:
 
         return digest.hexdigest()
 
-    # Learner note: Encapsulates metadata key so this responsibility can be understood, tested, and changed independently.
     def _metadata_key(self, content_hash: str) -> str:
-        """Support the distributed caching layer by performing metadata key.
-
-        Learner Note:
-            Keeping this helper focused makes the surrounding workflow easier to test and maintain.
-        """
+        """Return the storage backend key under which metadata for `content_hash` is stored."""
         return f"{content_hash}/metadata.json"
 
-    # Learner note: Encapsulates exists so this responsibility can be understood, tested, and changed independently.
     def exists(self, content_hash: str) -> bool:
-        """Perform exists for the distributed caching layer.
-
-        Learner Note:
-            This function keeps the responsibility explicit for callers, tests, and operators.
-        """
+        """Return True if metadata has already been cached for this content hash."""
         return self.backend.exists(self._metadata_key(content_hash))
 
-    # Learner note: Persists set metadata consistently so state changes remain controlled and testable.
     def set_metadata(self, content_hash: str, metadata: dict[str, Any]) -> bool:
-        """Perform set metadata for the distributed caching layer.
-
-        Learner Note:
-            This function keeps the responsibility explicit for callers, tests, and operators.
-        """
+        """Serialize `metadata` to JSON and store it for `content_hash`. Returns True on success, False (logging the exception) on failure."""
         try:
             payload = json.dumps(metadata).encode("utf-8")
             self.backend.save_bytes(self._metadata_key(content_hash), payload)
@@ -88,13 +59,8 @@ class DocCacheService:
             logger.exception("Failed to store document metadata hash=%s", content_hash)
             return False
 
-    # Learner note: Retrieves get metadata in one place so callers share consistent access behavior.
     def get_metadata(self, content_hash: str) -> dict[str, Any] | None:
-        """Perform get metadata for the distributed caching layer.
-
-        Learner Note:
-            This function keeps the responsibility explicit for callers, tests, and operators.
-        """
+        """Return the cached metadata dict for `content_hash`, or None if not cached or if reading/parsing fails."""
         key = self._metadata_key(content_hash)
         if not self.backend.exists(key):
             return None

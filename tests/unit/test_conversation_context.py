@@ -1,11 +1,11 @@
 from app.rag.conversation_context import rewrite_follow_up_question
 
 
-# Learner note: Verifies test rewrite follow up resolves configmap reference so future changes cannot silently break this expected behavior.
+# Note: Verifies test rewrite follow up resolves configmap reference so future changes cannot silently break this expected behavior.
 def test_rewrite_follow_up_resolves_configmap_reference():
     """Verify that rewrite follow up resolves configmap reference.
 
-    Learner Note:
+    Note:
         This regression test protects an expected production behavior from silent changes.
     """
     rewritten, subject = rewrite_follow_up_question(
@@ -23,11 +23,11 @@ def test_rewrite_follow_up_resolves_configmap_reference():
     assert rewritten.startswith("For the ConfigMap")
 
 
-# Learner note: Verifies test rewrite follow up carries secret reference across turns so future changes cannot silently break this expected behavior.
+# Note: Verifies test rewrite follow up carries secret reference across turns so future changes cannot silently break this expected behavior.
 def test_rewrite_follow_up_carries_secret_reference_across_turns():
     """Verify that rewrite follow up carries secret reference across turns.
 
-    Learner Note:
+    Note:
         This regression test protects an expected production behavior from silent changes.
     """
     rewritten, subject = rewrite_follow_up_question(
@@ -45,11 +45,11 @@ def test_rewrite_follow_up_carries_secret_reference_across_turns():
     assert rewritten == "Would you use a Secret for a database password?"
 
 
-# Learner note: Verifies test rewrite follow up expands previous comparison pair so future changes cannot silently break this expected behavior.
+# Note: Verifies test rewrite follow up expands previous comparison pair so future changes cannot silently break this expected behavior.
 def test_rewrite_follow_up_expands_previous_comparison_pair():
     """Verify that rewrite follow up expands previous comparison pair.
 
-    Learner Note:
+    Note:
         This regression test protects an expected production behavior from silent changes.
     """
     rewritten, subject = rewrite_follow_up_question(
@@ -67,11 +67,11 @@ def test_rewrite_follow_up_expands_previous_comparison_pair():
     assert rewritten == "Which one, StatefulSet or Deployment, would you use for a database, and why?"
 
 
-# Learner note: Verifies a follow-up keeps the incident runbook subject instead of becoming a context-free query.
+# Note: Verifies a follow-up keeps the incident runbook subject instead of becoming a context-free query.
 def test_rewrite_follow_up_preserves_incident_runbook_context():
     """Verify that rewrite follow up preserves incident runbook context.
 
-    Learner Note:
+    Note:
         This regression test protects an expected production behavior from silent changes.
     """
     rewritten, subject = rewrite_follow_up_question(
@@ -88,11 +88,11 @@ def test_rewrite_follow_up_preserves_incident_runbook_context():
     assert rewritten == "What does the Incident Response Runbook say to do first?"
 
 
-# Learner note: Verifies escalation-policy follow-ups retain their authoritative document context.
+# Note: Verifies escalation-policy follow-ups retain their authoritative document context.
 def test_rewrite_follow_up_preserves_escalation_policy_context():
     """Verify that rewrite follow up preserves escalation policy context.
 
-    Learner Note:
+    Note:
         This regression test protects an expected production behavior from silent changes.
     """
     rewritten, subject = rewrite_follow_up_question(
@@ -109,7 +109,7 @@ def test_rewrite_follow_up_preserves_escalation_policy_context():
     assert rewritten.startswith("According to the On-Call Escalation Policy")
 
 
-# Learner Note: Test operational after that follow up stays on runbook is part of the automated regression suite.
+# Note: Test operational after that follow up stays on runbook is part of the automated regression suite.
 def test_operational_after_that_follow_up_stays_on_runbook():
     """Procedural pronouns must not escape to noisy web retrieval."""
     rewritten, subject = rewrite_follow_up_question(

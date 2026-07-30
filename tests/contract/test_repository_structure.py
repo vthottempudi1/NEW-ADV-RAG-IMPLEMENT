@@ -7,11 +7,11 @@ ROOT = Path(__file__).resolve().parents[2]
 PYTHON_ROOTS = ("app", "evals", "scripts", "tests", "ui")
 
 
-# Learner Note: Guard the production-oriented directory boundaries against regression.
+# Note: Guard the production-oriented directory boundaries against regression.
 def test_enterprise_repository_boundaries_exist():
     """Verify that every canonical application, test, eval, UI, DB, and infra layer exists.
 
-    Learner Note:
+    Note:
         This contract stops future changes from silently returning code to a flat layout.
     """
     expected = (
@@ -45,12 +45,12 @@ def test_enterprise_repository_boundaries_exist():
     assert not missing, f"Missing enterprise repository boundaries: {missing}"
 
 
-# Learner Note: Enforce the learner-facing documentation standard for every definition.
+# Enforce the learner-facing documentation standard for every definition.
 def test_all_python_classes_and_functions_have_docstrings():
     """Verify that every maintained Python class and function has a non-empty docstring.
 
-    Learner Note:
-        Hiring managers and new contributors should not encounter undocumented behavior.
+    Note:
+        Managers and new contributors should not encounter undocumented behavior.
     """
     missing: list[str] = []
     for relative_root in PYTHON_ROOTS:

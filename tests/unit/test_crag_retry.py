@@ -2,7 +2,7 @@ from app.models import ChunkRelevance, CRAGEvaluation, RetrievedChunk
 from app.rag import crag as crag_module
 
 
-# Learner Note: The grader contract must preserve independent scores for every evidence chunk.
+# Note: The grader contract must preserve independent scores for every evidence chunk.
 def test_grade_chunks_parses_per_chunk_scores_and_aggregate_ratio(monkeypatch):
     """Verify that one strong chunk cannot raise an unrelated chunk's CRAG score."""
     chunks = [
@@ -37,11 +37,11 @@ def test_grade_chunks_parses_per_chunk_scores_and_aggregate_ratio(monkeypatch):
     assert evaluation.relevance_label == "somewhat_relevant"
 
 
-# Learner note: Verifies CRAG retries locally even when initial retrieval is fully irrelevant.
+# Note: Verifies CRAG retries locally even when initial retrieval is fully irrelevant.
 def test_crag_retries_irrelevant_local_context_before_fallback(monkeypatch):
     """Verify that crag retries irrelevant local context before fallback.
 
-    Learner Note:
+    Note:
         This regression test protects an expected production behavior from silent changes.
     """
     noisy = [RetrievedChunk(text="unrelated research", source="noise.pdf", score=0.9)]
@@ -96,7 +96,7 @@ def test_crag_retries_irrelevant_local_context_before_fallback(monkeypatch):
     assert used_web is False
 
 
-# Learner Note: Per-chunk CRAG must remove noisy evidence even when one chunk is excellent.
+# Note: Per-chunk CRAG must remove noisy evidence even when one chunk is excellent.
 def test_crag_filters_individually_irrelevant_chunks(monkeypatch):
     """Verify that aggregate relevance cannot hide an irrelevant first-ranked chunk."""
     chunks = [
@@ -128,3 +128,61 @@ def test_crag_filters_individually_irrelevant_chunks(monkeypatch):
     assert [chunk.source for chunk in filtered] == ["scale-intro.html"]
     assert result.relevant_ratio == 0.5
     assert used_web is False
+
+
+def test_crag_prompt_includes_authority_tier(monkeypatch):
+    """Verify that CRAG receives authority metadata and evaluation guidance."""
+    captured = {}
+
+    def fake_generate_with_json(**kwargs):
+        """Capture the generated prompt and return a deterministic evaluation."""
+        captured.update(kwargs)
+        return {
+            "text": (
+                '{"confidence": 0.9, '
+                '"reasoning": "authority-aware evaluation", '
+                '"chunk_evaluations": ['
+                '{"index": 0, "relevance_score": 0.9, '
+                '"relevance_label": "highly_relevant", '
+                '"reasoning": "authoritative evidence"},'
+                '{"index": 1, "relevance_score": 0.1, '
+                '"relevance_label": "irrelevant", '
+                '"reasoning": "noisy research"}'
+                "]}"
+            )
+        }
+
+    monkeypatch.setattr(
+        crag_module,
+        "generate_with_json",
+        fake_generate_with_json,
+    )
+
+    chunks = [
+        RetrievedChunk(
+            text="A Kubernetes Service provides a stable endpoint.",
+            source="concepts__services-networking__service.txt",
+            metadata={"authority_tier": "true"},
+        ),
+        RetrievedChunk(
+            text="General research about scalable web servers.",
+            source="scalable-web-thesis.pdf",
+            metadata={"authority_tier": "noisy"},
+        ),
+    ]
+
+    crag_module.grade_chunks(
+        "How can applications find each other when addresses change?",
+        chunks,
+    )
+
+    prompt = captured["user_message"]
+    system_prompt = captured["system_prompt"]
+
+    assert "[Authority tier: true]" in prompt
+    assert "[Authority tier: noisy]" in prompt
+
+    assert "Topical similarity alone is insufficient" in system_prompt
+    assert "authority_tier=noisy" in system_prompt
+    assert "authority_tier=true" in system_prompt
+    assert "authority_tier=uploaded" in system_prompt

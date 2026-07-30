@@ -11,47 +11,32 @@ from app.config import settings
 security = HTTPBearer()
 
 
-# Learner Note: User is part of the cross-cutting request middleware.
 class User(BaseModel):
-    """Represent user within the cross-cutting request middleware.
+    """Authenticated user identity extracted from a validated JWT: username plus admin flag."""
 
-    Learner Note:
-        This class groups state and behavior behind a clear, testable contract.
-    """
     username: str
     is_admin: bool = False
 
 
-# Learner note: Computes hash password deterministically to support identity, caching, or deduplication.
 def hash_password(password: str) -> str:
-    """Perform hash password for the cross-cutting request middleware.
-
-    Learner Note:
-        This function keeps the responsibility explicit for callers, tests, and operators.
-    """
+    """Hash a plaintext password with bcrypt (random per-call salt) and return it as a UTF-8 string."""
     return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
 
 
-# Learner note: Evaluates verify password as a guardrail before later pipeline stages proceed.
 def verify_password(password: str, hashed_password: str) -> bool:
-    """Perform verify password for the cross-cutting request middleware.
-
-    Learner Note:
-        This function keeps the responsibility explicit for callers, tests, and operators.
-    """
+    """Return True if `password` matches the bcrypt hash `hashed_password`."""
     return bcrypt.checkpw(password.encode("utf-8"), hashed_password.encode("utf-8"))
 
 
-# Learner note: Transforms create access token centrally so downstream code receives a predictable shape.
 def create_access_token(
     username: str,
     expires_delta_seconds: int | None = None,
     is_admin: bool = False,
 ) -> str:
-    """Perform create access token for the cross-cutting request middleware.
+    """Issue a signed JWT (HS256) encoding `username`, `is_admin`, issued-at, and expiry.
 
-    Learner Note:
-        This function keeps the responsibility explicit for callers, tests, and operators.
+    `expires_delta_seconds` defaults to `settings.jwt_expiration_minutes * 60` when
+    not given. Signed with `settings.jwt_secret`.
     """
     if expires_delta_seconds is None:
         expires_delta_seconds = settings.jwt_expiration_minutes * 60
@@ -69,14 +54,13 @@ def create_access_token(
     return jwt.encode(payload, settings.jwt_secret, algorithm="HS256")
 
 
-# Learner note: Retrieves get current user in one place so callers share consistent access behavior.
 def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(security),
 ) -> User:
-    """Perform get current user for the cross-cutting request middleware.
+    """FastAPI dependency that decodes and validates the bearer JWT, returning the authenticated User.
 
-    Learner Note:
-        This function keeps the responsibility explicit for callers, tests, and operators.
+    Raises HTTP 401 if the token is missing a valid `sub` claim, has expired, or
+    otherwise fails signature/algorithm validation.
     """
     try:
         payload = jwt.decode(
@@ -104,13 +88,8 @@ def get_current_user(
             detail="Invalid authentication credentials",
         ) from None
 
-# Learner note: Encapsulates require admin so this responsibility can be understood, tested, and changed independently.
 def require_admin(user: User = Depends(get_current_user)) -> User:
-    """Perform require admin for the cross-cutting request middleware.
-
-    Learner Note:
-        This function keeps the responsibility explicit for callers, tests, and operators.
-    """
+    """FastAPI dependency that builds on `get_current_user` and raises HTTP 403 unless the user has admin privileges."""
     if not user.is_admin:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,

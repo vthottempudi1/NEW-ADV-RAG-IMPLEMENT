@@ -1,5 +1,7 @@
 from app.models import RetrievedChunk
 from app.rag import service as rag_service_module
+
+#from app.rag.service import _prefer_authoritative_chunks
 from app.rag.service import (
     _augment_security_evidence,
     _augment_workload_identity_evidence,
@@ -12,6 +14,7 @@ from app.rag.service import (
     _merge_same_source_evidence,
     _planned_answer_guidance,
     _prefer_anchor_matched_sources,
+    _prefer_authoritative_chunks,
     _prefer_entity_named_sources,
     _prefer_implicit_stateful_sources,
     _prefer_operational_sources,
@@ -21,7 +24,7 @@ from app.rag.service import (
 )
 
 
-# Learner Note: Test network policy plan requests complementary same source passages is part of the automated regression suite.
+# Test network policy plan requests complementary same source passages is part of the automated regression suite.
 def test_network_policy_plan_requests_complementary_same_source_passages():
     """Composite policy answers need rules, additivity, and enforcement evidence."""
     plan = _evidence_plan(
@@ -31,7 +34,7 @@ def test_network_policy_plan_requests_complementary_same_source_passages():
     assert all(pattern.search("concepts__services-networking__network-policies.html") for pattern, _ in plan)
 
 
-# Learner Note: Test https request plan covers service identity and ready routing is part of the automated regression suite.
+# Test https request plan covers service identity and ready routing is part of the automated regression suite.
 def test_https_request_plan_covers_service_identity_and_ready_routing():
     """HTTPS tracing needs both stable Service identity and ready-backend routing evidence."""
     plan = _evidence_plan(
@@ -46,7 +49,7 @@ def test_https_request_plan_covers_service_identity_and_ready_routing():
     assert any("healthy ready backend" in query for query in service_queries)
 
 
-# Learner Note: Test daemonset plan covers node ownership and gpu placement is part of the automated regression suite.
+# Test daemonset plan covers node ownership and gpu placement is part of the automated regression suite.
 def test_daemonset_plan_covers_node_ownership_and_gpu_placement():
     """A restricted node-wide agent needs evidence for ownership and placement."""
     plan = _evidence_plan(
@@ -59,7 +62,7 @@ def test_daemonset_plan_covers_node_ownership_and_gpu_placement():
     assert any("nodeSelector" in query for _, query in plan)
 
 
-# Learner Note: Test secret plan requests pod credential usage evidence is part of the automated regression suite.
+# Test secret plan requests pod credential usage evidence is part of the automated regression suite.
 def test_secret_plan_requests_pod_credential_usage_evidence():
     """Secret evidence should describe Pod credential use, not merely Secret types."""
     plan = _evidence_plan(
@@ -72,7 +75,7 @@ def test_secret_plan_requests_pod_credential_usage_evidence():
     ]
 
 
-# Learner Note: Test sealed v2 finding plans cover required authoritative evidence is part of the automated regression suite.
+# Test sealed v2 finding plans cover required authoritative evidence is part of the automated regression suite.
 def test_sealed_v2_finding_plans_cover_required_authoritative_evidence():
     """Generalized evidence plans reproduce each consumed sealed-v2 retrieval finding."""
     cases = {
@@ -87,7 +90,7 @@ def test_sealed_v2_finding_plans_cover_required_authoritative_evidence():
         assert len(_evidence_plan(question)) == expected_count
 
 
-# Learner Note: Test challenge regression plans cover oom and serviceaccount evidence is part of the automated regression suite.
+# Test challenge regression plans cover oom and serviceaccount evidence is part of the automated regression suite.
 def test_challenge_regression_plans_cover_oom_and_serviceaccount_evidence():
     """Adversarial source requests and rationale questions retain authoritative evidence."""
     oom_plan = _evidence_plan(
@@ -103,7 +106,7 @@ def test_challenge_regression_plans_cover_oom_and_serviceaccount_evidence():
     assert any(pattern.search("rbac-good-practices.pdf") for pattern, _ in identity_plan)
 
 
-# Learner Note: Test narrow security comparisons receive grounded synthesis guidance is part of the automated regression suite.
+# Test narrow security comparisons receive grounded synthesis guidance is part of the automated regression suite.
 def test_narrow_security_comparisons_receive_grounded_synthesis_guidance():
     """Correct evidence must not be expanded into undocumented security claims."""
     namespace_guidance = _planned_answer_guidance(
@@ -117,7 +120,7 @@ def test_narrow_security_comparisons_receive_grounded_synthesis_guidance():
     assert "Do not invent profile definitions" in pss_guidance
 
 
-# Learner Note: Test authoritative plan preserves distinct chunks from same source is part of the automated regression suite.
+# Test authoritative plan preserves distinct chunks from same source is part of the automated regression suite.
 def test_authoritative_plan_preserves_distinct_chunks_from_same_source(monkeypatch):
     """Multiple evidence requirements in one document must not collapse to one passage."""
     chunks = [
@@ -147,7 +150,7 @@ def test_authoritative_plan_preserves_distinct_chunks_from_same_source(monkeypat
     assert len({chunk.text for chunk in selected}) == 3
 
 
-# Learner Note: Test planned passages from one source merge without losing evidence is part of the automated regression suite.
+# Test planned passages from one source merge without losing evidence is part of the automated regression suite.
 def test_planned_passages_from_one_source_merge_without_losing_evidence():
     """Fragmented authoritative passages should count as one coherent source context."""
     chunks = [
@@ -164,7 +167,7 @@ def test_planned_passages_from_one_source_merge_without_losing_evidence():
     assert merged[0].score == 0.6
 
 
-# Learner Note: Test composite identity plan reserves all required source families is part of the automated regression suite.
+# Test composite identity plan reserves all required source families is part of the automated regression suite.
 def test_composite_identity_plan_reserves_all_required_source_families():
     """Verify Secret, ServiceAccount, and RBAC evidence all survive final top-k selection."""
     chunks = [
@@ -185,7 +188,7 @@ def test_composite_identity_plan_reserves_all_required_source_families():
     ]
 
 
-# Learner Note: Broad Kubernetes security retrieval must retain RBAC and overview evidence.
+# Test broad Kubernetes security retrieval must retain RBAC and overview evidence is part of the automated regression suite.
 def test_security_policy_prefers_canonical_security_sources():
     """Verify that unrelated PDFs cannot displace security and RBAC documentation."""
     chunks = [
@@ -202,7 +205,7 @@ def test_security_policy_prefers_canonical_security_sources():
     ]
 
 
-# Learner Note: Security rescue must add missing RBAC evidence without duplicating chunks.
+# Test security rescue must add missing RBAC evidence without duplicating chunks is part of the automated regression suite.
 def test_security_evidence_rescue_adds_rbac_document(monkeypatch):
     """Verify broad security questions receive deterministic least-privilege evidence."""
     overview = RetrievedChunk(text="cluster security overview", source="concepts__security__overview.txt")
@@ -214,7 +217,7 @@ def test_security_evidence_rescue_adds_rbac_document(monkeypatch):
     assert [chunk.source for chunk in merged] == [overview.source, rbac.source]
 
 
-# Learner Note: Literal anchor filtering must not remove complementary RBAC evidence.
+# Test literal anchor filtering must not remove complementary RBAC evidence is part of the automated regression suite.
 def test_security_question_preserves_rbac_during_anchor_filtering():
     """Verify broad security questions retain overview and least-privilege chunks."""
     chunks = [
@@ -230,7 +233,7 @@ def test_security_question_preserves_rbac_during_anchor_filtering():
     assert filtered == chunks
 
 
-# Learner Note: ServiceAccount authorization questions need configuration and RBAC evidence.
+# ServiceAccount authorization questions need configuration and RBAC evidence.
 def test_workload_identity_rescue_adds_service_account_document(monkeypatch):
     """Verify dedicated identity configuration is rescued for least-privilege questions."""
     rbac = RetrievedChunk(text="least privilege RBAC", source="concepts__security__rbac-good-practices.pdf")
@@ -252,7 +255,7 @@ def test_workload_identity_rescue_adds_service_account_document(monkeypatch):
     assert [chunk.source for chunk in merged] == [rbac.source, service_account.source]
 
 
-# Learner Note: Implicit database requirements must map to the StatefulSet controller.
+# Implicit database requirements must map to the StatefulSet controller.
 def test_implicit_stateful_policy_removes_generic_single_instance_example():
     """Verify that stable database identity selects StatefulSet evidence."""
     chunks = [
@@ -270,7 +273,7 @@ def test_implicit_stateful_policy_removes_generic_single_instance_example():
     ]
 
 
-# Learner Note: Web fallback is reserved for explicitly current external-product questions.
+# Web fallback is reserved for explicitly current external-product questions.
 def test_current_web_policy_blocks_static_kubernetes_questions():
     """Verify that static local topics cannot trigger third-party web fallback."""
     assert not _requires_current_web_evidence(
@@ -281,11 +284,11 @@ def test_current_web_policy_blocks_static_kubernetes_questions():
     )
 
 
-# Learner note: Verifies test anchor filter drops unrelated dashboard chunk for configmap secret question so future changes cannot silently break this expected behavior.
+# Verifies test anchor filter drops unrelated dashboard chunk for configmap secret question so future changes cannot silently break this expected behavior.
 def test_anchor_filter_drops_unrelated_dashboard_chunk_for_configmap_secret_question():
     """Verify that anchor filter drops unrelated dashboard chunk for configmap secret question.
 
-    Learner Note:
+    Note:
         This regression test protects an expected production behavior from silent changes.
     """
     chunks = [
@@ -320,7 +323,7 @@ def test_anchor_filter_drops_unrelated_dashboard_chunk_for_configmap_secret_ques
     ]
 
 
-# Learner Note: One authoritative storage chunk is enough to reject dashboard catalog noise.
+# One authoritative storage chunk is enough to reject dashboard catalog noise.
 def test_dashboard_noise_is_removed_when_one_relevant_source_survives():
     """Verify unrelated Dashboard evidence cannot accompany a storage answer."""
     chunks = [
@@ -333,11 +336,11 @@ def test_dashboard_noise_is_removed_when_one_relevant_source_survives():
     assert [chunk.source for chunk in filtered] == ["concepts__storage__persistent-volumes.pdf"]
 
 
-# Learner note: Verifies test negative rerank tail is dropped when stronger chunks exist so future changes cannot silently break this expected behavior.
+# Verifies test negative rerank tail is dropped when stronger chunks exist so future changes cannot silently break this expected behavior.
 def test_negative_rerank_tail_is_dropped_when_stronger_chunks_exist():
     """Verify that negative rerank tail is dropped when stronger chunks exist.
 
-    Learner Note:
+    Note:
         This regression test protects an expected production behavior from silent changes.
     """
     chunks = [
@@ -351,11 +354,11 @@ def test_negative_rerank_tail_is_dropped_when_stronger_chunks_exist():
     assert [chunk.source for chunk in filtered] == ["doc1", "doc2"]
 
 
-# Learner note: Verifies test entity named sources are preferred for statefulset follow up so future changes cannot silently break this expected behavior.
+# Verifies test entity named sources are preferred for statefulset follow up so future changes cannot silently break this expected behavior.
 def test_entity_named_sources_are_preferred_for_statefulset_follow_up():
     """Verify that entity named sources are preferred for statefulset follow up.
 
-    Learner Note:
+    Note:
         This regression test protects an expected production behavior from silent changes.
     """
     chunks = [
@@ -374,11 +377,11 @@ def test_entity_named_sources_are_preferred_for_statefulset_follow_up():
     ]
 
 
-# Learner note: Verifies test non kubernetes noise is dropped when canonical kubernetes sources exist so future changes cannot silently break this expected behavior.
+# Verifies test non kubernetes noise is dropped when canonical kubernetes sources exist so future changes cannot silently break this expected behavior.
 def test_non_kubernetes_noise_is_dropped_when_canonical_kubernetes_sources_exist():
     """Verify that non kubernetes noise is dropped when canonical kubernetes sources exist.
 
-    Learner Note:
+    Note:
         This regression test protects an expected production behavior from silent changes.
     """
     chunks = [
@@ -396,11 +399,11 @@ def test_non_kubernetes_noise_is_dropped_when_canonical_kubernetes_sources_exist
     ]
 
 
-# Learner note: Verifies authoritative runbooks displace high-scoring research noise for operational questions.
+# Verifies authoritative runbooks displace high-scoring research noise for operational questions.
 def test_operational_source_filter_eliminates_noisy_pdfs_when_runbook_exists():
     """Verify that operational source filter eliminates noisy pdfs when runbook exists.
 
-    Learner Note:
+    Note:
         This regression test protects an expected production behavior from silent changes.
     """
     chunks = [
@@ -421,11 +424,11 @@ def test_operational_source_filter_eliminates_noisy_pdfs_when_runbook_exists():
     assert [chunk.source for chunk in filtered] == ["incident-response-runbook.html"]
 
 
-# Learner note: Verifies changing Pod IP questions retain Service discovery evidence and remove controller noise.
+# Verifies changing Pod IP questions retain Service discovery evidence and remove controller noise.
 def test_service_discovery_filter_prefers_service_document_for_changing_pod_ips():
     """Verify that service discovery filter prefers service document for changing pod ips.
 
-    Learner Note:
+    Note:
         This regression test protects an expected production behavior from silent changes.
     """
     chunks = [
@@ -447,7 +450,7 @@ def test_service_discovery_filter_prefers_service_document_for_changing_pod_ips(
     ]
 
 
-# Learner Note: Lay descriptions of replaced addresses must still resolve to Service discovery.
+# Lay descriptions of replaced addresses must still resolve to Service discovery.
 def test_service_discovery_filter_handles_durable_destination_paraphrase():
     """Verify a paraphrased stable-destination problem removes StatefulSet noise."""
     chunks = [
@@ -461,3 +464,57 @@ def test_service_discovery_filter_handles_durable_destination_paraphrase():
     )
 
     assert [chunk.source for chunk in filtered] == ["concepts__services-networking__service.txt"]
+
+# Authoritative chunks handling for Hyde
+def test_authority_filter_removes_noisy_sources_for_layman_question():
+    """Verify that authoritative chunks displace explicitly noisy sources."""
+    chunks = [
+        RetrievedChunk(
+            text="Use persistent volumes for durable workload storage.",
+            source="concepts__storage__persistent-volumes.pdf",
+            metadata={"authority_tier": "true"},
+        ),
+        RetrievedChunk(
+            text="General research about durable file systems.",
+            source="unrelated-storage-research.pdf",
+            metadata={"authority_tier": "noisy"},
+        ),
+    ]
+
+    filtered = _prefer_authoritative_chunks(chunks)
+
+    assert [chunk.source for chunk in filtered] == [
+        "concepts__storage__persistent-volumes.pdf"
+    ]
+
+
+def test_authority_filter_preserves_uploaded_documents():
+    """Verify that the authority filter preserves user-uploaded documents."""
+    chunks = [
+        RetrievedChunk(
+            text="Uploaded enterprise recovery policy.",
+            source="recovery-policy.md",
+            metadata={"authority_tier": "uploaded"},
+        ),
+        RetrievedChunk(
+            text="Generic research document.",
+            source="research-paper.pdf",
+            metadata={"authority_tier": "noisy"},
+        ),
+    ]
+
+    filtered = _prefer_authoritative_chunks(chunks)
+
+    assert [chunk.source for chunk in filtered] == ["recovery-policy.md"]
+
+
+def test_authority_filter_does_not_return_empty_when_metadata_is_missing():
+    """Keep legacy chunks when authority metadata is unavailable."""
+    chunks = [
+        RetrievedChunk(
+            text="Legacy document without authority metadata.",
+            source="legacy-document.pdf",
+        )
+    ]
+
+    assert _prefer_authoritative_chunks(chunks) == chunks

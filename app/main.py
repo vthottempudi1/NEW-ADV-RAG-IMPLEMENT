@@ -39,13 +39,16 @@ app.include_router(documents_router, prefix="/api/v1")
 app.include_router(query_router, prefix="/api/v1")
 
 
-# Learner note: Correlates and times each request so production failures and latency can be traced in CloudWatch.
 @app.middleware("http")
 async def attach_request_id(request: Request, call_next):
-    """Handle attach request id asynchronously within the enterprise RAG application.
+    """HTTP middleware that stamps every request/response with a correlation ID and logs completion.
 
-    Learner Note:
-        The async boundary prevents request handling from blocking unrelated work.
+    Reuses the caller-supplied `x-request-id` header if present, otherwise generates
+    a new UUID4. Stores it on `request.state.request_id` (so route handlers and
+    exception handlers can reference it), echoes it back as an `x-request-id`
+    response header, and logs method/path/status/duration on completion. This is
+    the mechanism that lets a single request be traced end-to-end across logs
+    (e.g. in CloudWatch).
     """
     request_id = request.headers.get("x-request-id") or str(uuid.uuid4())
     request.state.request_id = request_id
@@ -65,27 +68,22 @@ async def attach_request_id(request: Request, call_next):
     return response
 
 
-# Learner note: Encapsulates health so this responsibility can be understood, tested, and changed independently.
 @app.get("/health")
 async def health() -> dict[str, str]:
-    """Handle health asynchronously within the enterprise RAG application.
-
-    Learner Note:
-        The async boundary prevents request handling from blocking unrelated work.
-    """
+    """Liveness/readiness probe endpoint. Returns `{"status": "ok", "version": <app version>}`."""
     return {"status": "ok", "version": app.version}
 
 
-# Learner note: Encapsulates handled http exception handler so this responsibility can be understood, tested, and changed independently.
 @app.exception_handler(HTTPException)
 async def handled_http_exception_handler(
     request: Request,
     exc: HTTPException,
 ) -> JSONResponse:
-    """Handle handled http exception handler asynchronously within the enterprise RAG application.
+    """Render any raised HTTPException as a consistent JSON error body.
 
-    Learner Note:
-        The async boundary prevents request handling from blocking unrelated work.
+    Includes the exception's detail/status code alongside the request path, method,
+    and correlation ID (falling back to "unknown" if `attach_request_id` never ran
+    for this request), and echoes the `x-request-id` response header.
     """
     request_id = getattr(request.state, "request_id", "unknown")
     content = {
@@ -102,13 +100,15 @@ async def handled_http_exception_handler(
     )
 
 
-# Learner note: Encapsulates unhandled exception handler so this responsibility can be understood, tested, and changed independently.
 @app.exception_handler(Exception)
 async def unhandled_exception_handler(request: Request, exc: Exception) -> JSONResponse:
-    """Handle unhandled exception handler asynchronously within the enterprise RAG application.
+    """Catch-all handler for any exception not already handled, so the API never leaks a raw 500 with no context.
 
-    Learner Note:
-        The async boundary prevents request handling from blocking unrelated work.
+    Logs the full traceback (via `logger.exception`) tagged with method/path/request
+    ID for debugging, then returns a 500 JSON body containing the exception's class
+    name and message plus the request's correlation ID. This is the last line of
+    defense preventing an unhandled error from crashing the worker or returning an
+    opaque response.
     """
     request_id = getattr(request.state, "request_id", "unknown")
     logger.exception(

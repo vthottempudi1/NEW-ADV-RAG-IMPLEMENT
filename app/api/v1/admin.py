@@ -26,7 +26,6 @@ router = APIRouter(prefix="/admin", tags=["admin"])
 logger = logging.getLogger(__name__)
 
 
-# Learner Note: The PostgreSQL probe verifies the structured-data dependency without reading data.
 def _probe_postgres() -> None:
     """Execute a bounded, read-only PostgreSQL connectivity check."""
     with psycopg2.connect(settings.database_url, connect_timeout=3) as connection:
@@ -35,13 +34,11 @@ def _probe_postgres() -> None:
             cursor.fetchone()
 
 
-# Learner Note: The Qdrant probe confirms that the configured release collection is available.
 def _probe_qdrant() -> None:
     """Verify that Qdrant can return metadata for the configured collection."""
     get_client().get_collection(settings.qdrant_collection)
 
 
-# Learner Note: Redis is optional for correctness but its availability affects cache performance.
 def _probe_redis() -> None:
     """Verify that the configured distributed Redis cache responds to PING."""
     client = query_cache._redis_client
@@ -50,21 +47,24 @@ def _probe_redis() -> None:
     client.ping()
 
 
-# Learner Note: The S3 probe checks bucket access without listing or downloading private objects.
 def _probe_s3() -> None:
     """Verify access to the configured S3 document-storage bucket."""
     storage = S3Storage()
     storage.client.head_bucket(Bucket=storage.bucket)
 
 
-# Learner Note: Every dependency probe has the same safe status and latency response contract.
 async def _run_dependency_probe(
     name: str,
     probe: Callable[[], None],
     *,
     timeout_seconds: float = 4.0,
 ) -> tuple[str, dict[str, Any]]:
-    """Run one blocking dependency probe in a worker thread with a strict timeout."""
+    """Run a blocking probe callable in a worker thread under a timeout.
+
+    Any exception (including a timeout) is caught and logged, never raised, so
+    one failing dependency cannot take down the health check as a whole.
+    Returns ``(name, {"status": "connected" | "unavailable", "latency_ms": float})``.
+    """
     started_at = time.perf_counter()
     try:
         await asyncio.wait_for(asyncio.to_thread(probe), timeout=timeout_seconds)
@@ -78,12 +78,14 @@ async def _run_dependency_probe(
     }
 
 
-# Learner Note: Cache clear request is part of the versioned HTTP API boundary.
 class CacheClearRequest(BaseModel):
-    """Represent cache clear request within the versioned HTTP API boundary.
+    """Request body for ``POST /admin/cache/clear``.
 
-    Learner Note:
-        This class groups state and behavior behind a clear, testable contract.
+    ``tier`` selects which cache tier to clear (or ``"all"``). Depending on the
+    tier, one of ``question``, ``sql``, or ``text`` must also be supplied to
+    identify the specific cache entry to invalidate; ``cache_context`` provides
+    extra keying context for the ``rag_answer`` tier. ``reset_stats`` only
+    applies when clearing the ``"all"`` scope.
     """
     tier: Literal["all", "intent", "rag_answer", "sql_gen", "sql_result", "embedding"] = "all"
     question: str | None = None
@@ -93,13 +95,16 @@ class CacheClearRequest(BaseModel):
     reset_stats: bool = True
 
 
-# Learner note: Encapsulates health check so this responsibility can be understood, tested, and changed independently.
 @router.get("/health")
 async def health_check(user: User = Depends(require_admin)) -> dict[str, Any]:
-    """Handle health check asynchronously within the versioned HTTP API boundary.
+    """Report connectivity and latency for all external dependencies.
 
-    Learner Note:
-        The async boundary prevents request handling from blocking unrelated work.
+    Runs the Postgres, Qdrant, Redis, and S3 probes concurrently (each bounded
+    by its own timeout in ``_run_dependency_probe``). Overall ``status`` is
+    ``"ok"`` if every dependency is connected, ``"degraded"`` if only the
+    non-critical ones (Redis/S3) are down, and ``"unhealthy"`` if either
+    critical dependency (Postgres or Qdrant) is unreachable. Also reports the
+    active Qdrant collection name when Qdrant is reachable.
     """
     probes = {
         "postgres": _probe_postgres,
@@ -132,24 +137,19 @@ async def health_check(user: User = Depends(require_admin)) -> dict[str, Any]:
     }
 
 
-# Learner note: Encapsulates cache stats so this responsibility can be understood, tested, and changed independently.
 @router.get("/cache/stats")
 async def cache_stats(user: User = Depends(require_admin)) -> dict[str, Any]:
-    """Handle cache stats asynchronously within the versioned HTTP API boundary.
-
-    Learner Note:
-        The async boundary prevents request handling from blocking unrelated work.
-    """
+    """Return hit/miss statistics for the query cache."""
     return query_cache.stats()
 
 
-# Learner note: Encapsulates runtime info so this responsibility can be understood, tested, and changed independently.
 @router.get("/runtime-info")
 async def runtime_info(user: User = Depends(require_admin)) -> dict[str, Any]:
-    """Handle runtime info asynchronously within the versioned HTTP API boundary.
+    """Return process/module diagnostics useful for confirming which code is deployed.
 
-    Learner Note:
-        The async boundary prevents request handling from blocking unrelated work.
+    Includes the working directory, the on-disk paths of ``app.main`` and
+    ``app.rag.service``, the RAG cache schema version, the Python executable,
+    and the first few ``sys.path`` entries.
     """
     return {
         "cwd": os.getcwd(),
@@ -161,16 +161,18 @@ async def runtime_info(user: User = Depends(require_admin)) -> dict[str, Any]:
     }
 
 
-# Learner note: Encapsulates cache clear so this responsibility can be understood, tested, and changed independently.
 @router.post("/cache/clear")
 async def cache_clear(
     body: CacheClearRequest | None = None,
     user: User = Depends(require_admin),
 ) -> dict[str, Any]:
-    """Handle cache clear asynchronously within the versioned HTTP API boundary.
+    """Clear one cache tier, or all tiers, from the query cache.
 
-    Learner Note:
-        The async boundary prevents request handling from blocking unrelated work.
+    With ``tier="all"`` (the default when no body is sent), clears every
+    tier and optionally resets stats. For a targeted tier, the matching
+    identifying field on ``body`` (``question`` for intent/rag_answer/sql_gen,
+    ``sql`` for sql_result, ``text`` for embedding) is required and a 400 is
+    raised if it's missing.
     """
     body = body or CacheClearRequest()
 
@@ -202,43 +204,28 @@ async def cache_clear(
     return {"status": "ok", "scope": "targeted", "cleared": cleared}
 
 
-# Learner note: Encapsulates budget stats so this responsibility can be understood, tested, and changed independently.
 @router.get("/budgets")
 async def budget_stats(user: User = Depends(require_admin)) -> dict[str, Any]:
-    """Handle budget stats asynchronously within the versioned HTTP API boundary.
-
-    Learner Note:
-        The async boundary prevents request handling from blocking unrelated work.
-    """
+    """Return the configured daily per-user token budget and current usage."""
     return {
         "max_tokens_per_user_daily": settings.max_tokens_per_user_daily,
         "usage": get_budget_usage(),
     }
 
 
-# Learner note: Clears clear budgets safely so tests and operations can restore a known state.
 @router.post("/budgets/clear")
 async def clear_budgets(user: User = Depends(require_admin)) -> dict[str, str]:
-    """Handle clear budgets asynchronously within the versioned HTTP API boundary.
-
-    Learner Note:
-        The async boundary prevents request handling from blocking unrelated work.
-    """
+    """Reset all tracked per-user token budget usage."""
     clear_budget_usage()
     return {"status": "ok"}
 
 
-# Learner note: Encapsulates rate limit stats so this responsibility can be understood, tested, and changed independently.
 @router.get("/rate-limits/{username}")
 async def rate_limit_stats(
     username: str,
     user: User = Depends(require_admin),
 ) -> dict[str, Any]:
-    """Handle rate limit stats asynchronously within the versioned HTTP API boundary.
-
-    Learner Note:
-        The async boundary prevents request handling from blocking unrelated work.
-    """
+    """Return the current request count and configured limit/window for ``username``."""
     return {
         "username": username,
         "count_in_window": get_rate_limit_count(username),

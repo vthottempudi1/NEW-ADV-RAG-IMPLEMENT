@@ -3,7 +3,7 @@ from app.rag.hybrid_question import derive_hybrid_rag_question
 from app.rag.router import classify_intent
 
 
-# Learner Note: Test descriptive which questions do not false positive as sql is part of the automated regression suite.
+# Note: Test descriptive which questions do not false positive as sql is part of the automated regression suite.
 def test_descriptive_which_questions_do_not_false_positive_as_sql():
     """Verify ordinary users and employee wording cannot trigger database execution."""
     assert classify_intent(
@@ -12,22 +12,22 @@ def test_descriptive_which_questions_do_not_false_positive_as_sql():
     assert classify_intent("Which employee approved yesterday's production change?") == "rag"
 
 
-# Learner note: Verifies test classify intent returns hybrid for sql plus document question so future changes cannot silently break this expected behavior.
+# Verifies test classify intent returns hybrid for sql plus document question so future changes cannot silently break this expected behavior.
 def test_classify_intent_returns_hybrid_for_sql_plus_document_question():
     """Verify that classify intent returns hybrid for sql plus document question.
 
-    Learner Note:
+    Note:
         This regression test protects an expected production behavior from silent changes.
     """
     question = "How many users are there and what does the roadmap document say about AI roles?"
     assert classify_intent(question) == "hybrid"
 
 
-# Learner note: Verifies mixed questions become focused document questions before retrieval features run.
+# Verifies mixed questions become focused document questions before retrieval features run.
 def test_hybrid_question_decomposition_covers_operational_guidance_cases():
     """Verify that hybrid question decomposition covers operational guidance cases.
 
-    Learner Note:
+    Note:
         This regression test protects an expected production behavior from silent changes.
     """
     cases = {
@@ -41,7 +41,7 @@ def test_hybrid_question_decomposition_covers_operational_guidance_cases():
         assert expected in derive_hybrid_rag_question(question).lower()
 
 
-# Learner Note: Test non incident policy question is not rewritten as on call escalation is part of the automated regression suite.
+# Test non incident policy question is not rewritten as on call escalation is part of the automated regression suite.
 def test_non_incident_policy_question_is_not_rewritten_as_on_call_escalation():
     """Domain policies such as NetworkPolicy must retain their original retrieval intent."""
     question = (
@@ -51,20 +51,20 @@ def test_non_incident_policy_question_is_not_rewritten_as_on_call_escalation():
     assert derive_hybrid_rag_question(question) == question
 
 
-# Learner note: Verifies the hybrid graph sends only the focused RAG question into retrieval, HyDE, and CRAG.
+# Verifies the hybrid graph sends only the focused RAG question into retrieval, HyDE, and CRAG.
 def test_retrieve_rag_for_hybrid_uses_decomposed_question(monkeypatch):
     """Verify that retrieve rag for hybrid uses decomposed question.
 
-    Learner Note:
+    Note:
         This regression test protects an expected production behavior from silent changes.
     """
     captured = {}
 
-    # Learner Note: Fake run rag is part of the automated regression suite.
+    # Note: Fake run rag is part of the automated regression suite.
     def fake_run_rag(question, **kwargs):
         """Perform fake run rag for the automated regression suite.
 
-        Learner Note:
+        Note:
             This function keeps the responsibility explicit for callers, tests, and operators.
         """
         captured["question"] = question
@@ -90,11 +90,11 @@ def test_retrieve_rag_for_hybrid_uses_decomposed_question(monkeypatch):
     assert result["rag_metadata"]["retrieval_question"] == captured["question"]
 
 
-# Learner note: Verifies test run hybrid combines rag and sql outputs so future changes cannot silently break this expected behavior.
+# Verifies test run hybrid combines rag and sql outputs so future changes cannot silently break this expected behavior.
 def test_run_hybrid_combines_rag_and_sql_outputs(monkeypatch):
     """Verify that run hybrid combines rag and sql outputs.
 
-    Learner Note:
+    Note:
         This regression test protects an expected production behavior from silent changes.
     """
     monkeypatch.setattr(
@@ -156,11 +156,11 @@ def test_run_hybrid_combines_rag_and_sql_outputs(monkeypatch):
     assert result["cost_saved_usd"] > 0
 
 
-# Learner note: Verifies test run hybrid not approved preserves rag metadata so future changes cannot silently break this expected behavior.
+# Verifies test run hybrid not approved preserves rag metadata so future changes cannot silently break this expected behavior.
 def test_run_hybrid_not_approved_preserves_rag_metadata():
     """Verify that run hybrid not approved preserves rag metadata.
 
-    Learner Note:
+    Note:
         This regression test protects an expected production behavior from silent changes.
     """
     result = graph_module.run_hybrid(

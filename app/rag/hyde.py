@@ -10,44 +10,42 @@ from app.rag.sparse_vector import fuse_rrf
 from app.rag.vector_store import hybrid_search, search, sparse_search
 
 _HYDE_SYSTEM_PROMPT = (
-    "You are a helpful assistant. Given a user question, write a brief, plausible answer "
-    "(2-3 sentences) that would help retrieve relevant documents. Write only the answer, "
-    "with no preamble."
+    "You generate hypothetical retrieval text for a Kubernetes operations "
+    "knowledge base. Given a user's lay-language question, write a brief "
+    "2-3 sentence hypothetical answer using Kubernetes terminology likely "
+    "to appear in authoritative documentation. Map general infrastructure "
+    "language to relevant concepts such as Deployments, Services, DNS, "
+    "Horizontal Pod Autoscaling, PersistentVolumes, probes, scheduling, "
+    "and resource policies when appropriate. "
+    "The hypothetical answer is only a search aid, not factual evidence. "
+    "Write only the hypothetical answer with no preamble."
 )
 
-
-# Learner note: Encapsulates normalize text so this responsibility can be understood, tested, and changed independently.
 def _normalize_text(text: str) -> str:
-    """Support the retrieval-augmented generation pipeline by performing normalize text.
-
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
-    """
+    """Collapse internal whitespace runs to single spaces and strip leading/trailing whitespace, for deduplication comparisons."""
     return re.sub(r"\s+", " ", text.strip())
 
 
-# Learner Note: Hy d e retriever is part of the retrieval-augmented generation pipeline.
 class HyDERetriever:
-    # Learner note: Initializes this component so its dependencies and runtime state are explicit.
-    """Represent hy d e retriever within the retrieval-augmented generation pipeline.
+    """Retriever implementing HyDE (Hypothetical Document Embeddings).
 
-    Learner Note:
-        This class groups state and behavior behind a clear, testable contract.
+    Generates one or more LLM-written hypothetical answers to a question, retrieves
+    documents for the original question plus each hypothesis, and fuses the result
+    lists with Reciprocal Rank Fusion. The idea is that a plausible-sounding
+    hypothetical answer is often lexically/semantically closer to the target
+    documents than the raw question is.
     """
-    def __init__(self, num_hypotheses: int | None = None) -> None:
-        """Initialize init dependencies and runtime state.
 
-        Learner Note:
-            Explicit initialization keeps object construction predictable and testable.
-        """
+    def __init__(self, num_hypotheses: int | None = None) -> None:
+        """Set how many hypothetical answers to generate per query, defaulting to `settings.hyde_num_hypotheses`."""
         self.num_hypotheses = num_hypotheses or settings.hyde_num_hypotheses
 
-    # Learner note: Encapsulates generate queries so this responsibility can be understood, tested, and changed independently.
     def _generate_queries(self, question: str) -> list[str]:
-        """Support the retrieval-augmented generation pipeline by performing generate queries.
+        """Build the list of retrieval queries: the original question plus up to `num_hypotheses` LLM-generated hypothetical answers.
 
-        Learner Note:
-            Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+        Skips empty completions and de-duplicates against already-seen queries
+        (via `_normalize_text`). Silently skips any hypothesis whose generation
+        call raises. The original question is always first and always included.
         """
         queries = [question.strip()]
         seen = {_normalize_text(queries[0])}
@@ -73,17 +71,21 @@ class HyDERetriever:
 
         return queries
 
-    # Learner note: Implements retrieve, a key retrieval-quality step in the RAG pipeline.
     def retrieve(
         self,
         question: str,
         top_k: int = 5,
         mode: str = "dense",
     ) -> list[RetrievedChunk]:
-        """Perform retrieve for the retrieval-augmented generation pipeline.
+        """Retrieve chunks for `question` using the HyDE technique, fused via RRF.
 
-        Learner Note:
-            This function keeps the responsibility explicit for callers, tests, and operators.
+        Generates hypothetical-answer queries, then runs retrieval per query according
+        to `mode`: "sparse" uses lexical search, "hybrid" combines dense embeddings with
+        lexical search, and anything else (the default "dense") uses dense embedding
+        search only. Per-query retrieval failures are swallowed so one bad query doesn't
+        fail the whole call. Returns an empty list if the question is blank or every
+        per-query retrieval attempt fails; otherwise returns the top `top_k` chunks
+        after RRF fusion across all successful result lists.
         """
         if not question or not question.strip():
             return []

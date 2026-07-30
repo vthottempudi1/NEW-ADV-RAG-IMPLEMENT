@@ -5,7 +5,7 @@ import pytest
 from scripts.seed_db import _select_manifest_corpus
 
 
-# Learner Note: Test manifest selection preserves exact authority partition is part of the automated regression suite.
+# Note: Test manifest selection preserves exact authority partition is part of the automated regression suite.
 def test_manifest_selection_preserves_exact_authority_partition(tmp_path, monkeypatch):
     """A manifest must select exactly its listed true and noisy documents."""
     monkeypatch.chdir(tmp_path)
@@ -34,7 +34,7 @@ def test_manifest_selection_preserves_exact_authority_partition(tmp_path, monkey
     assert noisy_files == [noisy_file.resolve()]
 
 
-# Learner Note: Test manifest selection rejects unresolved entries is part of the automated regression suite.
+# Note: Test manifest selection rejects unresolved entries is part of the automated regression suite.
 def test_manifest_selection_rejects_unresolved_entries(tmp_path):
     """Missing or ambiguous sources require an explicit exclusion decision."""
     manifest = tmp_path / "manifest.json"

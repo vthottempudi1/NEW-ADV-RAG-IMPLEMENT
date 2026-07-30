@@ -20,7 +20,7 @@ SOURCE_METRIC_KEYS = {
 METRIC_KEYS = RAGAS_METRIC_KEYS | SOURCE_METRIC_KEYS
 
 
-# Learner note: Encapsulates aggregate so this responsibility can be understood, tested, and changed independently.
+# Note: Encapsulates aggregate so this responsibility can be understood, tested, and changed independently.
 def aggregate(rows: list[dict]) -> dict:
     """Aggregate RAG evaluation results across multiple rows."""
     out: dict = {}
@@ -53,7 +53,7 @@ def aggregate(rows: list[dict]) -> dict:
     return out
 
 
-# Learner note: Encapsulates print table so this responsibility can be understood, tested, and changed independently.
+# Note: Encapsulates print table so this responsibility can be understood, tested, and changed independently.
 def print_table(payload: dict) -> None:
     """Print a markdown table of per-question and aggregate eval results."""
     print(f"\n## Eval - profile={payload['profile']} mode={payload['mode']}")

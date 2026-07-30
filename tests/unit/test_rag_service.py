@@ -2,11 +2,11 @@ from app.models import RetrievedChunk
 from app.rag.service import _calculate_confidence
 
 
-# Learner note: Verifies test calculate confidence returns zero without chunks so future changes cannot silently break this expected behavior.
+# Note: Verifies test calculate confidence returns zero without chunks so future changes cannot silently break this expected behavior.
 def test_calculate_confidence_returns_zero_without_chunks():
     """Verify that calculate confidence returns zero without chunks.
 
-    Learner Note:
+    Note:
         This regression test protects an expected production behavior from silent changes.
     """
     confidence = _calculate_confidence(
@@ -20,11 +20,11 @@ def test_calculate_confidence_returns_zero_without_chunks():
     assert confidence == 0.0
 
 
-# Learner note: Verifies test calculate confidence increases with stronger signals so future changes cannot silently break this expected behavior.
+# Note: Verifies test calculate confidence increases with stronger signals so future changes cannot silently break this expected behavior.
 def test_calculate_confidence_increases_with_stronger_signals():
     """Verify that calculate confidence increases with stronger signals.
 
-    Learner Note:
+    Note:
         This regression test protects an expected production behavior from silent changes.
     """
     weak_chunks = [

@@ -11,12 +11,18 @@ _DOCUMENT_CLAUSE_PATTERNS = (
 )
 
 
-# Learner note: Produces a document-only question so SQL language cannot dilute RAG, HyDE, reranking, or CRAG relevance.
 def derive_hybrid_rag_question(question: str) -> str:
-    """Extract the documentation clause from a combined SQL plus RAG question.
+    """Extract the documentation-relevant clause from a combined SQL-plus-RAG question.
 
-    SQL still receives the original question. Retrieval, HyDE, reranking, and CRAG
-    receive this focused form so database vocabulary cannot attract noisy chunks.
+    SQL still receives the original question unchanged. Retrieval, HyDE,
+    reranking, and CRAG receive this focused, document-only form so database
+    vocabulary (table/column names, SQL verbs) does not attract noisy or
+    irrelevant chunks. Recognizes several hardcoded intent patterns (MTTR
+    reduction, runbook first-response steps, remediation procedure, on-call
+    escalation policy) and rewrites those to canned documentation questions;
+    otherwise falls back to regex-based clause extraction (e.g. splitting on
+    "and what does ... "), and if nothing matches, returns the cleaned
+    original question unchanged.
     """
     cleaned = " ".join((question or "").split()).strip()
     lowered = cleaned.lower()

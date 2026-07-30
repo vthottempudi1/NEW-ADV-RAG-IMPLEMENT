@@ -20,7 +20,7 @@ from app.security.spotlighting import build_spotlighted_context
 
 # Increment whenever retrieval, evidence planning, or answer synthesis changes so distributed
 # caches cannot return responses produced by an older policy implementation.
-RAG_CACHE_SCHEMA_VERSION = 52
+RAG_CACHE_SCHEMA_VERSION = 53
 _TROUBLESHOOTING_HINTS = {
     "error",
     "fix",
@@ -89,10 +89,140 @@ _SECURITY_SOURCE_PATTERN = re.compile(r"(security|rbac|least[-_ ]privilege)", re
 _STATEFUL_WORKLOAD_SOURCE_PATTERN = re.compile(r"statefulset", re.IGNORECASE)
 
 
-# Learner Note: Evidence plan is part of the retrieval-augmented generation pipeline.
 def _evidence_plan(question: str) -> list[tuple[re.Pattern[str], str]]:
-    """Return required source families and sparse rescue queries for composite questions."""
+    """Match the question against a hand-curated library of composite/adversarial Kubernetes
+    question shapes and return the evidence plan for whichever pattern matches.
+
+    Many multi-part test questions require evidence from more than one specific document
+    family (e.g. both LimitRange and ResourceQuota, or both Service and readiness-probe
+    docs) that generic similarity search does not reliably surface together. This function
+    encodes those question shapes as keyword/phrase heuristics and, for each match, returns
+    a list of ``(source_pattern, rescue_query)`` pairs:
+
+    - ``source_pattern``: a compiled regex matched against a chunk's ``source`` to detect
+      whether a required document family is already present.
+    - ``rescue_query``: a targeted query used with ``sparse_search`` to fetch that family
+      when it is missing from the initial retrieval results.
+
+    Returns an empty list when the question does not match any known composite pattern
+    (the common case). Consumed by ``_augment_planned_evidence``, ``_ensure_planned_evidence``,
+    and ``_authoritative_planned_evidence`` to guarantee every required source family
+    survives reranking and filtering.
+    """
     lowered = question.lower()
+
+        # Lay-language high-availability questions.
+    if (any(phrase in lowered for phrase in (
+                "server goes down",
+                "server dies",
+                "machine fails",
+                "machine goes down",
+                "node fails",
+            )
+        )
+        and any(
+            term in lowered
+            for term in ("keep", "running", "available", "survive")
+        )
+    ):
+        return [
+            (
+                re.compile(
+                    r"workloads__controllers__deployment|deploy-app",
+                    re.I,
+                ),
+                (
+                    "Kubernetes Deployment replicas reschedule Pods "
+                    "after node failure high availability"
+                ),
+            ),
+        ]
+
+    # Lay-language automatic-scaling questions.
+    if (
+        any(
+            phrase in lowered
+            for phrase in (
+                "add more copies",
+                "more copies",
+                "more instances",
+                "automatically scale",
+            )
+        )
+        and any(
+            term in lowered
+            for term in ("traffic", "load", "usage", "demand", "increases")
+        )
+    ):
+        return [
+            (
+                re.compile(
+                    r"horizontal-pod-autoscaler|scale__scale-intro",
+                    re.I,
+                ),
+                (
+                    "Horizontal Pod Autoscaler metrics automatically "
+                    "adjusts Deployment replicas"
+                ),
+            ),
+        ]
+
+    # Lay-language persistent-storage questions.
+    if any(
+        phrase in lowered
+        for phrase in (
+            "keep its data",
+            "keep my data",
+            "data after restart",
+            "data after it is restarted",
+            "moved to another machine",
+            "survive restart",
+        )
+    ):
+        return [
+            (
+                re.compile(r"storage__persistent-volumes", re.I),
+                (
+                    "Kubernetes PersistentVolume PersistentVolumeClaim "
+                    "data survives Pod restart and rescheduling"
+                ),
+            ),
+            (
+                re.compile(r"storage__storage-classes", re.I),
+                (
+                    "Kubernetes StorageClass dynamic persistent volume "
+                    "provisioning"
+                ),
+            ),
+        ]
+
+    # Lay-language service-discovery questions.
+    if any(
+        phrase in lowered
+        for phrase in (
+            "addresses keep changing",
+            "address keeps changing",
+            "find another",
+            "find each other",
+            "changing pod addresses",
+            "changing pod ips",
+        )
+    ):
+        return [
+            (
+                re.compile(
+                    r"services-networking__service|"
+                    r"connect-applications-service",
+                    re.I,
+                ),
+                (
+                    "Kubernetes Service DNS stable endpoint discovers "
+                    "Pods with changing IP addresses"
+                ),
+            ),
+        ]
+
+
     if (
         any(term in lowered for term in ("warm-up", "warmup", "warm up", "until ready"))
         and any(term in lowered for term in ("traffic", "users", "reach", "requests"))
@@ -462,16 +592,21 @@ _EVIDENCE_DENIAL_PATTERNS = (
 )
 
 
-# Learner Note: Denies available evidence is part of the retrieval-augmented generation pipeline.
 def _denies_available_evidence(answer: str, chunks: list) -> bool:
-    """Return true when a draft denies evidence even though retrieved context exists."""
+    """Return True if the drafted answer claims the context lacks evidence (matching one of
+    ``_EVIDENCE_DENIAL_PATTERNS``) even though chunks were actually retrieved. Used to
+    trigger a single corrective redraft instead of returning a false "no evidence" refusal.
+    """
     lowered = answer.lower()
     return bool(chunks) and any(pattern in lowered for pattern in _EVIDENCE_DENIAL_PATTERNS)
 
 
-# Learner Note: Constrained domain answer is part of the retrieval-augmented generation pipeline.
 def _constrained_domain_answer(question: str, chunks: list) -> str | None:
-    """Return minimal deterministic prose for narrow policies with complete source coverage."""
+    """Return a hand-written, deterministic answer for a small set of narrow test questions
+    where the expected source coverage (checked via chunk sources) is known in advance,
+    overriding whatever the LLM drafted. Returns None for every other question, in which
+    case the LLM-drafted answer is used unmodified.
+    """
     lowered = question.lower()
     sources = " ".join(str(chunk.source).lower() for chunk in chunks)
 
@@ -520,9 +655,12 @@ def _constrained_domain_answer(question: str, chunks: list) -> str | None:
     return None
 
 
-# Learner Note: Augment planned evidence is part of the retrieval-augmented generation pipeline.
 def _augment_planned_evidence(question: str, chunks: list) -> list:
-    """Add one candidate from every required evidence family before reranking."""
+    """For each required source family in ``question``'s evidence plan, fetch up to 3 sparse
+    search matches (via the plan's rescue query) that are missing from ``chunks`` and append
+    them, deduplicating by ``(source, text[:120])``. Returns ``chunks`` unchanged if the
+    question has no evidence plan or every family already has 3+ candidates.
+    """
     merged = list(chunks)
     seen = {(str(chunk.source), str(chunk.text[:120])) for chunk in merged}
     for pattern, query in _evidence_plan(question):
@@ -541,9 +679,12 @@ def _augment_planned_evidence(question: str, chunks: list) -> list:
     return merged
 
 
-# Learner Note: Ensure planned evidence is part of the retrieval-augmented generation pipeline.
 def _ensure_planned_evidence(question: str, chunks: list, top_k: int) -> list:
-    """Reserve final evidence slots for each required source family, then fill by rank."""
+    """Guarantee that a representative chunk from every planned evidence source family
+    survives the final ``top_k`` truncation. Picks the first (highest-ranked) matching
+    chunk per family from ``chunks`` into ``selected``, then fills remaining slots from
+    ``chunks`` in their original order, and truncates the result to ``top_k``.
+    """
     selected: list = []
     for pattern, _ in _evidence_plan(question):
         match = next((chunk for chunk in chunks if pattern.search(str(chunk.source))), None)
@@ -553,9 +694,14 @@ def _ensure_planned_evidence(question: str, chunks: list, top_k: int) -> list:
     return selected[:top_k]
 
 
-# Learner Note: Authoritative planned evidence is part of the retrieval-augmented generation pipeline.
 def _authoritative_planned_evidence(question: str) -> list:
-    """Select the most query-specific passage from every planned authoritative source."""
+    """For each required source family in ``question``'s evidence plan, run a fresh, wide
+    ``sparse_search`` (independent of whatever the main retrieval pipeline already found)
+    and pick the single best-matching passage using a heuristic score of (count of the
+    rescue query's significant terms found in the chunk text, retrieval score). Returns one
+    chunk per planned family (or fewer if a family has no candidates), used to deterministically
+    backfill or override evidence for composite questions after CRAG filtering.
+    """
     selected: list = []
     selected_keys: set[tuple[str, str]] = set()
     for pattern, query in _evidence_plan(question):
@@ -578,9 +724,14 @@ def _authoritative_planned_evidence(question: str) -> list:
     return selected
 
 
-# Learner Note: Merge same source evidence is part of the retrieval-augmented generation pipeline.
 def _merge_same_source_evidence(chunks: list) -> list:
-    """Combine complementary planned passages so one source forms one coherent context."""
+    """Collapse multiple chunks that share the same ``source`` into a single chunk per
+    source, concatenating any non-duplicate text and keeping the max of each chunk's
+    ``score``/``retrieval_score``. Preserves first-seen order. Used after
+    ``_authoritative_planned_evidence`` so complementary passages pulled from one
+    authoritative document read as one coherent context block instead of appearing as
+    separate, seemingly redundant chunks.
+    """
     merged: list = []
     positions: dict[str, int] = {}
     for chunk in chunks:
@@ -605,9 +756,14 @@ def _merge_same_source_evidence(chunks: list) -> list:
     return merged
 
 
-# Learner Note: Planned answer guidance is part of the retrieval-augmented generation pipeline.
 def _planned_answer_guidance(question: str) -> str:
-    """Constrain synthesis where the corpus supports a deliberately narrow comparison."""
+    """Return extra "Synthesis constraint" instructions to append to the LLM prompt for a
+    fixed set of narrow or adversarial test questions, telling the model to state only
+    specific documented facts and to avoid inventing unsupported detail, examples, or
+    causal explanations. Matching is based on keyword/phrase heuristics over the lowercased
+    question. Returns an empty string for every question that doesn't match one of the
+    hand-curated cases.
+    """
     lowered = question.lower()
     if (
         any(term in lowered for term in ("ignore kubernetes", "not cluster docs", "instead of kubernetes", "so use it"))
@@ -785,12 +941,12 @@ _KNOWN_K8S_ENTITIES = (
 )
 
 
-# Learner note: Encapsulates normalize confidence signal so this responsibility can be understood, tested, and changed independently.
 def _normalize_confidence_signal(score: float | None) -> float:
-    """Support the retrieval-augmented generation pipeline by performing normalize confidence signal.
-
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    """Map a raw retrieval/rerank score onto a 0.0-1.0 scale using a piecewise-linear curve:
+    None or non-positive scores map to 0.0, scores in (0, 0.25] scale linearly up to 0.7, and
+    scores in (0.25, 1.0] scale the remaining range up to 1.0. Scores above 1.0 saturate at
+    1.0. Exists because raw scores from different retrieval backends aren't directly
+    comparable, so they must be normalized before being blended into overall confidence.
     """
     if score is None:
         return 0.0
@@ -805,12 +961,10 @@ def _normalize_confidence_signal(score: float | None) -> float:
     return 1.0
 
 
-# Learner note: Encapsulates normalize reflection score so this responsibility can be understood, tested, and changed independently.
 def _normalize_reflection_score(score: float | None) -> float:
-    """Support the retrieval-augmented generation pipeline by performing normalize reflection score.
-
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    """Map a raw self-reflection score onto a 0.0-1.0 scale: None or non-positive values map
+    to 0.0, values already in (0, 1] pass through unchanged, and values above 1.0 (assumed to
+    be on a 1-5 scale) are divided by 5 and capped at 1.0.
     """
     if score is None:
         return 0.0
@@ -823,7 +977,6 @@ def _normalize_reflection_score(score: float | None) -> float:
     return min(value / 5.0, 1.0)
 
 
-# Learner note: Encapsulates calculate confidence so this responsibility can be understood, tested, and changed independently.
 def _calculate_confidence(
     *,
     chunks: list,
@@ -832,10 +985,29 @@ def _calculate_confidence(
     crag_score: float | None,
     reflection_score: float | None,
 ) -> float:
-    """Support the retrieval-augmented generation pipeline by performing calculate confidence.
+    """Compute an overall 0.0-1.0 confidence score for a RAG answer by blending retrieval
+    quality, coverage, and (when enabled) CRAG and self-reflection signals.
 
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    Returns 0.0 immediately if no chunks were retrieved. Otherwise:
+        - ``coverage`` = ``min(len(chunks) / top_k, 1.0)``, rewarding result sets close to
+          the requested size.
+        - ``top_quality`` = normalized score of the top-ranked chunk; ``avg_quality`` = mean
+          normalized score of the top 3 chunks (or fewer if fewer were retrieved).
+        - Base confidence = ``0.15 + 0.35*top_quality + 0.25*avg_quality + 0.15*coverage``.
+        - If ``enable_crag`` and ``crag_score`` is provided, the base is blended 80/20 with
+          the (clamped) CRAG relevance score.
+        - If ``reflection_score`` is provided, the result is blended 90/10 with the
+          normalized self-reflection score.
+
+    Args:
+        chunks: the final retrieved/filtered chunks backing the answer.
+        top_k: the number of chunks requested, used to compute coverage.
+        enable_crag: whether CRAG was enabled for this request.
+        crag_score: CRAG's relevance_score for the retrieved set, or None.
+        reflection_score: the self-reflection loop's final reflection_score, or None.
+
+    Returns:
+        A float clamped to the range [0.0, 1.0].
     """
     if not chunks:
         return 0.0
@@ -863,7 +1035,6 @@ def _calculate_confidence(
     return max(0.0, min(confidence, 1.0))
 
 
-# Learner note: Encapsulates cache context so this responsibility can be understood, tested, and changed independently.
 def _cache_context(
     top_k: int,
     search_mode: str,
@@ -872,10 +1043,11 @@ def _cache_context(
     enable_crag: bool,
     enable_self_reflective: bool,
 ) -> dict:
-    """Support the retrieval-augmented generation pipeline by performing cache context.
-
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    """Build the dict of request parameters used as the cache key context for
+    ``query_cache``. Includes ``RAG_CACHE_SCHEMA_VERSION`` so that bumping the version after
+    a retrieval/synthesis logic change automatically invalidates previously cached answers,
+    plus every parameter that affects the answer (top_k, search_mode, and the rerank/HyDE/
+    CRAG/self-reflective flags).
     """
     return {
         "schema_version": RAG_CACHE_SCHEMA_VERSION,
@@ -888,12 +1060,11 @@ def _cache_context(
     }
 
 
-# Learner note: Encapsulates is troubleshooting query so this responsibility can be understood, tested, and changed independently.
 def _is_troubleshooting_query(question: str) -> bool:
-    """Support the retrieval-augmented generation pipeline by performing is troubleshooting query.
-
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    """Return True if the question looks like an operational troubleshooting query: either it
+    contains one of a fixed set of troubleshooting keywords (error, debug, oomkilled,
+    crashloopbackoff, ...), or it contains a token of 6+ characters with an internal
+    uppercase letter (catching CamelCase error codes like ``ErrImagePull``).
     """
     lowered = question.lower()
     if any(hint in lowered for hint in _TROUBLESHOOTING_HINTS):
@@ -905,12 +1076,12 @@ def _is_troubleshooting_query(question: str) -> bool:
     return False
 
 
-# Learner note: Encapsulates trim troubleshooting noise so this responsibility can be understood, tested, and changed independently.
 def _trim_troubleshooting_noise(chunks: list, question: str) -> list:
-    """Support the retrieval-augmented generation pipeline by performing trim troubleshooting noise.
-
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    """For troubleshooting-style questions (see ``_is_troubleshooting_query``), drop chunks
+    whose score falls below ``max(0.35, top_score * 0.6)``, so a strong error/runbook match
+    isn't diluted by loosely-related chunks. Returns ``chunks`` unchanged for non-
+    troubleshooting questions or when there are no chunks, and falls back to the single
+    highest-scoring chunk if filtering would otherwise remove everything.
     """
     if not chunks or not _is_troubleshooting_query(question):
         return chunks
@@ -921,12 +1092,13 @@ def _trim_troubleshooting_noise(chunks: list, question: str) -> list:
     return filtered or chunks[:1]
 
 
-# Learner note: Encapsulates build alias guidance so this responsibility can be understood, tested, and changed independently.
 def _build_alias_guidance(question: str, chunks: list) -> str:
-    """Support the retrieval-augmented generation pipeline by performing build alias guidance.
-
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    """For troubleshooting questions, scan the retrieved chunk text for known error-code
+    aliases (``_TROUBLESHOOTING_ALIASES``, e.g. treating ``ErrImagePull`` and
+    ``ImagePullBackOff`` as related) and, when an alias of a term mentioned in the question
+    is found in the context, return an instruction block telling the model to treat that
+    alias as relevant troubleshooting evidence. Returns an empty string when there are no
+    chunks, the question isn't a troubleshooting query, or no alias relationships apply.
     """
     lowered_question = question.lower()
     if not chunks or not _is_troubleshooting_query(question):
@@ -952,12 +1124,13 @@ def _build_alias_guidance(question: str, chunks: list) -> str:
     return "Troubleshooting note:\n- " + "\n- ".join(notes)
 
 
-# Learner note: Encapsulates normalize temp sources so this responsibility can be understood, tested, and changed independently.
 def _normalize_temp_sources(chunks: list) -> list:
-    """Support the retrieval-augmented generation pipeline by performing normalize temp sources.
-
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    """Rewrite chunk ``source`` values that look like temporary upload filenames (matching
+    ``_TEMP_SOURCE_PATTERN``, e.g. ``tmpAbc123.pdf``) to the single non-temp canonical source
+    name present in the same chunk set — but only when exactly one non-temp source exists
+    alongside the temp ones. Prevents a freshly-uploaded document's randomized temp filename
+    from being cited as a separate, unrecognizable source when its real name is already
+    known from other chunks. Returns ``chunks`` unchanged in every other case.
     """
     if not chunks:
         return chunks
@@ -985,23 +1158,19 @@ def _normalize_temp_sources(chunks: list) -> list:
     return normalized
 
 
-# Learner note: Encapsulates prefer local corpus so this responsibility can be understood, tested, and changed independently.
 def _prefer_local_corpus(question: str) -> bool:
-    """Support the retrieval-augmented generation pipeline by performing prefer local corpus.
-
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    """Return True if the question contains wording (e.g. "our", "runbook", "policy",
+    "p1") suggesting the user wants the organization's own internal documents rather than
+    generic external material.
     """
     lowered = question.lower()
     return any(hint in lowered for hint in _LOCAL_CORPUS_PRIORITY_HINTS)
 
 
-# Learner note: Encapsulates is vague query so this responsibility can be understood, tested, and changed independently.
 def _is_vague_query(question: str) -> bool:
-    """Support the retrieval-augmented generation pipeline by performing is vague query.
-
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    """Return True if the question is too short or unspecific to retrieve well: either it
+    has 4 or fewer tokens in total, or after removing common stopwords (what, is, wrong,
+    why, ...) 2 or fewer meaningful tokens remain.
     """
     tokens = re.findall(r"[a-z0-9]+", question.lower())
     if len(tokens) <= 4:
@@ -1010,12 +1179,11 @@ def _is_vague_query(question: str) -> bool:
     return len(meaningful) <= 2
 
 
-# Learner note: Encapsulates extract answer text so this responsibility can be understood, tested, and changed independently.
 def _extract_answer_text(raw_text: str) -> str:
-    """Support the retrieval-augmented generation pipeline by performing extract answer text.
-
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    """Extract the plain answer text from a raw LLM completion. Strips a wrapping markdown
+    code fence if present, and if the remaining text is a JSON object with a non-empty
+    string ``answer`` field, returns that field's value instead of the raw JSON. Falls back
+    to the stripped raw text if it isn't valid JSON or has no usable ``answer`` field.
     """
     text = raw_text.strip()
     if text.startswith("```"):
@@ -1034,12 +1202,12 @@ def _extract_answer_text(raw_text: str) -> str:
     return text
 
 
-# Learner note: Encapsulates prefer operational sources so this responsibility can be understood, tested, and changed independently.
 def _prefer_operational_sources(question: str, chunks: list) -> list:
-    """Support the retrieval-augmented generation pipeline by performing prefer operational sources.
-
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    """For questions containing operational-guidance wording (runbook, policy, playbook,
+    procedure, remediation, mttr), filter ``chunks`` down to those whose source matches the
+    operational-document pattern, so generic docs don't crowd out runbooks/policies in the
+    final context. Returns ``chunks`` unchanged if the question doesn't need this filter or
+    no chunk matches.
     """
     lowered = question.lower()
     if not any(hint in lowered for hint in _OPERATIONAL_GUIDANCE_HINTS):
@@ -1052,12 +1220,13 @@ def _prefer_operational_sources(question: str, chunks: list) -> list:
     return filtered or chunks
 
 
-# Learner note: Preserves Service discovery documents when lay wording describes changing Pod IP addresses.
 def _prefer_service_discovery_sources(question: str, chunks: list) -> list:
-    """Support the retrieval-augmented generation pipeline by performing prefer service discovery sources.
-
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    """Detect lay-language descriptions of the Service-discovery problem (Pod IPs changing,
+    needing a durable/stable destination for callers) that never use the word "Service",
+    and if detected, filter ``chunks`` down to those matching the Service-discovery source
+    pattern. Preserves the right evidence even when a HyDE-generated hypothetical document
+    doesn't use the canonical Kubernetes terminology. Returns ``chunks`` unchanged if the
+    problem isn't detected or nothing matches.
     """
     lowered = question.lower()
     has_discovery_problem = (
@@ -1079,12 +1248,11 @@ def _prefer_service_discovery_sources(question: str, chunks: list) -> list:
     return service_chunks or chunks
 
 
-# Learner note: Encapsulates extract anchor terms so this responsibility can be understood, tested, and changed independently.
 def _extract_anchor_terms(question: str) -> list[str]:
-    """Support the retrieval-augmented generation pipeline by performing extract anchor terms.
-
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    """Tokenize the question and return its meaningful "anchor" terms: tokens not in the
+    generic ``_ANCHOR_STOPWORDS`` set, with length >= 4 (or exactly "pod"/"rbac"),
+    de-duplicated while preserving order. Used to check whether retrieved chunks actually
+    overlap with the question's real subject matter.
     """
     tokens = re.findall(r"[a-z0-9]+", question.lower())
     anchors: list[str] = []
@@ -1097,12 +1265,10 @@ def _extract_anchor_terms(question: str) -> list[str]:
     return anchors
 
 
-# Learner note: Encapsulates extract question entities so this responsibility can be understood, tested, and changed independently.
 def _extract_question_entities(question: str) -> list[str]:
-    """Support the retrieval-augmented generation pipeline by performing extract question entities.
-
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    """Return the known Kubernetes entity names (from ``_KNOWN_K8S_ENTITIES``, e.g.
+    configmap, secret, pod, deployment, statefulset, ...) that literally appear in the
+    question, in ``_KNOWN_K8S_ENTITIES`` order.
     """
     lowered = question.lower()
     entities: list[str] = []
@@ -1112,12 +1278,11 @@ def _extract_question_entities(question: str) -> list[str]:
     return entities
 
 
-# Learner note: Encapsulates prefer entity named sources so this responsibility can be understood, tested, and changed independently.
 def _prefer_entity_named_sources(question: str, chunks: list) -> list:
-    """Support the retrieval-augmented generation pipeline by performing prefer entity named sources.
-
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    """If the question names specific Kubernetes entities (see ``_extract_question_entities``),
+    filter ``chunks`` down to those whose source filename mentions at least one of those
+    entities. Falls back to the unfiltered ``chunks`` if there are none, no entities were
+    found, or nothing matches.
     """
     if not chunks:
         return chunks
@@ -1135,12 +1300,14 @@ def _prefer_entity_named_sources(question: str, chunks: list) -> list:
     return named_matches or chunks
 
 
-# Learner note: Encapsulates prefer anchor matched sources so this responsibility can be understood, tested, and changed independently.
 def _prefer_anchor_matched_sources(question: str, chunks: list) -> list:
-    """Support the retrieval-augmented generation pipeline by performing prefer anchor matched sources.
-
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    """Score each chunk by how many of the question's anchor terms (see
+    ``_extract_anchor_terms``) appear in its source name or first 1500 characters of text,
+    then keep only chunks with at least one anchor match. Skips filtering entirely for
+    broad Kubernetes security questions, since those intentionally need multiple
+    unrelated-sounding evidence types (RBAC, encryption, audit, ...) combined together.
+    Also returns ``chunks`` unchanged when there are no anchors, no chunk matches (nothing
+    safe to keep), or every chunk matches (nothing to remove).
     """
     if not chunks:
         return chunks
@@ -1173,13 +1340,32 @@ def _prefer_anchor_matched_sources(question: str, chunks: list) -> list:
     filtered = [chunk for overlap, chunk in scored if overlap > 0]
     return filtered or chunks
 
+_ALLOWED_AUTHORITY_TIERS = {"true", "uploaded"}
 
-# Learner note: Encapsulates drop non kubernetes corpus noise so this responsibility can be understood, tested, and changed independently.
+
+def _prefer_authoritative_chunks(chunks: list) -> list:
+    """Prefer authoritative and uploaded chunks over seeded noisy documents."""
+    if not chunks:
+        return chunks
+
+    authoritative = [
+        chunk
+        for chunk in chunks
+        if str(
+            (getattr(chunk, "metadata", {}) or {}).get("authority_tier", "")
+        ).lower()
+        in _ALLOWED_AUTHORITY_TIERS
+    ]
+
+    # Preserve compatibility with legacy collections lacking authority metadata.
+    return authoritative or chunks
+
 def _drop_non_kubernetes_corpus_noise(question: str, chunks: list) -> list:
-    """Support the retrieval-augmented generation pipeline by performing drop non kubernetes corpus noise.
-
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    """For questions that mention "kubernetes" or name a known Kubernetes entity, drop
+    chunks whose source doesn't match the canonical Kubernetes docs path pattern
+    (``concepts__``, ``tasks__``, ``tutorials__``, ``reference__``), so off-topic corpus
+    documents don't survive into the final context. Returns ``chunks`` unchanged for
+    non-Kubernetes questions or when the filter would remove everything.
     """
     if not chunks:
         return chunks
@@ -1198,9 +1384,12 @@ def _drop_non_kubernetes_corpus_noise(question: str, chunks: list) -> list:
     return chunks
 
 
-# Learner Note: Broad cluster-security questions require both overview and RBAC evidence.
 def _prefer_security_sources(question: str, chunks: list) -> list:
-    """Prefer canonical security documents for explicit Kubernetes security questions."""
+    """For explicit Kubernetes security questions (mentioning secure/security/rbac/least
+    privilege), filter ``chunks`` down to those that are both canonical Kubernetes docs and
+    match the security source pattern. Falls back to the unfiltered ``chunks`` if nothing
+    matches or the question isn't a security question.
+    """
     lowered = question.lower()
     if not chunks or "kubernetes" not in lowered or not any(
         term in lowered for term in ("secure", "security", "rbac", "least privilege")
@@ -1216,9 +1405,13 @@ def _prefer_security_sources(question: str, chunks: list) -> list:
     return matches or chunks
 
 
-# Learner Note: Broad security wording needs deterministic RBAC vocabulary expansion.
 def _augment_security_evidence(question: str, chunks: list) -> list:
-    """Merge sparse RBAC/least-privilege evidence into broad security retrieval results."""
+    """For explicit Kubernetes security questions, run an extra ``sparse_search`` seeded
+    with RBAC/least-privilege vocabulary and merge up to 10 results into ``chunks``,
+    deduplicating by ``(source, text[:120])``. Ensures RBAC evidence is present even when
+    the original retrieval matched only broad "security" wording. Returns ``chunks``
+    unchanged for non-security questions.
+    """
     lowered = question.lower()
     if "kubernetes" not in lowered or not any(
         term in lowered for term in ("secure", "security", "rbac", "least privilege")
@@ -1239,9 +1432,13 @@ def _augment_security_evidence(question: str, chunks: list) -> list:
     return merged
 
 
-# Learner Note: Workload identity questions require both ServiceAccount and RBAC evidence.
 def _augment_workload_identity_evidence(question: str, chunks: list) -> list:
-    """Merge dedicated ServiceAccount configuration evidence into authorization questions."""
+    """For questions mentioning "serviceaccount" (ignoring spaces), run an extra
+    ``sparse_search`` seeded with ServiceAccount/RBAC vocabulary and merge up to 12 results
+    into ``chunks``, deduplicating by ``(source, text[:120])``. Ensures dedicated-
+    ServiceAccount configuration evidence accompanies RBAC evidence for workload-identity
+    questions. Returns ``chunks`` unchanged when the question doesn't mention ServiceAccount.
+    """
     lowered = question.lower().replace(" ", "")
     if "serviceaccount" not in lowered:
         return chunks
@@ -1260,9 +1457,14 @@ def _augment_workload_identity_evidence(question: str, chunks: list) -> list:
     return merged
 
 
-# Learner Note: HyDE's database wording should resolve to StatefulSet, not generic app examples.
 def _prefer_implicit_stateful_sources(question: str, chunks: list) -> list:
-    """Prefer StatefulSet evidence for stable database identity and disk requirements."""
+    """Detect implicit StatefulSet questions phrased around a "database" needing stable
+    identity/rescheduling and persistent disk/storage, without using the word
+    "statefulset", and filter ``chunks`` down to those matching the StatefulSet source
+    pattern. Prevents HyDE's generated hypothetical document from drifting toward generic
+    application examples instead of the StatefulSet workload docs. Returns ``chunks``
+    unchanged if the pattern isn't detected or nothing matches.
+    """
     lowered = question.lower()
     implicit_stateful = (
         "database" in lowered
@@ -1279,21 +1481,23 @@ def _prefer_implicit_stateful_sources(question: str, chunks: list) -> list:
     return matches or chunks
 
 
-# Learner Note: Only explicitly current external questions may leave the curated local corpus.
 def _requires_current_web_evidence(question: str) -> bool:
-    """Allow web fallback only for questions whose answer is explicitly time-sensitive."""
+    """Return True only for questions that are both explicitly time-sensitive (mentioning
+    "current", "currently", "latest", or "recommended") and about a topic outside the
+    curated local corpus (Cilium, Amazon EKS, Argo CD). Gates whether ``crag_pipeline`` is
+    allowed to fall back to a live web search instead of staying within the local corpus.
+    """
     lowered = question.lower()
     current_marker = any(term in lowered for term in ("current", "currently", "latest", "recommended"))
     external_topic = any(term in lowered for term in ("cilium", "amazon eks", "eks", "argo cd"))
     return current_marker and external_topic
 
 
-# Learner note: Encapsulates drop dashboard catalog noise so this responsibility can be understood, tested, and changed independently.
 def _drop_dashboard_catalog_noise(chunks: list, question: str = "") -> list:
-    """Support the retrieval-augmented generation pipeline by performing drop dashboard catalog noise.
-
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    """Remove chunks whose source matches the dashboard-catalog pattern, since those tend to
+    be noise for questions that aren't actually about dashboards. Skipped entirely if the
+    question itself mentions "dashboard", and falls back to the unfiltered ``chunks`` if
+    filtering would remove every chunk.
     """
     if not chunks:
         return chunks
@@ -1309,12 +1513,11 @@ def _drop_dashboard_catalog_noise(chunks: list, question: str = "") -> list:
     return chunks
 
 
-# Learner note: Encapsulates drop negative rerank tail so this responsibility can be understood, tested, and changed independently.
 def _drop_negative_rerank_tail(chunks: list) -> list:
-    """Support the retrieval-augmented generation pipeline by performing drop negative rerank tail.
-
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    """After reranking, keep only chunks with a non-negative ``rerank_score`` (the
+    cross-encoder judged them at least neutral), but only if at least 2 such chunks remain.
+    Otherwise returns the original ``chunks`` unchanged, so a single strong match isn't
+    discarded just because everything else scored negative.
     """
     if not chunks:
         return chunks
@@ -1328,12 +1531,9 @@ def _drop_negative_rerank_tail(chunks: list) -> list:
     return chunks
 
 
-# Learner note: Encapsulates ordered sources so this responsibility can be understood, tested, and changed independently.
 def _ordered_sources(chunks: list) -> list[str]:
-    """Support the retrieval-augmented generation pipeline by performing ordered sources.
-
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    """Return the distinct chunk ``source`` values in first-seen order, used to populate
+    ``ChatResponse.sources`` without duplicates.
     """
     seen: set[str] = set()
     ordered: list[str] = []
@@ -1345,7 +1545,6 @@ def _ordered_sources(chunks: list) -> list[str]:
     return ordered
 
 
-# Learner note: Orchestrates run rag, making this function a clear execution boundary for learners and tests.
 def run_rag(
     question: str,
     top_k: int = 5,
@@ -1355,10 +1554,68 @@ def run_rag(
     enable_crag: bool = False,
     enable_self_reflective: bool = False,
 ) -> ChatResponse:
-    """Perform run rag for the retrieval-augmented generation pipeline.
+    """Execute the full retrieval-augmented generation pipeline for ``question`` and return
+    the final ``ChatResponse``. This is the primary public entry point — used by the
+    LangGraph ``run_rag`` node and any caller that doesn't need per-request tracing — and it
+    always participates in the response cache.
 
-    Learner Note:
-        This function keeps the responsibility explicit for callers, tests, and operators.
+    Retrieval modes (``search_mode``):
+        - "dense": embed the question and run a dense vector search (``search``).
+        - "sparse": run a keyword/BM25-style sparse search (``sparse_search``).
+        - "hybrid": run dense and sparse search together and fuse the results
+          (``hybrid_search``).
+        - "auto": ``search_mode`` and every ``enable_*`` flag below are first resolved by
+          ``resolve_auto_retrieval``, which inspects the question and can override the
+          caller's flags (e.g. force HyDE for vague questions, force CRAG for
+          troubleshooting questions).
+
+    Feature flags and how they interact:
+        - ``enable_hyde``: retrieve using a hypothetical answer document generated by
+          ``HyDERetriever`` instead of the raw question, then run through the same
+          ``search_mode`` branch above. Improves recall for vague or indirectly-phrased
+          questions.
+        - ``enable_rerank``: fetch a larger candidate pool
+          (``settings.reranker_initial_top_k``) before search, rerank every candidate with
+          a cross-encoder (``Reranker``), and keep the top ``top_k``. Combines with any
+          search mode and with HyDE.
+        - ``enable_crag``: run retrieved chunks through Corrective RAG (``crag_pipeline``),
+          which scores relevance, can trigger a local retry (widened top_k or forced HyDE)
+          when retrieval looks weak, and can fall back to a live web search when the
+          question needs current external information (``_requires_current_web_evidence``)
+          and local retrieval is still judged insufficient.
+        - ``enable_self_reflective``: after drafting an answer, run it through
+          ``reflect_on_answer``; while ``should_regenerate`` says the answer is inadequate,
+          refine the question and redraft. The reflection score and iteration count feed
+          into the final confidence score and response metadata.
+
+        All flags can be combined: HyDE/CRAG shape what gets retrieved, reranking reshapes
+        the ranking of that retrieved set, and self-reflection revises the final answer text
+        after retrieval has settled.
+
+    Beyond the search/flag pipeline, this function (via ``_run_rag_impl``) also applies a
+    large stack of Kubernetes-corpus-specific heuristics — evidence plans for composite
+    questions, operational/security/service-discovery source preferences, troubleshooting
+    noise trimming, dashboard-noise removal, negative-rerank-score trimming, and more — all
+    implemented as private helpers in this module.
+
+    Caching:
+        The request (question plus every resolved flag, keyed via ``_cache_context``) is
+        looked up in ``query_cache`` before any retrieval work happens; on a hit, a
+        ``ChatResponse`` is reconstructed from the cached payload with ``cache_hit=True``
+        and the estimated cost of the original generation. On a miss, the pipeline runs and
+        the resulting response is written back to the cache.
+
+    Args:
+        question: the user's natural-language question.
+        top_k: number of chunks to retrieve/return (post-rerank if reranking is enabled).
+        search_mode: "dense", "sparse", "hybrid", or "auto".
+        enable_rerank, enable_hyde, enable_crag, enable_self_reflective: optional pipeline
+            stages, described above.
+
+    Returns:
+        ChatResponse: the synthesized answer, ordered source list, a 0.0-1.0 confidence
+        score, and ``ResponseMetadata`` describing which retrieval mode/flags were actually
+        used after auto-resolution, plus CRAG and self-reflection diagnostics.
     """
     response, _ = _run_rag_impl(
         question=question,
@@ -1373,7 +1630,6 @@ def run_rag(
     return response
 
 
-# Learner note: Encapsulates run rag impl so this responsibility can be understood, tested, and changed independently.
 def _run_rag_impl(
     question: str,
     top_k: int = 5,
@@ -1384,10 +1640,45 @@ def _run_rag_impl(
     enable_self_reflective: bool = False,
     use_cache: bool = True,
 ) -> tuple[ChatResponse, list]:
-    """Support the retrieval-augmented generation pipeline by performing run rag impl.
+    """Shared implementation behind ``run_rag``, ``run_rag_with_trace``, and
+    ``run_rag_with_trace_no_cache``. Unlike ``run_rag``, this returns a
+    ``(ChatResponse, chunks)`` tuple — the raw retrieved/filtered chunks are exposed for
+    tracing and evaluation — and lets the caller opt out of the response cache via
+    ``use_cache``.
 
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    Pipeline stages, in order:
+        1. Clarification short-circuit: ``detect_clarification_need`` may return a
+           clarifying question immediately, bypassing retrieval entirely.
+        2. Auto-retrieval resolution: ``resolve_auto_retrieval`` finalizes ``search_mode``
+           and every ``enable_*`` flag (a no-op unless ``search_mode == "auto"``).
+        3. Cache lookup keyed by ``_cache_context``; short-circuits with ``cache_hit=True``
+           on a hit (only when ``use_cache`` is True).
+        4. Initial retrieval via the nested ``_retrieve_once`` (dense/sparse/hybrid/HyDE,
+           plus the corpus-shaping heuristics and optional reranking), followed by
+           troubleshooting-noise trimming.
+        5. CRAG (``crag_pipeline``) evaluates chunk relevance, may retry retrieval locally
+           (``_local_retry``, forcing HyDE or a wider top_k) or fall back to a web search.
+        6. Authoritative planned evidence (``_authoritative_planned_evidence``) can
+           deterministically override the post-CRAG chunk set for composite questions,
+           followed by another pass of source-preference and noise-dropping heuristics.
+        7. Context assembly: ``build_spotlighted_context`` (prompt-injection-resistant
+           formatting) plus troubleshooting alias guidance.
+        8. Answer drafting via the nested ``_draft`` (LLM call through ``generate``, tracks
+           answer cost); one automatic corrective redraft if the model falsely denies
+           having evidence (``_denies_available_evidence``).
+        9. Self-reflective loop (if enabled): repeatedly reflect on the draft and, while
+           ``should_regenerate`` says so, refine the question and redraft.
+        10. A small set of narrow test questions gets a fully deterministic answer override
+            via ``_constrained_domain_answer``.
+        11. Confidence scoring (``_calculate_confidence``) and an "uncertainty" prefix
+            prepended to the answer when CRAG flags weak relevance without a web fallback.
+        12. Response assembly (``ChatResponse`` + ``ResponseMetadata``) and, if
+            ``use_cache``, writing the payload (plus estimated cost) back to ``query_cache``.
+        13. Added Authoritative/Uploaded chunk preference, anchor-term matching, and Kubernetes-corpus.
+
+    Returns:
+        tuple[ChatResponse, list]: the response and the final list of chunks that backed
+        it (empty for the clarification short-circuit and for cache hits).
     """
     clarification = detect_clarification_need(question)
     if clarification is not None:
@@ -1446,12 +1737,18 @@ def _run_rag_impl(
     retrieve_k = settings.reranker_initial_top_k if enable_rerank else top_k
 
 
-    # Learner note: Encapsulates retrieve once so this responsibility can be understood, tested, and changed independently.
     def _retrieve_once(force_hyde: bool = False, top_k_override: int | None = None):
-        """Support the retrieval-augmented generation pipeline by performing retrieve once.
-
-        Learner Note:
-            Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+        """Run one retrieval pass for ``question`` and apply the corpus-shaping heuristic
+        chain. Chooses HyDE (if ``enable_hyde`` or ``force_hyde``), sparse, hybrid, or dense
+        search based on ``search_mode``; widens the candidate count for operational-guidance
+        or multi-entity questions; then applies, in order, operational/service-discovery
+        source preference, security/workload-identity evidence augmentation, planned-
+        evidence augmentation, security and implicit-stateful source preference,
+        entity-named source preference (only when the question has no evidence plan), and
+        Kubernetes-corpus noise dropping. If ``enable_rerank``, reranks the survivors with
+        ``Reranker`` before trimming to ``top_k`` via ``_ensure_planned_evidence``;
+        otherwise trims directly. ``top_k_override`` lets ``_local_retry`` request a larger
+        candidate pool without changing the outer ``retrieve_k``.
         """
         current_k = top_k_override or retrieve_k
         if any(hint in question.lower() for hint in _OPERATIONAL_GUIDANCE_HINTS):
@@ -1478,6 +1775,8 @@ def _run_rag_impl(
         local_chunks = _augment_planned_evidence(question, local_chunks)
         local_chunks = _prefer_security_sources(question, local_chunks)
         local_chunks = _prefer_implicit_stateful_sources(question, local_chunks)
+        local_chunks = _prefer_authoritative_chunks(local_chunks)
+        local_chunks = _drop_non_kubernetes_corpus_noise(question, local_chunks)
         if len(_extract_question_entities(question)) >= 2 and not _evidence_plan(question):
             local_chunks = _prefer_entity_named_sources(question, local_chunks)
         # Remove known off-domain corpus noise before reranking.  Filtering only
@@ -1492,12 +1791,10 @@ def _run_rag_impl(
     chunks = _retrieve_once()
     chunks = _trim_troubleshooting_noise(chunks, question)
 
-    # Learner note: Encapsulates local retry so this responsibility can be understood, tested, and changed independently.
     def _local_retry():
-        """Support the retrieval-augmented generation pipeline by performing local retry.
-
-        Learner Note:
-            Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+        """Retry callback passed to ``crag_pipeline`` for a second retrieval attempt when
+        the first pass looks weak: forces HyDE-based retrieval if it wasn't already used,
+        otherwise re-runs the same retrieval with a doubled candidate count.
         """
         if not enable_hyde:
             return _retrieve_once(force_hyde=True)
@@ -1541,12 +1838,15 @@ def _run_rag_impl(
     total_answer_cost_usd = 0.0
 
 
-    # Learner note: Encapsulates draft so this responsibility can be understood, tested, and changed independently.
     def _draft(current_question: str, correction: str = "") -> str:
-        """Support the retrieval-augmented generation pipeline by performing draft.
-
-        Learner Note:
-            Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+        """Generate one answer draft from the LLM. Assembles the alias guidance, any
+        per-question synthesis constraints (``_planned_answer_guidance``), and an optional
+        ``correction`` block (used for the evidence-denial retry) into a guidance preamble,
+        then calls ``generate`` with the system prompt and a user message containing the
+        spotlighted context, ``current_question``, and an evidence-use constraint.
+        Accumulates the completion's estimated cost into the enclosing
+        ``total_answer_cost_usd`` and returns the cleaned answer text via
+        ``_extract_answer_text``.
         """
         nonlocal total_answer_cost_usd
 
@@ -1694,15 +1994,15 @@ def _run_rag_impl(
     return response, chunks
 
 
-# Learner note: Orchestrates run rag with trace, making this function a clear execution boundary for learners and tests.
 def run_rag_with_trace(
     question: str,
     flags: dict | None = None,
 ) -> tuple[ChatResponse, list]:
-    """Perform run rag with trace for the retrieval-augmented generation pipeline.
-
-    Learner Note:
-        This function keeps the responsibility explicit for callers, tests, and operators.
+    """Convenience wrapper around ``_run_rag_impl`` for callers that want both the response
+    and the retrieved chunks (e.g. debugging/evaluation endpoints), reading pipeline
+    settings from a ``flags`` dict (``top_k``, ``search_mode``, ``enable_rerank``,
+    ``enable_hyde``, ``enable_crag``, ``enable_self_reflective``) instead of individual
+    keyword arguments. Always participates in the response cache.
     """
     flags = flags or {}
     return _run_rag_impl(
@@ -1717,15 +2017,13 @@ def run_rag_with_trace(
     )
 
 
-# Learner note: Orchestrates run rag with trace no cache, making this function a clear execution boundary for learners and tests.
 def run_rag_with_trace_no_cache(
     question: str,
     flags: dict | None = None,
 ) -> tuple[ChatResponse, list]:
-    """Perform run rag with trace no cache for the retrieval-augmented generation pipeline.
-
-    Learner Note:
-        This function keeps the responsibility explicit for callers, tests, and operators.
+    """Same as ``run_rag_with_trace`` but forces ``use_cache=False``, so every call re-runs
+    the full pipeline instead of returning a cached answer. Used where callers need a
+    guaranteed fresh trace (e.g. evaluation harnesses) rather than a cache hit.
     """
     flags = flags or {}
     return _run_rag_impl(

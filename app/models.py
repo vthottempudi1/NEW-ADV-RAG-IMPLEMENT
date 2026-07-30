@@ -3,7 +3,6 @@ from typing import Literal
 from pydantic import BaseModel, Field, field_validator
 
 
-# Learner Note: Conversation turn is part of the enterprise RAG application.
 class ConversationTurn(BaseModel):
     """A validated prior exchange used to resolve multi-turn questions."""
     question: str = Field(..., min_length=1, max_length=2000)
@@ -11,7 +10,6 @@ class ConversationTurn(BaseModel):
     sources: list[str] = Field(default_factory=list)
 
 
-# Learner Note: Query request is part of the enterprise RAG application.
 class QueryRequest(BaseModel):
     """The validated API contract controlling one enterprise RAG request.
 
@@ -34,7 +32,6 @@ class QueryRequest(BaseModel):
     enable_self_reflective: bool = False
     conversation_context: list[ConversationTurn] = Field(default_factory=list, max_length=3)
 
-    # Learner note: Evaluates validate question as a guardrail before later pipeline stages proceed.
     @field_validator("question")
     @classmethod
     def validate_question(cls, value: str) -> str:
@@ -45,7 +42,6 @@ class QueryRequest(BaseModel):
         return value
 
 
-# Learner Note: Retrieved chunk is part of the enterprise RAG application.
 class RetrievedChunk(BaseModel):
     """A complete evidence chunk with retrieval and optional reranker scores."""
     text: str
@@ -56,7 +52,6 @@ class RetrievedChunk(BaseModel):
     rerank_score: float | None = None
 
 
-# Learner Note: Retrieved chunk preview is part of the enterprise RAG application.
 class RetrievedChunkPreview(BaseModel):
     """API-safe evidence metadata exposed for source and score inspection."""
     text: str
@@ -66,7 +61,6 @@ class RetrievedChunkPreview(BaseModel):
     rerank_score: float | None = None
 
 
-# Learner Note: Chunk relevance preserves CRAG's evidence-level judgment for auditing.
 class ChunkRelevance(BaseModel):
     """Record one chunk's relevance score and explanation."""
 
@@ -77,7 +71,6 @@ class ChunkRelevance(BaseModel):
     reasoning: str = ""
 
 
-# Learner Note: C r a g evaluation is part of the enterprise RAG application.
 class CRAGEvaluation(BaseModel):
     """CRAG's structured judgment of context relevance and confidence."""
     relevance_score: float = 0.0
@@ -90,7 +83,6 @@ class CRAGEvaluation(BaseModel):
     relevant_ratio: float = 0.0
 
 
-# Learner Note: Reflection result is part of the enterprise RAG application.
 class ReflectionResult(BaseModel):
     """Self-RAG's decision about answer quality and possible regeneration."""
     reflection_score: float = 0.0
@@ -99,7 +91,6 @@ class ReflectionResult(BaseModel):
     reasoning: str = ""
 
 
-# Learner Note: Response metadata is part of the enterprise RAG application.
 class ResponseMetadata(BaseModel):
     """Auditable routing, evidence, SQL, CRAG, and reflection metadata.
 
@@ -141,7 +132,6 @@ class ResponseMetadata(BaseModel):
     sql_rows: list[dict] = Field(default_factory=list)
 
 
-# Learner Note: Pending s q l block is part of the enterprise RAG application.
 class PendingSQLBlock(BaseModel):
     """A generated read-only SQL statement awaiting explicit approval."""
     sql: str
@@ -149,7 +139,6 @@ class PendingSQLBlock(BaseModel):
     explanation: str = ""
 
 
-# Learner Note: Chat response is part of the enterprise RAG application.
 class ChatResponse(BaseModel):
     """Stable response envelope shared by API, cache, eval, and frontend."""
     answer: str = ""

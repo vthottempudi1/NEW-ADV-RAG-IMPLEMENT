@@ -8,12 +8,13 @@ _BLOCKED_OUTPUT_PATTERNS = [
 ]
 
 
-# Learner note: Evaluates validate output safe as a guardrail before later pipeline stages proceed.
 def validate_output_safe(text: str) -> tuple[bool, str]:
-    """Perform validate output safe for the application security boundary.
+    """Check generated `text` for leaked system-prompt or instruction-override content.
 
-    Learner Note:
-        This function keeps the responsibility explicit for callers, tests, and operators.
+    Rejects empty output and any text matching a blocked pattern (e.g. mentions
+    of "system prompt", "hidden instructions", "developer message", or attempts
+    to have the model ignore prior instructions). Returns a `(is_safe, reason)`
+    tuple, where `reason` is "empty_output", "unsafe_output_detected", or "ok".
     """
     cleaned = text.strip()
     if not cleaned:

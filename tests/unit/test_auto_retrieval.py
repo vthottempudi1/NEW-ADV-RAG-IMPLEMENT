@@ -1,11 +1,11 @@
 from app.rag.auto_retrieval import resolve_auto_retrieval
 
 
-# Learner note: Verifies test auto retrieval prefers sparse for short exact token queries so future changes cannot silently break this expected behavior.
+# Verifies test auto retrieval prefers sparse for short exact token queries so future changes cannot silently break this expected behavior.
 def test_auto_retrieval_prefers_sparse_for_short_exact_token_queries():
     """Verify that auto retrieval prefers sparse for short exact token queries.
 
-    Learner Note:
+    Note:
         This regression test protects an expected production behavior from silent changes.
     """
     decision = resolve_auto_retrieval(
@@ -25,11 +25,11 @@ def test_auto_retrieval_prefers_sparse_for_short_exact_token_queries():
     assert "enable_crag" in decision.auto_applied_flags
 
 
-# Learner note: Verifies test auto retrieval prefers hybrid for policy questions so future changes cannot silently break this expected behavior.
+# Verifies test auto retrieval prefers hybrid for policy questions so future changes cannot silently break this expected behavior.
 def test_auto_retrieval_prefers_hybrid_for_policy_questions():
     """Verify that auto retrieval prefers hybrid for policy questions.
 
-    Learner Note:
+    Note:
         This regression test protects an expected production behavior from silent changes.
     """
     decision = resolve_auto_retrieval(
@@ -47,11 +47,11 @@ def test_auto_retrieval_prefers_hybrid_for_policy_questions():
     assert decision.enable_hyde is False
 
 
-# Learner note: Verifies test auto retrieval prefers dense hyde for semantic query so future changes cannot silently break this expected behavior.
+# Verifies test auto retrieval prefers dense hyde for semantic query so future changes cannot silently break this expected behavior.
 def test_auto_retrieval_prefers_dense_hyde_for_semantic_query():
     """Verify that auto retrieval prefers dense hyde for semantic query.
 
-    Learner Note:
+    Note:
         This regression test protects an expected production behavior from silent changes.
     """
     decision = resolve_auto_retrieval(
@@ -69,11 +69,11 @@ def test_auto_retrieval_prefers_dense_hyde_for_semantic_query():
     assert decision.enable_self_reflective is False
 
 
-# Learner note: Verifies test auto retrieval prefers hybrid without hyde for direct object comparison so future changes cannot silently break this expected behavior.
+# Verifies test auto retrieval prefers hybrid without hyde for direct object comparison so future changes cannot silently break this expected behavior.
 def test_auto_retrieval_prefers_hybrid_without_hyde_for_direct_object_comparison():
     """Verify that auto retrieval prefers hybrid without hyde for direct object comparison.
 
-    Learner Note:
+    Note:
         This regression test protects an expected production behavior from silent changes.
     """
     decision = resolve_auto_retrieval(
@@ -91,11 +91,11 @@ def test_auto_retrieval_prefers_hybrid_without_hyde_for_direct_object_comparison
     assert decision.enable_crag is False
 
 
-# Learner note: Verifies test auto retrieval prefers dense hyde crag srag for vague query so future changes cannot silently break this expected behavior.
+# Verifies test auto retrieval prefers dense hyde crag srag for vague query so future changes cannot silently break this expected behavior.
 def test_auto_retrieval_prefers_dense_hyde_crag_srag_for_vague_query():
     """Verify that auto retrieval prefers dense hyde crag srag for vague query.
 
-    Learner Note:
+    Note:
         This regression test protects an expected production behavior from silent changes.
     """
     decision = resolve_auto_retrieval(
@@ -113,11 +113,11 @@ def test_auto_retrieval_prefers_dense_hyde_crag_srag_for_vague_query():
     assert decision.enable_self_reflective is True
 
 
-# Learner note: Verifies test auto retrieval enables srag for ambiguous troubleshooting question so future changes cannot silently break this expected behavior.
+# Verifies test auto retrieval enables srag for ambiguous troubleshooting question so future changes cannot silently break this expected behavior.
 def test_auto_retrieval_enables_srag_for_ambiguous_troubleshooting_question():
     """Verify that auto retrieval enables srag for ambiguous troubleshooting question.
 
-    Learner Note:
+    Note:
         This regression test protects an expected production behavior from silent changes.
     """
     decision = resolve_auto_retrieval(

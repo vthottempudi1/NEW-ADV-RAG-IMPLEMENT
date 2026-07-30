@@ -7,11 +7,11 @@ from app.main import app
 client = TestClient(app)
 
 
-# Learner note: Verifies request correlation and timing logs so production diagnostics remain dependable.
+# Note: Verifies request correlation and timing logs so production diagnostics remain dependable.
 def test_request_middleware_returns_request_id_and_logs_completion(caplog):
     """Verify that request middleware returns request id and logs completion.
 
-    Learner Note:
+    Note:
         This regression test protects an expected production behavior from silent changes.
     """
     with caplog.at_level(logging.INFO, logger="app.main"):

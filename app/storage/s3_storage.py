@@ -8,24 +8,26 @@ from app.config import settings
 from app.storage.storage_backend import StorageBackend
 
 
-# Learner Note: S3 storage is part of the storage abstraction layer.
 class S3Storage(StorageBackend):
-    # Learner note: Initializes this component so its dependencies and runtime state are explicit.
-    """Represent s3 storage within the storage abstraction layer.
+    """StorageBackend implementation backed by an S3 bucket.
 
-    Learner Note:
-        This class groups state and behavior behind a clear, testable contract.
+    Reads/writes objects through a boto3 S3 client, resolving credentials from
+    explicit settings (access key/secret/session token), a named AWS profile,
+    or the default boto3 credential chain, in that order.
     """
+
     def __init__(
         self,
         bucket: str | None = None,
         region: str | None = None,
         client: Any | None = None,
     ):
-        """Initialize init dependencies and runtime state.
+        """Configure the target bucket/region and construct (or accept) a boto3 S3 client.
 
-        Learner Note:
-            Explicit initialization keeps object construction predictable and testable.
+        `bucket`/`region` default to `settings.s3_cache_bucket`/`settings.aws_region` when
+        not given. Raises RuntimeError if no bucket can be resolved. If `client` is passed,
+        it is used as-is (useful for tests/mocking) and no boto3 session is created;
+        otherwise a boto3 session is built from configured AWS credentials or profile.
         """
         self.bucket = bucket or settings.s3_cache_bucket
         self.region = region or settings.aws_region
@@ -51,26 +53,16 @@ class S3Storage(StorageBackend):
         session = boto3.Session(**session_kwargs)
         self.client = session.client("s3", region_name=self.region)
 
-    # Learner note: Encapsulates exists so this responsibility can be understood, tested, and changed independently.
     def exists(self, key: str) -> bool:
-        """Perform exists for the storage abstraction layer.
-
-        Learner Note:
-            This function keeps the responsibility explicit for callers, tests, and operators.
-        """
+        """Return True if an object with this key exists in the bucket, False otherwise (including on any error)."""
         try:
             self.client.head_object(Bucket=self.bucket, Key=key)
             return True
         except Exception:
             return False
 
-    # Learner note: Persists save bytes consistently so state changes remain controlled and testable.
     def save_bytes(self, key: str, data: bytes) -> None:
-        """Perform save bytes for the storage abstraction layer.
-
-        Learner Note:
-            This function keeps the responsibility explicit for callers, tests, and operators.
-        """
+        """Upload `data` to the bucket under `key`, raising RuntimeError with a setup hint if AWS credentials are missing."""
         try:
             self.client.put_object(Bucket=self.bucket, Key=key, Body=data)
         except NoCredentialsError as exc:
@@ -79,13 +71,8 @@ class S3Storage(StorageBackend):
                 "Set AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY in .env or configure AWS_PROFILE."
             ) from exc
 
-    # Learner note: Retrieves read bytes in one place so callers share consistent access behavior.
     def read_bytes(self, key: str) -> bytes:
-        """Perform read bytes for the storage abstraction layer.
-
-        Learner Note:
-            This function keeps the responsibility explicit for callers, tests, and operators.
-        """
+        """Download and return the full contents of the object at `key`, raising RuntimeError with a setup hint if AWS credentials are missing."""
         try:
             response = self.client.get_object(Bucket=self.bucket, Key=key)
         except NoCredentialsError as exc:
@@ -95,11 +82,6 @@ class S3Storage(StorageBackend):
             ) from exc
         return response["Body"].read()
 
-    # Learner note: Encapsulates url for so this responsibility can be understood, tested, and changed independently.
     def url_for(self, key: str) -> str:
-        """Perform url for for the storage abstraction layer.
-
-        Learner Note:
-            This function keeps the responsibility explicit for callers, tests, and operators.
-        """
+        """Return the `s3://bucket/key` URI for the given key (does not verify the object exists)."""
         return f"s3://{self.bucket}/{key}"

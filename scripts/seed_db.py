@@ -36,11 +36,11 @@ SUPPORTED_EXTENSIONS = {".pdf", ".docx", ".html", ".htm", ".txt", ".md"}
 SAMPLE_SEED = 42
 
 
-# Learner note: Encapsulates collect files so this responsibility can be understood, tested, and changed independently.
+# Note: Encapsulates collect files so this responsibility can be understood, tested, and changed independently.
 def _collect_files(subdir: str) -> list[Path]:
     """Support the operational tooling layer by performing collect files.
 
-    Learner Note:
+    Note:
         Keeping this helper focused makes the surrounding workflow easier to test and maintain.
     """
     root = DOCS_DIR / subdir
@@ -55,14 +55,14 @@ def _collect_files(subdir: str) -> list[Path]:
     )
 
 
-# Learner note: Encapsulates select corpus so this responsibility can be understood, tested, and changed independently.
+# Note: Encapsulates select corpus so this responsibility can be understood, tested, and changed independently.
 def _select_corpus(
     noise_sample_size: int | str,
     true_sample_size: int | str = "auto",
 ) -> tuple[list[Path], list[Path]]:
     """Support the operational tooling layer by performing select corpus.
 
-    Learner Note:
+    Note:
         Keeping this helper focused makes the surrounding workflow easier to test and maintain.
     """
     true_files = _collect_files("true_data")
@@ -113,7 +113,7 @@ def _select_corpus(
     return true_files, noisy_files
 
 
-# Learner Note: Select manifest corpus is part of the operational tooling layer.
+# Note: Select manifest corpus is part of the operational tooling layer.
 def _select_manifest_corpus(
     manifest_path: Path,
     *,
@@ -159,11 +159,11 @@ def _select_manifest_corpus(
     return true_files, noisy_files
 
 
-# Learner note: Encapsulates clear doc cache storage so this responsibility can be understood, tested, and changed independently.
+# Note: Encapsulates clear doc cache storage so this responsibility can be understood, tested, and changed independently.
 def _clear_doc_cache_storage() -> None:
     """Support the operational tooling layer by performing clear doc cache storage.
 
-    Learner Note:
+    Note:
         Keeping this helper focused makes the surrounding workflow easier to test and maintain.
     """
     if DOC_CACHE_DIR.exists():
@@ -172,7 +172,7 @@ def _clear_doc_cache_storage() -> None:
     logger.info("Cleared document metadata cache at {}", DOC_CACHE_DIR)
 
 
-# Learner note: Encapsulates seed docs so this responsibility can be understood, tested, and changed independently.
+# Note: Encapsulates seed docs so this responsibility can be understood, tested, and changed independently.
 def seed_docs(
     noise_sample_size: int | str = "auto",
     true_sample_size: int | str = "auto",
@@ -182,7 +182,7 @@ def seed_docs(
 ) -> dict:
     """Perform seed docs for the operational tooling layer.
 
-    Learner Note:
+    Note:
         This function keeps the responsibility explicit for callers, tests, and operators.
     """
     from app.ingestion.service import IngestionService
@@ -264,7 +264,7 @@ def seed_docs(
     return counters
 
 
-# Learner note: Encapsulates ingest one so this responsibility can be understood, tested, and changed independently.
+# Note: Encapsulates ingest one so this responsibility can be understood, tested, and changed independently.
 def _ingest_one(
     service,
     src: Path,
@@ -277,7 +277,7 @@ def _ingest_one(
 ) -> None:
     """Support the operational tooling layer by performing ingest one.
 
-    Learner Note:
+    Note:
         Keeping this helper focused makes the surrounding workflow easier to test and maintain.
     """
     label = "true" if "true_data" in str(src) else "noisy"
@@ -322,11 +322,11 @@ def _ingest_one(
         gc.collect()
 
 
-# Learner note: Orchestrates run migrations, making this function a clear execution boundary for learners and tests.
+# Note: Orchestrates run migrations, making this function a clear execution boundary for learners and tests.
 def run_migrations(conn: psycopg2.extensions.connection) -> None:
     """Perform run migrations for the operational tooling layer.
 
-    Learner Note:
+    Note:
         This function keeps the responsibility explicit for callers, tests, and operators.
     """
     cur = conn.cursor()
@@ -341,11 +341,11 @@ def run_migrations(conn: psycopg2.extensions.connection) -> None:
     cur.close()
 
 
-# Learner note: Encapsulates seed users so this responsibility can be understood, tested, and changed independently.
+# Note: Encapsulates seed users so this responsibility can be understood, tested, and changed independently.
 def seed_users(conn: psycopg2.extensions.connection) -> None:
     """Perform seed users for the operational tooling layer.
 
-    Learner Note:
+    Note:
         This function keeps the responsibility explicit for callers, tests, and operators.
     """
     cur = conn.cursor()
@@ -366,11 +366,11 @@ def seed_users(conn: psycopg2.extensions.connection) -> None:
     cur.close()
 
 
-# Learner note: Orchestrates main, making this function a clear execution boundary for learners and tests.
+# Note: Orchestrates main, making this function a clear execution boundary for learners and tests.
 def main() -> None:
     """Perform main for the operational tooling layer.
 
-    Learner Note:
+    Note:
         This function keeps the responsibility explicit for callers, tests, and operators.
     """
     parser = argparse.ArgumentParser(description="Seed DB + ingest documents")

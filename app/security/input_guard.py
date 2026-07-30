@@ -10,12 +10,13 @@ _INJECTION_PATTERNS = [
 ]
 
 
-# Learner note: Evaluates check input safe as a guardrail before later pipeline stages proceed.
 def check_input_safe(text: str) -> tuple[bool, str]:
-    """Perform check input safe for the application security boundary.
+    """Screen user-supplied `text` for prompt-injection attempts before it reaches the LLM.
 
-    Learner Note:
-        This function keeps the responsibility explicit for callers, tests, and operators.
+    Rejects empty input and any text matching a known injection pattern (e.g.
+    "ignore previous instructions", "reveal your system prompt", "you are now").
+    Returns a `(is_safe, reason)` tuple, where `reason` is "empty_input",
+    "prompt_injection_detected", or "ok".
     """
     cleaned = text.strip()
     if not cleaned:

@@ -1,19 +1,13 @@
-# Learner note: Encapsulates count tokens so this responsibility can be understood, tested, and changed independently.
 def count_tokens(text: str) -> int:
-    """Perform count tokens for the application security boundary.
-
-    Learner Note:
-        This function keeps the responsibility explicit for callers, tests, and operators.
-    """
+    """Estimate token count as the number of whitespace-separated words in `text`."""
     return len(text.split())
 
 
-# Learner note: Encapsulates restructure input so this responsibility can be understood, tested, and changed independently.
 def restructure_input(text: str, max_tokens: int) -> tuple[str, str]:
-    """Perform restructure input for the application security boundary.
+    """Trim `text` down to at most `max_tokens` whitespace-separated tokens.
 
-    Learner Note:
-        This function keeps the responsibility explicit for callers, tests, and operators.
+    Returns a `(result_text, status)` tuple: `status` is "unchanged" when
+    `text` is already within budget, or "trimmed" when it was truncated.
     """
     tokens = text.split()
     if len(tokens) <= max_tokens:

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 
-# Learner note: Encapsulates forbidden keywords check so this responsibility can be understood, tested, and changed independently.
+# Note: Encapsulates forbidden keywords check so this responsibility can be understood, tested, and changed independently.
 def forbidden_keywords_check(answer: str, forbidden: list[str]) -> dict:
     """Check if any forbidden keywords are present in the answer."""
     answer_lower = answer.lower()
@@ -9,7 +9,7 @@ def forbidden_keywords_check(answer: str, forbidden: list[str]) -> dict:
     return {"passed": not hits, "hits": hits}
 
 
-# Learner Note: Fail evaluation when known noisy or disallowed sources survive retrieval.
+# Note: Fail evaluation when known noisy or disallowed sources survive retrieval.
 def forbidden_sources_check(actual: list[str], forbidden: list[str]) -> dict:
     """Return disallowed source patterns found in the final evidence list."""
     hits = [
@@ -19,21 +19,21 @@ def forbidden_sources_check(actual: list[str], forbidden: list[str]) -> dict:
     ]
     return {"passed": not hits, "hits": hits}
 
-# Learner note: Encapsulates source overlap so this responsibility can be understood, tested, and changed independently.
+# Note: Encapsulates source overlap so this responsibility can be understood, tested, and changed independently.
 def source_overlap(actual: list[str], golden: list[str]) -> dict:
     """Check for overlap between actual and golden sources."""
     import os
 
-    # Learner note: Encapsulates singularize so this responsibility can be understood, tested, and changed independently.
+    # Note: Encapsulates singularize so this responsibility can be understood, tested, and changed independently.
     def _singularize(token: str) -> str:
         """Support the evaluation and quality-gate framework by performing singularize.
 
-        Learner Note:
+        Note:
             Keeping this helper focused makes the surrounding workflow easier to test and maintain.
         """
         return token[:-1] if token.endswith("s") and len(token) > 3 else token
 
-    # Learner note: Encapsulates aliases so this responsibility can be understood, tested, and changed independently.
+    # Note: Encapsulates aliases so this responsibility can be understood, tested, and changed independently.
     def _aliases(source: str) -> set[str]:
         """Support the evaluation and quality-gate framework by performing aliases.
 
@@ -43,7 +43,7 @@ def source_overlap(actual: list[str], golden: list[str]) -> dict:
         any two documents in the same category match regardless of the actual entity the
         golden source names, which let wrong-document retrievals score as correct.
 
-        Learner Note:
+        Note:
             Keeping this helper focused makes the surrounding workflow easier to test and maintain.
         """
         lowered_source = source.strip().lower()
@@ -86,7 +86,7 @@ def source_overlap(actual: list[str], golden: list[str]) -> dict:
     }
 
 
-# Learner Note: Source recall is part of the evaluation and quality-gate framework.
+# Note: Source recall is part of the evaluation and quality-gate framework.
 def source_recall(
     actual: list[str],
     golden: list[str],
@@ -104,7 +104,7 @@ def source_recall(
     return float(source_overlap(actual, golden)["overlap_pct"])
 
 
-# Learner Note: Measure how much final evidence belongs to an expected source family.
+# Note: Measure how much final evidence belongs to an expected source family.
 def source_precision(
     actual: list[str],
     golden: list[str],

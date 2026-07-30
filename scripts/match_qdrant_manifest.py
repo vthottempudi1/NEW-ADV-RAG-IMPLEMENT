@@ -8,7 +8,7 @@ from collections import defaultdict
 from pathlib import Path
 
 
-# Learner Note: Main is part of the operational tooling layer.
+# Note: Main is part of the operational tooling layer.
 def main() -> None:
     """Resolve exported source basenames and write an auditable corpus manifest."""
     parser = argparse.ArgumentParser(description=__doc__)

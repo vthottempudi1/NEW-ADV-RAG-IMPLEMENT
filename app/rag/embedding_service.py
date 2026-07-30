@@ -6,17 +6,20 @@ from app.config import settings
 openai_client = OpenAI(api_key=settings.openai_api_key)
 
 
-# Learner note: Encapsulates embed texts so this responsibility can be understood, tested, and changed independently.
 def embed_texts(
     texts: list[str],
     model: str | None = None,
     *,
     use_cache: bool = True,
 ) -> list[list[float]]:
-    """Perform embed texts for the retrieval-augmented generation pipeline.
+    """Embed a list of texts via OpenAI, using the query cache to skip repeat work.
 
-    Learner Note:
-        This function keeps the responsibility explicit for callers, tests, and operators.
+    Returns `[]` immediately for empty input. When `use_cache` is False, all
+    texts are sent to OpenAI in a single request. Otherwise each text is first
+    looked up in the embedding cache; cache misses are batched (512 per
+    request, OpenAI's limit) into `openai_client.embeddings.create` calls and
+    the results are written back to the cache before being merged with the
+    cache hits, preserving the original input order.
     """
     if not texts:
         return []

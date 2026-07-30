@@ -5,30 +5,25 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from app.models import RetrievedChunk
 
 
-# Learner Note: Sparse vector index is part of the retrieval-augmented generation pipeline.
 class SparseVectorIndex:
-    # Learner note: Initializes this component so its dependencies and runtime state are explicit.
-    """Represent sparse vector index within the retrieval-augmented generation pipeline.
+    """In-memory TF-IDF sparse retrieval index over a list of documents.
 
-    Learner Note:
-        This class groups state and behavior behind a clear, testable contract.
+    Wraps scikit-learn's TfidfVectorizer to support keyword-style lexical search
+    (as opposed to dense embedding search), useful standalone or fused with dense
+    results for hybrid retrieval.
     """
-    def __init__(self):
-        """Initialize init dependencies and runtime state.
 
-        Learner Note:
-            Explicit initialization keeps object construction predictable and testable.
-        """
+    def __init__(self):
+        """Create an unfitted index with English stop-word filtering and no documents loaded yet."""
         self.vectorizer = TfidfVectorizer(stop_words="english")
         self.documents: list[dict] = []
         self.matrix = None
 
-    # Learner note: Encapsulates fit so this responsibility can be understood, tested, and changed independently.
     def fit(self, documents: list[dict]) -> None:
-        """Perform fit for the retrieval-augmented generation pipeline.
+        """Build the TF-IDF matrix from `documents` (each a dict with a "text" key).
 
-        Learner Note:
-            This function keeps the responsibility explicit for callers, tests, and operators.
+        Replaces any previously fitted state. If `documents` is empty, clears the
+        matrix to None instead of fitting the vectorizer.
         """
         self.documents = documents
         texts = [doc["text"] for doc in documents]
@@ -39,12 +34,11 @@ class SparseVectorIndex:
 
         self.matrix = self.vectorizer.fit_transform(texts)
 
-    # Learner note: Implements search, a key retrieval-quality step in the RAG pipeline.
     def search(self, query: str, top_k: int = 5) -> list[RetrievedChunk]:
-        """Perform search for the retrieval-augmented generation pipeline.
+        """Return up to `top_k` documents ranked by TF-IDF cosine-style similarity to `query`.
 
-        Learner Note:
-            This function keeps the responsibility explicit for callers, tests, and operators.
+        Documents with a non-positive score are dropped. Returns an empty list if
+        the index hasn't been fit or has no documents.
         """
         if self.matrix is None or not self.documents:
             return []
@@ -73,15 +67,16 @@ class SparseVectorIndex:
         return results
 
 
-# Learner note: Implements fuse rrf, a key retrieval-quality step in the RAG pipeline.
 def fuse_rrf(
     result_lists: list[list[RetrievedChunk]],
     rrf_k: int = 60,
 ) -> list[RetrievedChunk]:
-    """Perform fuse rrf for the retrieval-augmented generation pipeline.
+    """Merge multiple ranked result lists into one using Reciprocal Rank Fusion.
 
-    Learner Note:
-        This function keeps the responsibility explicit for callers, tests, and operators.
+    Each chunk's score is the sum of `1 / (rrf_k + rank + 1)` across every list it
+    appears in (deduplicated by chunk text), so items ranked highly by multiple
+    sources float to the top. `rrf_k` dampens the influence of rank position (higher
+    values flatten the score curve). Returns chunks sorted by fused score descending.
     """
     scores: dict[str, float] = {}
     meta: dict[str, dict[str, str]] = {}

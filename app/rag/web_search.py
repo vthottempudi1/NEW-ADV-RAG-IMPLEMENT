@@ -18,9 +18,13 @@ _TRUSTED_WEB_DOMAINS = {
 }
 
 
-# Learner Note: Enterprise web fallback must not treat arbitrary blogs as authoritative evidence.
 def _is_trusted_web_source(url: str) -> bool:
-    """Return whether a web result belongs to the explicit technical-source allowlist."""
+    """Return whether `url` belongs to the explicit technical-source allowlist.
+
+    Applies extra path-based restrictions beyond the plain domain allowlist:
+    excludes aws.amazon.com blog posts (`/blogs/*`) as non-authoritative, and
+    restricts github.com to the `/cilium/` and `/argoproj/` org paths.
+    """
     parsed = urlparse(url)
     host = (parsed.hostname or "").lower()
     path = parsed.path.lower()
@@ -31,12 +35,15 @@ def _is_trusted_web_source(url: str) -> bool:
     return any(host == domain or host.endswith(f".{domain}") for domain in _TRUSTED_WEB_DOMAINS)
 
 
-# Learner note: Implements search web, a key retrieval-quality step in the RAG pipeline.
 def search_web(question: str, top_k: int = 5) -> list[RetrievedChunk]:
-    """Perform search web for the retrieval-augmented generation pipeline.
+    """Run a web search fallback via Tavily and return results as `RetrievedChunk`s.
 
-    Learner Note:
-        This function keeps the responsibility explicit for callers, tests, and operators.
+    Raises `ValueError` if no Tavily API key is configured. Restricts the
+    search itself to the trusted domain allowlist and then re-filters results
+    through `_is_trusted_web_source` for the finer-grained path rules. Skips
+    results with no usable text (falling back from content to title).
+    Returned chunks are assigned a fixed relevance score of 0.5 since Tavily
+    does not provide a comparable per-result confidence score.
     """
     if not settings.tavily_api_key:
         raise ValueError("Tavily API key not configured")

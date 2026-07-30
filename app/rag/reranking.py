@@ -9,16 +9,13 @@ from app.config import settings
 from app.models import RetrievedChunk
 
 
-# Learner Note: Loading a cross-encoder is expensive, so each worker reuses one model instance.
 @lru_cache(maxsize=2)
 def _get_cross_encoder(model_name: str) -> CrossEncoder:
-    """Load and cache a reranker model once per worker process and model name.
+    """Load a ``CrossEncoder`` for ``model_name``, caching up to 2 instances per process.
 
-    Architecture Role:
-        Prevents every API request from reloading the same transformer weights.
-    Why Important:
-        Repeated model construction increases latency, memory churn, and the risk
-        that an evaluation or production worker times out under sequential load.
+    Avoids reloading the same transformer weights on every rerank call; the
+    small cache size still allows a second model to be held if configuration
+    changes at runtime.
     """
     return CrossEncoder(model_name)
 
@@ -85,12 +82,11 @@ _TERM_EXPANSIONS = {
 }
 
 
-# Learner note: Encapsulates normalize so this responsibility can be understood, tested, and changed independently.
 def _normalize(values: list[float]) -> list[float]:
-    """Support the retrieval-augmented generation pipeline by performing normalize.
+    """Min-max scale ``values`` to the ``[0, 1]`` range.
 
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    Returns ``[]`` for empty input. If every value is equal (zero range),
+    returns all ``1.0`` rather than dividing by zero.
     """
     if not values:
         return []
@@ -105,12 +101,11 @@ def _normalize(values: list[float]) -> list[float]:
     return [(value - low) / scale for value in values]
 
 
-# Learner note: Encapsulates keyword overlap so this responsibility can be understood, tested, and changed independently.
 def _keyword_overlap(query: str, chunk: RetrievedChunk) -> float:
-    """Support the retrieval-augmented generation pipeline by performing keyword overlap.
+    """Return the fraction of the query's terms that appear in the chunk.
 
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    Matches against the chunk's source name plus the first 400 characters of
+    its text (lowercased). Returns ``0.0`` if the query yields no terms.
     """
     query_terms = _query_terms(query)
     if not query_terms:
@@ -121,12 +116,15 @@ def _keyword_overlap(query: str, chunk: RetrievedChunk) -> float:
     return matched / len(query_terms)
 
 
-# Learner note: Encapsulates query terms so this responsibility can be understood, tested, and changed independently.
 def _query_terms(query: str) -> set[str]:
-    """Support the retrieval-augmented generation pipeline by performing query terms.
+    """Extract a normalized, stopword-filtered set of search terms from a query.
 
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    Tokenizes on word-ish characters, keeps lowercase tokens of length >= 2
+    that aren't stopwords, and additionally splits each token on camelCase/
+    digit boundaries (e.g. ``ImagePullBackOff`` -> ``image``, ``pull``,
+    ``back``, ``off``) so mixed-case identifiers contribute their sub-words
+    too. Known error identifiers are expanded via ``_TERM_EXPANSIONS`` (e.g.
+    ``oomkilled`` also adds ``oom``, ``killed``, ``memory``, ``eviction``).
     """
     terms: set[str] = set()
     for token in re.findall(r"[A-Za-z0-9_./:-]+", query):
@@ -144,12 +142,13 @@ def _query_terms(query: str) -> set[str]:
     return terms
 
 
-# Learner note: Encapsulates is troubleshooting query so this responsibility can be understood, tested, and changed independently.
 def _is_troubleshooting_query(query: str) -> bool:
-    """Support the retrieval-augmented generation pipeline by performing is troubleshooting query.
+    """Heuristically detect ops/error-style queries (e.g. "fix CrashLoopBackOff").
 
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    Returns True if the query contains a known troubleshooting keyword (from
+    ``_TROUBLESHOOTING_HINTS``), or if it contains a token of 6+ characters
+    with an uppercase letter after its first position (catching mixed-case
+    identifiers/error codes like ``ImagePullBackOff``).
     """
     lowered = query.lower()
     if any(hint in lowered for hint in _TROUBLESHOOTING_HINTS):
@@ -161,12 +160,16 @@ def _is_troubleshooting_query(query: str) -> bool:
     return False
 
 
-# Learner note: Encapsulates exact token bonus so this responsibility can be understood, tested, and changed independently.
 def _exact_token_bonus(query: str, chunk: RetrievedChunk) -> float:
-    """Support the retrieval-augmented generation pipeline by performing exact token bonus.
+    """Compute a relevance bonus that favors troubleshooting-relevant chunks.
 
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    Returns ``0.0`` unless ``_is_troubleshooting_query(query)`` is True.
+    Otherwise adds up to three components based on the chunk's source name
+    plus the first 800 characters of its text: up to 0.18 scaled by the
+    fraction of query terms (length >= 4) found exactly, +0.12 if the chunk
+    mentions troubleshooting-source hints (runbook, incident, etc.), and
+    +0.15 if it contains a specific known Kubernetes error string
+    (ImagePullBackOff, ErrImagePull, OOMKilled, CrashLoopBackOff).
     """
     if not _is_troubleshooting_query(query):
         return 0.0
@@ -192,33 +195,37 @@ def _exact_token_bonus(query: str, chunk: RetrievedChunk) -> float:
     return bonus
 
 
-# Learner Note: Reranker is part of the retrieval-augmented generation pipeline.
 class Reranker:
-    # Learner note: Initializes this component so its dependencies and runtime state are explicit.
-    """Represent reranker within the retrieval-augmented generation pipeline.
+    """Reorder retrieved chunks by relevance using a cross-encoder plus keyword signals.
 
-    Learner Note:
-        This class groups state and behavior behind a clear, testable contract.
+    Blends four signals into a single score per chunk: the cross-encoder's
+    predicted relevance, the chunk's original retrieval score, lexical
+    keyword overlap with the query, and (for troubleshooting-style queries)
+    an exact-token bonus that favors runbook/incident content. This mitigates
+    cases where the cross-encoder alone under-ranks chunks that contain exact
+    error strings the user is searching for.
     """
-    def __init__(self):
-        """Initialize init dependencies and runtime state.
 
-        Learner Note:
-            Explicit initialization keeps object construction predictable and testable.
-        """
+    def __init__(self):
+        """Load the configured cross-encoder model (``settings.reranker_model``)."""
         self.model = _get_cross_encoder(settings.reranker_model)
 
-    # Learner note: Implements rerank, a key retrieval-quality step in the RAG pipeline.
     def rerank(
         self,
         query: str,
         chunks: list[RetrievedChunk],
         top_k: int,
     ) -> list[RetrievedChunk]:
-        """Perform rerank for the retrieval-augmented generation pipeline.
+        """Score and reorder ``chunks`` against ``query``, returning the top ``top_k``.
 
-        Learner Note:
-            This function keeps the responsibility explicit for callers, tests, and operators.
+        For each chunk, computes: a cross-encoder score for the (query, text)
+        pair, the chunk's prior retrieval score, a keyword-overlap score, and
+        a troubleshooting exact-token bonus. The cross-encoder and retrieval
+        scores are min-max normalized across the batch, then combined as
+        ``0.4 * rerank + 0.3 * retrieval + 0.3 * overlap + exact_token_bonus``.
+        Returns new ``RetrievedChunk`` objects (with ``rerank_score`` set)
+        sorted descending by the blended score, truncated to ``top_k``.
+        Returns ``[]`` if ``chunks`` is empty.
         """
         if not chunks:
             return []

@@ -6,37 +6,32 @@ import psycopg2
 from app.config import settings
 
 
-# Learner Note: Pending s q l store is part of the governed structured-query pipeline.
 class PendingSQLStore:
-    # Learner note: Initializes this component so its dependencies and runtime state are explicit.
-    """Represent pending s q l store within the governed structured-query pipeline.
+    """Postgres-backed store for SQL statements awaiting Human-in-the-Loop approval.
 
-    Learner Note:
-        This class groups state and behavior behind a clear, testable contract.
+    Generated SQL is written here with ``status='pending'`` before execution;
+    an operator later approves or rejects it via ``resolve``, and ``run_sql``
+    only executes queries whose ``sql_approved`` flag reflects an approval.
+    The backing ``pending_sql_approvals`` table (and any missing columns) is
+    created lazily on first use per instance via ``_ensure_table``.
     """
-    def __init__(self) -> None:
-        """Initialize init dependencies and runtime state.
 
-        Learner Note:
-            Explicit initialization keeps object construction predictable and testable.
-        """
+    def __init__(self) -> None:
+        """Initialize the store with its table-creation check not yet performed."""
         self._table_ready = False
 
-    # Learner note: Encapsulates connect so this responsibility can be understood, tested, and changed independently.
     def _connect(self):
-        """Support the governed structured-query pipeline by performing connect.
-
-        Learner Note:
-            Keeping this helper focused makes the surrounding workflow easier to test and maintain.
-        """
+        """Open a new psycopg2 connection to the configured database."""
         return psycopg2.connect(settings.database_url)
 
-    # Learner note: Encapsulates ensure table so this responsibility can be understood, tested, and changed independently.
     def _ensure_table(self) -> None:
-        """Support the governed structured-query pipeline by performing ensure table.
+        """Create the ``pending_sql_approvals`` table if it doesn't exist and add any missing columns.
 
-        Learner Note:
-            Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+        Runs the ``CREATE TABLE IF NOT EXISTS`` plus a set of additive
+        ``ALTER TABLE ADD COLUMN IF NOT EXISTS`` statements so older tables
+        pick up newer columns (``cost_saved_usd``, ``request_context``,
+        ``auto_metadata``). No-ops on every call after the first per instance,
+        via the ``_table_ready`` flag.
         """
         if self._table_ready:
             return
@@ -87,7 +82,6 @@ class PendingSQLStore:
         conn.close()
         self._table_ready = True
 
-    # Learner note: Persists save pending consistently so state changes remain controlled and testable.
     def save_pending(
         self,
         *,
@@ -104,10 +98,13 @@ class PendingSQLStore:
         rag_metadata: dict[str, Any] | None = None,
         auto_metadata: dict[str, Any] | None = None,
     ) -> None:
-        """Perform save pending for the governed structured-query pipeline.
+        """Insert or overwrite a pending SQL approval record for ``query_id``.
 
-        Learner Note:
-            This function keeps the responsibility explicit for callers, tests, and operators.
+        Uses an upsert (``ON CONFLICT (query_id) DO UPDATE``): if a record for
+        this ``query_id`` already exists it is fully overwritten with the new
+        values and reset to ``status='pending'`` with ``resolved_at`` cleared,
+        so a query can be resubmitted for approval. List/dict fields are
+        JSON-encoded before insertion.
         """
         self._ensure_table()
 
@@ -166,12 +163,12 @@ class PendingSQLStore:
         cur.close()
         conn.close()
 
-    # Learner note: Retrieves get pending in one place so callers share consistent access behavior.
     def get_pending(self, query_id: str) -> dict[str, Any] | None:
-        """Perform get pending for the governed structured-query pipeline.
+        """Fetch the record for ``query_id``, if it exists and is still pending.
 
-        Learner Note:
-            This function keeps the responsibility explicit for callers, tests, and operators.
+        Returns ``None`` both when no row matches ``query_id`` and when a row
+        exists but has already been resolved (``status`` is no longer
+        ``'pending'``). JSON columns default to ``[]``/``{}`` when null.
         """
         self._ensure_table()
 
@@ -222,13 +219,8 @@ class PendingSQLStore:
         }
         return data if data["status"] == "pending" else None
 
-    # Learner note: Encapsulates resolve so this responsibility can be understood, tested, and changed independently.
     def resolve(self, query_id: str, *, status: str) -> None:
-        """Perform resolve for the governed structured-query pipeline.
-
-        Learner Note:
-            This function keeps the responsibility explicit for callers, tests, and operators.
-        """
+        """Mark ``query_id`` as resolved, setting its final ``status`` and ``resolved_at`` timestamp."""
         self._ensure_table()
 
         conn = self._connect()

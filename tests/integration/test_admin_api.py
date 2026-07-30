@@ -10,7 +10,7 @@ client = TestClient(app)
 admin_api = importlib.import_module("app.api.v1.admin")
 
 
-# Learner Note: Admin dependency health returns one safe status contract for all four data services.
+# Note: Admin dependency health returns one safe status contract for all four data services.
 def test_admin_dependency_health_reports_all_connected(monkeypatch):
     """Verify concurrent dependency probes return status and latency without sensitive details."""
     for name in ("postgres", "qdrant", "redis", "s3"):
@@ -30,14 +30,14 @@ def test_admin_dependency_health_reports_all_connected(monkeypatch):
     assert "error" not in str(body).lower()
 
 
-# Learner Note: Optional cache failure degrades visibility without declaring core retrieval dead.
+# Note: Optional cache failure degrades visibility without declaring core retrieval dead.
 def test_admin_dependency_health_marks_redis_failure_degraded(monkeypatch):
     """Verify Redis failure is degraded while healthy PostgreSQL and Qdrant remain usable."""
     monkeypatch.setattr(admin_api, "_probe_postgres", lambda: None)
     monkeypatch.setattr(admin_api, "_probe_qdrant", lambda: None)
     monkeypatch.setattr(admin_api, "_probe_s3", lambda: None)
 
-    # Learner Note: Fail redis is part of the automated regression suite.
+    # Note: Fail redis is part of the automated regression suite.
     def fail_redis() -> None:
         """Simulate an unavailable optional distributed cache."""
         raise RuntimeError("test failure")
@@ -55,21 +55,21 @@ def test_admin_dependency_health_marks_redis_failure_degraded(monkeypatch):
     assert body["dependencies"]["redis"]["status"] == "unavailable"
 
 
-# Learner note: Supports admin token as reusable test setup so scenarios stay deterministic and readable.
+# Note: Supports admin token as reusable test setup so scenarios stay deterministic and readable.
 def _admin_token() -> str:
     """Support the automated regression suite by performing admin token.
 
-    Learner Note:
+    Note:
         Keeping this helper focused makes the surrounding workflow easier to test and maintain.
     """
     return create_access_token("testuser@example.com", is_admin=True)
 
 
-# Learner note: Verifies test admin can clear targeted rag cache entry so future changes cannot silently break this expected behavior.
+# Note: Verifies test admin can clear targeted rag cache entry so future changes cannot silently break this expected behavior.
 def test_admin_can_clear_targeted_rag_cache_entry():
     """Verify that admin can clear targeted rag cache entry.
 
-    Learner Note:
+    Note:
         This regression test protects an expected production behavior from silent changes.
     """
     original_redis = query_cache._redis_client

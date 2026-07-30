@@ -2,16 +2,16 @@ from app.models import RetrievedChunk
 from app.rag import vector_store
 
 
-# Learner Note: Test upsert persists chunk audit metadata is part of the automated regression suite.
+# Note: Test upsert persists chunk audit metadata is part of the automated regression suite.
 def test_upsert_persists_chunk_audit_metadata(monkeypatch):
     """Qdrant payloads must retain v2 document and chunk provenance."""
     captured = {}
 
-    # Learner Note: Client is part of the automated regression suite.
+    # Client is part of the automated regression suite.
     class _Client:
         """Capture Qdrant upsert arguments without making a network request."""
 
-        # Learner Note: Upsert is part of the automated regression suite.
+        # Upsert is part of the automated regression suite.
         def upsert(self, *, collection_name, points):
             """Store the collection name and points for payload assertions."""
             captured["collection"] = collection_name
@@ -42,11 +42,11 @@ def test_upsert_persists_chunk_audit_metadata(monkeypatch):
     assert payload["ingestion_version"] == "v2"
 
 
-# Learner note: Verifies test hybrid search boosts sparse troubleshooting hits so future changes cannot silently break this expected behavior.
+# Note: Verifies test hybrid search boosts sparse troubleshooting hits so future changes cannot silently break this expected behavior.
 def test_hybrid_search_boosts_sparse_troubleshooting_hits(monkeypatch):
     """Verify that hybrid search boosts sparse troubleshooting hits.
 
-    Learner Note:
+    Note:
         This regression test protects an expected production behavior from silent changes.
     """
     monkeypatch.setattr(
@@ -83,11 +83,11 @@ def test_hybrid_search_boosts_sparse_troubleshooting_hits(monkeypatch):
     assert ranked[0].source == "troubleshooting-pods.html"
 
 
-# Learner note: Verifies test hybrid search boosts runbook sources for operational queries so future changes cannot silently break this expected behavior.
+# Note: Verifies test hybrid search boosts runbook sources for operational queries so future changes cannot silently break this expected behavior.
 def test_hybrid_search_boosts_runbook_sources_for_operational_queries(monkeypatch):
     """Verify that hybrid search boosts runbook sources for operational queries.
 
-    Learner Note:
+    Note:
         This regression test protects an expected production behavior from silent changes.
     """
     monkeypatch.setattr(
@@ -124,11 +124,11 @@ def test_hybrid_search_boosts_runbook_sources_for_operational_queries(monkeypatc
     assert ranked[0].source == "oncall-escalation-policy.html"
 
 
-# Learner note: Verifies test expanded sparse query maps errimagepull to image pull terms so future changes cannot silently break this expected behavior.
+# Note: Verifies test expanded sparse query maps errimagepull to image pull terms so future changes cannot silently break this expected behavior.
 def test_expanded_sparse_query_maps_errimagepull_to_image_pull_terms():
     """Verify that expanded sparse query maps errimagepull to image pull terms.
 
-    Learner Note:
+    Note:
         This regression test protects an expected production behavior from silent changes.
     """
     expanded = vector_store._expanded_sparse_query(  # noqa: SLF001
@@ -141,11 +141,11 @@ def test_expanded_sparse_query_maps_errimagepull_to_image_pull_terms():
     assert "pull" in expanded
 
 
-# Learner note: Verifies test expanded sparse query maps oomkilled to memory terms so future changes cannot silently break this expected behavior.
+# Note: Verifies test expanded sparse query maps oomkilled to memory terms so future changes cannot silently break this expected behavior.
 def test_expanded_sparse_query_maps_oomkilled_to_memory_terms():
     """Verify that expanded sparse query maps oomkilled to memory terms.
 
-    Learner Note:
+    Note:
         This regression test protects an expected production behavior from silent changes.
     """
     expanded = vector_store._expanded_sparse_query(  # noqa: SLF001
@@ -158,24 +158,26 @@ def test_expanded_sparse_query_maps_oomkilled_to_memory_terms():
     assert "memory" in expanded
 
 
-# Learner note: Verifies test sparse search rescues imagepullbackoff document so future changes cannot silently break this expected behavior.
+# Note: Verifies test sparse search rescues imagepullbackoff document so future changes cannot silently break this expected behavior.
 def test_sparse_search_rescues_imagepullbackoff_document(monkeypatch):
     """Verify that sparse search rescues imagepullbackoff document.
 
-    Learner Note:
+    Note:
         This regression test protects an expected production behavior from silent changes.
     """
+    # Note: Fake index is part of the automated regression suite.
     class _FakeIndex:
-        # Learner note: Supports init as reusable test setup so scenarios stay deterministic and readable.
+        # Note: Supports init as reusable test setup so scenarios stay deterministic and readable.
         """Represent fake index within the automated regression suite.
 
-        Learner Note:
+        Note:
             This class groups state and behavior behind a clear, testable contract.
         """
+        # Note: Init is part of the automated regression suite.
         def __init__(self):
             """Initialize init dependencies and runtime state.
 
-            Learner Note:
+            Note:
                 Explicit initialization keeps object construction predictable and testable.
             """
             self.documents = [
@@ -189,11 +191,11 @@ def test_sparse_search_rescues_imagepullbackoff_document(monkeypatch):
                 },
             ]
 
-        # Learner note: Supports search as reusable test setup so scenarios stay deterministic and readable.
+        # Note: Supports search as reusable test setup so scenarios stay deterministic and readable.
         def search(self, query: str, top_k: int = 5):
             """Perform search for the automated regression suite.
 
-            Learner Note:
+            Note:
                 This function keeps the responsibility explicit for callers, tests, and operators.
             """
             return [
@@ -215,11 +217,11 @@ def test_sparse_search_rescues_imagepullbackoff_document(monkeypatch):
     assert ranked[0].source == "troubleshooting-pods.html"
 
 
-# Learner note: Verifies test hybrid search promotes only strong troubleshooting matches so future changes cannot silently break this expected behavior.
+# Note: Verifies test hybrid search promotes only strong troubleshooting matches so future changes cannot silently break this expected behavior.
 def test_hybrid_search_promotes_only_strong_troubleshooting_matches(monkeypatch):
     """Verify that hybrid search promotes only strong troubleshooting matches.
 
-    Learner Note:
+    Note:
         This regression test protects an expected production behavior from silent changes.
     """
     monkeypatch.setattr(

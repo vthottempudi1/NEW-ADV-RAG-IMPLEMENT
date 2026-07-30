@@ -3,61 +3,40 @@ from abc import ABC, abstractmethod
 from app.config import settings
 
 
-# Learner Note: Storage backend is part of the storage abstraction layer.
 class StorageBackend(ABC):
-    """Represent storage backend within the storage abstraction layer.
+    """Abstract interface for byte-blob storage backends (e.g. local disk, S3).
 
-    Learner Note:
-        This class groups state and behavior behind a clear, testable contract.
+    Concrete implementations store and retrieve opaque byte content addressed
+    by a string `key`, and can produce a URL/path for accessing that content.
     """
 
-    # Learner note: Encapsulates exists so this responsibility can be understood, tested, and changed independently.
     @abstractmethod
     def exists(self, key: str) -> bool:
-        """Perform exists for the storage abstraction layer.
-
-        Learner Note:
-            This function keeps the responsibility explicit for callers, tests, and operators.
-        """
+        """Return whether an object for `key` exists in the backend."""
         raise NotImplementedError
 
-    # Learner note: Persists save bytes consistently so state changes remain controlled and testable.
     @abstractmethod
     def save_bytes(self, key: str, data: bytes) -> None:
-        """Perform save bytes for the storage abstraction layer.
-
-        Learner Note:
-            This function keeps the responsibility explicit for callers, tests, and operators.
-        """
+        """Store `data` under `key`, overwriting any existing object."""
         raise NotImplementedError
 
-    # Learner note: Retrieves read bytes in one place so callers share consistent access behavior.
     @abstractmethod
     def read_bytes(self, key: str) -> bytes:
-        """Perform read bytes for the storage abstraction layer.
-
-        Learner Note:
-            This function keeps the responsibility explicit for callers, tests, and operators.
-        """
+        """Return the raw bytes stored under `key`."""
         raise NotImplementedError
 
-    # Learner note: Encapsulates url for so this responsibility can be understood, tested, and changed independently.
     @abstractmethod
     def url_for(self, key: str) -> str:
-        """Perform url for for the storage abstraction layer.
-
-        Learner Note:
-            This function keeps the responsibility explicit for callers, tests, and operators.
-        """
+        """Return a URL or path that locates the object stored under `key`."""
         raise NotImplementedError
 
 
-# Learner note: Retrieves get storage backend in one place so callers share consistent access behavior.
 def get_storage_backend() -> StorageBackend:
-    """Perform get storage backend for the storage abstraction layer.
+    """Instantiate the storage backend configured via `settings.storage_backend`.
 
-    Learner Note:
-        This function keeps the responsibility explicit for callers, tests, and operators.
+    Supports "local" (`LocalStorage`) and "s3" (`S3Storage`), importing each
+    implementation lazily to avoid unnecessary dependencies. Raises
+    `ValueError` for any other configured backend name.
     """
     backend = settings.storage_backend.strip().lower()
 

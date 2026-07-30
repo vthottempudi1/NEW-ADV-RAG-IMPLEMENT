@@ -3,43 +3,27 @@ from collections import defaultdict
 _usage: dict[str, int] = defaultdict(int)
 
 
-# Learner note: Evaluates check budget as a guardrail before later pipeline stages proceed.
 def check_budget(user_id: str, estimated_tokens: int, max_tokens: int) -> tuple[bool, int]:
-    """Perform check budget for the application security boundary.
+    """Check whether `user_id` has enough remaining daily token budget for `estimated_tokens`.
 
-    Learner Note:
-        This function keeps the responsibility explicit for callers, tests, and operators.
+    Returns a `(within_budget, remaining_tokens)` tuple, where `remaining_tokens`
+    is `max_tokens` minus tokens already consumed (floored at 0).
     """
     used = _usage[user_id]
     remaining = max(0, max_tokens - used)
     return estimated_tokens <= remaining, remaining
 
 
-# Learner note: Persists consume budget consistently so state changes remain controlled and testable.
 def consume_budget(user_id: str, used_tokens: int) -> None:
-    """Perform consume budget for the application security boundary.
-
-    Learner Note:
-        This function keeps the responsibility explicit for callers, tests, and operators.
-    """
+    """Add `used_tokens` to `user_id`'s running in-memory token usage total."""
     _usage[user_id] += used_tokens
 
 
-# Learner note: Retrieves get budget usage in one place so callers share consistent access behavior.
 def get_budget_usage() -> dict[str, int]:
-    """Perform get budget usage for the application security boundary.
-
-    Learner Note:
-        This function keeps the responsibility explicit for callers, tests, and operators.
-    """
+    """Return a snapshot copy of per-user token usage tracked so far."""
     return dict(_usage)
 
 
-# Learner note: Clears clear budget usage safely so tests and operations can restore a known state.
 def clear_budget_usage() -> None:
-    """Perform clear budget usage for the application security boundary.
-
-    Learner Note:
-        This function keeps the responsibility explicit for callers, tests, and operators.
-    """
+    """Reset all tracked per-user token usage to empty (used by tests/operators)."""
     _usage.clear()

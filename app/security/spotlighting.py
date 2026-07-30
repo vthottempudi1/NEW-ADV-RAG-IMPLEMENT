@@ -6,12 +6,13 @@ SPOTLIGHT_PREAMBLE = (
 )
 
 
-# Learner note: Transforms build spotlighted context centrally so downstream code receives a predictable shape.
 def build_spotlighted_context(chunks: list[RetrievedChunk]) -> str:
-    """Perform build spotlighted context for the application security boundary.
+    """Wrap retrieved chunks in labeled `<document>` tags preceded by a warning preamble.
 
-    Learner Note:
-        This function keeps the responsibility explicit for callers, tests, and operators.
+    This "spotlighting" marks retrieved content as untrusted reference material
+    rather than instructions, mitigating prompt-injection attempts embedded in
+    document text. Each chunk is numbered and tagged with its source; the
+    resulting sections are joined with blank lines into a single context string.
     """
     parts = [SPOTLIGHT_PREAMBLE]
     for i, chunk in enumerate(chunks, 1):

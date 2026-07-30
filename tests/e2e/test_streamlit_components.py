@@ -5,7 +5,7 @@ from streamlit.testing.v1 import AppTest
 from ui.streamlit.app import USE_CASES
 
 
-# Learner Note: Load the UI component inside Streamlit's isolated script context.
+# Load the UI component inside Streamlit's isolated script context.
 def _render_payload(payload):
     """Import and render the answer component inside an AppTest execution context."""
     from ui.streamlit.app import _render_answer_card
@@ -13,7 +13,7 @@ def _render_payload(payload):
     _render_answer_card(payload)
 
 
-# Learner Note: Render dependency health in isolation to protect the sidebar status contract.
+# Render dependency health in isolation to protect the sidebar status contract.
 def _render_dependency_health(payload):
     """Import and render the dependency health component inside an AppTest context."""
     from ui.streamlit.app import _render_health_card
@@ -21,7 +21,7 @@ def _render_dependency_health(payload):
     _render_health_card(payload)
 
 
-# Learner Note: Every presentation preset must map to a supported backend request shape.
+# Every presentation preset must map to a supported backend request shape.
 def test_frontend_presets_have_complete_retrieval_configuration():
     """Verify that all hiring-demo presets define every required query control."""
     required = {
@@ -41,7 +41,7 @@ def test_frontend_presets_have_complete_retrieval_configuration():
         assert preset["question"].strip()
 
 
-# Learner Note: The Ping Backend result must show each infrastructure dependency under the button.
+# The Ping Backend result must show each infrastructure dependency under the button.
 def test_frontend_renders_dependency_connectivity():
     """Verify PostgreSQL, Qdrant, Redis, and S3 connectivity badges render together."""
     payload = {
@@ -65,7 +65,7 @@ def test_frontend_renders_dependency_connectivity():
     assert "s3: connected" in rendered
 
 
-# Learner Note: Clarification must render as a successful no-source UI state.
+# Clarification must render as a successful no-source UI state.
 def test_frontend_renders_clarification_without_fake_chunks():
     """Verify that the UI presents a clarification prompt without retrieval evidence."""
     payload = {
@@ -100,7 +100,7 @@ def test_frontend_renders_clarification_without_fake_chunks():
     assert any("No retrieved chunk previews" in item.value for item in app.info)
 
 
-# Learner Note: CRAG evidence-level diagnostics must remain visible in the frontend.
+# CRAG evidence-level diagnostics must remain visible in the frontend.
 def test_frontend_renders_chunk_scores_and_crag_ratio():
     """Verify that source, chunk, and per-chunk CRAG metadata render without errors."""
     payload = {

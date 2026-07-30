@@ -1,7 +1,6 @@
 from app.config import settings
 
 
-# Learner note: Computes estimate llm cost centrally so cost and confidence reporting stay consistent.
 def estimate_llm_cost(
     *,
     prompt_tokens: int,
@@ -9,33 +8,23 @@ def estimate_llm_cost(
     input_cost_per_1k: float,
     output_cost_per_1k: float,
 ) -> float:
-    """Perform estimate llm cost for the observability and cost-control layer.
+    """Compute the dollar cost of an LLM call from token counts and per-1k rates.
 
-    Learner Note:
-        This function keeps the responsibility explicit for callers, tests, and operators.
+    Prompt and completion tokens are priced independently and the total is
+    rounded to 6 decimal places to avoid floating-point noise in reported costs.
     """
     input_cost = (prompt_tokens / 1000) * input_cost_per_1k
     output_cost = (completion_tokens / 1000) * output_cost_per_1k
     return round(input_cost + output_cost, 6)
 
 
-# Learner note: Transforms format usd centrally so downstream code receives a predictable shape.
 def format_usd(amount: float) -> str:
-    """Perform format usd for the observability and cost-control layer.
-
-    Learner Note:
-        This function keeps the responsibility explicit for callers, tests, and operators.
-    """
+    """Format a dollar amount as a USD string with 4 decimal places (e.g. "$0.0012")."""
     return f"${amount:.4f}"
 
 
-# Learner note: Encapsulates answer model cost so this responsibility can be understood, tested, and changed independently.
 def answer_model_cost(prompt_tokens: int, completion_tokens: int) -> float:
-    """Perform answer model cost for the observability and cost-control layer.
-
-    Learner Note:
-        This function keeps the responsibility explicit for callers, tests, and operators.
-    """
+    """Estimate the cost of an answer-generation LLM call using configured answer-model rates."""
     return estimate_llm_cost(
         prompt_tokens=prompt_tokens,
         completion_tokens=completion_tokens,
@@ -44,13 +33,8 @@ def answer_model_cost(prompt_tokens: int, completion_tokens: int) -> float:
     )
 
 
-# Learner note: Encapsulates grader model cost so this responsibility can be understood, tested, and changed independently.
 def grader_model_cost(prompt_tokens: int, completion_tokens: int) -> float:
-    """Perform grader model cost for the observability and cost-control layer.
-
-    Learner Note:
-        This function keeps the responsibility explicit for callers, tests, and operators.
-    """
+    """Estimate the cost of a grading/evaluation LLM call using configured grader-model rates."""
     return estimate_llm_cost(
         prompt_tokens=prompt_tokens,
         completion_tokens=completion_tokens,
@@ -59,13 +43,8 @@ def grader_model_cost(prompt_tokens: int, completion_tokens: int) -> float:
     )
 
 
-# Learner note: Encapsulates sql model cost so this responsibility can be understood, tested, and changed independently.
 def sql_model_cost(prompt_tokens: int, completion_tokens: int) -> float:
-    """Perform sql model cost for the observability and cost-control layer.
-
-    Learner Note:
-        This function keeps the responsibility explicit for callers, tests, and operators.
-    """
+    """Estimate the cost of a text-to-SQL generation LLM call using configured SQL-model rates."""
     return estimate_llm_cost(
         prompt_tokens=prompt_tokens,
         completion_tokens=completion_tokens,
@@ -74,17 +53,16 @@ def sql_model_cost(prompt_tokens: int, completion_tokens: int) -> float:
     )
 
 
-# Learner note: Computes estimate sql infra cost centrally so cost and confidence reporting stay consistent.
 def estimate_sql_infra_cost(*, row_count: int = 0) -> float:
-    """Perform estimate sql infra cost for the observability and cost-control layer.
+    """Estimate the non-LLM infrastructure cost of executing a SQL query.
 
-    Learner Note:
-        This function keeps the responsibility explicit for callers, tests, and operators.
+    Uses a fixed base cost plus a small per-row surcharge, with row_count
+    clamped to the [0, 50] range so unusually large result sets don't skew
+    the estimate.
     """
     return round(0.00008 + (min(max(row_count, 0), 50) * 0.000002), 6)
 
 
-# Learner note: Computes estimate rag infra cost centrally so cost and confidence reporting stay consistent.
 def estimate_rag_infra_cost(
     *,
     search_mode: str = "dense",
@@ -95,10 +73,13 @@ def estimate_rag_infra_cost(
     enable_self_reflective: bool = False,
     used_web_fallback: bool = False,
 ) -> float:
-    """Perform estimate rag infra cost for the observability and cost-control layer.
+    """Estimate the non-LLM infrastructure cost of a RAG retrieval pipeline run.
 
-    Learner Note:
-        This function keeps the responsibility explicit for callers, tests, and operators.
+    Starts from a base cost keyed by search_mode ("dense", "sparse", or
+    "hybrid", defaulting to the dense rate for unknown modes), adds a
+    per-result surcharge for top_k (clamped to [1, 20]), and adds flat
+    surcharges for each optional pipeline stage that was enabled (reranking,
+    HyDE, CRAG, self-reflection, and web-search fallback).
     """
     base = {
         "dense": 0.00018,
@@ -119,17 +100,18 @@ def estimate_rag_infra_cost(
     return round(base, 6)
 
 
-# Learner note: Computes estimate infra cost saved centrally so cost and confidence reporting stay consistent.
 def estimate_infra_cost_saved(
     *,
     route: str,
     cache_context: dict | None = None,
     metadata: dict | None = None,
 ) -> float:
-    """Perform estimate infra cost saved for the observability and cost-control layer.
+    """Estimate the infrastructure cost avoided by serving a request from cache instead of running it live.
 
-    Learner Note:
-        This function keeps the responsibility explicit for callers, tests, and operators.
+    Dispatches on route ("sql", "rag", "hybrid", or anything else) to combine
+    estimate_sql_infra_cost and/or estimate_rag_infra_cost using details pulled
+    from cache_context (search settings) and metadata (result counts, web
+    fallback usage). Returns 0.0 for unrecognized routes.
     """
     ctx = cache_context or {}
     meta = metadata or {}

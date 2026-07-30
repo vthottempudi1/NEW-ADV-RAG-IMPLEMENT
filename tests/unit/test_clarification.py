@@ -5,7 +5,7 @@ import pytest
 from app.rag.clarification import detect_clarification_need
 
 
-# Learner Note: Every reproduced OOD failure must pause before retrieving noisy evidence.
+# Note: Every reproduced OOD failure must pause before retrieving noisy evidence.
 @pytest.mark.parametrize(
     "question",
     [
@@ -30,7 +30,7 @@ def test_underspecified_action_requires_clarification(question):
     assert decision.prompt.endswith("?")
 
 
-# Learner Note: Explicit Kubernetes targets must continue into normal retrieval.
+# Note: Explicit Kubernetes targets must continue into normal retrieval.
 @pytest.mark.parametrize(
     "question",
     [
@@ -45,7 +45,7 @@ def test_specific_kubernetes_action_does_not_require_clarification(question):
     assert detect_clarification_need(question) is None
 
 
-# Learner Note: Test additional underspecified requests require clarification is part of the automated regression suite.
+# Test additional underspecified requests require clarification is part of the automated regression suite.
 @pytest.mark.parametrize(
     "question",
     [

@@ -10,12 +10,25 @@ from app.rag.llm_service import generate_with_json
 from app.rag.web_search import search_web
 
 
-# Learner note: Encapsulates grade chunks so this responsibility can be understood, tested, and changed independently.
 def grade_chunks(question: str, chunks: list[RetrievedChunk]) -> CRAGEvaluation:
-    """Perform grade chunks for the retrieval-augmented generation pipeline.
+    """Score up to the first 5 retrieved chunks for relevance to the question using the grader LLM.
 
-    Learner Note:
-        This function keeps the responsibility explicit for callers, tests, and operators.
+    Sends all chunks in a single JSON-mode call and asks for an independent
+    per-chunk score/label/reasoning so one strong chunk cannot inflate another's
+    score. If the model returns the expected `chunk_evaluations` list, those
+    per-chunk scores are used directly; if it instead returns the legacy
+    aggregate-only schema (just `relevance_score`/`relevance_label`), that single
+    score is applied to every chunk as a fallback so callers keep working.
+
+    The aggregate result is derived from the per-chunk scores: a chunk counts as
+    "relevant" if its score meets `crag_chunk_relevance_threshold`, and the
+    overall label is "highly_relevant" only when both the mean score meets
+    `crag_relevance_threshold` and the relevant ratio meets
+    `crag_min_relevant_ratio`; otherwise it's "somewhat_relevant" if any chunk
+    qualified, else "irrelevant".
+
+    Returns a CRAGEvaluation with relevance_label="irrelevant" and
+    total_chunk_count=0 immediately if no chunks were supplied (no LLM call is made).
     """
     if not chunks:
         return CRAGEvaluation(
@@ -27,18 +40,31 @@ def grade_chunks(question: str, chunks: list[RetrievedChunk]) -> CRAGEvaluation:
         )
 
     context = "\n\n".join(
-        f"[Source: {chunk.source}]\n{chunk.text}"
-        for chunk in chunks[:5]
+    (
+        f"[Chunk {index}]\n"
+        f"[Source: {chunk.source}]\n"
+        f"[Authority tier: "
+        f"{(chunk.metadata or {}).get('authority_tier', 'unknown')}]\n"
+        f"{chunk.text}"
     )
+    for index, chunk in enumerate(chunks[:5]))
 
     system = (
-        "You are a strict retrieval-quality evaluator. Score EACH chunk independently against the "
-        "user question. A different chunk being useful must not raise another chunk's score. "
-        "Return only valid JSON with keys confidence, reasoning, and chunk_evaluations. "
-        "chunk_evaluations must contain one object per supplied chunk with keys index, "
-        "relevance_score, relevance_label, reasoning. Scores are 0.0 to 1.0 and labels are "
-        "highly_relevant, somewhat_relevant, or irrelevant."
+    "You are a strict retrieval-quality evaluator for a Kubernetes "
+    "operations knowledge base. Score EACH chunk independently against "
+    "the user question. Topical similarity alone is insufficient. "
+    "Prefer authority_tier=true Kubernetes documentation and "
+    "authority_tier=uploaded enterprise documents. Strongly penalize "
+    "authority_tier=noisy when the chunk is generic research rather "
+    "than evidence that can answer the Kubernetes question. "
+    "A useful chunk elsewhere must not raise another chunk's score. "
+    "Return only valid JSON with keys confidence, reasoning, and "
+    "chunk_evaluations. chunk_evaluations must contain one object per "
+    "supplied chunk with keys index, relevance_score, relevance_label, "
+    "and reasoning. Scores are between 0.0 and 1.0. Labels must be "
+    "highly_relevant, somewhat_relevant, or irrelevant."
     )
+
     user = (
         f"User Question: {question}\n\n"
         f"Retrieved Context:\n{context}\n\n"
@@ -120,7 +146,6 @@ def grade_chunks(question: str, chunks: list[RetrievedChunk]) -> CRAGEvaluation:
     )
 
 
-# Learner Note: Remove chunks CRAG judged irrelevant before answer generation.
 def filter_relevant_chunks(
     chunks: list[RetrievedChunk],
     evaluation: CRAGEvaluation,
@@ -134,7 +159,6 @@ def filter_relevant_chunks(
     return [chunk for index, chunk in enumerate(chunks[:5]) if index in relevant_indexes]
 
 
-# Learner note: Encapsulates crag pipeline so this responsibility can be understood, tested, and changed independently.
 def crag_pipeline(
     question: str,
     chunks: list[RetrievedChunk],
@@ -142,10 +166,23 @@ def crag_pipeline(
     local_retry_fn: Callable[[], list[RetrievedChunk]] | None = None,
     allow_web_fallback: bool = True,
 ) -> tuple[list[RetrievedChunk], CRAGEvaluation, bool]:
-    """Perform crag pipeline for the retrieval-augmented generation pipeline.
+    """Run the Corrective RAG (CRAG) grade-retry-fallback flow over retrieved chunks.
 
-    Learner Note:
-        This function keeps the responsibility explicit for callers, tests, and operators.
+    If enable_crag is False, returns the input chunks unfiltered with a synthetic
+    "disabled" evaluation. Otherwise it grades the chunks with grade_chunks and,
+    if the aggregate relevance/ratio already clears the configured thresholds,
+    returns the filtered chunks immediately (used_web_fallback=False).
+
+    If the initial grade is insufficient and local_retry_fn is provided, it is
+    called to fetch an alternative local chunk set; that retry is only adopted
+    if its (relevant_ratio, relevance_score) improves on the original. If the
+    (possibly retried) score is still below crag_ambiguous_threshold and
+    allow_web_fallback is True, falls back to a live web search (search_web) and
+    grades those results too, adopting them only if the web-filtered set is
+    non-empty; a ValueError from the web search is swallowed and treated as no
+    fallback available.
+
+    Returns a (filtered_chunks, evaluation, used_web_fallback) tuple.
     """
     if not enable_crag:
         return (

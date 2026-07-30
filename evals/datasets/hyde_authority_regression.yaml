@@ -1,0 +1,113 @@
+- id: q-701
+  question: "How can I keep my application running when one server goes down?"
+  intent: rag
+  golden_sources:
+    - concepts__workloads__controllers__deployment.txt
+  acceptable_source_groups:
+    - - concepts__workloads__controllers__deployment.txt
+      - tutorials__kubernetes-basics__deploy-app__deploy-intro.txt
+      - concepts__overview__what-is-kubernetes.docx
+  golden_answer: >
+    Use a Kubernetes Deployment with multiple replicas. If a node or
+    container fails, Kubernetes can replace or reschedule Pods so the
+    application remains available.
+  golden_answer_keywords:
+    - Deployment
+    - replicas
+    - availability
+    - reschedule
+  demonstrates_feature: hyde
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  forbidden_sources:
+    - Concurrent Programming for Scalable Web Architectures - Benjamin Erb - Thesis (April 2012) (vts_8082_11772).pdf
+  notes: >
+    [consumed-live-hyde] Lay-language availability query retrieved generic
+    scalability research before authority-aware filtering.
+
+- id: q-702
+  question: "Can the system automatically add more copies of my application when traffic increases?"
+  intent: rag
+  golden_sources:
+    - horizontal-pod-autoscaler.html
+  acceptable_source_groups:
+    - - horizontal-pod-autoscaler.html
+      - tutorials__kubernetes-basics__scale__scale-intro.html
+  golden_answer: >
+    Kubernetes can use a Horizontal Pod Autoscaler to adjust the number of
+    workload replicas in response to observed metrics such as CPU, memory,
+    or suitable custom metrics.
+  golden_answer_keywords:
+    - Horizontal Pod Autoscaler
+    - replicas
+    - metrics
+    - traffic
+  demonstrates_feature: hyde
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  forbidden_sources:
+    - Concurrent Programming for Scalable Web Architectures - Benjamin Erb - Thesis (April 2012) (vts_8082_11772).pdf
+  notes: >
+    [consumed-live-hyde] Lay-language autoscaling query returned four noisy
+    thesis chunks in the live schema-52 result.
+
+- id: q-703
+  question: "How can my application keep its data after it is restarted or moved to another machine?"
+  intent: rag
+  golden_sources:
+    - concepts__storage__persistent-volumes.pdf
+    - concepts__storage__storage-classes.docx
+  acceptable_source_groups:
+    - - concepts__storage__persistent-volumes.pdf
+    - - concepts__storage__storage-classes.docx
+  golden_answer: >
+    Store the application data in a PersistentVolume and access it through a
+    PersistentVolumeClaim rather than relying on the container filesystem.
+    A StorageClass can provide dynamic volume provisioning where supported.
+  golden_answer_keywords:
+    - PersistentVolume
+    - PersistentVolumeClaim
+    - StorageClass
+    - persistent
+  demonstrates_feature: hyde
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  forbidden_sources:
+    - Faliure-Atomic msync() - A Simple and Efficient Mechanism for Preserving the Integrity of Durable Data.pdf
+    - Data Structures for Data-Intensive Applications - Tradeoffs and Design Guidelines (fnt23-athanassoulis).pdf
+    - A File is Not a File - Understanding IO Behavior of Apple Desktop Applications (2011).pdf
+  notes: >
+    [consumed-live-hyde] Lay-language persistent-storage query returned only
+    off-domain systems research before authority-aware filtering.
+
+- id: q-704
+  question: "How can one application reliably find another when their addresses keep changing?"
+  intent: rag
+  golden_sources:
+    - concepts__services-networking__service.txt
+  acceptable_source_groups:
+    - - concepts__services-networking__service.txt
+      - tutorials__services__connect-applications-service.docx
+      - tutorials__kubernetes-basics__expose__expose-intro.docx
+  golden_answer: >
+    Use a Kubernetes Service to provide a stable virtual endpoint and DNS
+    name while the backing Pod addresses change. The Service selects the
+    current backend Pods and routes traffic to them.
+  golden_answer_keywords:
+    - Service
+    - DNS
+    - stable endpoint
+    - Pod
+  demonstrates_feature: hyde
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  forbidden_sources:
+    - Concurrent Programming for Scalable Web Architectures - Benjamin Erb - Thesis (April 2012) (vts_8082_11772).pdf
+    - Compiler Calling Conventions.pdf
+  notes: >
+    [consumed-live-hyde] Lay-language service-discovery query retrieved a
+    generic web-architecture thesis and compiler document.

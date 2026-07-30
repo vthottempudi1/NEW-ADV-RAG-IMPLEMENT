@@ -1,12 +1,14 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
-# Learner Note: Settings is part of the enterprise RAG application.
 class Settings(BaseSettings):
-    """Represent settings within the enterprise RAG application.
+    """Application-wide configuration, loaded from environment variables and `.env`.
 
-    Learner Note:
-        This class groups state and behavior behind a clear, testable contract.
+    Covers LLM/embedding model selection, Qdrant and Postgres connection
+    info, Redis (Upstash) and JWT settings, storage backend selection
+    (local/S3) with AWS credentials, rate limiting and token-budget limits,
+    and tunable thresholds for reranking, HyDE, CRAG, and self-reflection.
+    Unknown environment variables are ignored rather than rejected.
     """
     model_config = SettingsConfigDict(
         env_file=".env",

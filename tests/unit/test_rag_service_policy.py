@@ -8,27 +8,27 @@ from app.rag.service import (
 )
 
 
-# Learner note: Verifies test generic kubernetes question does not disable web fallback so future changes cannot silently break this expected behavior.
+# Verifies test generic kubernetes question does not disable web fallback so future changes cannot silently break this expected behavior.
 def test_generic_kubernetes_question_does_not_disable_web_fallback():
     """Verify that generic kubernetes question does not disable web fallback.
 
-    Learner Note:
+    Note:
         This regression test protects an expected production behavior from silent changes.
     """
     assert _prefer_local_corpus("What are the steps to deploy ArgoCD on a fresh Kubernetes cluster?") is False
 
 
-# Learner note: Verifies test org specific runbook question prefers local corpus so future changes cannot silently break this expected behavior.
+# Verifies test org specific runbook question prefers local corpus so future changes cannot silently break this expected behavior.
 def test_org_specific_runbook_question_prefers_local_corpus():
     """Verify that org specific runbook question prefers local corpus.
 
-    Learner Note:
+    Note:
         This regression test protects an expected production behavior from silent changes.
     """
     assert _prefer_local_corpus("What does our runbook say for P1 incidents?") is True
 
 
-# Learner Note: Test volume expansion plan reserves policy and workflow sources is part of the automated regression suite.
+# Test volume expansion plan reserves policy and workflow sources is part of the automated regression suite.
 def test_volume_expansion_plan_reserves_policy_and_workflow_sources():
     """Require both StorageClass policy and PVC workflow evidence for expansion questions."""
     plan = _evidence_plan(
@@ -40,7 +40,7 @@ def test_volume_expansion_plan_reserves_policy_and_workflow_sources():
     assert plan[1][0].search("concepts__storage__persistent-volumes.pdf")
 
 
-# Learner Note: Test multi part domain guidance requires complete supported answers is part of the automated regression suite.
+# Test multi part domain guidance requires complete supported answers is part of the automated regression suite.
 def test_multi_part_domain_guidance_requires_complete_supported_answers():
     """Keep lifecycle, admission, and expansion synthesis complete without question-ID rules."""
     deployment = _planned_answer_guidance(
@@ -58,7 +58,7 @@ def test_multi_part_domain_guidance_requires_complete_supported_answers():
     assert "driver support" in storage
 
 
-# Learner Note: General permission and unassigned-Pod questions reserve complementary evidence.
+# General permission and unassigned-Pod questions reserve complementary evidence.
 def test_v5_evidence_plans_cover_rbac_and_node_execution_responsibilities():
     """Require RBAC for ServiceAccount rights and kubelet evidence after scheduling."""
     identity = _evidence_plan(
@@ -72,7 +72,7 @@ def test_v5_evidence_plans_cover_rbac_and_node_execution_responsibilities():
     assert any(pattern.search("concepts__overview__components.pdf") for pattern, _ in placement)
 
 
-# Learner Note: V5 synthesis guidance prevents unsupported scheduling, probe, and paging explanations.
+# V5 synthesis guidance prevents unsupported scheduling, probe, and paging explanations.
 def test_v5_answer_guidance_limits_explanatory_overclaims():
     """Keep multi-part operational answers inside the exact retrieved evidence."""
     preemption = _planned_answer_guidance(
@@ -90,7 +90,7 @@ def test_v5_answer_guidance_limits_explanatory_overclaims():
     assert "Do not invent why" in paging
 
 
-# Learner Note: Test challenge paraphrases create general evidence plans is part of the automated regression suite.
+# Test challenge paraphrases create general evidence plans is part of the automated regression suite.
 def test_challenge_paraphrases_create_general_evidence_plans():
     """Common paraphrases must reserve every evidence family needed for complete answers."""
     cases = {
@@ -105,7 +105,7 @@ def test_challenge_paraphrases_create_general_evidence_plans():
         assert all(expected in rendered for expected in expected_patterns)
 
 
-# Learner Note: Test evidence denial retry only triggers when context exists is part of the automated regression suite.
+# Test evidence denial retry only triggers when context exists is part of the automated regression suite.
 def test_evidence_denial_retry_only_triggers_when_context_exists():
     """A denial draft should be corrected only when the pipeline supplied evidence."""
     answer = "The context does not provide the requested mechanism."
@@ -116,7 +116,7 @@ def test_evidence_denial_retry_only_triggers_when_context_exists():
     assert not _denies_available_evidence("Use a Service for a stable endpoint.", [chunk])
 
 
-# Learner Note: Test non secret config does not request secret evidence is part of the automated regression suite.
+# Test non secret config does not request secret evidence is part of the automated regression suite.
 def test_non_secret_config_does_not_request_secret_evidence():
     """The word non-secret must not accidentally activate sensitive-value retrieval."""
     plan = _evidence_plan(
@@ -128,7 +128,7 @@ def test_non_secret_config_does_not_request_secret_evidence():
     assert "configuration__secret" not in rendered
 
 
-# Learner Note: Test dynamic provisioning plan excludes stateful workload noise is part of the automated regression suite.
+# Test dynamic provisioning plan excludes stateful workload noise is part of the automated regression suite.
 def test_dynamic_provisioning_plan_excludes_stateful_workload_noise():
     """Storage relationship questions require StorageClass and PV evidence only."""
     plan = _evidence_plan(
@@ -141,7 +141,7 @@ def test_dynamic_provisioning_plan_excludes_stateful_workload_noise():
     assert "statefulset" not in rendered
 
 
-# Learner Note: Test adversarial and composite guidance prevents over answering is part of the automated regression suite.
+# Test adversarial and composite guidance prevents over answering is part of the automated regression suite.
 def test_adversarial_and_composite_guidance_prevents_over_answering():
     """Adversarial and multi-source questions receive minimal evidence-use constraints."""
     adversarial = _planned_answer_guidance(
@@ -159,7 +159,7 @@ def test_adversarial_and_composite_guidance_prevents_over_answering():
     assert "three separate sentences" in composite
 
 
-# Learner Note: Test constrained answers require matching authoritative sources is part of the automated regression suite.
+# Test constrained answers require matching authoritative sources is part of the automated regression suite.
 def test_constrained_answers_require_matching_authoritative_sources():
     """Narrow deterministic answers activate only with their authoritative evidence family."""
     service = RetrievedChunk(
@@ -173,3 +173,51 @@ def test_constrained_answers_require_matching_authoritative_sources():
         "when the workload is split across multiple backend Pods."
     )
     assert _constrained_domain_answer(question, []) is None
+
+#Layman tests
+def test_layman_availability_question_maps_to_deployment_evidence():
+    """Map a lay availability question to Deployment evidence."""
+    plan = _evidence_plan(
+        "How can I keep my application running when one server goes down?"
+    )
+
+    patterns = " ".join(pattern.pattern for pattern, _ in plan)
+
+    assert "deployment" in patterns or "deploy-app" in patterns
+
+
+def test_layman_autoscaling_question_maps_to_hpa_evidence():
+    """Map a lay autoscaling question to HPA evidence."""
+    plan = _evidence_plan(
+        "Can the system automatically add more copies of my application "
+        "when traffic increases?"
+    )
+
+    patterns = " ".join(pattern.pattern for pattern, _ in plan)
+
+    assert "horizontal-pod-autoscaler" in patterns
+
+
+def test_layman_persistent_data_question_maps_to_storage_evidence():
+    """Map a lay data-durability question to persistent-volume evidence."""
+    plan = _evidence_plan(
+        "How can my application keep its data after it is restarted "
+        "or moved to another machine?"
+    )
+
+    patterns = " ".join(pattern.pattern for pattern, _ in plan)
+
+    assert "persistent-volumes" in patterns
+    assert "storage-classes" in patterns
+
+
+def test_layman_service_discovery_question_maps_to_service_evidence():
+    """Map a lay discovery question to Kubernetes Service evidence."""
+    plan = _evidence_plan(
+        "How can one application reliably find another when "
+        "their addresses keep changing?"
+    )
+
+    patterns = " ".join(pattern.pattern for pattern, _ in plan)
+
+    assert "services-networking__service" in patterns

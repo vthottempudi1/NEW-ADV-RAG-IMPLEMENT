@@ -26,11 +26,11 @@ from evals.runners.post_checks import (
 from evals.runners.profiles import PROFILES
 
 
-# Learner note: Captures the exact source revision so an evaluation can be reproduced later.
+# Captures the exact source revision so an evaluation can be reproduced later.
 def _git_commit() -> str | None:
     """Support the evaluation and quality-gate framework by performing git commit.
 
-    Learner Note:
+    Note:
         Keeping this helper focused makes the surrounding workflow easier to test and maintain.
     """
     try:
@@ -45,11 +45,11 @@ def _git_commit() -> str | None:
         return None
 
 
-# Learner note: Records non-secret runtime context so scores can be traced to a corpus and model setup.
+# Records non-secret runtime context so scores can be traced to a corpus and model setup.
 def _evaluation_provenance(args, preflight: dict | None) -> dict:
     """Support the evaluation and quality-gate framework by performing evaluation provenance.
 
-    Learner Note:
+    Note:
         Keeping this helper focused makes the surrounding workflow easier to test and maintain.
     """
     from app.config import settings
@@ -69,11 +69,11 @@ def _evaluation_provenance(args, preflight: dict | None) -> dict:
     }
 
 
-# Learner note: Encapsulates local corpus preflight so this responsibility can be understood, tested, and changed independently.
+# Note: Encapsulates local corpus preflight so this responsibility can be understood, tested, and changed independently.
 def _local_corpus_preflight(goldens) -> dict | None:
     """Support the evaluation and quality-gate framework by performing local corpus preflight.
 
-    Learner Note:
+    Note:
         Keeping this helper focused makes the surrounding workflow easier to test and maintain.
     """
     try:
@@ -153,7 +153,7 @@ def _local_corpus_preflight(goldens) -> dict | None:
     }
 
 
-# Learner Note: Per question threshold failures is part of the evaluation and quality-gate framework.
+# Note: Per question threshold failures is part of the evaluation and quality-gate framework.
 def _per_question_threshold_failures(
     rows: list[dict],
     thresholds: dict[str, float | None],
@@ -182,7 +182,7 @@ def _per_question_threshold_failures(
     return failures
 
 
-# Learner Note: Aggregate threshold failures is part of the evaluation and quality-gate framework.
+# Aggregate threshold failures is part of the evaluation and quality-gate framework.
 def _aggregate_threshold_failures(
     values: dict,
     thresholds: dict[str, float | None],
@@ -198,11 +198,11 @@ def _aggregate_threshold_failures(
     }
 
 
-# Learner note: Orchestrates main, making this function a clear execution boundary for learners and tests.
+# Orchestrates main, making this function a clear execution boundary for learners and tests.
 def main() -> None:
     """Perform main for the evaluation and quality-gate framework.
 
-    Learner Note:
+    Note:
         This function keeps the responsibility explicit for callers, tests, and operators.
     """
     if hasattr(sys.stdout, "reconfigure"):

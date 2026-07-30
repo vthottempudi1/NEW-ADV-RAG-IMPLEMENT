@@ -29,33 +29,34 @@ router = APIRouter(tags=["query"])
 sql_service = SQLService()
 
 
-# Learner note: Encapsulates estimate tokens so this responsibility can be understood, tested, and changed independently.
 def _estimate_tokens(question: str) -> int:
-    """Support the versioned HTTP API boundary by performing estimate tokens.
+    """Estimate the token cost of answering a question.
 
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    Adds a reserved buffer for the model's output tokens on top of the
+    tokenized length of the question, so budget checks account for both
+    prompt and completion tokens.
     """
     return count_tokens(question) + settings.reserved_output_tokens
 
 
-# Learner Note: Sql execute request is part of the versioned HTTP API boundary.
 class SqlExecuteRequest(BaseModel):
-    """Represent sql execute request within the versioned HTTP API boundary.
+    """Request body for approving or rejecting a pending SQL execution.
 
-    Learner Note:
-        This class groups state and behavior behind a clear, testable contract.
+    ``query_id`` identifies the paused workflow (the LangGraph thread id
+    returned as ``pending_sql.query_id`` from the ``/query`` endpoint), and
+    ``approved`` indicates whether the human reviewer approved the generated
+    SQL for execution.
     """
     query_id: str
     approved: bool
 
 
-# Learner note: Encapsulates request cache context so this responsibility can be understood, tested, and changed independently.
 def _request_cache_context(body: QueryRequest) -> dict:
-    """Support the versioned HTTP API boundary by performing request cache context.
+    """Extract the request fields that affect retrieval behavior into a cache key.
 
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    Used to scope cached answers (and pending SQL approvals) to requests made
+    with the same retrieval settings, so a cached answer generated with, say,
+    reranking disabled is not served for a request that asked for reranking.
     """
     return {
         "top_k": body.top_k,
@@ -67,49 +68,37 @@ def _request_cache_context(body: QueryRequest) -> dict:
     }
 
 
-# Learner note: Encapsulates merge auto metadata so this responsibility can be understood, tested, and changed independently.
 def _merge_auto_metadata(target: dict, decision) -> None:
-    """Support the versioned HTTP API boundary by performing merge auto metadata.
-
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
-    """
+    """Merge an auto-retrieval decision's metadata into ``target`` in place."""
     target.update(decision.metadata())
 
 
-# Learner note: Encapsulates merge auto metadata dict so this responsibility can be understood, tested, and changed independently.
 def _merge_auto_metadata_dict(target: dict, auto_metadata: dict | None) -> None:
-    """Support the versioned HTTP API boundary by performing merge auto metadata dict.
-
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
-    """
+    """Merge ``auto_metadata`` into ``target`` in place if it is non-empty."""
     if auto_metadata:
         target.update(auto_metadata)
 
 
-# Learner note: Encapsulates as float so this responsibility can be understood, tested, and changed independently.
 def _as_float(value: object) -> float:
-    """Support the versioned HTTP API boundary by performing as float.
-
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
-    """
+    """Coerce ``value`` to a float, returning 0.0 for ``None`` or unconvertible input."""
     try:
         return float(value or 0.0)
     except (TypeError, ValueError):
         return 0.0
 
 
-# Learner note: Encapsulates derive cost components so this responsibility can be understood, tested, and changed independently.
 def _derive_cost_components(
     payload: dict,
     cache_context: dict | None = None,
 ) -> tuple[float, float]:
-    """Support the versioned HTTP API boundary by performing derive cost components.
+    """Return the (llm_cost_saved_usd, infra_cost_saved_usd) pair for a result payload.
 
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    The LLM cost saved is read directly from the payload (falling back to the
+    legacy ``cost_saved_usd`` key). The infra cost saved is also read from the
+    payload, but if it comes back as zero it is instead estimated via
+    ``estimate_infra_cost_saved`` using the result's route and cache context,
+    since older/derived payloads may not carry a precomputed infra figure.
+    Both values are rounded to 6 decimal places.
     """
     metadata = payload.get("metadata", {}) or {}
     route = str(metadata.get("route", "rag")).replace("_pending", "")
@@ -128,17 +117,16 @@ def _derive_cost_components(
     return round(llm_cost_saved_usd, 6), round(infra_cost_saved_usd, 6)
 
 
-# Learner note: Encapsulates display saved values so this responsibility can be understood, tested, and changed independently.
 def _display_saved_values(
     *,
     cache_hit: bool,
     llm_cost_saved_usd: float,
     infra_cost_saved_usd: float,
 ) -> tuple[str, str, str]:
-    """Support the versioned HTTP API boundary by performing display saved values.
+    """Format the (llm, infra, total) cost-saved amounts as USD display strings.
 
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    Returns all-zero strings when ``cache_hit`` is False, since cost savings
+    only apply to answers served from cache rather than freshly generated.
     """
     if not cache_hit:
         zero = format_usd(0.0)
@@ -151,15 +139,17 @@ def _display_saved_values(
     )
 
 
-# Learner note: Encapsulates approved cache payload from result so this responsibility can be understood, tested, and changed independently.
 def _approved_cache_payload_from_result(
     result: dict,
     cache_context: dict | None = None,
 ) -> dict:
-    """Support the versioned HTTP API boundary by performing approved cache payload from result.
+    """Build the payload stored in the query cache for an approved SQL/hybrid answer.
 
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    Wraps the final answer, sources, confidence, and cost-saved figures
+    together with ``cache_context`` so a future identical request (same
+    question and retrieval settings) can be served from cache via
+    ``_response_from_cached_payload`` instead of re-running SQL generation
+    and approval.
     """
     llm_cost_saved_usd, infra_cost_saved_usd = _derive_cost_components(
         result,
@@ -177,12 +167,11 @@ def _approved_cache_payload_from_result(
     }
 
 
-# Learner note: Encapsulates response from cached payload so this responsibility can be understood, tested, and changed independently.
 def _response_from_cached_payload(payload: dict) -> ChatResponse:
-    """Support the versioned HTTP API boundary by performing response from cached payload.
+    """Convert a cached query-cache payload into a ``ChatResponse``.
 
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    Marks the response's metadata with ``cache_hit: True`` and recomputes the
+    displayed cost-saved figures from the payload's stored cost components.
     """
     metadata = dict(payload.get("metadata", {}) or {})
     metadata["cache_hit"] = True
@@ -207,12 +196,21 @@ def _response_from_cached_payload(payload: dict) -> ChatResponse:
     )
 
 
-# Learner note: Encapsulates get pending sql state or raise so this responsibility can be understood, tested, and changed independently.
 def _get_pending_sql_state_or_raise(query_id: str):
-    """Support the versioned HTTP API boundary by performing get pending sql state or raise.
+    """Look up the LangGraph checkpoint for ``query_id`` and confirm it is paused on SQL approval.
 
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    Fetches the graph's persisted state snapshot for the given thread id and
+    validates that it actually represents a workflow interrupted at the SQL
+    approval step. Raises ``HTTPException`` with:
+
+    - 500 if the checkpointer lookup itself fails.
+    - 409 if no state exists at all for ``query_id`` (e.g. lost after a
+      restart/redeploy since state is held in-memory).
+    - 409 if state exists but the workflow is not currently interrupted
+      (nothing pending approval).
+
+    Returns the ``{"configurable": {"thread_id": query_id}}`` config dict
+    usable to resume the graph via ``graph.invoke(Command(resume=...))``.
     """
     config = {"configurable": {"thread_id": query_id}}
     try:
@@ -251,7 +249,6 @@ def _get_pending_sql_state_or_raise(query_id: str):
     return config
 
 
-# Learner note: Encapsulates persist pending sql or raise so this responsibility can be understood, tested, and changed independently.
 def _persist_pending_sql_or_raise(
     query_id: str,
     intent: str,
@@ -259,10 +256,15 @@ def _persist_pending_sql_or_raise(
     request_context: dict,
     auto_metadata: dict,
 ) -> None:
-    """Support the versioned HTTP API boundary by performing persist pending sql or raise.
+    """Snapshot an interrupted graph run and save it as a pending SQL approval.
 
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    Reads the graph's current state for ``query_id`` (the run that just
+    raised the SQL-approval interrupt) and copies the generated SQL,
+    explanation, and any RAG context (answer/sources/confidence/metadata for
+    the hybrid route) into ``pending_sql_store``, alongside the original
+    request context and auto-retrieval metadata. This lets ``execute_sql``
+    resolve the approval later without needing to re-invoke the graph.
+    Raises ``HTTPException(500)`` if the state snapshot cannot be read.
     """
     config = {"configurable": {"thread_id": query_id}}
     try:
@@ -294,12 +296,21 @@ def _persist_pending_sql_or_raise(
     )
 
 
-# Learner note: Encapsulates resume pending sql from store so this responsibility can be understood, tested, and changed independently.
 def _resume_pending_sql_from_store(query_id: str, approved: bool) -> dict | None:
-    """Support the versioned HTTP API boundary by performing resume pending sql from store.
+    """Resolve a pending SQL approval directly from ``pending_sql_store``, bypassing the graph checkpoint.
 
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    Returns ``None`` if there is no pending record for ``query_id`` (the
+    caller should then fall back to resuming the LangGraph checkpoint via
+    ``_get_pending_sql_state_or_raise``/``graph.invoke(Command(...))``).
+
+    If ``approved`` is False, marks the pending record as rejected and
+    returns a result payload with an empty answer/no SQL rows, preserving the
+    original RAG answer/sources for the hybrid route.
+
+    If ``approved`` is True, executes the stored SQL via ``sql_service``,
+    marks the pending record as approved, and builds the final result with
+    ``build_hybrid_execution_result`` (hybrid route, merging in the prior RAG
+    answer) or ``build_sql_execution_result`` (pure SQL route).
     """
     pending = pending_sql_store.get_pending(query_id)
     if not pending:
@@ -374,12 +385,13 @@ def _resume_pending_sql_from_store(query_id: str, approved: bool) -> dict | None
     return result
 
 
-# Learner note: Encapsulates raise query exception so this responsibility can be understood, tested, and changed independently.
 def _raise_query_exception(exc: Exception) -> None:
-    """Support the versioned HTTP API boundary by performing raise query exception.
+    """Translate an exception raised during graph execution into an ``HTTPException``.
 
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    Maps ``SQLServiceError`` to its own status code/public detail, maps
+    Qdrant's ``UnexpectedResponse`` to a 503 (with a dedicated message for
+    403/permission errors), and falls back to a generic 500 for anything
+    else. Always raises; never returns normally.
     """
     if isinstance(exc, SQLServiceError):
         raise HTTPException(
@@ -409,16 +421,50 @@ def _raise_query_exception(exc: Exception) -> None:
     ) from exc
 
 
-# Learner note: Encapsulates query so this responsibility can be understood, tested, and changed independently.
 @router.post("/query", response_model=ChatResponse)
 async def query(
     body: QueryRequest,
     user: User = Depends(get_current_user),
 ) -> ChatResponse:
-    """Handle query asynchronously within the versioned HTTP API boundary.
+    """Answer a natural-language question, invoking the LangGraph RAG/SQL/hybrid workflow.
 
-    Learner Note:
-        The async boundary prevents request handling from blocking unrelated work.
+    This is the primary entry point of the query API. Given an authenticated
+    ``user`` (via ``get_current_user``) and a ``QueryRequest`` body, it runs
+    the request through a pipeline before touching the graph:
+
+    1. Per-user rate limiting (``is_allowed_user``) -> 429 if exceeded.
+    2. Token budget check (``check_budget`` against estimated question +
+       reserved output tokens) -> 429 if the user's daily token budget is
+       exhausted.
+    3. Input restructuring/truncation and prompt-injection/safety screening
+       (``restructure_input``, ``check_input_safe``) -> 400 if unsafe.
+    4. Content moderation and redaction (``moderate_and_redact``) -> 400 if
+       blocked.
+    5. Follow-up question rewriting using conversation context
+       (``rewrite_follow_up_question``).
+    6. Clarification-need detection: if the (rewritten) question is
+       ambiguous, returns a ``ChatResponse`` asking for clarification without
+       touching the graph.
+    7. Intent classification (``classify_intent`` -> "sql", "hybrid", or
+       RAG-only) and auto-retrieval strategy resolution
+       (``resolve_auto_retrieval``), which determines the graph flags (rerank,
+       HyDE, CRAG, self-reflective, etc.) actually used.
+    8. Query-cache lookup for SQL/hybrid intents: if an approved cached
+       answer exists for this question (and cache context), it is returned
+       directly (after output validation) without invoking the graph.
+    9. Otherwise, invokes ``graph.invoke(...)`` with a fresh thread id as the
+       checkpointer key. If the graph raises, the exception is translated via
+       ``_raise_query_exception`` (SQL errors, Qdrant errors, or a generic
+       500). If the graph pauses on a human-in-the-loop SQL approval
+       interrupt (``"__interrupt__"`` in the result), the pending SQL and RAG
+       context are persisted via ``_persist_pending_sql_or_raise`` and a
+       ``ChatResponse`` with a populated ``pending_sql`` block is returned
+       (to be resolved later via ``POST /query/sql/execute`` using the
+       returned ``query_id``/thread id).
+    10. On a normal (non-interrupted) result, builds the final
+        ``ChatResponse`` (answer, sources, confidence, cost-saved figures),
+        validates the output for safety (-> 500 if blocked), consumes the
+        estimated token budget, and returns it.
     """
     allowed, _, _ = is_allowed_user(
         user.username,
@@ -602,16 +648,37 @@ async def query(
     return response
 
 
-# Learner note: Orchestrates execute sql, making this function a clear execution boundary for learners and tests.
 @router.post("/query/sql/execute", response_model=ChatResponse)
 async def execute_sql(
     body: SqlExecuteRequest,
     user: User = Depends(get_current_user),
 ) -> ChatResponse:
-    """Handle execute sql asynchronously within the versioned HTTP API boundary.
+    """Approve or reject a previously generated SQL query and return the final answer.
 
-    Learner Note:
-        The async boundary prevents request handling from blocking unrelated work.
+    This resumes the human-in-the-loop workflow paused by ``POST /query``
+    when SQL generation required approval. ``body.query_id`` identifies the
+    paused run and ``body.approved`` is the reviewer's decision.
+
+    Resolution takes one of two paths:
+
+    - Fast path: if ``pending_sql_store`` still has the record for
+      ``query_id``, ``_resume_pending_sql_from_store`` resolves the approval
+      directly (running the SQL via ``sql_service`` if approved, or building
+      a rejection result otherwise) without touching the LangGraph
+      checkpoint.
+    - Fallback path: if the pending-sql record is gone (e.g. app restart) but
+      the graph checkpoint is still available, ``_get_pending_sql_state_or_raise``
+      validates the checkpoint is actually paused on this interrupt (raising
+      404/409/500 ``HTTPException``s otherwise), and the graph is resumed via
+      ``graph.invoke(Command(resume={"approved": body.approved}), config=...)``.
+      Exceptions from the resumed graph are translated via
+      ``_raise_query_exception``.
+
+    In both paths, the final answer's cost-saved figures are computed, the
+    output is safety-validated (-> 500 if blocked), and if the query was
+    approved, the resulting answer is written to the query cache
+    (``query_cache.set_approved_answer``) so identical future requests can be
+    served from cache. Returns the final ``ChatResponse``.
     """
     pending = pending_sql_store.get_pending(body.query_id)
     stored_result = _resume_pending_sql_from_store(body.query_id, body.approved)

@@ -1,11 +1,11 @@
 from app.core.graph import _build_sql_response
 
 
-# Learner note: Verifies test sql count answer is natural language so future changes cannot silently break this expected behavior.
+# Note: Verifies test sql count answer is natural language so future changes cannot silently break this expected behavior.
 def test_sql_count_answer_is_natural_language():
     """Verify that sql count answer is natural language.
 
-    Learner Note:
+    Note:
         This regression test protects an expected production behavior from silent changes.
     """
     result = _build_sql_response(
@@ -19,11 +19,11 @@ def test_sql_count_answer_is_natural_language():
     assert result["metadata"]["sql_query"] == "select count(*) as count from incidents"
 
 
-# Learner note: Verifies test sql empty result is clear so future changes cannot silently break this expected behavior.
+# Note: Verifies test sql empty result is clear so future changes cannot silently break this expected behavior.
 def test_sql_empty_result_is_clear():
     """Verify that sql empty result is clear.
 
-    Learner Note:
+    Note:
         This regression test protects an expected production behavior from silent changes.
     """
     result = _build_sql_response(

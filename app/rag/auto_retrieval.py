@@ -112,7 +112,6 @@ _SHORT_STOPWORDS = {
 }
 
 
-# Learner Note: Auto retrieval decision is part of the retrieval-augmented generation pipeline.
 @dataclass(frozen=True)
 class AutoRetrievalDecision:
     """An immutable, explainable retrieval configuration for one request.
@@ -134,12 +133,13 @@ class AutoRetrievalDecision:
     auto_strategy_reason: str | None
     auto_applied_flags: list[str]
 
-    # Learner note: Encapsulates cache context so this responsibility can be understood, tested, and changed independently.
     def cache_context(self, top_k: int) -> dict:
-        """Perform cache context for the retrieval-augmented generation pipeline.
+        """Return the resolved settings that should participate in the retrieval cache key.
 
-        Learner Note:
-            This function keeps the responsibility explicit for callers, tests, and operators.
+        Combines the given `top_k` with the resolved search mode and quality
+        flags, so two requests that resolve to the same effective retrieval
+        configuration share a cache entry even if their original request
+        parameters differed (e.g. both used "auto").
         """
         return {
             "top_k": top_k,
@@ -150,12 +150,14 @@ class AutoRetrievalDecision:
             "enable_self_reflective": self.enable_self_reflective,
         }
 
-    # Learner note: Encapsulates graph flags so this responsibility can be understood, tested, and changed independently.
     def graph_flags(self, top_k: int) -> dict:
-        """Perform graph flags for the retrieval-augmented generation pipeline.
+        """Return the full flag set to inject into LangGraph state for this request.
 
-        Learner Note:
-            This function keeps the responsibility explicit for callers, tests, and operators.
+        Includes both the resolved values (used to actually drive retrieval)
+        and the original requested values plus auto-selection metadata
+        (`auto_enabled`, `auto_strategy_reason`, `auto_applied_flags`), so
+        downstream nodes and response metadata can distinguish what was
+        requested from what auto-retrieval decided.
         """
         return {
             "top_k": top_k,
@@ -174,12 +176,12 @@ class AutoRetrievalDecision:
             "auto_applied_flags": list(self.auto_applied_flags),
         }
 
-    # Learner note: Encapsulates metadata so this responsibility can be understood, tested, and changed independently.
     def metadata(self) -> dict:
-        """Perform metadata for the retrieval-augmented generation pipeline.
+        """Return the requested/resolved search mode and auto-retrieval flags for API response metadata.
 
-        Learner Note:
-            This function keeps the responsibility explicit for callers, tests, and operators.
+        Same information as `graph_flags` minus `top_k`, intended for
+        surfacing the auto-retrieval decision (and why it was made) to API
+        callers and evaluators.
         """
         return {
             "requested_search_mode": self.requested_search_mode,
@@ -194,12 +196,11 @@ class AutoRetrievalDecision:
         }
 
 
-# Learner note: Encapsulates is vague query so this responsibility can be understood, tested, and changed independently.
 def _is_vague_query(question: str) -> bool:
-    """Support the retrieval-augmented generation pipeline by performing is vague query.
+    """Return True if `question` is too short or unspecific to carry clear retrieval intent.
 
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    True when the question has at most 4 tokens total, or at most 2 tokens
+    remain after stripping common short stopwords (what, how, the, etc.).
     """
     tokens = re.findall(r"[a-z0-9]+", question.lower())
     if len(tokens) <= 4:
@@ -208,12 +209,13 @@ def _is_vague_query(question: str) -> bool:
     return len(meaningful) <= 2
 
 
-# Learner note: Encapsulates is semantic query so this responsibility can be understood, tested, and changed independently.
 def _is_semantic_query(question: str) -> bool:
-    """Support the retrieval-augmented generation pipeline by performing is semantic query.
+    """Return True if `question` looks conceptual/exploratory rather than a lexical lookup.
 
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    True when the question matches a conceptual hint phrase (e.g. "mental
+    model", "difference between") or is long (12 or more tokens), both of
+    which suggest dense/semantic retrieval will serve it better than exact
+    keyword matching.
     """
     lowered = question.lower()
     if any(hint in lowered for hint in _CONCEPTUAL_HINTS):
@@ -222,34 +224,32 @@ def _is_semantic_query(question: str) -> bool:
     return len(tokens) >= 12
 
 
-# Learner note: Encapsulates has strong conceptual signal so this responsibility can be understood, tested, and changed independently.
 def _has_strong_conceptual_signal(question: str) -> bool:
-    """Support the retrieval-augmented generation pipeline by performing has strong conceptual signal.
-
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
-    """
+    """Return True if `question` contains one of the conceptual/comparison hint phrases."""
     lowered = question.lower()
     return any(hint in lowered for hint in _CONCEPTUAL_HINTS)
 
 
-# Learner note: Encapsulates is direct object comparison so this responsibility can be understood, tested, and changed independently.
 def _is_direct_object_comparison(question: str) -> bool:
-    """Support the retrieval-augmented generation pipeline by performing is direct object comparison.
+    """Return True if `question` compares specific named objects rather than abstract concepts.
 
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    True when the question uses a comparison phrase ("difference between" or
+    "compare") together with an exact-token signal (e.g. a quoted term or a
+    CamelCase identifier), which indicates the comparison is between
+    concrete, precisely-named things best served by hybrid retrieval with
+    reranking rather than pure semantic expansion.
     """
     lowered = question.lower()
     return ("difference between" in lowered or "compare" in lowered) and _has_exact_token_signal(question)
 
 
-# Learner note: Encapsulates has exact token signal so this responsibility can be understood, tested, and changed independently.
 def _has_exact_token_signal(question: str) -> bool:
-    """Support the retrieval-augmented generation pipeline by performing has exact token signal.
+    """Return True if `question` contains a token that favors exact/lexical matching.
 
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    True if the question contains a known exact-match hint (e.g.
+    "oomkilled", "rbac"), any quoting characters (backtick or quote marks),
+    or a token of 6+ characters with an internal uppercase letter (e.g. a
+    CamelCase identifier or error code).
     """
     lowered = question.lower()
     if any(hint in lowered for hint in _EXACT_TOKEN_HINTS):
@@ -262,34 +262,25 @@ def _has_exact_token_signal(question: str) -> bool:
     return False
 
 
-# Learner note: Encapsulates has guidance signal so this responsibility can be understood, tested, and changed independently.
 def _has_guidance_signal(question: str) -> bool:
-    """Support the retrieval-augmented generation pipeline by performing has guidance signal.
-
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
-    """
+    """Return True if `question` matches a policy/runbook/procedure hint phrase."""
     lowered = question.lower()
     return any(hint in lowered for hint in _GUIDANCE_HINTS)
 
 
-# Learner note: Encapsulates has troubleshooting signal so this responsibility can be understood, tested, and changed independently.
 def _has_troubleshooting_signal(question: str) -> bool:
-    """Support the retrieval-augmented generation pipeline by performing has troubleshooting signal.
-
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
-    """
+    """Return True if `question` contains a troubleshooting-related keyword (error, debug, crashloopbackoff, etc.)."""
     lowered = question.lower()
     return any(hint in lowered for hint in _TROUBLESHOOTING_HINTS)
 
 
-# Learner note: Encapsulates has operational action signal so this responsibility can be understood, tested, and changed independently.
 def _has_operational_action_signal(question: str) -> bool:
-    """Support the retrieval-augmented generation pipeline by performing has operational action signal.
+    """Return True if `question` both names an operational action and is framed as a how-to request.
 
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    Requires both an action term (scale, restart, deploy, ...) and an
+    action-lead phrase (e.g. "how do i", "steps to") to be present, so a
+    bare mention of an action word without an instructional framing does
+    not trigger this signal.
     """
     lowered = question.lower()
     has_action_term = any(hint in lowered for hint in _ACTION_HINTS)
@@ -297,12 +288,13 @@ def _has_operational_action_signal(question: str) -> bool:
     return has_action_term and has_action_frame
 
 
-# Learner note: Encapsulates has reflection signal so this responsibility can be understood, tested, and changed independently.
 def _has_reflection_signal(question: str) -> bool:
-    """Support the retrieval-augmented generation pipeline by performing has reflection signal.
+    """Return True if `question` signals genuine uncertainty that warrants self-reflective grounding.
 
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    True when the question matches an explicit reflection hint phrase (e.g.
+    "root cause", "not sure"), or when it expresses uncertainty ("not
+    sure"/"unsure"/"unclear") while also presenting multiple candidate
+    causes (two or more " or " clauses).
     """
     lowered = question.lower()
     if any(hint in lowered for hint in _REFLECTION_HINTS):
@@ -313,7 +305,6 @@ def _has_reflection_signal(question: str) -> bool:
     return has_uncertainty and has_multiple_causes
 
 
-# Learner note: Decides resolve auto retrieval, which controls the next branch of the application workflow.
 def resolve_auto_retrieval(
     *,
     question: str,
@@ -324,6 +315,25 @@ def resolve_auto_retrieval(
     enable_self_reflective: bool,
 ) -> AutoRetrievalDecision:
     """Select retrieval mode and quality controls from deterministic query signals.
+
+    If `search_mode` is not "auto", the requested settings are returned
+    unchanged with `auto_enabled=False`. Otherwise, the question is scored
+    against a set of heuristics (exact-token, troubleshooting, guidance,
+    operational-action, reflection, vagueness, and conceptual/semantic
+    signals) and matched, in priority order, against a series of query
+    archetypes (short exact-token lookup, direct object comparison, strong
+    conceptual question, ambiguous troubleshooting question, operational
+    guidance/action question, vague question, general semantic question),
+    each mapping to a specific `resolved_search_mode` ("sparse", "dense", or
+    "hybrid") and a default combination of rerank/HyDE/CRAG/self-reflection
+    flags. If none of the archetypes match, it falls back to hybrid
+    retrieval with rerank and CRAG enabled.
+
+    Any explicitly requested flag (`enable_rerank`, `enable_hyde`,
+    `enable_crag`, `enable_self_reflective`) is OR'd with the auto-selected
+    default rather than being overridden, and flags flipped on purely by the
+    auto policy are recorded in `auto_applied_flags` for audit/metadata
+    purposes.
 
     Process:
         1. Preserve explicit non-auto settings.

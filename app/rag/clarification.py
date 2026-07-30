@@ -121,17 +121,17 @@ _AMBIGUOUS_ACTIONS: tuple[tuple[re.Pattern[str], str, str], ...] = (
 )
 
 
-# Learner Note: Clarification decision records why retrieval must pause and what to ask next.
 @dataclass(frozen=True)
 class ClarificationDecision:
-    """Describe an ambiguity that must be resolved before evidence retrieval."""
+    """Immutable record of a detected ambiguity: why clarification is needed, the
+    follow-up prompt to show the user, and a short category label for the
+    ambiguity (e.g. "scaling", "rollback", "credential_action")."""
 
     reason: str
     prompt: str
     ambiguity_type: str
 
 
-# Learner Note: Detect ambiguous action questions before noisy-corpus retrieval begins.
 def detect_clarification_need(question: str) -> ClarificationDecision | None:
     """Return a clarification request for short actions without a supported target.
 

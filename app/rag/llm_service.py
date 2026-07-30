@@ -5,17 +5,18 @@ from app.config import settings
 openai_client = OpenAI(api_key=settings.openai_api_key)
 
 
-# Learner note: Encapsulates generate so this responsibility can be understood, tested, and changed independently.
 def generate(
     system_prompt: str,
     user_message: str,
     model: str | None = None,
     temperature: float = 0.0,
 ) -> dict:
-    """Perform generate for the retrieval-augmented generation pipeline.
+    """Call the OpenAI chat completions API with a system/user message pair.
 
-    Learner Note:
-        This function keeps the responsibility explicit for callers, tests, and operators.
+    Defaults to `settings.llm_model_answer` when `model` is not given.
+    Returns a dict with the response text under "text" (empty string if the
+    model returned no content) and a token "usage" breakdown
+    (prompt/completion/total, each 0 if usage metadata is unavailable).
     """
     response = openai_client.chat.completions.create(
         model=model or settings.llm_model_answer,
@@ -36,17 +37,18 @@ def generate(
     }
 
 
-# Learner note: Produces generate with json at a dedicated model boundary so output handling remains testable.
 def generate_with_json(
     system_prompt: str,
     user_message: str,
     model: str | None = None,
     temperature: float = 0.0,
 ) -> dict:
-    """Perform generate with json for the retrieval-augmented generation pipeline.
+    """Call the OpenAI chat completions API with JSON response mode enabled.
 
-    Learner Note:
-        This function keeps the responsibility explicit for callers, tests, and operators.
+    Like `generate`, but forces `response_format={"type": "json_object"}` so
+    the model returns valid JSON, and defaults to `settings.llm_model_grader`
+    when `model` is not given. Returns the same `{"text", "usage"}` shape;
+    the caller is responsible for parsing the "text" field as JSON.
     """
     response = openai_client.chat.completions.create(
         model=model or settings.llm_model_grader,

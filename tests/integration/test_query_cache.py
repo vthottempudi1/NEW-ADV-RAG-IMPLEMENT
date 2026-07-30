@@ -1,11 +1,11 @@
 from app.caching.query_cache import QueryCacheService
 
 
-# Learner note: Verifies test rag cache round trip so future changes cannot silently break this expected behavior.
+# Note: Verifies test rag cache round trip so future changes cannot silently break this expected behavior.
 def test_rag_cache_round_trip():
     """Verify that rag cache round trip.
 
-    Learner Note:
+    Note:
         This regression test protects an expected production behavior from silent changes.
     """
     cache = QueryCacheService()
@@ -21,11 +21,11 @@ def test_rag_cache_round_trip():
     assert cached["answer"] == "hello"
 
 
-# Learner note: Verifies test rag cache separates search mode so future changes cannot silently break this expected behavior.
+# Note: Verifies test rag cache separates search mode so future changes cannot silently break this expected behavior.
 def test_rag_cache_separates_search_mode():
     """Verify that rag cache separates search mode.
 
-    Learner Note:
+    Note:
         This regression test protects an expected production behavior from silent changes.
     """
     cache = QueryCacheService()

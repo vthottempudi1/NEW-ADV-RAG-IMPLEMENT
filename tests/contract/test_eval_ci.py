@@ -19,11 +19,11 @@ from evals.runners.run import (
 )
 
 
-# Learner note: Verifies test fixture invoker supports hybrid and sql goldens so future changes cannot silently break this expected behavior.
+# Verifies test fixture invoker supports hybrid and sql goldens so future changes cannot silently break this expected behavior.
 def test_fixture_invoker_supports_hybrid_and_sql_goldens():
     """Verify that fixture invoker supports hybrid and sql goldens.
 
-    Learner Note:
+    Note:
         This regression test protects an expected production behavior from silent changes.
     """
     goldens = load_goldens("evals/datasets/seed_questions.yaml")
@@ -44,11 +44,11 @@ def test_fixture_invoker_supports_hybrid_and_sql_goldens():
     assert len(sql_chunks) == len(sql.golden_sources)
 
 
-# Learner note: Verifies test heuristic ragas scoring returns metric keys so future changes cannot silently break this expected behavior.
+# Verifies test heuristic ragas scoring returns metric keys so future changes cannot silently break this expected behavior.
 def test_heuristic_ragas_scoring_returns_metric_keys():
     """Verify that heuristic ragas scoring returns metric keys.
 
-    Learner Note:
+    Note:
         This regression test protects an expected production behavior from silent changes.
     """
     rows = [
@@ -79,11 +79,11 @@ def test_heuristic_ragas_scoring_returns_metric_keys():
     ))
 
 
-# Learner note: Verifies every retrieval family has exactly three hardening questions whose sources exist in the tracked corpus manifest.
+# Verifies every retrieval family has exactly three hardening questions whose sources exist in the tracked corpus manifest.
 def test_retrieval_hardening_questions_cover_three_per_family():
     """Verify that retrieval hardening questions cover three per family.
 
-    Learner Note:
+    Note:
         This regression test protects an expected production behavior from silent changes.
     """
     goldens = load_goldens("evals/datasets/seed_questions.yaml")
@@ -114,7 +114,7 @@ def test_retrieval_hardening_questions_cover_three_per_family():
                 assert source in corpus_names, f"Missing source {source} for {golden.id}"
 
 
-# Learner Note: OOD clarification goldens must require no retrieval and forbid noisy evidence.
+# OOD clarification goldens must require no retrieval and forbid noisy evidence.
 def test_clarification_goldens_cover_reproduced_ood_failures():
     """Verify that every observed ambiguous-query failure has a route/source contract."""
     goldens = load_goldens("evals/datasets/seed_questions.yaml")
@@ -127,11 +127,11 @@ def test_clarification_goldens_cover_reproduced_ood_failures():
         assert ".pdf" in golden.forbidden_sources
 
 
-# Learner note: Verifies evaluation provenance so published scores remain tied to their corpus and environment.
+# Verifies evaluation provenance so published scores remain tied to their corpus and environment.
 def test_evaluation_provenance_records_non_secret_run_context(monkeypatch):
     """Verify that evaluation provenance records non secret run context.
 
-    Learner Note:
+    Note:
         This regression test protects an expected production behavior from silent changes.
     """
     monkeypatch.setattr("evals.runners.run._git_commit", lambda: "abc123")
@@ -160,57 +160,59 @@ def test_evaluation_provenance_records_non_secret_run_context(monkeypatch):
     assert "openai_api_key" not in provenance
 
 
-# Learner Note: Fake response is part of the automated regression suite.
+# Note: Fake response is part of the automated regression suite.
 class _FakeResponse:
-    # Learner note: Supports init as reusable test setup so scenarios stay deterministic and readable.
+    # Supports init as reusable test setup so scenarios stay deterministic and readable.
     """Represent fake response within the automated regression suite.
 
-    Learner Note:
+    Note:
         This class groups state and behavior behind a clear, testable contract.
     """
+    # Init is part of the automated regression suite.
     def __init__(self, status_code, payload):
         """Initialize init dependencies and runtime state.
 
-        Learner Note:
+        Note:
             Explicit initialization keeps object construction predictable and testable.
         """
         self.status_code = status_code
         self._payload = payload
         self.text = str(payload)
 
-    # Learner note: Supports json as reusable test setup so scenarios stay deterministic and readable.
+    # Supports json as reusable test setup so scenarios stay deterministic and readable.
     def json(self):
         """Perform json for the automated regression suite.
 
-        Learner Note:
+        Note:
             This function keeps the responsibility explicit for callers, tests, and operators.
         """
         return self._payload
 
 
-# Learner Note: Fake http client is part of the automated regression suite.
+# Fake http client is part of the automated regression suite.
 class _FakeHttpClient:
-    # Learner note: Supports init as reusable test setup so scenarios stay deterministic and readable.
+    # Note: Supports init as reusable test setup so scenarios stay deterministic and readable.
     """Represent fake http client within the automated regression suite.
 
-    Learner Note:
+    Note:
         This class groups state and behavior behind a clear, testable contract.
     """
+    # Init is part of the automated regression suite.
     def __init__(self, responses):
         """Initialize init dependencies and runtime state.
 
-        Learner Note:
+        Note:
             Explicit initialization keeps object construction predictable and testable.
         """
         self._responses = list(responses)
         self.calls = []
         self.closed = False
 
-    # Learner note: Supports post as reusable test setup so scenarios stay deterministic and readable.
+    # Note: Supports post as reusable test setup so scenarios stay deterministic and readable.
     def post(self, url, json=None, headers=None):
         """Perform post for the automated regression suite.
 
-        Learner Note:
+        Note:
             This function keeps the responsibility explicit for callers, tests, and operators.
         """
         self.calls.append({"url": url, "json": json, "headers": headers})
@@ -218,21 +220,21 @@ class _FakeHttpClient:
             raise AssertionError(f"No fake HTTP response queued for {url}")
         return self._responses.pop(0)
 
-    # Learner note: Supports close as reusable test setup so scenarios stay deterministic and readable.
+    # Note: Supports close as reusable test setup so scenarios stay deterministic and readable.
     def close(self):
         """Perform close for the automated regression suite.
 
-        Learner Note:
+        Note:
             This function keeps the responsibility explicit for callers, tests, and operators.
         """
         self.closed = True
 
 
-# Learner note: Verifies test http service invoker registers and invokes rag so future changes cannot silently break this expected behavior.
+# Note: Verifies test http service invoker registers and invokes rag so future changes cannot silently break this expected behavior.
 def test_http_service_invoker_registers_and_invokes_rag(monkeypatch):
     """Verify that http service invoker registers and invokes rag.
 
-    Learner Note:
+    Note:
         This regression test protects an expected production behavior from silent changes.
     """
     fake_client = _FakeHttpClient(
@@ -282,11 +284,11 @@ def test_http_service_invoker_registers_and_invokes_rag(monkeypatch):
     assert fake_client.closed is True
 
 
-# Learner note: Verifies test http service invoker auto approves pending sql so future changes cannot silently break this expected behavior.
+# Note: Verifies test http service invoker auto approves pending sql so future changes cannot silently break this expected behavior.
 def test_http_service_invoker_auto_approves_pending_sql(monkeypatch):
     """Verify that http service invoker auto approves pending sql.
 
-    Learner Note:
+    Note:
         This regression test protects an expected production behavior from silent changes.
     """
     fake_client = _FakeHttpClient(
@@ -360,18 +362,18 @@ def test_http_service_invoker_auto_approves_pending_sql(monkeypatch):
     }
 
 
-# Learner Note: Test local hybrid invoker focuses rag and consolidates sql is part of the automated regression suite.
+# Note: Test local hybrid invoker focuses rag and consolidates sql is part of the automated regression suite.
 def test_local_hybrid_invoker_focuses_rag_and_consolidates_sql(monkeypatch):
     """The local evaluator must reproduce production hybrid evidence handling."""
     from app.models import ChatResponse, ResponseMetadata, RetrievedChunk
 
     captured: dict[str, str] = {}
 
-    # Learner Note: Fake rag is part of the automated regression suite.
+    # Note: Fake rag is part of the automated regression suite.
     def fake_rag(question, flags):
         """Perform fake rag for the automated regression suite.
 
-        Learner Note:
+        Note:
             This function keeps the responsibility explicit for callers, tests, and operators.
         """
         captured["rag_question"] = question
@@ -389,27 +391,27 @@ def test_local_hybrid_invoker_focuses_rag_and_consolidates_sql(monkeypatch):
             [chunk],
         )
 
-    # Learner Note: Fake s q l service is part of the automated regression suite.
+    # Note: Fake s q l service is part of the automated regression suite.
     class FakeSQLService:
         """Represent fake s q l service within the automated regression suite.
 
-        Learner Note:
+        Note:
             This class groups state and behavior behind a clear, testable contract.
         """
-        # Learner Note: Generate sql is part of the automated regression suite.
+        # Note: Generate sql is part of the automated regression suite.
         def generate_sql(self, question):
             """Perform generate sql for the automated regression suite.
 
-            Learner Note:
+            Note:
                 This function keeps the responsibility explicit for callers, tests, and operators.
             """
             return {"sql": "select count(*) from alerts"}
 
-        # Learner Note: Execute sql is part of the automated regression suite.
+        # Note: Execute sql is part of the automated regression suite.
         def execute_sql(self, sql):
             """Perform execute sql for the automated regression suite.
 
-            Learner Note:
+            Note:
                 This function keeps the responsibility explicit for callers, tests, and operators.
             """
             return [{"count": 2}, {"count": 3}]
@@ -439,7 +441,7 @@ def test_local_hybrid_invoker_focuses_rag_and_consolidates_sql(monkeypatch):
     assert '"count": 3' in chunks[-1].text
 
 
-# Learner Note: Test source precision rejects same category wrong entity is part of the automated regression suite.
+# Note: Test source precision rejects same category wrong entity is part of the automated regression suite.
 def test_source_precision_rejects_same_category_wrong_entity():
     """A retrieved doc must not score as correct just because it shares a taxonomy
     prefix with the golden source (regression for the q-202 holdout finding, where
@@ -456,7 +458,7 @@ def test_source_precision_rejects_same_category_wrong_entity():
     assert source_precision(actual, golden) == 0.0
 
 
-# Learner Note: Test source precision still matches correct entity is part of the automated regression suite.
+# Note: Test source precision still matches correct entity is part of the automated regression suite.
 def test_source_precision_still_matches_correct_entity():
     """A retrieved doc must still score as correct when it is the actual golden entity."""
     actual = ["concepts__configuration__secret.txt"]
@@ -471,7 +473,7 @@ def test_source_precision_still_matches_correct_entity():
     ]
 
 
-# Learner Note: Alternative authoritative source groups avoid penalizing equivalent evidence.
+# Note: Alternative authoritative source groups avoid penalizing equivalent evidence.
 def test_source_metrics_support_required_groups_with_authoritative_alternatives():
     """Score group coverage while still rejecting unrelated extra sources."""
     groups = [
@@ -491,7 +493,7 @@ def test_source_metrics_support_required_groups_with_authoritative_alternatives(
     assert source_recall([actual[1]], [], groups) == 0.5
 
 
-# Learner Note: Test context recall is zero for empty contexts is part of the automated regression suite.
+# Note: Test context recall is zero for empty contexts is part of the automated regression suite.
 def test_context_recall_is_zero_for_empty_contexts():
     """Recall of ground truth by zero retrieved context must be 0, not left to an
     LLM judge that may answer from its own knowledge (regression for the q-212
@@ -499,7 +501,7 @@ def test_context_recall_is_zero_for_empty_contexts():
     assert _score_context_recall("ConfigMap changes propagate eventually.", []) == 0.0
 
 
-# Learner Note: Test relevance scoring removes adversarial source preference only is part of the automated regression suite.
+# Note: Test relevance scoring removes adversarial source preference only is part of the automated regression suite.
 def test_relevance_scoring_removes_adversarial_source_preference_only():
     """Relevance judges the underlying task, not an injected demand for a noisy source."""
     assert ragas_adapter_module._underlying_domain_question(
@@ -513,7 +515,7 @@ def test_relevance_scoring_removes_adversarial_source_preference_only():
     ) == "Explain how to scale a Kubernetes Deployment."
 
 
-# Learner Note: Test faithfulness claim audit rejects quote not present is part of the automated regression suite.
+# Note: Test faithfulness claim audit rejects quote not present is part of the automated regression suite.
 def test_faithfulness_claim_audit_rejects_quote_not_present(monkeypatch):
     """Verify every supported claim must point to a quote present in its indexed context."""
     monkeypatch.setattr(
@@ -534,7 +536,7 @@ def test_faithfulness_claim_audit_rejects_quote_not_present(monkeypatch):
     assert claims[0]["reason"] == "supporting_quote_not_found"
 
 
-# Learner Note: Test faithfulness claim audit resolves exact quote to actual source is part of the automated regression suite.
+# Note: Test faithfulness claim audit resolves exact quote to actual source is part of the automated regression suite.
 def test_faithfulness_claim_audit_resolves_exact_quote_to_actual_source(monkeypatch):
     """A grader index mistake must not become a false application-faithfulness failure."""
     monkeypatch.setattr(
@@ -556,7 +558,7 @@ def test_faithfulness_claim_audit_resolves_exact_quote_to_actual_source(monkeypa
     assert claims[0]["quote_valid"] is True
 
 
-# Learner Note: Test faithfulness claim audit repairs only with verbatim context is part of the automated regression suite.
+# Note: Test faithfulness claim audit repairs only with verbatim context is part of the automated regression suite.
 def test_faithfulness_claim_audit_repairs_only_with_verbatim_context(monkeypatch):
     """A malformed grader quote may be repaired, but only by an exact context substring."""
     responses = iter([
@@ -583,7 +585,7 @@ def test_faithfulness_claim_audit_repairs_only_with_verbatim_context(monkeypatch
     assert claims[0]["source_index"] == 0
 
 
-# Learner Note: Test faithfulness claim audit locates compact verbatim span is part of the automated regression suite.
+# Note: Test faithfulness claim audit locates compact verbatim span is part of the automated regression suite.
 def test_faithfulness_claim_audit_locates_compact_verbatim_span(monkeypatch):
     """Formatting or reordered commentary may fall back to a short exact evidence window."""
     responses = iter([
@@ -607,7 +609,7 @@ def test_faithfulness_claim_audit_locates_compact_verbatim_span(monkeypatch):
     assert claims[0]["supporting_quote"] == "List Events sorted by timestamp: kubectl"
 
 
-# Learner Note: Test faithfulness claim audit accepts question premise is part of the automated regression suite.
+# Note: Test faithfulness claim audit accepts question premise is part of the automated regression suite.
 def test_faithfulness_claim_audit_accepts_question_premise(monkeypatch):
     """Scenario details supplied by the user are evidence, not model hallucinations."""
     monkeypatch.setattr(
@@ -630,7 +632,7 @@ def test_faithfulness_claim_audit_accepts_question_premise(monkeypatch):
     assert claims[0]["source_index"] is None
 
 
-# Learner Note: Test faithfulness claim audit recovers question premise misclassified by grader is part of the automated regression suite.
+# Note: Test faithfulness claim audit recovers question premise misclassified by grader is part of the automated regression suite.
 def test_faithfulness_claim_audit_recovers_question_premise_misclassified_by_grader(monkeypatch):
     """An exact scenario premise remains valid even when the grader labels it unsupported."""
     monkeypatch.setattr(
@@ -654,7 +656,7 @@ def test_faithfulness_claim_audit_recovers_question_premise_misclassified_by_gra
     assert claims[0]["quote_valid"] is True
 
 
-# Learner Note: Test faithfulness claim audit repairs compound claim with multiple quotes is part of the automated regression suite.
+# Note: Test faithfulness claim audit repairs compound claim with multiple quotes is part of the automated regression suite.
 def test_faithfulness_claim_audit_repairs_compound_claim_with_multiple_quotes(monkeypatch):
     """A compound claim may cite multiple independently verified context substrings."""
     responses = iter([
@@ -682,7 +684,7 @@ def test_faithfulness_claim_audit_repairs_compound_claim_with_multiple_quotes(mo
     assert claims[0]["source_indices"] == [0, 0]
 
 
-# Learner Note: Test faithfulness claim audit validates combined question and context evidence is part of the automated regression suite.
+# Note: Test faithfulness claim audit validates combined question and context evidence is part of the automated regression suite.
 def test_faithfulness_claim_audit_validates_combined_question_and_context_evidence(monkeypatch):
     """Applied recommendations require exact premises from both question and context."""
     responses = iter([
@@ -711,7 +713,7 @@ def test_faithfulness_claim_audit_validates_combined_question_and_context_eviden
     assert len(claims[0]["supporting_quotes"]) == 2
 
 
-# Learner Note: Test faithfulness claim audit repairs supported combined nonverbatim quote is part of the automated regression suite.
+# Note: Test faithfulness claim audit repairs supported combined nonverbatim quote is part of the automated regression suite.
 def test_faithfulness_claim_audit_repairs_supported_combined_nonverbatim_quote(monkeypatch):
     """A grader's combined classification still requires two validated verbatim quotes."""
     responses = iter([
@@ -740,7 +742,7 @@ def test_faithfulness_claim_audit_repairs_supported_combined_nonverbatim_quote(m
     assert claims[0]["source_indices"] == [0]
 
 
-# Learner Note: Test faithfulness claim audit validates multi document synthesis is part of the automated regression suite.
+# Note: Test faithfulness claim audit validates multi document synthesis is part of the automated regression suite.
 def test_faithfulness_claim_audit_validates_multi_document_synthesis(monkeypatch):
     """A synthesis conclusion requires exact evidence from at least two distinct sources."""
     responses = iter([
@@ -772,7 +774,7 @@ def test_faithfulness_claim_audit_validates_multi_document_synthesis(monkeypatch
     assert claims[0]["source_indices"] == [0, 1]
 
 
-# Learner Note: Test correct evidence abstention receives applicable metric credit is part of the automated regression suite.
+# Note: Test correct evidence abstention receives applicable metric credit is part of the automated regression suite.
 def test_correct_evidence_abstention_receives_applicable_metric_credit():
     """A safe refusal with no evidence must not look like a retrieval regression."""
     [result] = run_ragas(
@@ -792,7 +794,7 @@ def test_correct_evidence_abstention_receives_applicable_metric_credit():
     assert result["answer_relevancy"] == 1.0
 
 
-# Learner Note: Test per question thresholds expose failure hidden by average is part of the automated regression suite.
+# Note: Test per question thresholds expose failure hidden by average is part of the automated regression suite.
 def test_per_question_thresholds_expose_failure_hidden_by_average():
     """A high aggregate must not conceal one unsafe or incomplete response."""
     rows = [
@@ -818,7 +820,7 @@ def test_per_question_thresholds_expose_failure_hidden_by_average():
     }
 
 
-# Learner Note: Test aggregate thresholds skip not applicable metrics is part of the automated regression suite.
+# Note: Test aggregate thresholds skip not applicable metrics is part of the automated regression suite.
 def test_aggregate_thresholds_skip_not_applicable_metrics():
     """Source-less clarification must not fail because source recall is undefined."""
     failures = _aggregate_threshold_failures(
@@ -829,7 +831,7 @@ def test_aggregate_thresholds_skip_not_applicable_metrics():
     assert failures == {}
 
 
-# Learner Note: The frozen challenge set must retain full answers and an untouched holdout.
+# Note: The frozen challenge set must retain full answers and an untouched holdout.
 def test_challenge_regression_dataset_is_complete_and_partitioned():
     """Verify the consumed challenge regression retains its complete contracts."""
     goldens = load_goldens("evals/datasets/challenge_regression_suite.yaml")
@@ -840,7 +842,7 @@ def test_challenge_regression_dataset_is_complete_and_partitioned():
     assert sum("[holdout]" in golden.notes for golden in goldens) == 12
 
 
-# Learner Note: Structural validation must not execute or leak the final holdout into tuning.
+# Note: Structural validation must not execute or leak the final holdout into tuning.
 def test_regression_suite_has_full_frozen_contracts():
     """Verify the twelve-case regression suite retains fully specified contracts."""
     goldens = load_goldens("evals/datasets/regression_suite.yaml")
@@ -851,7 +853,7 @@ def test_regression_suite_has_full_frozen_contracts():
     assert all("[final-holdout]" in golden.notes for golden in goldens)
 
 
-# Learner Note: Test sealed v2 holdout contract and checksum are immutable is part of the automated regression suite.
+# Note: Test sealed v2 holdout contract and checksum are immutable is part of the automated regression suite.
 def test_sealed_v2_holdout_contract_and_checksum_are_immutable():
     """Validate the sealed v2 holdout structurally without executing application answers."""
     path = Path("evals/datasets/sealed_v2_holdout.yaml")
@@ -875,7 +877,7 @@ def test_sealed_v2_holdout_contract_and_checksum_are_immutable():
     assert not prior_questions.intersection(golden.question for golden in goldens)
 
 
-# Learner Note: Test sealed v2 findings are an explicit development regression is part of the automated regression suite.
+# Note: Test sealed v2 findings are an explicit development regression is part of the automated regression suite.
 def test_sealed_v2_findings_are_an_explicit_development_regression():
     """Keep consumed v2 findings reproducible without describing them as unseen."""
     goldens = load_goldens("evals/datasets/sealed_v2_findings_regression.yaml")
@@ -886,7 +888,7 @@ def test_sealed_v2_findings_are_an_explicit_development_regression():
     assert all("[sealed-v2-finding]" in golden.notes for golden in goldens)
 
 
-# Learner Note: Test sealed v3 holdout contract and checksum are immutable is part of the automated regression suite.
+# Note: Test sealed v3 holdout contract and checksum are immutable is part of the automated regression suite.
 def test_sealed_v3_holdout_contract_and_checksum_are_immutable():
     """Validate sealed v3 structurally without invoking retrieval, generation, or grading."""
     path = Path("evals/datasets/sealed_v3_holdout.yaml")
@@ -911,7 +913,7 @@ def test_sealed_v3_holdout_contract_and_checksum_are_immutable():
     assert not prior_questions.intersection(golden.question for golden in goldens)
 
 
-# Learner Note: Test consumed v3 regression matches the sealed v3 questions is part of the automated regression suite.
+# Note: Test consumed v3 regression matches the sealed v3 questions is part of the automated regression suite.
 def test_consumed_v3_regression_matches_the_sealed_v3_questions():
     """Keep every consumed v3 case available for development regression."""
     sealed = load_goldens("evals/datasets/sealed_v3_holdout.yaml")
@@ -921,7 +923,7 @@ def test_consumed_v3_regression_matches_the_sealed_v3_questions():
     assert [item.question for item in regression] == [item.question for item in sealed]
 
 
-# Learner Note: Test sealed v4 holdout contract and checksum are immutable is part of the automated regression suite.
+# Note: Test sealed v4 holdout contract and checksum are immutable is part of the automated regression suite.
 def test_sealed_v4_holdout_contract_and_checksum_are_immutable():
     """Validate sealed v4 structurally without executing any question."""
     path = Path("evals/datasets/sealed_v4_holdout.yaml")
@@ -947,7 +949,7 @@ def test_sealed_v4_holdout_contract_and_checksum_are_immutable():
     assert not prior_questions.intersection(golden.question for golden in goldens)
 
 
-# Learner Note: Test sealed v4 findings are an explicit development regression is part of the automated regression suite.
+# Note: Test sealed v4 findings are an explicit development regression is part of the automated regression suite.
 def test_sealed_v4_findings_are_an_explicit_development_regression():
     """Keep only the actionable v4 failures in a named development dataset."""
     goldens = load_goldens("evals/datasets/sealed_v4_findings_regression.yaml")
@@ -956,7 +958,7 @@ def test_sealed_v4_findings_are_an_explicit_development_regression():
     assert all("[consumed-sealed-v4]" in golden.notes for golden in goldens)
 
 
-# Learner Note: Test sealed v5 holdout contract and checksum are immutable is part of the automated regression suite.
+# Note: Test sealed v5 holdout contract and checksum are immutable is part of the automated regression suite.
 def test_sealed_v5_holdout_contract_and_checksum_are_immutable():
     """Validate sealed v5 structurally without retrieval, generation, or grading."""
     path = Path("evals/datasets/sealed_v5_holdout.yaml")
@@ -983,7 +985,7 @@ def test_sealed_v5_holdout_contract_and_checksum_are_immutable():
     assert not prior_questions.intersection(golden.question for golden in goldens)
 
 
-# Learner Note: Consumed sealed-v5 findings remain explicit development regressions.
+# Note: Consumed sealed-v5 findings remain explicit development regressions.
 def test_sealed_v5_findings_are_an_explicit_development_regression():
     """Keep v5 failures reproducible and preserve alternative-source semantics."""
     goldens = load_goldens("evals/datasets/sealed_v5_findings_regression.yaml")
@@ -996,7 +998,7 @@ def test_sealed_v5_findings_are_an_explicit_development_regression():
     assert len(next(g for g in goldens if g.id == "q-607").acceptable_source_groups) == 2
 
 
-# Learner Note: The report contract must expose all four semantic and both deterministic metrics.
+# The report contract must expose all four semantic and both deterministic metrics.
 def test_reporting_declares_all_six_quality_metrics():
     """Keep source precision and recall visible beside the four LLM-judged metrics."""
     assert METRIC_KEYS == {
@@ -1009,7 +1011,7 @@ def test_reporting_declares_all_six_quality_metrics():
     }
 
 
-# Learner Note: Non-applicable source metrics must not crash or distort aggregate reporting.
+# Non-applicable source metrics must not crash or distort aggregate reporting.
 def test_reporting_aggregates_source_metrics_while_skipping_none():
     """Average applicable source scores and preserve None when a metric has no observations."""
     result = aggregate(
@@ -1029,3 +1031,36 @@ def test_reporting_aggregates_source_metrics_while_skipping_none():
 
     assert result["source_precision"] == 1.0
     assert result["source_recall"] is None
+
+def test_hyde_authority_regression_contract():
+    """Verify that the HyDE authority regression dataset remains complete."""
+    goldens = load_goldens(
+        "evals/datasets/hyde_authority_regression.yaml"
+    )
+
+    assert [golden.id for golden in goldens] == [
+        "q-701",
+        "q-702",
+        "q-703",
+        "q-704",
+    ]
+
+    assert all(
+        "[consumed-live-hyde]" in golden.notes
+        for golden in goldens
+    )
+
+    assert all(
+        golden.demonstrates_feature == "hyde"
+        for golden in goldens
+    )
+
+    assert all(
+        golden.expected_route == "rag"
+        for golden in goldens
+    )
+
+    assert all(
+        golden.forbidden_sources
+        for golden in goldens
+    )

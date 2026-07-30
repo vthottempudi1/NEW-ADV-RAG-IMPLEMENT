@@ -53,12 +53,16 @@ _sparse_fitted = False
 _sparse_lock = threading.Lock()
 
 
-# Learner note: Encapsulates get sparse index so this responsibility can be understood, tested, and changed independently.
 def _get_sparse_index() -> SparseVectorIndex:
-    """Support the retrieval-augmented generation pipeline by performing get sparse index.
+    """Return the process-wide sparse index, building it lazily on first use.
 
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    On a cache miss, scrolls every point out of the configured Qdrant
+    collection (paginated, 500 at a time) to collect each point's `text`
+    and `source` payload fields, then fits a new `SparseVectorIndex` over
+    that document set. Uses double-checked locking around `_sparse_lock` so
+    the expensive full-collection scroll and fit run at most once even
+    under concurrent callers. The fitted index is cached until
+    `reset_sparse_index` is called (e.g. after an upsert).
     """
     global _sparse_index, _sparse_fitted
 
@@ -98,24 +102,22 @@ def _get_sparse_index() -> SparseVectorIndex:
     return _sparse_index
 
 
-# Learner note: Clears reset sparse index safely so tests and operations can restore a known state.
 def reset_sparse_index() -> None:
-    """Perform reset sparse index for the retrieval-augmented generation pipeline.
+    """Invalidate the cached sparse index so it is rebuilt from Qdrant on next use.
 
-    Learner Note:
-        This function keeps the responsibility explicit for callers, tests, and operators.
+    Called after any collection mutation (upsert, recreate) so sparse and
+    hybrid search always see up-to-date content.
     """
     global _sparse_fitted
     with _sparse_lock:
         _sparse_fitted = False
 
 
-# Learner note: Retrieves get client in one place so callers share consistent access behavior.
 def get_client() -> QdrantClient:
-    """Perform get client for the retrieval-augmented generation pipeline.
+    """Construct a new QdrantClient from configured settings.
 
-    Learner Note:
-        This function keeps the responsibility explicit for callers, tests, and operators.
+    Uses `settings.qdrant_url` with a 30-second request timeout, and
+    includes `settings.qdrant_api_key` when one is configured.
     """
     kwargs = {
         "url": settings.qdrant_url,
@@ -126,12 +128,12 @@ def get_client() -> QdrantClient:
     return QdrantClient(**kwargs)
 
 
-# Learner note: Encapsulates ensure collection so this responsibility can be understood, tested, and changed independently.
 def ensure_collection() -> None:
-    """Perform ensure collection for the retrieval-augmented generation pipeline.
+    """Create the configured Qdrant collection if it does not already exist.
 
-    Learner Note:
-        This function keeps the responsibility explicit for callers, tests, and operators.
+    Uses a fixed dense vector space of size `VECTOR_SIZE` with cosine
+    distance. Idempotent: does nothing if the collection is already
+    present.
     """
     client = get_client()
     existing = {collection.name for collection in client.get_collections().collections}
@@ -143,12 +145,12 @@ def ensure_collection() -> None:
         )
 
 
-# Learner note: Encapsulates recreate collection so this responsibility can be understood, tested, and changed independently.
 def recreate_collection() -> None:
-    """Perform recreate collection for the retrieval-augmented generation pipeline.
+    """Drop and recreate the configured Qdrant collection, discarding all existing points.
 
-    Learner Note:
-        This function keeps the responsibility explicit for callers, tests, and operators.
+    Deletes the collection if present, recreates it via `ensure_collection`,
+    and resets the cached sparse index so it rebuilds empty on next use.
+    Intended for full reindex/reset workflows, not routine ingestion.
     """
     client = get_client()
     existing = {collection.name for collection in client.get_collections().collections}
@@ -160,23 +162,24 @@ def recreate_collection() -> None:
     reset_sparse_index()
 
 
-# Learner note: Encapsulates chunk id so this responsibility can be understood, tested, and changed independently.
 def _chunk_id(source: str, text: str) -> str:
-    """Support the retrieval-augmented generation pipeline by performing chunk id.
+    """Derive a deterministic Qdrant point ID (UUID) from a chunk's source and text.
 
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    Hashing `source` and `text` together with SHA-256 means re-ingesting
+    identical content always maps to the same point ID, so upserts
+    overwrite the existing point instead of creating a duplicate.
     """
     digest = hashlib.sha256(f"{source}\n{text}".encode("utf-8")).hexdigest()
     return str(uuid.UUID(digest[:32]))
 
 
-# Learner note: Encapsulates is troubleshooting query so this responsibility can be understood, tested, and changed independently.
 def _is_troubleshooting_query(query: str) -> bool:
-    """Support the retrieval-augmented generation pipeline by performing is troubleshooting query.
+    """Return True if `query` reads as an operational troubleshooting question.
 
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    True if the query contains a known troubleshooting keyword (error,
+    debug, crashloopbackoff, ...), or contains a token of 6+ characters
+    with an internal uppercase letter (e.g. an error code like
+    `ImagePullBackOff`).
     """
     lowered = query.lower()
     if any(hint in lowered for hint in _TROUBLESHOOTING_HINTS):
@@ -189,12 +192,13 @@ def _is_troubleshooting_query(query: str) -> bool:
     return False
 
 
-# Learner note: Encapsulates keyword overlap so this responsibility can be understood, tested, and changed independently.
 def _keyword_overlap(query: str, chunk: RetrievedChunk) -> float:
-    """Support the retrieval-augmented generation pipeline by performing keyword overlap.
+    """Return the fraction of `query`'s significant terms found in `chunk`.
 
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    Considers query terms of 3+ characters, and checks for their literal
+    presence in the chunk's source plus the first 600 characters of its
+    text (case-insensitive). Returns 0.0 if the query has no qualifying
+    terms.
     """
     query_terms = {
         token.lower()
@@ -209,12 +213,16 @@ def _keyword_overlap(query: str, chunk: RetrievedChunk) -> float:
     return matched / len(query_terms)
 
 
-# Learner note: Encapsulates expanded sparse query so this responsibility can be understood, tested, and changed independently.
 def _expanded_sparse_query(query: str) -> str:
-    """Support the retrieval-augmented generation pipeline by performing expanded sparse query.
+    """Expand a troubleshooting `query` with related terms to improve sparse recall.
 
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    Returns `query` unchanged if it is not a troubleshooting query.
+    Otherwise splits CamelCase-style tokens into lowercase parts (e.g.
+    `ImagePullBackOff` -> "image pull back off") and appends known synonym
+    expansions from `_TROUBLESHOOTING_EXPANSIONS` (e.g. "oomkilled" ->
+    "oom killed memory limit"), so BM25-style sparse search can match
+    documents phrased with different terminology. Duplicate pieces are
+    removed while preserving order.
     """
     if not _is_troubleshooting_query(query):
         return query
@@ -231,12 +239,10 @@ def _expanded_sparse_query(query: str) -> str:
     return " ".join(dict.fromkeys(piece for piece in pieces if piece))
 
 
-# Learner note: Encapsulates troubleshooting terms so this responsibility can be understood, tested, and changed independently.
 def _troubleshooting_terms(query: str) -> set[str]:
-    """Support the retrieval-augmented generation pipeline by performing troubleshooting terms.
+    """Return the set of lowercase terms (4+ characters) from the troubleshooting-expanded form of `query`.
 
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    Used as the term set for troubleshooting-specific relevance scoring.
     """
     expanded = _expanded_sparse_query(query)
     return {
@@ -246,12 +252,14 @@ def _troubleshooting_terms(query: str) -> set[str]:
     }
 
 
-# Learner note: Encapsulates source bias so this responsibility can be understood, tested, and changed independently.
 def _source_bias(chunk: RetrievedChunk, troubleshooting_query: bool) -> float:
-    """Support the retrieval-augmented generation pipeline by performing source bias.
+    """Return an additive score boost for troubleshooting-relevant chunks.
 
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    Returns 0.0 unless `troubleshooting_query` is True. Otherwise adds 0.06
+    if the chunk's source/text mentions a general troubleshooting source
+    hint (runbook, incident, logs, ...), plus an additional 0.08 if it
+    contains an exact match for a canonical Kubernetes failure signature
+    (OOMKilled, ErrImagePull, CrashLoopBackOff).
     """
     if not troubleshooting_query:
         return 0.0
@@ -265,12 +273,16 @@ def _source_bias(chunk: RetrievedChunk, troubleshooting_query: bool) -> float:
     return bias
 
 
-# Learner note: Encapsulates troubleshooting match score so this responsibility can be understood, tested, and changed independently.
 def _troubleshooting_match_score(query: str, chunk: RetrievedChunk) -> float:
-    """Support the retrieval-augmented generation pipeline by performing troubleshooting match score.
+    """Score how strongly `chunk` matches a troubleshooting `query`.
 
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    Returns 0.0 if `query` is not a troubleshooting query or has no
+    expanded terms. Otherwise combines a proportional term-overlap score
+    (up to 0.8) with flat bonuses (+0.45 each) for exact matches on
+    canonical failure signatures (`imagepullbackoff`/`oom_killer`,
+    `oomkilled`/`errimagepull`/`crashloopbackoff`) and +0.2 for a
+    troubleshooting source hint. Used to boost/re-rank chunks during hybrid
+    retrieval.
     """
     if not _is_troubleshooting_query(query):
         return 0.0
@@ -292,12 +304,14 @@ def _troubleshooting_match_score(query: str, chunk: RetrievedChunk) -> float:
     return score
 
 
-# Learner note: Encapsulates is strong troubleshooting chunk so this responsibility can be understood, tested, and changed independently.
 def _is_strong_troubleshooting_chunk(query: str, chunk: RetrievedChunk) -> bool:
-    """Support the retrieval-augmented generation pipeline by performing is strong troubleshooting chunk.
+    """Return True if `chunk` is a high-confidence match for a troubleshooting `query`.
 
-    Learner Note:
-        Keeping this helper focused makes the surrounding workflow easier to test and maintain.
+    True if the troubleshooting match score alone is high (>= 0.45), or a
+    moderate match score (>= 0.25) is corroborated by keyword overlap
+    (>= 0.15), or a source bias hit (>= 0.06) is corroborated by keyword
+    overlap (>= 0.12). Used to promote strongly relevant troubleshooting
+    chunks to the front of hybrid search results.
     """
     match_score = _troubleshooting_match_score(query, chunk)
     overlap = _keyword_overlap(query, chunk)
@@ -309,12 +323,20 @@ def _is_strong_troubleshooting_chunk(query: str, chunk: RetrievedChunk) -> bool:
     )
 
 
-# Learner note: Persists upsert chunks consistently so state changes remain controlled and testable.
 def upsert_chunks(chunks: list[RetrievedChunk], embeddings: list[list[float]]) -> None:
-    """Perform upsert chunks for the retrieval-augmented generation pipeline.
+    """Embed-upsert `chunks` into the configured Qdrant collection.
 
-    Learner Note:
-        This function keeps the responsibility explicit for callers, tests, and operators.
+    Ensures the collection exists, then builds one `PointStruct` per chunk
+    by pairing each chunk with its corresponding vector from `embeddings`
+    via `zip(..., strict=True)` — the two lists must be the same length and
+    in matching order, or this raises. Each point's ID is derived
+    deterministically from the chunk's source and text (`_chunk_id`), so
+    re-ingesting identical content overwrites the existing point rather
+    than duplicating it. The chunk's `metadata` dict, `text`, and `source`
+    are all stored in the point payload.
+
+    After upserting, invalidates the cached sparse index (`reset_sparse_index`)
+    so subsequent sparse/hybrid searches immediately reflect the new chunks.
     """
     ensure_collection()
     client = get_client()
@@ -339,12 +361,13 @@ def upsert_chunks(chunks: list[RetrievedChunk], embeddings: list[list[float]]) -
     reset_sparse_index()
 
 
-# Learner note: Implements search, a key retrieval-quality step in the RAG pipeline.
 def search(query_embedding: list[float], top_k: int = 5) -> list[RetrievedChunk]:
-    """Perform search for the retrieval-augmented generation pipeline.
+    """Run a dense vector similarity search in Qdrant and return the top `top_k` chunks.
 
-    Learner Note:
-        This function keeps the responsibility explicit for callers, tests, and operators.
+    Queries the configured collection with `query_embedding` and converts
+    each result into a `RetrievedChunk`, with `score` and `retrieval_score`
+    set to Qdrant's similarity score and all payload fields other than
+    `text`/`source` folded into `metadata`.
     """
     client = get_client()
 
@@ -371,12 +394,23 @@ def search(query_embedding: list[float], top_k: int = 5) -> list[RetrievedChunk]
     ]
 
 
-# Learner note: Encapsulates sparse search so this responsibility can be understood, tested, and changed independently.
 def sparse_search(query: str, top_k: int = 5) -> list[RetrievedChunk]:
-    """Perform sparse search for the retrieval-augmented generation pipeline.
+    """Run a sparse (lexical) search over the cached sparse index and return up to `top_k` chunks.
 
-    Learner Note:
-        This function keeps the responsibility explicit for callers, tests, and operators.
+    Expands `query` for troubleshooting terminology (`_expanded_sparse_query`)
+    before searching the index. For non-troubleshooting queries, returns
+    the sparse index's own top-`top_k` results unchanged.
+
+    For troubleshooting queries, additionally scans every document in the
+    sparse index for troubleshooting-term overlap — including documents
+    the base sparse ranking may have missed — scoring each by term overlap
+    plus bonuses for troubleshooting source hints and canonical failure
+    signatures (ImagePullBackOff, OOMKilled, CrashLoopBackOff). These
+    "rescue" candidates are merged with the original results (deduplicated
+    by a `source:text-prefix` key, keeping the higher score on collision)
+    and the combined set is re-sorted by score and truncated to `top_k`.
+    This recovers troubleshooting-relevant chunks that plain sparse ranking
+    might otherwise rank too low to surface.
     """
     index = _get_sparse_index()
     expanded_query = _expanded_sparse_query(query)
@@ -421,16 +455,33 @@ def sparse_search(query: str, top_k: int = 5) -> list[RetrievedChunk]:
     return sorted(merged.values(), key=lambda item: item.score, reverse=True)[:top_k]
 
 
-# Learner note: Encapsulates hybrid search so this responsibility can be understood, tested, and changed independently.
 def hybrid_search(
     query_embedding: list[float],
     query: str,
     top_k: int = 5,
 ) -> list[RetrievedChunk]:
-    """Perform hybrid search for the retrieval-augmented generation pipeline.
+    """Combine dense and sparse retrieval into one ranked result set via weighted reciprocal rank fusion.
 
-    Learner Note:
-        This function keeps the responsibility explicit for callers, tests, and operators.
+    Runs both `search` (dense) and `sparse_search` (sparse) against
+    expanded candidate pools (2x `top_k` for dense; 2x or 4x for sparse
+    depending on whether `query` is a troubleshooting question), then fuses
+    the two rankings with RRF (`k=60`). Dense and sparse contributions are
+    weighted differently for troubleshooting queries (dense down-weighted
+    to 0.8, sparse up-weighted to 2.8) versus non-troubleshooting queries
+    (both weighted 1.0), and each chunk's fused score additionally accrues
+    troubleshooting-aware bonuses: keyword overlap, exact troubleshooting
+    match score, and source bias.
+
+    Candidates from both lists are deduplicated by a `source:text-prefix`
+    key, with scores summed across appearances in both lists. If `query` is
+    a troubleshooting query, chunks classified as "strong" by
+    `_is_strong_troubleshooting_chunk` are moved to the front of the
+    ranking ahead of the remaining fused-score order, before the result is
+    truncated to `top_k`.
+
+    Returns `RetrievedChunk` models whose `score`/`retrieval_score` reflect
+    the final fused score rather than either underlying dense or sparse
+    score.
     """
     k = 60
     troubleshooting_query = _is_troubleshooting_query(query)

@@ -4,12 +4,14 @@ _EMAIL_RE = re.compile(r"\b[\w\.-]+@[\w\.-]+\.\w+\b")
 _PHONE_RE = re.compile(r"\b(?:\+?\d[\d\-\s]{7,}\d)\b")
 
 
-# Learner note: Encapsulates moderate and redact so this responsibility can be understood, tested, and changed independently.
 def moderate_and_redact(text: str) -> tuple[bool, str, str]:
-    """Perform moderate and redact for the application security boundary.
+    """Strip whitespace from `text` and mask PII before it flows further into the pipeline.
 
-    Learner Note:
-        This function keeps the responsibility explicit for callers, tests, and operators.
+    Rejects empty input outright. Otherwise replaces email addresses with
+    "[REDACTED_EMAIL]" and phone-number-like sequences with "[REDACTED_PHONE]".
+
+    Returns a `(is_allowed, redacted_text, reason)` tuple, where `reason` is
+    "empty_input" on rejection or "ok" on success.
     """
     cleaned = text.strip()
     if not cleaned:

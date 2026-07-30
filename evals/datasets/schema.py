@@ -26,11 +26,11 @@ FEATURE = Literal[
 OPTIONAL_DEMO_ONLY_FEATURES = {"dense", "sparse", "security"}
 
 
-# Learner Note: Golden is part of the evaluation and quality-gate framework.
+# Note: Golden is part of the evaluation and quality-gate framework.
 class Golden(BaseModel):
     """Represent golden within the evaluation and quality-gate framework.
 
-    Learner Note:
+    Note:
         This class groups state and behavior behind a clear, testable contract.
     """
     id: str = Field(..., pattern=r"^q-\d{3}$")
@@ -48,7 +48,7 @@ class Golden(BaseModel):
     forbidden_sources: list[str] = Field(default_factory=list)
     expected_route: str | None = None
 
-    # Learner note: Evaluates check expected with feature as a guardrail before later pipeline stages proceed.
+    # Note: Evaluates check expected with feature as a guardrail before later pipeline stages proceed.
     @model_validator(mode="after")
     def check_expected_with_feature(self) -> "Golden":
         """Normalize legacy feature labels and validate required fields."""
@@ -59,11 +59,11 @@ class Golden(BaseModel):
         return self
 
 
-# Learner note: Retrieves load goldens in one place so callers share consistent access behavior.
+# Note: Retrieves load goldens in one place so callers share consistent access behavior.
 def load_goldens(path: str | Path) -> list[Golden]:
     """Perform load goldens for the evaluation and quality-gate framework.
 
-    Learner Note:
+    Note:
         This function keeps the responsibility explicit for callers, tests, and operators.
     """
     path = Path(path)

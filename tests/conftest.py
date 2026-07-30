@@ -10,12 +10,12 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 
-# Learner note: Supports disable redis cache as reusable test setup so scenarios stay deterministic and readable.
+# Note: Supports disable redis cache as reusable test setup so scenarios stay deterministic and readable.
 @pytest.fixture(autouse=True)
 def disable_redis_cache(monkeypatch):
     """Perform disable redis cache for the automated regression suite.
 
-    Learner Note:
+    Note:
         This function keeps the responsibility explicit for callers, tests, and operators.
     """
     monkeypatch.setenv("UPSTASH_REDIS_URL", "")

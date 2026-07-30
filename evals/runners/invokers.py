@@ -13,44 +13,44 @@ from app.rag.hybrid_question import derive_hybrid_rag_question
 from evals.datasets.schema import Golden
 
 
-# Learner Note: Skipped intent is part of the evaluation and quality-gate framework.
+# Note: Skipped intent is part of the evaluation and quality-gate framework.
 class SkippedIntent(Exception):
     """Raised when an eval intent is intentionally not supported."""
 
     pass
 
 
-# Learner Note: Invoker is part of the evaluation and quality-gate framework.
+# Note: Invoker is part of the evaluation and quality-gate framework.
 class Invoker(ABC):
     """Represent invoker within the evaluation and quality-gate framework.
 
-    Learner Note:
+    Note:
         This class groups state and behavior behind a clear, testable contract.
     """
 
-    # Learner note: Orchestrates invoke, making this function a clear execution boundary for learners and tests.
+    # Note: Orchestrates invoke, making this function a clear execution boundary for learners and tests.
     @abstractmethod
     def invoke(
         self, question: str, flags: dict, intent: str
     ) -> tuple[Any, list]:
         """Perform invoke for the evaluation and quality-gate framework.
 
-        Learner Note:
+        Note:
             This function keeps the responsibility explicit for callers, tests, and operators.
         """
         ...
 
 
-# Learner Note: Service invoker is part of the evaluation and quality-gate framework.
+# Note: Service invoker is part of the evaluation and quality-gate framework.
 class ServiceInvoker(Invoker):
     """Represent service invoker within the evaluation and quality-gate framework.
 
-    Learner Note:
+    Note:
         This class groups state and behavior behind a clear, testable contract.
     """
     SUPPORTED_INTENTS = {"rag", "web_fallback", "sql", "hybrid", "clarification"}
 
-    # Learner note: Orchestrates invoke, making this function a clear execution boundary for learners and tests.
+    # Note: Orchestrates invoke, making this function a clear execution boundary for learners and tests.
     def invoke(
         self,
         question: str,
@@ -59,7 +59,7 @@ class ServiceInvoker(Invoker):
     ) -> tuple[ChatResponse, list[RetrievedChunk]]:
         """Perform invoke for the evaluation and quality-gate framework.
 
-        Learner Note:
+        Note:
             This function keeps the responsibility explicit for callers, tests, and operators.
         """
         if intent not in self.SUPPORTED_INTENTS:
@@ -98,11 +98,11 @@ class ServiceInvoker(Invoker):
         from app.rag.service import run_rag_with_trace_no_cache
         return run_rag_with_trace_no_cache(question, flags)
 
-    # Learner note: Encapsulates invoke sql so this responsibility can be understood, tested, and changed independently.
+    # Note: Encapsulates invoke sql so this responsibility can be understood, tested, and changed independently.
     def _invoke_sql(self, question: str) -> tuple[ChatResponse, list[RetrievedChunk]]:
         """Support the evaluation and quality-gate framework by performing invoke sql.
 
-        Learner Note:
+        Note:
             Keeping this helper focused makes the surrounding workflow easier to test and maintain.
         """
         from app.core.graph import build_sql_execution_result
@@ -132,7 +132,7 @@ class ServiceInvoker(Invoker):
         ]
         return response, row_chunks
 
-    # Learner note: Encapsulates invoke hybrid so this responsibility can be understood, tested, and changed independently.
+    # Note: Encapsulates invoke hybrid so this responsibility can be understood, tested, and changed independently.
     def _invoke_hybrid(
         self,
         question: str,
@@ -140,7 +140,7 @@ class ServiceInvoker(Invoker):
     ) -> tuple[ChatResponse, list[RetrievedChunk]]:
         """Support the evaluation and quality-gate framework by performing invoke hybrid.
 
-        Learner Note:
+        Note:
             Keeping this helper focused makes the surrounding workflow easier to test and maintain.
         """
         from app.core.graph import build_hybrid_execution_result
@@ -191,14 +191,15 @@ class ServiceInvoker(Invoker):
         return response, combined_chunks
 
 
-# Learner Note: Http service invoker is part of the evaluation and quality-gate framework.
+# Note: Http service invoker is part of the evaluation and quality-gate framework.
 class HttpServiceInvoker(Invoker):
-    # Learner note: Initializes this component so its dependencies and runtime state are explicit.
+    # Note: Initializes this component so its dependencies and runtime state are explicit.
     """Represent http service invoker within the evaluation and quality-gate framework.
 
-    Learner Note:
+    Note:
         This class groups state and behavior behind a clear, testable contract.
     """
+    # Note: Init is part of the evaluation and quality-gate framework.
     def __init__(
         self,
         api_base: str,
@@ -210,7 +211,7 @@ class HttpServiceInvoker(Invoker):
     ):
         """Initialize init dependencies and runtime state.
 
-        Learner Note:
+        Note:
             Explicit initialization keeps object construction predictable and testable.
         """
         self.api_base = api_base.rstrip("/")
@@ -222,16 +223,16 @@ class HttpServiceInvoker(Invoker):
         self._client = httpx.Client(timeout=timeout)
         self._token = token or self._bootstrap_token()
 
-    # Learner note: Encapsulates close so this responsibility can be understood, tested, and changed independently.
+    # Note: Encapsulates close so this responsibility can be understood, tested, and changed independently.
     def close(self) -> None:
         """Perform close for the evaluation and quality-gate framework.
 
-        Learner Note:
+        Note:
             This function keeps the responsibility explicit for callers, tests, and operators.
         """
         self._client.close()
 
-    # Learner note: Orchestrates invoke, making this function a clear execution boundary for learners and tests.
+    # Note: Orchestrates invoke, making this function a clear execution boundary for learners and tests.
     def invoke(
         self,
         question: str,
@@ -240,7 +241,7 @@ class HttpServiceInvoker(Invoker):
     ) -> tuple[ChatResponse, list[RetrievedChunk]]:
         """Perform invoke for the evaluation and quality-gate framework.
 
-        Learner Note:
+        Note:
             This function keeps the responsibility explicit for callers, tests, and operators.
         """
         payload = {
@@ -313,11 +314,11 @@ class HttpServiceInvoker(Invoker):
             )
         return response_model, chunks
 
-    # Learner note: Encapsulates bootstrap token so this responsibility can be understood, tested, and changed independently.
+    # Note: Encapsulates bootstrap token so this responsibility can be understood, tested, and changed independently.
     def _bootstrap_token(self) -> str:
         """Support the evaluation and quality-gate framework by performing bootstrap token.
 
-        Learner Note:
+        Note:
             Keeping this helper focused makes the surrounding workflow easier to test and maintain.
         """
         register_payload = {
@@ -338,21 +339,21 @@ class HttpServiceInvoker(Invoker):
             raise RuntimeError("http_eval_auth_failed: token missing from auth response")
         return str(data["token"])
 
-    # Learner note: Encapsulates auth headers so this responsibility can be understood, tested, and changed independently.
+    # Note: Encapsulates auth headers so this responsibility can be understood, tested, and changed independently.
     def _auth_headers(self) -> dict[str, str]:
         """Support the evaluation and quality-gate framework by performing auth headers.
 
-        Learner Note:
+        Note:
             Keeping this helper focused makes the surrounding workflow easier to test and maintain.
         """
         return {"Authorization": f"Bearer {self._token}"}
 
-    # Learner note: Encapsulates decode json so this responsibility can be understood, tested, and changed independently.
+    # Note: Encapsulates decode json so this responsibility can be understood, tested, and changed independently.
     @staticmethod
     def _decode_json(response: httpx.Response) -> Any:
         """Support the evaluation and quality-gate framework by performing decode json.
 
-        Learner Note:
+        Note:
             Keeping this helper focused makes the surrounding workflow easier to test and maintain.
         """
         try:
@@ -360,12 +361,12 @@ class HttpServiceInvoker(Invoker):
         except Exception:
             return response.text
 
-    # Learner note: Encapsulates detail text so this responsibility can be understood, tested, and changed independently.
+    # Note: Encapsulates detail text so this responsibility can be understood, tested, and changed independently.
     @staticmethod
     def _detail_text(payload: Any) -> str:
         """Support the evaluation and quality-gate framework by performing detail text.
 
-        Learner Note:
+        Note:
             Keeping this helper focused makes the surrounding workflow easier to test and maintain.
         """
         if isinstance(payload, dict):
@@ -375,20 +376,20 @@ class HttpServiceInvoker(Invoker):
         return str(payload)
 
 
-# Learner Note: Fixture invoker is part of the evaluation and quality-gate framework.
+# Note: Fixture invoker is part of the evaluation and quality-gate framework.
 class FixtureInvoker(Invoker):
     """Deterministic invoker for CI-safe eval smoke runs."""
 
-    # Learner note: Initializes this component so its dependencies and runtime state are explicit.
+    # Note: Initializes this component so its dependencies and runtime state are explicit.
     def __init__(self, goldens: list[Golden]):
         """Initialize init dependencies and runtime state.
 
-        Learner Note:
+        Note:
             Explicit initialization keeps object construction predictable and testable.
         """
         self._goldens_by_question = {golden.question: golden for golden in goldens}
 
-    # Learner note: Orchestrates invoke, making this function a clear execution boundary for learners and tests.
+    # Note: Orchestrates invoke, making this function a clear execution boundary for learners and tests.
     def invoke(
         self,
         question: str,
@@ -397,7 +398,7 @@ class FixtureInvoker(Invoker):
     ) -> tuple[ChatResponse, list[RetrievedChunk]]:
         """Perform invoke for the evaluation and quality-gate framework.
 
-        Learner Note:
+        Note:
             This function keeps the responsibility explicit for callers, tests, and operators.
         """
         golden = self._goldens_by_question.get(question)
@@ -453,11 +454,11 @@ class FixtureInvoker(Invoker):
         )
         return response, chunks
 
-    # Learner note: Encapsulates answer text so this responsibility can be understood, tested, and changed independently.
+    # Note: Encapsulates answer text so this responsibility can be understood, tested, and changed independently.
     def _answer_text(self, golden: Golden) -> str:
         """Support the evaluation and quality-gate framework by performing answer text.
 
-        Learner Note:
+        Note:
             Keeping this helper focused makes the surrounding workflow easier to test and maintain.
         """
         keywords = ", ".join(golden.golden_answer_keywords)
@@ -471,11 +472,11 @@ class FixtureInvoker(Invoker):
             return f"Please clarify the target for {golden.id}: {keywords}."
         return f"Mock RAG answer for {golden.id}: {keywords}."
 
-    # Learner note: Encapsulates chunk text so this responsibility can be understood, tested, and changed independently.
+    # Note: Encapsulates chunk text so this responsibility can be understood, tested, and changed independently.
     def _chunk_text(self, golden: Golden, source: str) -> str:
         """Support the evaluation and quality-gate framework by performing chunk text.
 
-        Learner Note:
+        Note:
             Keeping this helper focused makes the surrounding workflow easier to test and maintain.
         """
         keywords = ", ".join(golden.golden_answer_keywords)

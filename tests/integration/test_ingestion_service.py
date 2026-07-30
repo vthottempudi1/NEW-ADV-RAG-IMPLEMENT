@@ -8,7 +8,7 @@ from app.ingestion.service import IngestionService
 from app.models import RetrievedChunk
 
 
-# Learner Note: Test long text chunks end and restart on sentence boundaries is part of the automated regression suite.
+# Test long text chunks end and restart on sentence boundaries is part of the automated regression suite.
 def test_long_text_chunks_end_and_restart_on_sentence_boundaries():
     """Evidence chunks must preserve complete sentences around overlap boundaries."""
     sentences = [f"Sentence {index} contains reliable Kubernetes evidence." for index in range(80)]
@@ -27,7 +27,7 @@ def test_long_text_chunks_end_and_restart_on_sentence_boundaries():
     assert all(len(chunk["text"]) <= 1000 for chunk in chunks)
 
 
-# Learner Note: Test large document embeddings are processed in bounded batches is part of the automated regression suite.
+# Test large document embeddings are processed in bounded batches is part of the automated regression suite.
 def test_large_document_embeddings_are_processed_in_bounded_batches(monkeypatch):
     """Large documents must never build one unbounded embedding/upsert request."""
     embedded_batch_sizes = []
@@ -50,55 +50,56 @@ def test_large_document_embeddings_are_processed_in_bounded_batches(monkeypatch)
     assert upserted_batch_sizes == [64, 64, 2]
 
 
-# Learner note: Verifies test ingest same file twice skips duplicate so future changes cannot silently break this expected behavior.
+# Verifies test ingest same file twice skips duplicate so future changes cannot silently break this expected behavior.
 def test_ingest_same_file_twice_skips_duplicate(monkeypatch):
     """Verify that ingest same file twice skips duplicate.
 
-    Learner Note:
+    Note:
         This regression test protects an expected production behavior from silent changes.
     """
     service = IngestionService()
     stored: dict[str, bytes] = {}
 
-    # Learner Note: Fake storage is part of the automated regression suite.
+    # Fake storage is part of the automated regression suite.
     class _FakeStorage:
-        # Learner note: Supports exists as reusable test setup so scenarios stay deterministic and readable.
+        # Note: Supports exists as reusable test setup so scenarios stay deterministic and readable.
         """Represent fake storage within the automated regression suite.
 
-        Learner Note:
+        Note:
             This class groups state and behavior behind a clear, testable contract.
         """
+        # Note: Exists is part of the automated regression suite.
         def exists(self, key: str) -> bool:
             """Perform exists for the automated regression suite.
 
-            Learner Note:
+            Note:
                 This function keeps the responsibility explicit for callers, tests, and operators.
             """
             return key in stored
 
-        # Learner note: Supports save bytes as reusable test setup so scenarios stay deterministic and readable.
+        # Supports save bytes as reusable test setup so scenarios stay deterministic and readable.
         def save_bytes(self, key: str, data: bytes) -> None:
             """Perform save bytes for the automated regression suite.
 
-            Learner Note:
+            Note:
                 This function keeps the responsibility explicit for callers, tests, and operators.
             """
             stored[key] = data
 
-        # Learner note: Supports read bytes as reusable test setup so scenarios stay deterministic and readable.
+        # Supports read bytes as reusable test setup so scenarios stay deterministic and readable.
         def read_bytes(self, key: str) -> bytes:
             """Perform read bytes for the automated regression suite.
 
-            Learner Note:
+            Note:
                 This function keeps the responsibility explicit for callers, tests, and operators.
             """
             return stored[key]
 
-        # Learner note: Supports url for as reusable test setup so scenarios stay deterministic and readable.
+        # Supports url_for as reusable test setup so scenarios stay deterministic and readable.
         def url_for(self, key: str) -> str:
             """Perform url for for the automated regression suite.
 
-            Learner Note:
+            Note:
                 This function keeps the responsibility explicit for callers, tests, and operators.
             """
             return f"memory://{key}"
