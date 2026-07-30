@@ -43,13 +43,16 @@ _SUBJECT_PATTERN = re.compile(r"\b(" + "|".join(re.escape(item) for item in _KNO
 _SUBJECT_ALIASES = (
     (
         re.compile(
-            r"\b(?:p[0-4]\s+)?(?:on[- ]call\s+)?escalation policy\b",
+            r"\b(?:p[0-4][-_ ]+)?(?:on[-_ ]call[-_ ]+)?escalation[-_ ]policy\b",
             re.IGNORECASE,
         ),
         "On-Call Escalation Policy",
     ),
     (
-        re.compile(r"\bincident(?: response)? runbook\b", re.IGNORECASE),
+        re.compile(
+            r"\bincident(?:[-_ ]response)?[-_ ]runbook\b",
+            re.IGNORECASE,
+        ),
         "Incident Response Runbook",
     ),
 )
@@ -100,32 +103,45 @@ def _looks_like_follow_up(question: str) -> bool:
 def _last_turn_severity(conversation_context: Iterable[dict] | None) -> str | None:
     """Return the most recent P0-P4 severity mentioned in conversation history."""
     turns = list(conversation_context or [])
-    if not turns:
-        return None
-    last_turn = turns[-1] or {}
-    combined = " ".join(
-        (
-            str(last_turn.get("question", "") or ""),
-            str(last_turn.get("answer", "") or ""),
+    for turn in reversed(turns):
+        current = turn or {}
+        combined = " ".join(
+            (
+                str(current.get("question", "") or ""),
+                str(current.get("answer", "") or ""),
+            )
         )
-    )
-    match = _SEVERITY_PATTERN.search(combined)
-    return match.group(0).upper() if match else None
+        match = _SEVERITY_PATTERN.search(combined)
+        if match:
+            return match.group(0).upper()
+    return None
 
 
 def _last_turn_subjects(conversation_context: Iterable[dict] | None) -> tuple[list[str], list[str]]:
-    """Extract known subjects mentioned in the most recent conversation turn.
+    """Extract subjects from the nearest turn that preserves conversation context.
 
-    Returns a (subjects_from_prior_question, subjects_from_prior_answer) pair.
-    Both lists are empty if there is no conversation history.
+    Source names are included because a successful follow-up may omit the
+    document name from both its question and answer while still citing the same
+    authoritative document. If the latest turn has no recognizable subject,
+    older turns are scanned newest-first within the bounded context window.
     """
     turns = list(conversation_context or [])
     if not turns:
         return [], []
-    last_turn = turns[-1] or {}
-    prior_question = str(last_turn.get("question", "") or "")
-    prior_answer = str(last_turn.get("answer", "") or "")
-    return _extract_subjects(prior_question), _extract_subjects(prior_answer)
+    for turn in reversed(turns):
+        current = turn or {}
+        prior_question = str(current.get("question", "") or "")
+        prior_answer = str(current.get("answer", "") or "")
+        prior_sources = " ".join(
+            str(source) for source in (current.get("sources", []) or [])
+        )
+        question_subjects = _extract_subjects(prior_question)
+        evidence_subjects = _extract_subjects(
+            f"{prior_answer} {prior_sources}"
+        )
+        if question_subjects or evidence_subjects:
+            return question_subjects, evidence_subjects
+    return [], []
 
 
 def _resolve_follow_up_subject(question: str, conversation_context: Iterable[dict] | None) -> str | None:
@@ -138,15 +154,20 @@ def _resolve_follow_up_subject(question: str, conversation_context: Iterable[dic
     Returns None if the reference cannot be resolved to a single subject.
     """
     prior_question_subjects, prior_answer_subjects = _last_turn_subjects(conversation_context)
-    explicit_operational_subjects = [
-        subject
-        for subject in prior_question_subjects
-        if subject in {"Incident Response Runbook", "On-Call Escalation Policy"}
-    ]
-    available = (
-        explicit_operational_subjects
-        or prior_answer_subjects
-        or prior_question_subjects
+    explicit_operational_subjects = list(
+        dict.fromkeys(
+            subject
+            for subject in prior_question_subjects + prior_answer_subjects
+            if subject
+            in {"Incident Response Runbook", "On-Call Escalation Policy"}
+        )
+    )
+    available = list(
+        dict.fromkeys(
+            explicit_operational_subjects
+            or prior_answer_subjects
+            or prior_question_subjects
+        )
     )
     lowered = question.lower()
 

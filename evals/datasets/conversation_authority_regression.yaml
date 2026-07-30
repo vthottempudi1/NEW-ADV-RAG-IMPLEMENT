@@ -62,3 +62,45 @@
   notes: >
     [consumed-live-conversation] An implicit operational continuation without
     a pronoun lost the runbook subject and CRAG rejected all five candidates.
+
+- id: q-707
+  question: "What should the team document after the service stabilizes?"
+  intent: rag
+  conversation_context:
+    - question: >
+        What must responders do immediately for a P1 incident according to the
+        incident response runbook?
+      answer: >
+        Responders acknowledge the page, join the bridge, identify customer
+        impact, and assign an incident commander.
+      sources:
+        - incident-response-runbook.html
+    - question: >
+        What responsibilities does the incident commander have during the
+        response?
+      answer: >
+        The incident commander coordinates communications, tracks actions, and
+        confirms service recovery.
+      sources:
+        - incident-response-runbook.html
+  golden_sources:
+    - incident-response-runbook.html
+  acceptable_source_groups:
+    - - incident-response-runbook.html
+  golden_answer: >
+    After service stabilizes, the team records the timeline, root cause,
+    customer impact, and follow-up remediation items.
+  golden_answer_keywords:
+    - timeline
+    - root cause
+    - customer impact
+    - follow-up remediation
+  demonstrates_feature: conversation
+  expected_baseline: fail
+  expected_with_feature: pass
+  expected_route: rag
+  forbidden_sources:
+    - AMD - Open-Source Register Reference for AMD Family 17h Processors - Models 00h-2Fh - Rev 3.03 July 2018 (56255_3_03).PDF
+  notes: >
+    [consumed-live-conversation] A second consecutive follow-up lost the
+    runbook subject because only the immediately preceding text was inspected.

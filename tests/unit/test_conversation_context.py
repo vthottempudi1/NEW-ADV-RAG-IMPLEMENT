@@ -176,3 +176,40 @@ def test_workaround_follow_up_keeps_incident_runbook_context():
         "According to the Incident Response Runbook, "
         "What should the team do if a workaround is available?"
     )
+
+
+def test_second_runbook_follow_up_inherits_subject_from_prior_source():
+    """Carry the runbook subject through multiple successful follow-up turns."""
+    rewritten, subject = rewrite_follow_up_question(
+        "What should the team document after the service stabilizes?",
+        [
+            {
+                "question": (
+                    "What must responders do immediately for a P1 incident "
+                    "according to the incident response runbook?"
+                ),
+                "answer": (
+                    "Responders acknowledge the page, join the bridge, identify "
+                    "customer impact, and assign an incident commander."
+                ),
+                "sources": ["incident-response-runbook.html"],
+            },
+            {
+                "question": (
+                    "What responsibilities does the incident commander have "
+                    "during the response?"
+                ),
+                "answer": (
+                    "The incident commander coordinates communications, tracks "
+                    "actions, and confirms service recovery."
+                ),
+                "sources": ["incident-response-runbook.html"],
+            },
+        ],
+    )
+
+    assert subject == "Incident Response Runbook"
+    assert rewritten == (
+        "According to the Incident Response Runbook for P1 incidents, "
+        "What should the team document after the service stabilizes?"
+    )
