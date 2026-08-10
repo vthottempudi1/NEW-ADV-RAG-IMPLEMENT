@@ -500,24 +500,6 @@ Dependabot checks Python packages and GitHub Actions weekly.
 
 The workflow uses current GitHub action versions and is set up for push and pull request validation on `main`.
 
-## Why This Is a Strong Portfolio Project
-
-This project demonstrates more than prompt wiring.
-
-It shows:
-
-- backend architecture for GenAI systems
-- safe SQL generation patterns
-- hybrid routing design
-- retrieval tradeoff awareness
-- caching strategy
-- guardrails thinking
-- admin observability
-- evaluation discipline
-- CI maturity
-
-That combination is much more compelling to hiring managers than a single-route RAG demo.
-
 ## Future Improvements
 
 - admin-triggered real eval runs
